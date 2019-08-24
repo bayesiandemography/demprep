@@ -1,0 +1,19 @@
+Package: demprep
+Title: Prepare Input Data for Demographic Packages
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "John",
+           family = "Bryant",
+           role = c("aut", "cre"),
+           email = "john.r.bryant@gmail.com",
+           comment = c(ORCID = "0000-0002-8010-9748"))
+Description: Functions for preparing data before
+    creating demographic arrays or accounts.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+    methods
+Suggests: 
+    testthat
+RoxygenNote: 6.1.1
