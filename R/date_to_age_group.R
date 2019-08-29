@@ -67,141 +67,237 @@
 #' USING BREAKS ARG?
 #' 
 #' @examples
-#' 
-#'
 #' @rdname date_to_age_group
-#' @export
 NULL
+
+## Assume every (non-NA) record belongs to appropriate age range.
+## Do not use these functions for filtering.
+## Leave NAs in because these records might later have age imputed.
+
+
 
 #' @rdname date_to_age_group
 #' @export
-date_to_age_group <- function(date, dob,
-                              min = 0, max = 100, width = 1,
-                              breaks = NULL,
-                              open_right = TRUE,
-                              as_factor = TRUE) {
+date_to_age_group_year <- function(date, dob,
+                                   age_max = 100,
+                                   open_right = TRUE,
+                                   as_factor = TRUE) {
     l <- err_tdy_date_dob(date = date,
                           dob = dob)
     date <- l$date
     dob <- l$dob
-    has_breaks <- !is.null(breaks)
-    if (has_breaks)
+    if (all(is.na(date) | is.na(dob)))
+        return(rep(NA_character_, times = length(date)))
+    uses_breaks <- !is.null(breaks)
+    if (uses_breaks) {
         breaks <- err_tdy_breaks(breaks)
-    else {
-        l <- err_tdy_min_max(min = min,
-                             max = max)
-        min <- l$min
-        max <- l$max
-        width <- err_tdy_width(width = width,
-                               min = min,
-                               max = max)
     }
-    err_is_logical_flag(x = open_right,
-                        name = "open_right")
+    else {
+        age_open <- err_tdy_positive_integer_scalar(x = age_open,
+                                                    name = "age_open")
+        breaks <- seq.int(from = 0L, to = age_open)
+    }
     err_is_logical_flag(x = as_factor,
                         name = "as_factor")
-    age <- date_to_age_completed_months(date = date,
-                                        dob = dob)
-    err_age_ge_min(age = age,
-                   min = min,
-                   date = date,
-                   dob = dob,
-                   unit = "year")
-    if (!open_right) {
-        err_age_lt_max(age = age,
-                       max = max,
-                       date = date,
-                       dob = dob,
-                       unit = "year")
-    } 
-    age_to_label(age = age,
-                 min = min,
-                 max = max,
-                 width = width,
-                 breaks = breaks,
-                 open_left = FALSE,
-                 open_right = open_right,
-                 as_factor = as_fractor)
+    age_months <- age_completed_months(date = date,
+                                       dob = dob)
+    age_years <- age_months %/% 12L
+    n <- length(breaks)
+    open_left <- any(age_years < breaks[[1L]], na.rm = TRUE)
+    open_right <- any(age_years >= breaks[[n]], na.rm = TRUE)
+    labels <- make_labels_age_group(breaks = breaks,
+                                    open_left = open_left,
+                                    open_right = open_right)
+    i <- findInterval(x = age_years, vec = breaks)
+    if (open_left)
+        i <- i + 1L
+    ans <- labels[i]
+    if (as_factor)
+        ans <- factor(ans, levels = labels)
+    ans
+}
+
+
+#' @rdname date_to_age_group
+#' @export
+date_to_age_group_lifetable <- function(date, dob,
+                                        age_max = 100,
+                                        as_factor = TRUE) {
+    l <- err_tdy_date_dob(date = date,
+                          dob = dob)
+    date <- l$date
+    dob <- l$dob
+    if (all(is.na(date) | is.na(dob)))
+        return(rep(NA_character_, times = length(date)))
+    uses_breaks <- !is.null(breaks)
+    if (uses_breaks) {
+        breaks <- err_tdy_breaks(breaks)
+    }
+    else {
+        age_open <- err_tdy_positive_integer_scalar(x = age_open,
+                                                    name = "age_open")
+        breaks <- seq.int(from = 0L, to = age_open)
+    }
+    err_is_logical_flag(x = as_factor,
+                        name = "as_factor")
+    age_months <- age_completed_months(date = date,
+                                       dob = dob)
+    age_years <- age_months %/% 12L
+    n <- length(breaks)
+    open_left <- any(age_years < breaks[[1L]], na.rm = TRUE)
+    open_right <- any(age_years >= breaks[[n]], na.rm = TRUE)
+    labels <- make_labels_age_group(breaks = breaks,
+                                    open_left = open_left,
+                                    open_right = open_right)
+    i <- findInterval(x = age_years, vec = breaks)
+    if (open_left)
+        i <- i + 1L
+    ans <- labels[i]
+    if (as_factor)
+        ans <- factor(ans, levels = labels)
+    ans
+}
+
+
+date_to_age_group_fert <- function(date, dob,
+                                   age_min = 15,
+                                   age_max = 50,
+                                   recode_up = TRUE,
+                                   recode_down = TRUE,
+                                   as_factor = TRUE) {
+}
+
+
+#' @rdname date_to_age_group
+#' @export
+date_to_age_group_custom <- function(date, dob,
+                               open_right = TRUE,
+                               breaks = NULL,
+                               as_factor = TRUE) {
+    l <- err_tdy_date_dob(date = date,
+                          dob = dob)
+    date <- l$date
+    dob <- l$dob
+    if (all(is.na(date) | is.na(dob)))
+        return(rep(NA_character_, times = length(date)))
+    uses_breaks <- !is.null(breaks)
+    if (uses_breaks) {
+        breaks <- err_tdy_breaks(breaks)
+    }
+    else {
+        age_open <- err_tdy_positive_integer_scalar(x = age_open,
+                                                    name = "age_open")
+        breaks <- seq.int(from = 0L, to = age_open)
+    }
+    err_is_logical_flag(x = as_factor,
+                        name = "as_factor")
+    age_months <- age_completed_months(date = date,
+                                       dob = dob)
+    age_years <- age_months %/% 12L
+    n <- length(breaks)
+    open_left <- any(age_years < breaks[[1L]], na.rm = TRUE)
+    open_right <- any(age_years >= breaks[[n]], na.rm = TRUE)
+    labels <- make_labels_age_group(breaks = breaks,
+                                    open_left = open_left,
+                                    open_right = open_right)
+    i <- findInterval(x = age_years, vec = breaks)
+    if (open_left)
+        i <- i + 1L
+    ans <- labels[i]
+    if (as_factor)
+        ans <- factor(ans, levels = labels)
+    ans
 }
 
 
 #' @rdname date_to_age_group
 #' @export
 date_to_age_group_month <- function(date, dob,
-                                    min = 0, max = 1200,
+                                    age_max = 1200,
                                     open_right = TRUE,
                                     as_factor = TRUE) {
     l <- err_tdy_date_dob(date = date,
                           dob = dob)
     date <- l$date
     dob <- l$dob
-    l <- err_tdy_min_max(min = min,
-                         max = max)
-    min <- l$min
-    max <- l$max
-    err_is_logical_flag(x = open_right,
-                        name = "open_right")
+    is_open_right <- !is.null(age_open)
+    if (is_open_right)
+        age_open <- err_tdy_positive_integer_scalar(x = age_open,
+                                                    name = "age_open")
     err_is_logical_flag(x = as_factor,
                         name = "as_factor")
-    age <- date_to_age_completed_months(date = date,
-                                        dob = dob)
-    err_age_ge_min(age = age,
-                   min = min,
-                   date = date,
-                   dob = dob,
-                   unit = "month")
-    if (!open_right) {
-        err_age_lt_max(age = age,
-                       max = max,
-                       date = date,
-                       dob = dob,
-                       unit = "month")
-    } 
-    age_to_label_month(age = age, 
-                       min = min,
-                       max = max,
-                       open_left = FALSE,
-                       open_right = open_right,
-                       as_factor = as_factor)
+    age <- age_completed_months(date = date,
+                                dob = dob)
+    open_right <- any(age >= breaks[[n]], na.rm = TRUE)
+    labels <- make_labels_age_group_month(min_break = min_break,
+                                          max_break = max_break,
+                                          open_left = FALSE,
+                                          open_right = open_right)
+    i <- findInterval(x = age, vec = breaks)
+    if (open_left)
+        i <- i + 1L
+    ans <- labels[i]
+    if (as_factor)
+        ans <- factor(ans, levels = labels)
+    ans
 }
-
 
 #' @rdname date_to_age_group
 #' @export
 date_to_age_group_quarter <- function(date, dob,
-                                      min = 0, max = 400,
-                                      open_right = TRUE,
+                                      min_break = 0,
+                                      max_break = 400,
                                       as_factor = TRUE) {
     l <- err_tdy_date_dob(date = date,
                           dob = dob)
     date <- l$date
     dob <- l$dob
-    l <- err_tdy_min_max(min = min,
-                         max = max)
-    min <- l$min
-    max <- l$max
-    err_is_logical_flag(x = open_right,
-                        name = "open_right")
+    l <- err_tdy_min_max_break(min_break = min_break,
+                               max_break = max_break)
+    l$min_break <- min_break
+    l$max_break <- max_break
     err_is_logical_flag(x = as_factor,
                         name = "as_factor")
-    age <- date_to_age_completed_months(date = date,
-                                        dob = dob)
-    err_age_ge_min(age = age,
-                   min = min,
-                   date = date,
-                   dob = dob,
-                   unit = "quarter")
-    if (!open_right) {
-        err_age_lt_max(age = age,
-                       max = max,
-                       date = date,
-                       dob = dob,
-                       unit = "quarter")
-    } 
-    age_to_label_quarter(age = age, 
-                         min = min,
-                         max = max,
-                         open_left = FALSE,
-                         open_right = open_right,
-                         as_factor = as_factor)
+    age_months <- date_to_age_completed_months(date = date,
+                                               dob = dob)
+    age_quarters <- age_months %/% 4L
+    n <- length(breaks)
+    if (n > 0L) {
+        open_left <- any(age_quarters < breaks[[1L]], na.rm = TRUE)
+        open_right <- any(age_quarters >= breaks[[n]], na.rm = TRUE)
+    }
+    else {
+        open_left <- FALSE
+        open_right <- FALSE
+    }
+    labels <- make_labels_age_group_quarter(min_break = min_break,
+                                            max_break = max_break,
+                                            open_left = open_left,
+                                            open_right = open_right)
+    i <- findInterval(x = age_quarters, vec = breaks)
+    if (open_left)
+        i <- i + 1L
+    ans <- labels[i]
+    if (as_factor)
+        ans <- factor(ans, levels = labels)
+    ans
+}
+
+
+
+## 'date' and 'dob' POSIXlt vectors with equal
+## length and no NAs - typically constructed
+## using 'err_tdy_date_dob'
+date_to_age_completed_months <- function(date, dob) {
+    y2 <- date$year + 1900L
+    y1 <- dob$year + 1900L
+    m2 <- date$mon + 1L
+    m1 <- dob$mon + 1L
+    d2 <- date$mday
+    d1 <- dob$mday
+    is_29feb_2 <- (m2 == 2L) & (d2 == 29L)
+    is_29feb_1 <- (m1 == 2L) & (d1 == 29L)
+    d2[is_29_feb_2] <- 28L
+    d1[is_29_feb_1] <- 28L
+    12L * (y2 - y1) + (m2 - m1) - (d2 < d1)
 }

@@ -1,57 +1,94 @@
 
-#' Convert dates to periods
-#' 
-#' @rdname date_to_period
-#' @export
-NULL
 
-#' @rdname date_to_period
+date_to_period_year <- function(date,
+                                first_month = "Jan",
+                                is_year_to = TRUE,
+                                as_factor = TRUE) {
+}
+
+
+date_to_period_multi <- function(date,
+                                 width = 5,
+                                 origin = 2000,
+                                 first_month = "Jan",
+                                 as_factor = TRUE) {
+}
+
+
+
+#' Convert dates to periods composed of single years
+#' 
 #' @export
 date_to_period <- function(date,
-                           width = 1, origin = NULL,
-                           first_day = "1 January", is_year_to = TRUE,
+                           width = 1,
+                           origin = 2000,
+                           first_month = "Jan",
+                           is_year_to = TRUE,
                            as_factor = TRUE) {
     date <- err_tdy_date(x = date,
                          name = "date")
-    date <- asPOSIXlt(date)
-    width <- err_tdy_integer_scalar(x = width,
-                                    name = "width")
-    width <- err_is_positive_scalar(x = width,
-                                    name = "width")
-    is_multi <- width > 1L
-    if (is_multi)
-        origin <- err_tdy_integer_scalar(origin)
-    l <- err_tdy_first_day(first_day)
-    mday_first <- l$mday
-    mon_first <- l$mon + 1L
-    err_is_logical_flag(x = is_year_to,
-                        name = "is_year_to")
+    if (all(is.na(date)))
+        return(rep(NA_character_, times = length(date)))
     err_is_logical_flag(x = as_factor,
                         name = "as_factor")
-    ## calculations
-    year <- date$year
-    mon <- date$mon + 1L
-    mday <- date$mday
-    is_ge_first_day  <- (mon > mon_first) | ((mon == mon_first) & (mday >= mday_first))
-    
-    if (is_multi) {
-        year_min <- min(year, na.rm = TRUE)
-        year_max <- max(year, na.rm = TRUE)
-        from <- (year_min %/% width) * width
-        to <- ((year_min %/% width) + 1L) * width
-        breaks <- seq.int(from = from,
-                          to = to,
-                          by = width)
-        labels <- make
-
-                          
-    }
-    else
-        ans <- year + past_first + is_year_to - 1L
-    ans <- as.character(ans)
+    breaks <- make_breaks_date(date = date,
+                               width = width,
+                               first_month = first_month)
+    labels <- make_labels_period(breaks = breaks,
+                                 open_left = FALSE,
+                                 open_right = FALSE,
+                                 is_year_to = is_year_to)
+    date_int <- as.integer(date)
+    breaks_int <- as.integer(breaks)
+    i <- findInterval(x = date_int,
+                      vec = breaks_int)
+    ans <- labels[i]
     if (as_factor)
-        
+        ans <- factor(ans, levels = labels)
+    ans
 }
+
+
+make_breaks_date <- function(date, width, first_month) {
+    date_err_tdy_date(x = date,
+                      name = "date")
+    width <- err_tdy_positive_integer_scalar(x = width,
+                                             name = "width")
+    err_tdy_first_month(first_month)
+    mday_first <- l$mday
+    mon_first <- l$mon + 1L
+    date_min <- min(date, na.rm = TRUE)
+    date_max <- max(date, na.rm = TRUE)
+    year_min <- as.integer(format(date_min, "%Y"))
+    year_max <- as.integer(format(date_max, "%Y"))
+    min_break <- as.Date(sprintf("%d-%d-%d",
+                                 year_min,
+                                 mon_first,
+                                 mday_first))
+    max_break <- as.Date(sprintf("%d-%d-%d",
+                                 year_max,
+                                 mon_first,
+                                 mday_first))
+    if (date_min < min_break)
+        as.Date(sprintf("%d-%d-%d",
+                        year_min - 1L,
+                        mon_first,
+                        mday_first))
+    if (date_max >= max_break)
+        as.Date(sprintf("%d-%d-%d",
+                        year_max + 1L,
+                        mon_first,
+                        mday_first))
+    by <- sprintf("%d year", width)
+    seq.Date(from = min_break,
+             to = max_break,
+             by = by)
+}
+    
+    
+            
+
+            
 
 #' @rdname date_to_period
 #' @export
