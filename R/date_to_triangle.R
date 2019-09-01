@@ -33,7 +33,9 @@ date_to_triangle_year <- function(date, dob,
         i <- i + 1L
     ans <- labels[i]
     if (as_factor)
-        ans <- factor(ans, levels = labels)
+        ans <- factor(x = ans,
+                      levels = labels,
+                      exclude = NULL)
     ans    
 }
 
@@ -82,15 +84,3 @@ date_to_triangle_quarter <- function(date, dob,
                                      as_factor = TRUE) {
 }
 
-
-as_ymd <- function(date) {
-    date <- as.POSIXlt(date)
-    y <- date$year + 1900L
-    m <- date$mon + 1L
-    d <- date$mday
-    is_29_feb <- (m == 2L) & (d == 29L)
-    d[is_29_feb] <- 28L
-    list(y = y,
-         m = m,
-         d = d)
-}

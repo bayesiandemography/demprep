@@ -2,8 +2,40 @@
 
 date_to_period_year <- function(date,
                                 first_month = "Jan",
-                                is_year_to = TRUE,
+                                year_to = TRUE,
                                 as_factor = TRUE) {
+    date <- err_tdy_date(x = date,
+                         name = "date")
+    first_month <- err_tdy_first_month(x = first_month,
+                                       name = "first_month")
+    err_is_logical_flag(x = year_to,
+                        name = "year_to")
+    err_is_logical_flag(x = as_factor,
+                        name = "as_factor")
+    breaks <- make_breaks_date(date = date,
+                               width = width,
+                               first_month = first_month)
+    labels <- make_labels_period(breaks = breaks,
+                                 open_left = FALSE,
+                                 open_right = FALSE,
+                                 is_year_to = is_year_to)
+    date_int <- as.integer(date)
+    breaks_int <- as.integer(breaks)
+    i <- findInterval(x = date_int,
+                      vec = breaks_int)
+    ans <- labels[i]
+    if (as_factor)
+        ans <- factor(x = ans,
+                      levels = labels,
+                      exclude = NULL)
+    ans
+
+
+
+
+
+
+    
 }
 
 
@@ -44,18 +76,21 @@ date_to_period <- function(date,
                       vec = breaks_int)
     ans <- labels[i]
     if (as_factor)
-        ans <- factor(ans, levels = labels)
+        ans <- factor(x = ans,
+                      levels = labels,
+                      exclude = NULL)
     ans
 }
 
 
-make_breaks_date <- function(date, width, first_month) {
-    date_err_tdy_date(x = date,
-                      name = "date")
-    width <- err_tdy_positive_integer_scalar(x = width,
-                                             name = "width")
-    err_tdy_first_month(first_month)
-    mday_first <- l$mday
+make_breaks_year <- function(date, origin, width, first_month) {
+    date <- as_ymd(date)
+    year_min <- min(date$y, na.rm = TRUE)
+    year_max <- max(date$y, na.rm = TRUE)
+    
+
+    
+    mday_first <- date$mday
     mon_first <- l$mon + 1L
     date_min <- min(date, na.rm = TRUE)
     date_max <- max(date, na.rm = TRUE)

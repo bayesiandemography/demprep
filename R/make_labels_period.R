@@ -98,7 +98,9 @@ make_labels_period_month <- function(min_break,
             labels <- c(label_left, labels)
         if (open_right)
             labels[length(labels)] <- label_right
-        ans <- factor(ans, levels = labels)
+        ans <- factor(x = ans,
+                      levels = labels,
+                      exclude = NULL)
     }
     ans
 }
@@ -138,7 +140,9 @@ make_labels_period_quarter <- function(min, max, open_left, open_right) {
             labels <- c(label_left, labels)
         if (open_right)
             labels[length(labels)] <- label_right
-        ans <- factor(ans, levels = labels)
+        ans <- factor(x = ans,
+                      levels = labels,
+                      exclude = NULL)
     }
     ans
 }
