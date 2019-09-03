@@ -6,7 +6,7 @@ NULL
 
 #' @rdname make_labels_age_group
 #' @export
-make_labels_age_group <- function(breaks,
+make_labels_age_group_year <- function(breaks,
                                   open_left = FALSE,
                                   open_right = TRUE) {
     breaks <- err_tdy_breaks_integer(breaks)
