@@ -91,7 +91,8 @@ date_to_age_group_year <- function(date, dob,
     date <- l$date
     dob <- l$dob
     age_max <- err_tdy_positive_integer_scalar(x = age_max,
-                                               name = "age_max")
+                                               name = "age_max",
+                                               inf_ok = TRUE)
     err_is_logical_flag(x = open_right,
                         name = "open_right")
     err_is_logical_flag(x = as_factor,
@@ -154,7 +155,8 @@ date_to_age_group_multi <- function(date, dob,
     width <- err_tdy_positive_integer_scalar(x = width,
                                              name = "width")
     age_max <- err_tdy_positive_integer_scalar(x = age_max,
-                                               name = "age_max")
+                                               name = "age_max",
+                                               inf_ok = TRUE)
     err_is_logical_flag(x = open_right,
                         name = "open_right")
     err_is_logical_flag(x = as_factor,
@@ -202,7 +204,8 @@ date_to_age_group_lifetab <- function(date, dob,
     date <- l$date
     dob <- l$dob
     age_max <- err_tdy_positive_integer_scalar(x = age_max,
-                                               name = "age_max")
+                                               name = "age_max",
+                                               inf_ok = TRUE)
     if (age_max %% 5L != 0L)
         stop(gettextf("'%s' is not divisible by %d",
                       "age_max", 5L))
@@ -246,7 +249,8 @@ date_to_age_group_fert <- function(date, dob,
     age_min <- err_tdy_positive_integer_scalar(x = age_min,
                                                name = "age_min")
     age_max <- err_tdy_positive_integer_scalar(x = age_max,
-                                               name = "age_max")
+                                               name = "age_max",
+                                               inf_ok = TRUE)
     if (age_min >= age_max)
         stop(gettextf("'%s' [%d] is greater than or equal to '%s' [%d]",
                       "age_min", age_min, "age_max", age_max))
@@ -371,7 +375,8 @@ date_to_age_group_month <- function(date, dob,
     date <- l$date
     dob <- l$dob
     age_max <- err_tdy_positive_integer_scalar(x = age_max,
-                                               name = "age_max")
+                                               name = "age_max",
+                                               inf_ok = TRUE)
     err_is_logical_flag(x = open_right,
                         name = "open_right")
     err_is_logical_flag(x = as_factor,
@@ -411,7 +416,8 @@ date_to_age_group_quarter <- function(date, dob,
     date <- l$date
     dob <- l$dob
     age_max <- err_tdy_positive_integer_scalar(x = age_max,
-                                               name = "age_max")
+                                               name = "age_max",
+                                               inf_ok = TRUE)
     err_is_logical_flag(x = open_right,
                         name = "open_right")
     err_is_logical_flag(x = as_factor,

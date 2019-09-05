@@ -1,16 +1,24 @@
 
+
 date_to_triangle_year <- function(date, dob,
                                   age_max = 100,
+                                  open_right = TRUE,
                                   first_month = "Jan",
-                                  is_year_to = TRUE,
+                                  year_to = TRUE,
                                   as_factor = TRUE) {
     l <- err_tdy_date_dob(date = date,
                           dob = dob)
     date <- l$date
     dob <- l$dob
-    if (all(is.na(date) | is.na(dob)))
-        return(rep(NA_character_, times = length(date)))
-    breaks <- err_tdy_breaks(breaks)
+    age_max <- err_tdy_positive_integer_scalar(x = age_max,
+                                               name = "age_max",
+                                               inf_ok = TRUE)
+    err_is_logical_flag(x = open_right,
+                        name = "open_right")
+    first_month <- err_tdy_first_month(x = first_month,
+                                       name = "first_month")
+    err_is_logical_flag(x = year_to,
+                        name = "year_to")
     err_is_logical_flag(x = as_factor,
                         name = "as_factor")
     age_months <- date_to_age_completed_months(date = date,
@@ -45,7 +53,7 @@ date_to_triangle_fert <- function(date, dob,
                                   recode_up = TRUE,
                                   recode_down = TRUE,
                                   first_month = "Jan",
-                                  is_year_to = TRUE,
+                                  year_to = TRUE,
                                   as_factor = TRUE) {
 }
 
@@ -58,23 +66,37 @@ date_to_triangle_multi <- function(date, dob,
 
 
 date_to_triangle_month <- function(date, dob,
-                                   age_open = 1200,
+                                   age_max = 1200,
+                                   open_right = TRUE,
                                    as_factor = TRUE) {
     l <- err_tdy_date_dob(date = date,
                           dob = dob)
     date <- l$date
     dob <- l$dob
-    n <- length(date)
-    if (all(is.na(date) | is.na(dob)))
-        return(rep(NA_character_, times = n))
+    age_max <- err_tdy_positive_integer_scalar(x = age_max,
+                                               name = "age_max",
+                                               inf_ok = TRUE)
+    err_is_logical_flag(x = open_right,
+                        name = "open_right")
+    err_is_logical_flag(x = as_factor,
+                        name = "as_factor")
     DATE <- as_ymd(date)
     DOB <- as_ymd(dob)
     ans <- rep.int("Upper", times = n)
-    ans[DATE$d >= DOB$d] <- "Lower"
-    if (!is.null(age_open)) {
-        age_open <- tdy_chk_positive_integer_scalar(age_open)
-        is_open_upper <- 12L * (DATE$y - DOB$y) + (DATE$m - DOB$m) - (DOB$d != 1L) >= age_open
-        ans[is_open_upper] <- "Upper"
+    is_lower <- ((DATE$d - 1L) %/% 2L) >= (DOB$d %/% 2L)
+    ans[is_lower] <- "Lower"
+    if (is.finite(age_max)) {
+        if (open_right) {
+            is_open_upper <- 12L * (DATE$y - DOB$y) + (DATE$m - DOB$m) - (DOB$d != 1L) >= age_open
+            ans[is_open_upper] <- "Upper"
+        }
+        else {
+            err_exceeds_age_max(age = age_months,
+                                age_max = age_max,
+                                date = date,
+                                dob = dob,
+                                unit = "month")
+        }
     }
     ans
 }
