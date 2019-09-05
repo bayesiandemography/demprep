@@ -17,20 +17,27 @@ as_ymd <- function(date) {
 }
 
 age_completed_months <- function(date, dob) {
-    date <- as_ymd(date)
-    dob <- as_ymd(dob)
-    y2 <- date$y
-    m2 <- date$m
-    d2 <- date$d
-    y1 <- dob$y
-    m1 <- dob$m
-    d1 <- dob$d
-    is_29feb_date <- (m2 == 2L) & (d2 == 29L)
-    is_29feb_date <- (m1 == 2L) & (d1 == 29L)
-    d2[is_29_feb_2] <- 28L
-    d1[is_29_feb_1] <- 28L
-    12L * (y2 - y1) + (m2 - m1) - (d2 < d1)
+    date_ymd <- as_ymd(date)
+    dob_ymd <- as_ymd(dob)
+    (12L * (date_ymd$y - dob_ymd$y)
+        + (date_ymd$m - dob_ymd$m)
+        - (date_ymd$d < date_ymd$d))
 }
+
+is_lower_within_month <- function(date_ymd, dob_ymd) {
+    ((date_ymd$d - 1L) %/% 2L) >= (dob_ymd$d %/% 2L)
+}
+
+age_completed_months_start_month <- function(date_ymd, dob_ymd) {
+    (12L * (date_ymd$y - dob_ymd$y)
+        + (date_ymd$m - dob_ymd$m)
+        - (dob_ymd$d != 1L))
+}
+
+
+    
+    
+
 
 
 
