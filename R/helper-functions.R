@@ -1,8 +1,16 @@
 
-## Helper functions used by many other functions
-## in this package
+
+## HAS_TESTS
+age_completed_months <- function(date, dob) {
+    date_ymd <- as_ymd(date)
+    dob_ymd <- as_ymd(dob)
+    (12L * (date_ymd$y - dob_ymd$y)
+        + (date_ymd$m - dob_ymd$m)
+        - (date_ymd$d < dob_ymd$d))
+}
 
 
+## HAS_TESTS
 as_ymd <- function(date) {
     if (!inherits(date, "POSIXlt"))
         date <- as.POSIXlt(date)
@@ -14,14 +22,6 @@ as_ymd <- function(date) {
     list(y = y,
          m = m,
          d = d)
-}
-
-age_completed_months <- function(date, dob) {
-    date_ymd <- as_ymd(date)
-    dob_ymd <- as_ymd(dob)
-    (12L * (date_ymd$y - dob_ymd$y)
-        + (date_ymd$m - dob_ymd$m)
-        - (date_ymd$d < date_ymd$d))
 }
 
 is_lower_within_month <- function(date_ymd, dob_ymd) {

@@ -71,7 +71,7 @@
 #' levels of the answer will include NA.
 #' 
 #' @examples
-#' @rdname date_to_age_group
+#' @name date_to_age_group
 NULL
 
 ## Assume every (non-NA) record belongs to appropriate age range.
@@ -101,11 +101,11 @@ date_to_age_group_year <- function(date, dob,
                                        dob = dob)
     age_years <- age_months %/% 12L
     if (!open_right)
-        err_exceeds_age_max(age = age_years,
-                            age_max = age_max,
-                            date = date,
-                            dob = dob,
-                            unit = "year")    
+        err_ge_age_max(age = age_years,
+                       age_max = age_max,
+                       date = date,
+                       dob = dob,
+                       unit = "year")    
     breaks <- seq.int(from = 0L,
                       to = age_max)
     include_na <- any(is.na(age_years))
