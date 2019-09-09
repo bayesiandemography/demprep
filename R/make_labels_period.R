@@ -6,16 +6,16 @@ NULL
 
 #' @rdname make_labels_period
 #' @export
-make_labels_period <- function(breaks,
+make_labels_period_year <- function(breaks,
                                open_left = FALSE,
                                open_right = FALSE,
                                is_year_to = TRUE) {
     breaks <- err_tdy_breaks_date(breaks)
-    err_is_logical_flag(x = open_left
+    err_is_logical_flag(x = open_left,
                         name = "open_left")
-    err_is_logical_flag(x = open_right
+    err_is_logical_flag(x = open_right,
                         name = "open_right")
-    err_is_logical_flag(x = year_to
+    err_is_logical_flag(x = year_to,
                         name = "year__to")
     n <- length(breaks)
     if (n == 0L) {
@@ -60,6 +60,7 @@ make_labels_period <- function(breaks,
 }
 
 
+
 #' @rdname make_labels_period
 #' @export
 make_labels_period_month <- function(min_break,
@@ -90,7 +91,7 @@ make_labels_period_month <- function(min_break,
             max <- max(date, na.rm = TRUE)
             to <- as.Date(paste0(format(max, "%Y-m"), "-01"))
         }
-        s <- seq.Date(from = from
+        s <- seq.Date(from = from,
                       to = to,
                       by = "month")
         labels <- format(s, format = fmt)
@@ -132,7 +133,7 @@ make_labels_period_quarter <- function(min, max, open_left, open_right) {
             max <- max(date, na.rm = TRUE)
             to <- as.Date(paste0(format(max, "%Y-m"), "-01"))
         }
-        s <- seq.Date(from = from
+        s <- seq.Date(from = from,
                       to = to,
                       by = "month")
         labels <- format(s, format = fmt)

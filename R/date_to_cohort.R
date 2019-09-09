@@ -31,15 +31,15 @@ date_to_cohort_month <- function(date,
                                  month_min = NULL,
                                  open_left = TRUE,
                                  as_factor = TRUE) {
-    date <- err_tdy_date(x = date,
+    date <- demcheck::err_tdy_date(x = date,
                          name = "date")
 }
 
-date_cohort_quarter <- function(date,
-                                quarter_min = NULL,
-                                open_left = TRUE,
-                                as_factor = TRUE) {
-    date <- err_tdy_date(x = date,
-                         name = "date")
+date_to_cohort_quarter <- function(date,
+                                   quarter_min = NULL,
+                                   open_left = TRUE,
+                                   as_factor = TRUE) {
+    date <- demcheck::err_tdy_date(x = date,
+                                   name = "date")
 }
 

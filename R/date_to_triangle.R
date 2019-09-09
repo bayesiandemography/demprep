@@ -48,7 +48,7 @@ date_to_triangle_year <- function(date, dob,
 }
 
 date_to_triangle_fert <- function(date, dob,
-                                  age_min = 15
+                                  age_min = 15,
                                   age_max = 50,
                                   recode_up = TRUE,
                                   recode_down = TRUE,

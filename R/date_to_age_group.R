@@ -60,7 +60,7 @@
 #' @seealso To turn dates into periods, cohorts, or Lexis triangles,
 #' use functions such as \code{date_to_period_year},
 #' \code{date_to_cohort_year}, and \code{date_to_triangle_year}.
-#' If none of these functions can do the job, try \code{\link[base:cut}},
+#' If none of these functions can do the job, try \code{\link[base]{cut}},
 #' possibly in combination with \code{\link{make_age_labels}}.
 #'
 #' WHAT ABOUT LOWEST AGE GROUP? HOW TO SPECIFY OPEN AGE GROUP WHEN
@@ -80,9 +80,9 @@ NULL
 
 ## 'age_max' can be Inf. In that case, the levels run from 0 to maximum observed age.
 
+## HAS_TESTS
 #' @rdname date_to_age_group
 #' @export
-#' ## HAS_TESTS
 date_to_age_group_year <- function(date, dob,
                                    age_max = 100,
                                    open_right = TRUE,
@@ -107,16 +107,9 @@ date_to_age_group_year <- function(date, dob,
                                  date = date,
                                  dob = dob,
                                  unit = "year")
-    if (is.finite(age_max))
-        break_max <- age_max
-    else {
-        break_max <- max(age_years,
-                         na.rm = TRUE)
-        if (!open_right)
-            break_max <- break_max + 1L
-    }
-    breaks <- seq.int(from = 0L,
-                      to = break_max)
+    breaks <- make_breaks_integer_year(age = age_years,
+                                       age_max = age_max,
+                                       open_right = open_right)
     include_na <- any(is.na(age_years))
     labels <- make_labels_age_group_year(breaks = breaks,
                                          open_left = FALSE,
@@ -130,8 +123,7 @@ date_to_age_group_year <- function(date, dob,
                       levels = labels,
                       exclude = NULL)
     ans
-}
-    
+}    
 
 
 #' @rdname date_to_age_group
@@ -157,7 +149,8 @@ date_to_age_group_multi <- function(date, dob,
     demcheck::err_is_multiple_of(x1 = age_max,
                                  x2 = width,
                                  name1 = "age_max",
-                                 name2 = "width")
+                                 name2 = "width",
+                                 inf_ok = TRUE)
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
@@ -167,9 +160,10 @@ date_to_age_group_multi <- function(date, dob,
                                  date = date,
                                  dob = dob,
                                  unit = "year")    
-    breaks <- seq.int(from = 0L,
-                      to = age_max,
-                      by = width)
+    breaks <- make_breaks_integer_multi(age = age_years,
+                                        width = width,
+                                        age_max = age_max,
+                                        open_right = open_right)
     include_na <- any(is.na(age_years))
     labels <- make_labels_age_group_year(breaks = breaks,
                                          open_left = FALSE,
@@ -193,19 +187,17 @@ date_to_age_group_lifetab <- function(date, dob,
                                       age_max = 100,
                                       as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
-                          dob = dob)
+                                    dob = dob)
     date <- l$date
     dob <- l$dob
     age_max <- demcheck::err_tdy_positive_integer_scalar(x = age_max,
-                                               name = "age_max",
-                                               inf_ok = TRUE)
+                                                         name = "age_max",
+                                                         inf_ok = TRUE)
     if (age_max %% 5L != 0L)
         stop(gettextf("'%s' is not divisible by %d",
                       "age_max", 5L))
-    demcheck::err_is_logical_flag(x = open_right,
-                        name = "open_right")
     demcheck::err_is_logical_flag(x = as_factor,
-                        name = "as_factor")
+                                  name = "as_factor")
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
@@ -236,26 +228,26 @@ date_to_age_group_fert <- function(date, dob,
                                    recode_down = TRUE,
                                    as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
-                          dob = dob)
+                                    dob = dob)
     date <- l$date
     dob <- l$dob
     age_min <- demcheck::err_tdy_positive_integer_scalar(x = age_min,
-                                               name = "age_min")
+                                                         name = "age_min")
     age_max <- demcheck::err_tdy_positive_integer_scalar(x = age_max,
-                                               name = "age_max",
-                                               inf_ok = TRUE)
+                                                         name = "age_max",
+                                                         inf_ok = TRUE)
     if (age_min >= age_max)
         stop(gettextf("'%s' [%d] is greater than or equal to '%s' [%d]",
                       "age_min", age_min, "age_max", age_max))
     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
-                                             name = "width")
+                                                       name = "width")
     if ((age_max - age_min) %% width != 0L)
         stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
                       "age_max", age_max, "age_min", age_min, "width", width))
     demcheck::err_is_logical_flag(x = recode_up,
-                        name = "recode_up")
+                                  name = "recode_up")
     demcheck::err_is_logical_flag(x = recode_down,
-                        name = "recode_down")
+                                  name = "recode_down")
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
@@ -269,12 +261,11 @@ date_to_age_group_fert <- function(date, dob,
         else {
             i <- match(TRUE, is_lt_min)
             stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
-                                "but 'age_min' is %d and 'recode_up' is FALSE",
+                                "but 'age_min' is %d and 'recode_up' is FALSE"),
                                 date[[i]],
                                 dob[[i]],
-                                age[[i]],
+                                age_years[[i]],
                                 age_min))
-            }
         }
     }
     is_ge_max <- age_years >= age_max
@@ -287,7 +278,7 @@ date_to_age_group_fert <- function(date, dob,
                                 "but 'age_max' is %d and 'recode_down' is FALSE"),
                           date[[i]],
                           dob[[i]],
-                          age[[i]],
+                          age_years[[i]],
                           age_max))
         }
     }
@@ -330,7 +321,7 @@ date_to_age_group_custom <- function(date, dob,
     if (any(is_lt_min)) {
         i <- match(TRUE, is_lt_min)
         stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
-                            "but minimum value for '%s' is %d")
+                            "but minimum value for '%s' is %d"),
                       date[[i]],
                       dob[[i]],
                       age[[i]],

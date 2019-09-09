@@ -4,9 +4,9 @@
 #' @name make_labels_age_group
 NULL
 
+## HAS_TESTS
 #' @rdname make_labels_age_group
 #' @export
-## HAS_TESTS
 make_labels_age_group_year <- function(breaks,
                                        open_left = FALSE,
                                        open_right = TRUE,
@@ -62,12 +62,14 @@ make_labels_age_group_year <- function(breaks,
 make_labels_age_group_month <- function(min_break = 0,
                                         max_break = 1200,
                                         open_left = FALSE,
-                                        open_right = TRUE) {
+                                        open_right = TRUE,
+                                        include_na = FALSE) {
     make_labels_age_group_month_quarter(min_break = min_break,
                                         max = max,
                                         open_left = open_left,
                                         open_right = open_right,
-                                        unit = "month")
+                                        unit = "month",
+                                        include_na = include_na)
 }
 
 
@@ -76,19 +78,22 @@ make_labels_age_group_month <- function(min_break = 0,
 make_labels_age_group_quarter <- function(min_break = 0,
                                           max_break = 400,
                                           open_left = FALSE,
-                                          open_right = TRUE) {
+                                          open_right = TRUE,
+                                          include_na = FALSE) {
     make_labels_age_group_month_quarter(min_break = min_break,
                                         max_break = max_break,
                                         open_left = open_left,
                                         open_right = open_right,
-                                        unit = "quarter")
+                                        unit = "quarter",
+                                        include_na = include_na)
 }
 
 make_age_labels_month_quarter <- function(min_break,
                                           max_break,
                                           open_left,
                                           open_right,
-                                          unit = c("month", "quarter")) {
+                                          unit = c("month", "quarter"),
+                                          include_na) {
     l <- demcheck::err_tdy_min_max_break(min_break = min_break,
                                          max_break = max_break)
     min_break <- l$min_break
@@ -114,7 +119,11 @@ make_age_labels_month_quarter <- function(min_break,
         ans_right <- sprintf("%d%s+", max_break, suffix)
     else
         ans_right <- NULL
-    ans <- c(ans_left, ans_mid, ans_right)
+    if (include_na)
+        ans_na <- NA_character_
+    else
+        ans_na <- NULL
+    ans <- c(ans_left, ans_mid, ans_right, ans_na)
     ans
 }
 

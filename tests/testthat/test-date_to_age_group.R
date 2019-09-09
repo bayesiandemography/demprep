@@ -54,7 +54,7 @@ test_that("date_to_age_group_year gives correct answers when 'open_right' is FAL
                                                      "2004-12-31"),
                                             dob = "2000-01-01",
                                             open_right = FALSE),
-                     factor(c(0, 10, 4), levels = 0:100))
+                     factor(c(0, 10, 4), levels = 0:99))
 })
 
 test_that("date_to_age_group_year gives correct answers when 'as_factor' is FALSE", {
@@ -86,3 +86,46 @@ test_that("date_to_age_group_year gives correct answers with leap years", {
 })
 
 
+## date_to_age_group_multi --------------------------------------------------
+
+test_that("date_to_age_group_multi gives correct answers with valid inputs", {
+    expect_identical(date_to_age_group_multi(date = c("2000-01-01",
+                                                      "2010-01-01",
+                                                      "2004-12-31"),
+                                             dob = "2000-01-01",
+                                             width = 5),
+                     factor(c("0-4", "10-14", "0-4"),
+                            levels = c(paste(seq(0, 95, 5), seq(4, 99, 5), sep = "-"),
+                                       "100+")))
+    expect_identical(date_to_age_group_multi(date = c("2000-01-01",
+                                                      "2010-01-01",
+                                                      "2004-12-31"),
+                                             dob = "2000-01-01",
+                                             age_max = 10),
+                     factor(c("0-4", "10+", "0-4"),
+                            levels = c("0-4", "5-9", "10+")))
+    expect_identical(date_to_age_group_multi(date = c("2000-01-01",
+                                                      "2010-01-01",
+                                                      "2004-12-31"),
+                                             dob = "2000-01-01",
+                                             width = 10,
+                                             age_max = 10),
+                     factor(c("0-9", "10+", "0-9"), levels = c("0-9", "10+")))
+    expect_identical(date_to_age_group_multi(date = c("2000-01-01",
+                                                      "2010-01-01",
+                                                      "2004-12-31"),
+                                             dob = "2000-01-01",
+                                             width = 5,
+                                             age_max = Inf),
+                     factor(c("0-4", "10+", "0-4"),
+                            levels = c("0-4", "5-9", "10+")))
+    expect_identical(date_to_age_group_multi(date = c("2000-01-01",
+                                                      "2010-01-01",
+                                                      "2004-12-31"),
+                                             dob = "2000-01-01",
+                                             width = 5,
+                                             age_max = Inf,
+                                             open_right = FALSE),
+                     factor(c("0-4", "10-14", "0-4"),
+                            levels = c("0-4", "5-9", "10-14")))
+})
