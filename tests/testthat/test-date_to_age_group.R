@@ -129,3 +129,23 @@ test_that("date_to_age_group_multi gives correct answers with valid inputs", {
                      factor(c("0-4", "10-14", "0-4"),
                             levels = c("0-4", "5-9", "10-14")))
 })
+
+
+## date_to_age_group_lifetab --------------------------------------------------
+
+test_that("date_to_age_group_lifetab gives correct answers with valid inputs", {
+    expect_identical(date_to_age_group_lifetab(date = c("2000-01-01",
+                                                        "2010-01-01",
+                                                        "2004-12-31"),
+                                               dob = "2000-01-01"),
+                     factor(c("0", "10-14", "1-4"),
+                            levels = c("0", "1-4", paste(seq(5, 95, 5), seq(9, 99, 5), sep = "-"),
+                                       "100+")))
+    expect_identical(date_to_age_group_lifetab(date = c("2000-01-01",
+                                                        "2010-01-01",
+                                                        "2004-12-31"),
+                                               dob = "2000-01-01",
+                                               age_max = 10),
+                     factor(c("0", "10+", "1-4"),
+                            levels = c("0", "1-4", "5-9", "10+")))
+})

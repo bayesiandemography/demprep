@@ -80,44 +80,13 @@ test_that("'as_ymd' gives correct answer with valid inputs", {
 })
 
 
-## make_breaks_integer_year ---------------------------------------------------
+## make_breaks_integer_lifetab ---------------------------------------------------
 
-test_that("'make_breaks_integer_year' gives correct answer when age_max is finite", {
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L),
-                                              age_max = 100L,
-                                              open_right = TRUE),
-                     0:100)
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L, NA),
-                                              age_max = 100L,
-                                              open_right = TRUE),
-                     0:100)
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 21L),
-                                              age_max = 100L,
-                                              open_right = FALSE),
-                     0:100)
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 21L, NA),
-                                              age_max = 100L,
-                                              open_right = FALSE),
-                     0:100)
-})
-
-test_that("'make_breaks_integer_year' gives correct answer when age_max is Inf", {
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L),
-                                              age_max = Inf,
-                                              open_right = TRUE),
-                     0:121)
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L, NA),
-                                              age_max = Inf,
-                                              open_right = TRUE),
-                     0:121)
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L),
-                                              age_max = Inf,
-                                              open_right = FALSE),
-                     0:122)
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L, NA),
-                                              age_max = Inf,
-                                              open_right = FALSE),
-                     0:122)
+test_that("'make_breaks_integer_lifetab' gives correct answer with valid inputs", {
+    expect_identical(make_breaks_integer_lifetab(age_max = 100L),
+                     c(0L, 1L, seq.int(from = 5L, by = 5L, to = 100L)))
+    expect_identical(make_breaks_integer_lifetab(age_max = 5L),
+                     c(0L, 1L, 5L))
 })
 
 
@@ -193,6 +162,50 @@ test_that("'make_breaks_integer_multi' gives correct answer when age_max is Inf"
                                                open_right = TRUE),
                      seq.int(from = 0L, by = 5L, to = 80L))
 })
+
+
+## make_breaks_integer_year ---------------------------------------------------
+
+test_that("'make_breaks_integer_year' gives correct answer when age_max is finite", {
+    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L),
+                                              age_max = 100L,
+                                              open_right = TRUE),
+                     0:100)
+    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L, NA),
+                                              age_max = 100L,
+                                              open_right = TRUE),
+                     0:100)
+    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 21L),
+                                              age_max = 100L,
+                                              open_right = FALSE),
+                     0:100)
+    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 21L, NA),
+                                              age_max = 100L,
+                                              open_right = FALSE),
+                     0:100)
+})
+
+test_that("'make_breaks_integer_year' gives correct answer when age_max is Inf", {
+    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L),
+                                              age_max = Inf,
+                                              open_right = TRUE),
+                     0:121)
+    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L, NA),
+                                              age_max = Inf,
+                                              open_right = TRUE),
+                     0:121)
+    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L),
+                                              age_max = Inf,
+                                              open_right = FALSE),
+                     0:122)
+    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L, NA),
+                                              age_max = Inf,
+                                              open_right = FALSE),
+                     0:122)
+})
+
+
+
 
 
 

@@ -78,7 +78,7 @@ NULL
 ## Do not use these functions for filtering.
 ## Leave NAs in because these records might later have age imputed.
 
-## 'age_max' can be Inf. In that case, the levels run from 0 to maximum observed age.
+## 'age_max' can be Inf - except for lifetab. In that case, the levels run from 0 to maximum observed age.
 
 ## HAS_TESTS
 #' @rdname date_to_age_group
@@ -125,7 +125,7 @@ date_to_age_group_year <- function(date, dob,
     ans
 }    
 
-
+## HAS_TESTS
 #' @rdname date_to_age_group
 #' @export
 date_to_age_group_multi <- function(date, dob,
@@ -179,8 +179,7 @@ date_to_age_group_multi <- function(date, dob,
     ans
 }
 
-
-
+## HAS_TESTS
 #' @rdname date_to_age_group
 #' @export
 date_to_age_group_lifetab <- function(date, dob,
@@ -192,19 +191,17 @@ date_to_age_group_lifetab <- function(date, dob,
     dob <- l$dob
     age_max <- demcheck::err_tdy_positive_integer_scalar(x = age_max,
                                                          name = "age_max",
-                                                         inf_ok = TRUE)
-    if (age_max %% 5L != 0L)
-        stop(gettextf("'%s' is not divisible by %d",
-                      "age_max", 5L))
+                                                         inf_ok = FALSE)
+    demcheck::err_is_multiple_of_n(x = age_max,
+                                   name = "age_max",
+                                   n = 5L,
+                                   inf_ok = FALSE)
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
-    s <- seq.int(from = 5L,
-                 to = age_max,
-                 by = 5L)
-    breaks <- c(0L, 1L, s)
+    breaks <- make_breaks_integer_lifetab(age_max)
     include_na <- any(is.na(age_years))
     labels <- make_labels_age_group_year(breaks = breaks,
                                          open_left = FALSE,
@@ -219,6 +216,14 @@ date_to_age_group_lifetab <- function(date, dob,
                       exclude = NULL)
     ans
 }
+
+    
+
+    
+
+
+
+
 
 date_to_age_group_fert <- function(date, dob,
                                    age_min = 15,

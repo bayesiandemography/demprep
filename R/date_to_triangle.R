@@ -6,20 +6,20 @@ date_to_triangle_year <- function(date, dob,
                                   first_month = "Jan",
                                   year_to = TRUE,
                                   as_factor = TRUE) {
-    l <- err_tdy_date_dob(date = date,
+    l <- demcheck::err_tdy_date_dob(date = date,
                           dob = dob)
     date <- l$date
     dob <- l$dob
-    age_max <- err_tdy_positive_integer_scalar(x = age_max,
+    age_max <- demcheck::err_tdy_positive_integer_scalar(x = age_max,
                                                name = "age_max",
                                                inf_ok = TRUE)
-    err_is_logical_flag(x = open_right,
+    demcheck::err_is_logical_flag(x = open_right,
                         name = "open_right")
-    first_month <- err_tdy_first_month(x = first_month,
+    first_month <- demcheck::err_tdy_first_month(x = first_month,
                                        name = "first_month")
-    err_is_logical_flag(x = year_to,
+    demcheck::err_is_logical_flag(x = year_to,
                         name = "year_to")
-    err_is_logical_flag(x = as_factor,
+    demcheck::err_is_logical_flag(x = as_factor,
                         name = "as_factor")
     age_months <- date_to_age_completed_months(date = date,
                                                dob = dob)
@@ -69,16 +69,16 @@ date_to_triangle_month <- function(date, dob,
                                    age_max = 1200,
                                    open_right = TRUE,
                                    as_factor = TRUE) {
-    l <- err_tdy_date_dob(date = date,
+    l <- demcheck::err_tdy_date_dob(date = date,
                           dob = dob)
     date <- l$date
     dob <- l$dob
-    age_max <- err_tdy_positive_integer_scalar(x = age_max,
+    age_max <- demcheck::err_tdy_positive_integer_scalar(x = age_max,
                                                name = "age_max",
                                                inf_ok = TRUE)
-    err_is_logical_flag(x = open_right,
+    demcheck::err_is_logical_flag(x = open_right,
                         name = "open_right")
-    err_is_logical_flag(x = as_factor,
+    demcheck::err_is_logical_flag(x = as_factor,
                         name = "as_factor")
     date_ymd <- as_ymd(date)
     dob_ymd <- as_ymd(dob)
@@ -94,7 +94,7 @@ date_to_triangle_month <- function(date, dob,
             ans[is_open_upper] <- "Upper"
         }
         else {
-            err_exceeds_age_max(age = age_months,
+            demcheck::err_exceeds_age_max(age = age_months,
                                 age_max = age_max,
                                 date = date,
                                 dob = dob,
@@ -112,16 +112,16 @@ date_to_triangle_quarter <- function(date, dob,
                                      age_max = 400,
                                      open_right = TRUE,
                                      as_factor = TRUE) {
-    l <- err_tdy_date_dob(date = date,
+    l <- demcheck::err_tdy_date_dob(date = date,
                           dob = dob)
     date <- l$date
     dob <- l$dob
-    age_max <- err_tdy_positive_integer_scalar(x = age_max,
+    age_max <- demcheck::err_tdy_positive_integer_scalar(x = age_max,
                                                name = "age_max",
                                                inf_ok = TRUE)
-    err_is_logical_flag(x = open_right,
+    demcheck::err_is_logical_flag(x = open_right,
                         name = "open_right")
-    err_is_logical_flag(x = as_factor,
+    demcheck::err_is_logical_flag(x = as_factor,
                         name = "as_factor")
     date_ymd <- as_ymd(date)
     dob_ymd <- as_ymd(dob)
@@ -139,7 +139,7 @@ date_to_triangle_quarter <- function(date, dob,
             ans[is_open_upper] <- "Upper"
         }
         else {
-            err_exceeds_age_max(age = age_months,
+            demcheck::err_exceeds_age_max(age = age_months,
                                 age_max = age_max,
                                 date = date,
                                 dob = dob,

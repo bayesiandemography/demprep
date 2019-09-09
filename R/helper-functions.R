@@ -24,17 +24,12 @@ as_ymd <- function(date) {
 }
 
 ## HAS_TESTS
-make_breaks_integer_year <- function(age, age_max, open_right) {
-    if (is.finite(age_max))
-        break_max <- age_max
-    else {
-        break_max <- max(age,
-                         na.rm = TRUE)
-        if (!open_right)
-            break_max <- break_max + 1L
-    }
-    seq.int(from = 0L,
-            to = break_max)
+make_breaks_integer_lifetab <- function(age_max) {
+    c(0L,
+      1L,
+      seq.int(from = 5L,
+              to = age_max,
+              by = 5L))
 }
 
 ## HAS_TESTS
@@ -54,6 +49,19 @@ make_breaks_integer_multi <- function(age, width, age_max, open_right) {
                       by = width)
 }
 
+## HAS_TESTS
+make_breaks_integer_year <- function(age, age_max, open_right) {
+    if (is.finite(age_max))
+        break_max <- age_max
+    else {
+        break_max <- max(age,
+                         na.rm = TRUE)
+        if (!open_right)
+            break_max <- break_max + 1L
+    }
+    seq.int(from = 0L,
+            to = break_max)
+}
 
 
 
