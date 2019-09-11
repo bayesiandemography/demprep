@@ -217,33 +217,30 @@ date_to_age_group_lifetab <- function(date, dob,
     ans
 }
 
-    
-
-    
-
-
-
-
-
+## HAS_TESTS
+#' @rdname date_to_age_group
+#' @export
 date_to_age_group_fert <- function(date, dob,
                                    age_min = 15,
                                    age_max = 50,
-                                   width = 1,
-                                   recode_up = TRUE,
-                                   recode_down = TRUE,
+                                   width = 5,
+                                   recode_up = FALSE,
+                                   recode_down = FALSE,
                                    as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
     date <- l$date
     dob <- l$dob
     age_min <- demcheck::err_tdy_positive_integer_scalar(x = age_min,
-                                                         name = "age_min")
+                                                         name = "age_min",
+                                                         inf_ok = FALSE)
     age_max <- demcheck::err_tdy_positive_integer_scalar(x = age_max,
                                                          name = "age_max",
-                                                         inf_ok = TRUE)
-    if (age_min >= age_max)
-        stop(gettextf("'%s' [%d] is greater than or equal to '%s' [%d]",
-                      "age_min", age_min, "age_max", age_max))
+                                                         inf_ok = FALSE)
+    demcheck::err_is_gt_scalar(x1 = age_max,
+                               x2 = age_min,
+                               name1 = "age_max",
+                               name2 = "age_min")
     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
                                                        name = "width")
     if ((age_max - age_min) %% width != 0L)
@@ -260,30 +257,30 @@ date_to_age_group_fert <- function(date, dob,
                   to = age_max,
                   by = width)
     is_lt_min <- age_years < age_min
-    if (any(is_lt_min)) {
+    i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
+    if (i_lt_min > 0L) {
         if (recode_up)
             age_years[is_lt_min] <- age_min
         else {
-            i <- match(TRUE, is_lt_min)
             stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
                                 "but 'age_min' is %d and 'recode_up' is FALSE"),
-                                date[[i]],
-                                dob[[i]],
-                                age_years[[i]],
+                                date[[i_lt_min]],
+                                dob[[i_lt_min]],
+                                age_years[[i_lt_min]],
                                 age_min))
         }
     }
     is_ge_max <- age_years >= age_max
-    if (any(is_ge_max)) {
+    i_ge_max <- match(TRUE, is_ge_max, nomatch = 0L)
+    if (i_ge_max > 0L) {
         if (recode_down)
             age_years[is_ge_max] <- age_max - 1L
         else {
-            i <- match(TRUE, is_ge_max)
             stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
                                 "but 'age_max' is %d and 'recode_down' is FALSE"),
-                          date[[i]],
-                          dob[[i]],
-                          age_years[[i]],
+                          date[[i_ge_max]],
+                          dob[[i_ge_max]],
+                          age_years[[i_ge_max]],
                           age_max))
         }
     }

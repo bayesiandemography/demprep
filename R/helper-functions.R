@@ -23,6 +23,7 @@ as_ymd <- function(date) {
          d = d)
 }
 
+
 ## HAS_TESTS
 make_breaks_integer_lifetab <- function(age_max) {
     c(0L,
