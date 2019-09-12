@@ -299,7 +299,7 @@ date_to_age_group_fert <- function(date, dob,
     ans
 }
 
-
+## HAS_TESTS
 #' @rdname date_to_age_group
 #' @export
 date_to_age_group_custom <- function(date, dob,
@@ -307,35 +307,42 @@ date_to_age_group_custom <- function(date, dob,
                                      open_right = TRUE,
                                      as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
-                          dob = dob)
+                                    dob = dob)
     date <- l$date
     dob <- l$dob
-    breaks <- demcheck::err_tdy_breaks_age(x = breaks,
-                                 name = "breaks")
+    breaks <- demcheck::err_tdy_breaks_integer(x = breaks,
+                                               name = "breaks")
     demcheck::err_is_logical_flag(x = open_right,
-                        name = "open_right")
+                                  name = "open_right")
     demcheck::err_is_logical_flag(x = as_factor,
-                        name = "as_factor")
+                                  name = "as_factor")
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
     is_lt_min <- age_years < breaks[[1L]]
-    if (any(is_lt_min)) {
-        i <- match(TRUE, is_lt_min)
+    i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
+    if (i_lt_min > 0L) {
         stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
                             "but minimum value for '%s' is %d"),
-                      date[[i]],
-                      dob[[i]],
-                      age[[i]],
+                      date[[i_lt_min]],
+                      dob[[i_lt_min]],
+                      age_years[[i_lt_min]],
                       "breaks",
                       breaks[[1L]]))
     }
-    if (!open_right)
-        demcheck::err_exceeds_age_max(age = age_years,
-                            age_max = age_max,
-                            date = date,
-                            dob = dob,
-                            unit = "year")    
+    if (!open_right) {
+        n <- length(breaks)
+        is_ge_max <- age_years >= breaks[[n]]
+        i_ge_max <- match(TRUE, is_ge_max, nomatch = 0L)
+        if (i_ge_max > 0L) {
+            stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
+                                "but 'open_right' is FALSE and maximum value for 'breaks' is %d"),
+                          date[[i_ge_max]],
+                          dob[[i_ge_max]],
+                          age_years[[i_ge_max]],
+                          breaks[[n]]))
+        }
+    }
     include_na <- any(is.na(age_years))
     labels <- make_labels_age_group_year(breaks = breaks,
                                          open_left = FALSE,
@@ -357,24 +364,24 @@ date_to_age_group_month <- function(date, dob,
                                     open_right = TRUE,
                                     as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
-                          dob = dob)
+                                    dob = dob)
     date <- l$date
     dob <- l$dob
     age_max <- demcheck::err_tdy_positive_integer_scalar(x = age_max,
-                                               name = "age_max",
-                                               inf_ok = TRUE)
+                                                         name = "age_max",
+                                                         inf_ok = TRUE)
     demcheck::err_is_logical_flag(x = open_right,
-                        name = "open_right")
+                                  name = "open_right")
     demcheck::err_is_logical_flag(x = as_factor,
-                        name = "as_factor")
+                                  name = "as_factor")
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     if (!open_right)
         demcheck::err_exceeds_age_max(age = age_months,
-                            age_max = age_max,
-                            date = date,
-                            dob = dob,
-                            unit = "month")    
+                                      age_max = age_max,
+                                      date = date,
+                                      dob = dob,
+                                      unit = "month")    
     breaks <- seq.int(from = 0L,
                       to = age_max)
     include_na <- any(is.na(age_months))

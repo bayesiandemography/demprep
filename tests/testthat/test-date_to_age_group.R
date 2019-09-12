@@ -210,7 +210,52 @@ test_that("date_to_age_group_fert throws correct errors with invalid inputs", {
                  paste("'date' of \"2045-01-01\" and 'dob' of \"2000-01-01\" imply age of 45,",
                        "but 'age_max' is 45 and 'recode_down' is FALSE"))
 })
-                 
-    
-                 
+
+
+## date_to_age_group_custom ---------------------------------------------------
+
+test_that("date_to_age_group_custom gives correct answers with valid inputs", {
+    expect_identical(date_to_age_group_custom(date = c("2003-01-01",
+                                                       "2025-01-01",
+                                                       "2039-12-31"),
+                                              dob = "2000-01-01",
+                                              breaks = c(0, 10, 30)),
+                     factor(c("0-9", "10-29", "30+"),
+                            levels = c("0-9", "10-29", "30+")))
+    expect_identical(date_to_age_group_custom(date = c("2000-06-01",
+                                                       "2015-01-01",
+                                                       "2016-12-31"),
+                                              dob = "2000-01-01",
+                                              breaks = c(0, 1, 30),
+                                              open_right = FALSE),
+                     factor(c("0", "1-29", "1-29"),
+                            levels = c("0", "1-29")))
+    expect_identical(date_to_age_group_custom(date = c("2005-06-01",
+                                                       "2015-01-01",
+                                                       "2016-12-31"),
+                                              dob = "2000-01-01",
+                                              breaks = c(5, 10, 30),
+                                              open_right = FALSE),
+                     factor(c("5-9", "10-29", "10-29"),
+                            levels = c("5-9", "10-29")))
+})
+
+test_that("date_to_age_group_fert throws correct errors with invalid inputs", {
+    expect_error(date_to_age_group_custom(date = c("2001-06-01",
+                                                       "2015-01-01",
+                                                       "2016-12-31"),
+                                              dob = "2000-01-01",
+                                          breaks = c(5, 10, 30)),
+                 "'date' of \"2001-06-01\" and 'dob' of \"2000-01-01\" imply age of 1, but minimum value for 'breaks' is 5")
+    expect_error(date_to_age_group_custom(date = c("2001-06-01",
+                                                       "2015-01-01",
+                                                       "2026-12-31"),
+                                              dob = "2000-01-01",
+                                          breaks = c(0, 10, 20),
+                                          open_right = FALSE),
+                 "'date' of \"2026-12-31\" and 'dob' of \"2000-01-01\" imply age of 26, but 'open_right' is FALSE and maximum value for 'breaks' is 20")
+})
+
+
+
 
