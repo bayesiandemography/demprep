@@ -80,6 +80,51 @@ test_that("'as_ymd' gives correct answer with valid inputs", {
 })
 
 
+## make_age_labels_month_quarter ----------------------------------------------
+
+test_that("'make_age_labels_month_quarter' gives correct answer with valid inputs", {
+    expect_identical(make_age_labels_month_quarter(min_break = 0,
+                                                   max_break = 5,
+                                                   open_left = FALSE,
+                                                   open_right = FALSE,
+                                                   unit = "month",
+                                                   include_na = FALSE),
+                     c("0m", "1m", "2m", "3m", "4m"))
+    expect_identical(make_age_labels_month_quarter(min_break = 0,
+                                                   max_break = 5,
+                                                   open_left = FALSE,
+                                                   open_right = FALSE,
+                                                   unit = "quarter",
+                                                   include_na = FALSE),
+                     c("0q", "1q", "2q", "3q", "4q"))
+    expect_identical(make_age_labels_month_quarter(min_break = 0,
+                                                   max_break = 5,
+                                                   open_left = TRUE,
+                                                   open_right = TRUE,
+                                                   unit = "month",
+                                                   include_na = FALSE),
+                     c("<0m", "0m", "1m", "2m", "3m", "4m", "5m+"))
+    expect_identical(make_age_labels_month_quarter(min_break = 0,
+                                                   max_break = 5,
+                                                   open_left = FALSE,
+                                                   open_right = TRUE,
+                                                   unit = "quarter",
+                                                   include_na = TRUE),
+                     c("0q", "1q", "2q", "3q", "4q", "5q+", NA))
+})
+
+test_that("'make_age_labels_month_quarter' gives correct error with invalid inputs", {
+    expect_error(make_age_labels_month_quarter(min_break = 0,
+                                               max_break = 5,
+                                               open_left = FALSE,
+                                               open_right = FALSE,
+                                               unit = "wrong",
+                                               include_na = FALSE),
+                 "can't handle unit 'wrong'")
+})
+
+
+
 ## make_breaks_integer_lifetab ---------------------------------------------------
 
 test_that("'make_breaks_integer_lifetab' gives correct answer with valid inputs", {

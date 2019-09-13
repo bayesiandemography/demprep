@@ -359,6 +359,53 @@ date_to_age_group_custom <- function(date, dob,
 }
 
 
+#' @rdname date_to_age_group
+#' @export
+date_to_age_group_quarter <- function(date, dob,
+                                      age_max = 400,
+                                      open_right = TRUE,
+                                      as_factor = TRUE) {
+    l <- demcheck::err_tdy_date_dob(date = date,
+                                    dob = dob)
+    date <- l$date
+    dob <- l$dob
+    age_max <- demcheck::err_tdy_positive_integer_scalar(x = age_max,
+                                                         name = "age_max",
+                                                         inf_ok = TRUE)
+    demcheck::err_is_logical_flag(x = open_right,
+                                  name = "open_right")
+    demcheck::err_is_logical_flag(x = as_factor,
+                                  name = "as_factor")
+    age_months <- age_completed_months(date = date,
+                                       dob = dob)
+    age_quarters <- age_months %/% 3L
+    if (!open_right)
+        demcheck::err_lt_age_max(age = age_quarters,
+                                 age_max = age_max,
+                                 date = date,
+                                 dob = dob,
+                                 unit = "quarter")    
+    breaks <- seq.int(from = 0L,
+                      to = age_max)
+    include_na <- any(is.na(age_quarters))
+    labels <- make_labels_age_group_quarter(min_break = 0L,
+                                            max_break = age_max,
+                                            open_left = FALSE,
+                                            open_right = open_right,
+                                            include_na = include_na)
+    i <- findInterval(x = age_quarters,
+                      vec = breaks)
+    ans <- labels[i]
+    if (as_factor)
+        ans <- factor(x = ans,
+                      levels = labels,
+                      exclude = NULL)
+    ans
+}
+
+
+#' @rdname date_to_age_group
+#' @export
 date_to_age_group_month <- function(date, dob,
                                     age_max = 1200,
                                     open_right = TRUE,
@@ -377,15 +424,16 @@ date_to_age_group_month <- function(date, dob,
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     if (!open_right)
-        demcheck::err_exceeds_age_max(age = age_months,
-                                      age_max = age_max,
-                                      date = date,
-                                      dob = dob,
-                                      unit = "month")    
+        demcheck::err_lt_age_max(age = age_months,
+                                 age_max = age_max,
+                                 date = date,
+                                 dob = dob,
+                                 unit = "month")    
     breaks <- seq.int(from = 0L,
                       to = age_max)
     include_na <- any(is.na(age_months))
-    labels <- make_labels_age_group_month(breaks = breaks,
+    labels <- make_labels_age_group_month(min_break = 0L,
+                                          max_break = age_max,
                                           open_left = FALSE,
                                           open_right = open_right,
                                           include_na = include_na)
@@ -399,46 +447,5 @@ date_to_age_group_month <- function(date, dob,
     ans
 }
 
-
-date_to_age_group_quarter <- function(date, dob,
-                                      age_max = 1200,
-                                      open_right = TRUE,
-                                      as_factor = TRUE) {
-    l <- demcheck::err_tdy_date_dob(date = date,
-                          dob = dob)
-    date <- l$date
-    dob <- l$dob
-    age_max <- demcheck::err_tdy_positive_integer_scalar(x = age_max,
-                                               name = "age_max",
-                                               inf_ok = TRUE)
-    demcheck::err_is_logical_flag(x = open_right,
-                        name = "open_right")
-    demcheck::err_is_logical_flag(x = as_factor,
-                        name = "as_factor")
-    age_months <- age_completed_months(date = date,
-                                       dob = dob)
-    age_quarters <- age_months %/% 4L
-    if (!open_right)
-        demcheck::err_exceeds_age_max(age = age_quarters,
-                            age_max = age_max,
-                            date = date,
-                            dob = dob,
-                            unit = "quarter")    
-    breaks <- seq.int(from = 0L,
-                      to = age_max)
-    include_na <- any(is.na(age_quarters))
-    labels <- make_labels_age_group_quarter(breaks = breaks,
-                                            open_left = FALSE,
-                                            open_right = open_right,
-                                            include_na = include_na)
-    i <- findInterval(x = age_quarters,
-                      vec = breaks)
-    ans <- labels[i]
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels,
-                      exclude = NULL)
-    ans
-}
 
 

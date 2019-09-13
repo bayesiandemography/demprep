@@ -37,7 +37,7 @@ date_to_period_or_cohort_year <- function(date,
                         name = "open_left")
     first_month <- demcheck::err_tdy_first_month(x = first_month,
                                        name = "first_month")
-    demcheck::err_is_logical_flag(x = year_to,
+    demcheck::err_is_lxsogical_flag(x = year_to,
                         name = "year_to")
     demcheck::err_is_logical_flag(x = as_factor,
                         name = "as_factor")

@@ -256,6 +256,63 @@ test_that("date_to_age_group_fert throws correct errors with invalid inputs", {
                  "'date' of \"2026-12-31\" and 'dob' of \"2000-01-01\" imply age of 26, but 'open_right' is FALSE and maximum value for 'breaks' is 20")
 })
 
+## date_to_age_group_quarter ---------------------------------------------------
+
+test_that("date_to_age_group_quarter gives correct answers with valid inputs", {
+    expect_identical(date_to_age_group_quarter(date = c("2000-01-01",
+                                                        "2000-05-11",
+                                                        "2001-02-28"),
+                                               dob = "2000-01-01"),
+                     factor(c("0q", "1q", "4q"),
+                            levels = c(paste0(0:399, "q"), "400q+")))
+    expect_identical(date_to_age_group_quarter(date = c("2000-01-01",
+                                                        "2000-05-11",
+                                                        "2001-04-28"),
+                                               dob = "2000-01-01",
+                                               age_max = 5L),
+                     factor(c("0q", "1q", "5q+"),
+                            levels = c(paste0(0:4, "q"), "5q+")))
+    expect_identical(date_to_age_group_quarter(date = c("2000-01-01",
+                                                        "2000-05-11",
+                                                        NA,
+                                                        "2001-04-28"),
+                                               dob = "2000-01-01",
+                                               age_max = 6,
+                                               open_right = FALSE),
+                     factor(c("0q", "1q", NA, "5q"),
+                            levels = c("0q", "1q", "2q", "3q", "4q", "5q", NA),
+                            exclude = NULL))
+})
+
+## date_to_age_group_month ---------------------------------------------------
+
+test_that("date_to_age_group_month gives correct answers with valid inputs", {
+    expect_identical(date_to_age_group_month(date = c("2000-01-01",
+                                                      "2000-03-11",
+                                                      "2000-02-29"),
+                                             dob = "2000-01-01"),
+                     factor(c("0m", "2m", "1m"),
+                            levels = c(paste0(0:1199, "m"), "1200m+")))
+    expect_identical(date_to_age_group_month(date = c("2000-01-01",
+                                                      "2000-03-11",
+                                                      "2000-02-29"),
+                                             dob = "2000-01-01",
+                                             age_max = 3),
+                     factor(c("0m", "2m", "1m"),
+                            levels = c("0m", "1m", "2m", "3m+")))
+    expect_identical(date_to_age_group_month(date = c("2000-01-01",
+                                                      "2000-03-11",
+                                                      NA,
+                                                      "2000-02-29"),
+                                             dob = "2000-01-01",
+                                             age_max = 3,
+                                             open_right = FALSE),
+                     factor(c("0m", "2m", NA, "1m"),
+                            levels = c("0m", "1m", "2m", NA),
+                            exclude = NULL))
+})
+
+
 
 
 

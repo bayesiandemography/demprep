@@ -3,17 +3,17 @@
 \name{make_labels_age_group}
 \alias{make_labels_age_group}
 \alias{make_labels_age_group_year}
-\alias{make_labels_age_group_month}
 \alias{make_labels_age_group_quarter}
+\alias{make_labels_age_group_month}
 \title{Make age labels}
 \usage{
 make_labels_age_group_year(breaks, open_left = FALSE,
   open_right = TRUE, include_na = FALSE)
 
-make_labels_age_group_month(min_break = 0, max_break = 1200,
+make_labels_age_group_quarter(min_break = 0, max_break = 400,
   open_left = FALSE, open_right = TRUE, include_na = FALSE)
 
-make_labels_age_group_quarter(min_break = 0, max_break = 400,
+make_labels_age_group_month(min_break = 0, max_break = 1200,
   open_left = FALSE, open_right = TRUE, include_na = FALSE)
 }
 \description{

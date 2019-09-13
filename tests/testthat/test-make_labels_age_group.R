@@ -47,3 +47,28 @@ test_that("make_labels_age_group_year throws correct error with invalid input", 
                  "'breaks' has length 0 but 'open_right' is TRUE")
 })
 
+
+## make_labels_age_group_quarter --------------------------------------------------
+
+test_that("make_labels_age_group_quarter gives correct answers with valid input", {
+    expect_identical(make_labels_age_group_quarter(),
+                     c(paste0(0:399, "q"), "400q+"))
+    expect_identical(make_labels_age_group_quarter(max_break = 5,
+                                                   open_left = TRUE,
+                                                   open_right = FALSE,
+                                                   include_na = TRUE),
+                     c("<0q", "0q", "1q", "2q", "3q", "4q", NA))
+})
+
+
+## make_labels_age_group_month --------------------------------------------------
+
+test_that("make_labels_age_group_month gives correct answers with valid input", {
+    expect_identical(make_labels_age_group_month(),
+                     c(paste0(0:1199, "m"), "1200m+"))
+    expect_identical(make_labels_age_group_month(max_break = 5,
+                                                 open_left = TRUE,
+                                                 open_right = FALSE,
+                                                 include_na = TRUE),
+                     c("<0m", "0m", "1m", "2m", "3m", "4m", NA))
+})

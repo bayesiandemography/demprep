@@ -7,6 +7,8 @@
 \alias{date_to_age_group_lifetab}
 \alias{date_to_age_group_fert}
 \alias{date_to_age_group_custom}
+\alias{date_to_age_group_quarter}
+\alias{date_to_age_group_month}
 \title{Convert dates to age groups}
 \usage{
 date_to_age_group_year(date, dob, age_max = 100, open_right = TRUE,
@@ -22,6 +24,12 @@ date_to_age_group_fert(date, dob, age_min = 15, age_max = 50,
   as_factor = TRUE)
 
 date_to_age_group_custom(date, dob, breaks = NULL, open_right = TRUE,
+  as_factor = TRUE)
+
+date_to_age_group_quarter(date, dob, age_max = 400, open_right = TRUE,
+  as_factor = TRUE)
+
+date_to_age_group_month(date, dob, age_max = 1200, open_right = TRUE,
   as_factor = TRUE)
 }
 \arguments{
