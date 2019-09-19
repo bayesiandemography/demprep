@@ -1,5 +1,4 @@
 
-
 ## HAS_TESTS
 age_completed_months <- function(date, dob) {
     date_ymd <- as_ymd(date)
@@ -21,6 +20,26 @@ as_ymd <- function(date) {
     list(y = y,
          m = m,
          d = d)
+}
+
+## HAS_TESTS
+diff_completed_year <- function(y1, m1, d1, y2, m2, d2) {
+    same_day <- (m1 == m2) && (d1 == d2)
+    if (same_day)
+        return(y1 - y2)
+    day1_gt_day2 <- (m1 > m2) || ((m1 == m2) && (d1 > d2))
+    if (day1_gt_day2) {
+        if (y1 >= y2)
+            y1 - y2
+        else
+            y1 - y2 + 1L
+    }
+    else {
+        if (y1 > y2)
+            y1 - y2 - 1L
+        else
+            y1 - y2
+    }
 }
 
 ## HAS_TESTS
@@ -68,6 +87,82 @@ make_age_labels_month_quarter <- function(min_break,
     ans
 }
 
+
+date_ymd_ge <- function(y1, m1, d1, y2, m2, d2) {
+    (y1 > y2) ||
+        ((y1 == y2) && (m1 > m2)) ||
+        ((y1 == y2) && (m1 == m2) && (d1 >= d2))
+}
+
+
+## HAS_TESTS
+make_breaks_date_year <- function(date,
+                                  year_min,
+                                  year_max,
+                                  origin,
+                                  width,
+                                  first_month) {
+    month_origin <- match(first_month, month.abb)
+    if (is.infinite(year_min)) {
+        date_first <- min(date, na.rm = TRUE)
+        date_first_ymd <- as_ymd(date_first)
+        year_first <- date_first_ymd$y
+        month_first <- date_first_ymd$m
+        day_first <- date_first_ymd$d
+        diff_first_origin <- diff_completed_year(y1 = year_first,
+                                                 m1 = month_first,
+                                                 d1 = day_first,
+                                                 y2 = origin,
+                                                 m2 = month_origin,
+                                                 d2 = 1L)
+        date_first_ge_origin <- date_ymd_ge(y1 = year_first,
+                                            m1 = month_first,
+                                            d1 = day_first,
+                                            y2 = origin,
+                                            m2 = month_origin,
+                                            d2 = 1L)
+        if (date_first_ge_origin)
+            year_from <- origin + (diff_first_origin %/% width) * width
+        else
+            year_from <- origin + ((diff_first_origin - 1L) %/% width) * width
+    }
+    else
+        year_from <- year_min
+    if (is.infinite(year_max)) {
+        date_last <- max(date, na.rm = TRUE)
+        date_last_ymd <- as_ymd(date_last)
+        year_last <- date_last_ymd$y
+        month_last <- date_last_ymd$m
+        day_last <- date_last_ymd$d
+        diff_last_origin <- diff_completed_year(y1 = year_last,
+                                                m1 = month_last,
+                                                d1 = day_last,
+                                                y2 = origin,
+                                                m2 = month_origin,
+                                                d2 = 1L)
+        date_last_ge_origin <- date_ymd_ge(y1 = year_last,
+                                           m1 = month_last,
+                                           d1 = day_last,
+                                           y2 = origin,
+                                           m2 = month_origin,
+                                           d2 = 1L)
+        if (date_last_ge_origin)
+            year_to <- origin + (diff_last_origin %/% width + 1L) * width
+        else
+            year_to <- origin + ((diff_last_origin - 1L) %/% width + 1L) * width
+    }
+    else
+        year_to <- year_max
+    date_from <- sprintf("%d-%d-%d", year_from, month_origin, 1L)
+    date_to <- sprintf("%d-%d-%d", year_to, month_origin, 1L)
+    date_from <- as.Date(date_from, format = "%Y-%m-%d")
+    date_to <- as.Date(date_to, format = "%Y-%m-%d")
+    by <- paste(width, "year")
+    seq.Date(from = date_from,
+             to = date_to,
+             by = by)
+}
+
 ## HAS_TESTS
 make_breaks_integer_lifetab <- function(age_max) {
     c(0L,
@@ -78,7 +173,7 @@ make_breaks_integer_lifetab <- function(age_max) {
 }
 
 ## HAS_TESTS
-make_breaks_integer_multi <- function(age, width, age_max, open_right) {
+make_breaks_integer_year <- function(age, width, age_max, open_right) {
     if (is.finite(age_max))
         break_max <- age_max
     else {
@@ -93,24 +188,6 @@ make_breaks_integer_multi <- function(age, width, age_max, open_right) {
                       to = break_max,
                       by = width)
 }
-
-## HAS_TESTS
-make_breaks_integer_year <- function(age, age_max, open_right) {
-    if (is.finite(age_max))
-        break_max <- age_max
-    else {
-        break_max <- max(age,
-                         na.rm = TRUE)
-        if (!open_right)
-            break_max <- break_max + 1L
-    }
-    seq.int(from = 0L,
-            to = break_max)
-}
-
-
-
-
 
 
 

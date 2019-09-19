@@ -108,6 +108,7 @@ date_to_age_group_year <- function(date, dob,
                                  dob = dob,
                                  unit = "year")
     breaks <- make_breaks_integer_year(age = age_years,
+                                       width = 1L,
                                        age_max = age_max,
                                        open_right = open_right)
     include_na <- any(is.na(age_years))
@@ -160,10 +161,10 @@ date_to_age_group_multi <- function(date, dob,
                                  date = date,
                                  dob = dob,
                                  unit = "year")    
-    breaks <- make_breaks_integer_multi(age = age_years,
-                                        width = width,
-                                        age_max = age_max,
-                                        open_right = open_right)
+    breaks <- make_breaks_integer_year(age = age_years,
+                                       width = width,
+                                       age_max = age_max,
+                                       open_right = open_right)
     include_na <- any(is.na(age_years))
     labels <- make_labels_age_group_year(breaks = breaks,
                                          open_left = FALSE,

@@ -28,29 +28,29 @@ date_to_period_or_cohort_year <- function(date,
                                           year_to,
                                           as_factor) {
     date <- demcheck::err_tdy_date(x = date,
-                         name = "date")
+                                   name = "date")
     year_min <- demcheck::err_tdy_integer_scalar(x = year_min,
-                                                name = "year_min")
+                                                 name = "year_min")
     year_max <- demcheck::err_tdy_integer_scalar(x = year_min,
-                                                name = "year_max")
+                                                 name = "year_max")
+    demcheck::err_is_ge_scalar(x1 = year_max,
+                               x2 = year_min,
+                               name1 = year_max,
+                               name2 = year_min)
     demcheck::err_is_logical_flag(x = open_left,
-                        name = "open_left")
+                                  name = "open_left")
     first_month <- demcheck::err_tdy_first_month(x = first_month,
-                                       name = "first_month")
-    demcheck::err_is_lxsogical_flag(x = year_to,
-                        name = "year_to")
+                                                 name = "first_month")
+    demcheck::err_is_logical_flag(x = year_to,
+                                  name = "year_to")
     demcheck::err_is_logical_flag(x = as_factor,
-                        name = "as_factor")
-    demcheck::err_is_gt_scalar(x1 = year_max,
-                     x2 = year_min,
-                     name1 = "year_max",
-                     name2 = "year_min")
-    demcheck::err_lt_year_min(date = date, ## make shortcut for -Inf
-                    year_min = year_min,
-                    first_month = first_month)
-    demcheck::err_ge_year_max(date = date, ## make shortcut for Inf
-                    year_max = year_max,
-                    first_month = first_month)
+                                  name = "as_factor")
+    demcheck::err_ge_year_min(date = date,
+                              year_min = year_min,
+                              first_month = first_month)
+    demcheck::err_lt_year_max(date = date,
+                              year_max = year_max,
+                              first_month = first_month)
     breaks <- make_breaks_date_year(date = date,
                                     year_min = year_min,
                                     year_max = year_max,
@@ -65,6 +65,8 @@ date_to_period_or_cohort_year <- function(date,
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
                       vec = breaks_int)
+    if (open_left)
+        i <- i + 1L
     ans <- labels[i]
     if (as_factor)
         ans <- factor(x = ans,
@@ -73,89 +75,6 @@ date_to_period_or_cohort_year <- function(date,
     ans
 }
 
-
-
-chk_ge_year_min <- function(date,
-                            year_min,
-                            first_month) {
-    date_min <- sprintf("%d-%s-01", year_min, first_month)
-    date_min <- as.Date(date_min, format = "%Y-%b-%d")
-    lt_date_min <- !is.na(date) & (date < date_min)
-    i <- match(TRUE, lt_date_min, nomatch = 0L)
-    if (i > 0L) {
-        return(gettextf(paste("'%s' has value [%s] that is less than the",
-                              "minimum date implied  by '%s' and '%s' [%s]"),
-                        "date",
-                        date[[i]],
-                        "year_min",
-                        "first_month",
-                        date_min))
-    }
-    TRUE
-}
-
-
-chk_lt_year_max <- function(date,
-                            year_max,
-                            first_month) {
-    date_max <- sprintf("%d-%s-01", year_max, first_month)
-    date_max <- as.Date(date_max, format = "%Y-%b-%d")
-    ge_date_max <- !is.na(date) & (date >= date_max)
-    i <- match(TRUE, ge_date_max, nomatch = 0L)
-    if (i > 0L) {
-        return(gettextf(paste("'%s' has value [%s] that is greater than or equal to the",
-                              "maximum date implied  by '%s' and '%s' [%s]"),
-                        "date",
-                        date[[i]],
-                        "year_max",
-                        "first_month",
-                        date_max))
-    }
-    TRUE
-}
-
-                        
-        
-    
-
-make_breaks_date_year <- function(date,
-                                  year_min,
-                                  year_max,
-                                  origin,
-                                  width,
-                                  first_month) {
-    month_from_to <- match(first_month, month.abb)
-    if (is.null(year_min)) {
-        date_first <- min(date, na.rm = TRUE)
-        date_first_ymd <- as_ymd(date_first)
-        year_first <- date_first_ymd$y
-        month_first <- date_first_ymd$m
-        year_from <- origin - ((origin - year_first) %/% width + 1L) * width
-        if (month_first < month_from_to)
-            year_from <- year_from - width
-    }
-    else
-        year_from <- year_min
-    if (is.null(year_max)) {
-        date_last <- max(date, na.rm = TRUE)
-        date_last_ymd <- as_ymd(date_last)
-        year_last <- date_last_ymd$y
-        month_last <- date_last_ymd$m
-        year_to <- origin - ((origin - year_last) %/% width + 1L) * width
-        if (month_last >= month_from_to)
-            year_to <- year_to + width
-    }
-    else
-        year_to <- year_max
-    date_from <- sprintf("%d-%d-%d", year_from, month_from_to, 1L)
-    date_to <- sprintf("%d-%d-%d", year_to, month_from_to, 1L)
-    date_from <- as.Date(date_from, format = "%Y-%m-%d")
-    date_to <- as.Date(date_to, format = "%Y-%m-%d")
-    by <- paste(width, "year")
-    seq.Date(from = date_from,
-             to = date_to,
-             by = by)
-}
 
     
     
