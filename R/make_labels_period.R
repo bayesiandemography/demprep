@@ -79,52 +79,6 @@ make_labels_period_year <- function(breaks,
     c(ans_left, ans_mid, ans_right, ans_na)
 }
 
-make_period_labels_month_quarter <- function(min_break,
-                                             max_break,
-                                             open_left,
-                                             open_right,
-                                             unit,
-                                             include_na) {
-    min_break <- demcheck::err_tdy_date_scalar(x = min_break,
-                                                               name = "min_break")
-    max_break <- demcheck::err_tdy_date_scalar(x = max_break,
-                                                           name = "max_break")
-    demcheck::err_is_gt_scalar(x1 = max_break, ## extend to allow dates
-                               x2 = min_break,
-                               name1 = "max_break",
-                               name2 = "min_break")
-    demcheck::err_is_logical_flag(x = open_left,
-                                  name = "open_left")
-    demcheck::err_is_logical_flag(x = open_right,
-                                  name = "open_right")
-    demcheck::err_is_logical_flag(x = include_na,
-                                  name = "include_na")
-    format <- switch(unit,
-                     month = "%Y %b",
-                     quarter = "%Y Q%q",
-                     stop(gettextf("can't handle unit '%s'",
-                                   unit)))
-    s <- seq.Date(from = min_break,
-                  to = max_break - 1L,
-                  by = "unit")
-    
-    ans_mid <- sprintf("%d%s", s, suffix)
-    if (open_left)
-        ans_left <- paste0("<", ans_mid[[1]])
-    else
-        ans_left <- NULL
-    if (open_right)
-        ans_right <- sprintf("%d%s+", max_break, suffix)
-    else
-        ans_right <- NULL
-    if (include_na)
-        ans_na <- NA_character_
-    else
-        ans_na <- NULL
-    ans <- c(ans_left, ans_mid, ans_right, ans_na)
-    ans
-}
-
 
 
 
@@ -136,7 +90,7 @@ make_labels_period_quarter <- function(min_break,
                                        open_left = FALSE,
                                        open_right = FALSE,
                                        include_na = FALSE) {
-    make_period_labels_month_quarter(min_break = min_break,
+    make_labels_period_month_quarter(min_break = min_break,
                                      max_break = max_break,
                                      open_left = open_left,
                                      open_right = open_right,
@@ -154,7 +108,7 @@ make_labels_period_month <- function(min_break,
                                      open_left = FALSE,
                                      open_right = FALSE,
                                      include_na = FALSE) {
-    make_period_labels_month_quarter(min_break = min_break,
+    make_labels_period_month_quarter(min_break = min_break,
                                      max_break = max_break,
                                      open_left = open_left,
                                      open_right = open_right,

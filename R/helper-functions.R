@@ -22,6 +22,13 @@ as_ymd <- function(date) {
          d = d)
 }
 
+## NO_TESTS
+date_ymd_ge <- function(y1, m1, d1, y2, m2, d2) {
+    (y1 > y2) ||
+        ((y1 == y2) && (m1 > m2)) ||
+        ((y1 == y2) && (m1 == m2) && (d1 >= d2))
+}
+
 ## HAS_TESTS
 diff_completed_year <- function(y1, m1, d1, y2, m2, d2) {
     same_day <- (m1 == m2) && (d1 == d2)
@@ -41,59 +48,6 @@ diff_completed_year <- function(y1, m1, d1, y2, m2, d2) {
             y1 - y2
     }
 }
-
-## HAS_TESTS
-make_age_labels_month_quarter <- function(min_break,
-                                          max_break,
-                                          open_left,
-                                          open_right,
-                                          unit,
-                                          include_na) {
-    min_break <- demcheck::err_tdy_non_negative_integer_scalar(x = min_break,
-                                                              name = "min_break")
-    max_break <- demcheck::err_tdy_positive_integer_scalar(x = max_break,
-                                                           name = "max_break")
-    demcheck::err_is_gt_scalar(x1 = max_break,
-                               x2 = min_break,
-                               name1 = "max_break",
-                               name2 = "min_break")
-    demcheck::err_is_logical_flag(x = open_left,
-                                  name = "open_left")
-    demcheck::err_is_logical_flag(x = open_right,
-                                  name = "open_right")
-    demcheck::err_is_logical_flag(x = include_na,
-                                  name = "include_na")
-    suffix <- switch(unit,
-                     month = "m",
-                     quarter = "q",
-                     stop(gettextf("can't handle unit '%s'",
-                                   unit)))
-    s <- seq.int(from = min_break,
-                 to = max_break - 1L)
-    ans_mid <- sprintf("%d%s", s, suffix)
-    if (open_left)
-        ans_left <- paste0("<", ans_mid[[1]])
-    else
-        ans_left <- NULL
-    if (open_right)
-        ans_right <- sprintf("%d%s+", max_break, suffix)
-    else
-        ans_right <- NULL
-    if (include_na)
-        ans_na <- NA_character_
-    else
-        ans_na <- NULL
-    ans <- c(ans_left, ans_mid, ans_right, ans_na)
-    ans
-}
-
-
-date_ymd_ge <- function(y1, m1, d1, y2, m2, d2) {
-    (y1 > y2) ||
-        ((y1 == y2) && (m1 > m2)) ||
-        ((y1 == y2) && (m1 == m2) && (d1 >= d2))
-}
-
 
 ## HAS_TESTS
 make_breaks_date_year <- function(date,
@@ -189,8 +143,106 @@ make_breaks_integer_year <- function(age, width, age_max, open_right) {
                       by = width)
 }
 
+## HAS_TESTS
+make_labels_age_group_month_quarter <- function(min_break,
+                                                max_break,
+                                                open_left,
+                                                open_right,
+                                                unit,
+                                                include_na) {
+    min_break <- demcheck::err_tdy_non_negative_integer_scalar(x = min_break,
+                                                               name = "min_break")
+    max_break <- demcheck::err_tdy_positive_integer_scalar(x = max_break,
+                                                           name = "max_break")
+    demcheck::err_is_gt_scalar(x1 = max_break,
+                               x2 = min_break,
+                               name1 = "max_break",
+                               name2 = "min_break")
+    demcheck::err_is_logical_flag(x = open_left,
+                                  name = "open_left")
+    demcheck::err_is_logical_flag(x = open_right,
+                                  name = "open_right")
+    demcheck::err_is_logical_flag(x = include_na,
+                                  name = "include_na")
+    suffix <- switch(unit,
+                     month = "m",
+                     quarter = "q",
+                     stop(gettextf("can't handle unit '%s'",
+                                   unit)))
+    s <- seq.int(from = min_break,
+                 to = max_break - 1L)
+    ans_mid <- sprintf("%d%s", s, suffix)
+    if (open_left)
+        ans_left <- paste0("<", ans_mid[[1]])
+    else
+        ans_left <- NULL
+    if (open_right)
+        ans_right <- sprintf("%d%s+", max_break, suffix)
+    else
+        ans_right <- NULL
+    if (include_na)
+        ans_na <- NA_character_
+    else
+        ans_na <- NULL
+    ans <- c(ans_left, ans_mid, ans_right, ans_na)
+    ans
+}
 
-
+## HAS_TESTS
+make_labels_period_month_quarter <- function(min_break,
+                                             max_break,
+                                             open_left,
+                                             open_right,
+                                             unit,
+                                             include_na) {
+    min_break <- demcheck::err_tdy_date_scalar(x = min_break,
+                                               name = "min_break")
+    max_break <- demcheck::err_tdy_date_scalar(x = max_break,
+                                               name = "max_break")
+    demcheck::err_is_first_day_unit(x = min_break,
+                                    name = "min_break",
+                                    unit = unit)
+    demcheck::err_is_first_day_unit(x = max_break,
+                                    name = "max_break",
+                                    unit = unit)
+    demcheck::err_is_gt_scalar(x1 = max_break,
+                               x2 = min_break,
+                               name1 = "max_break",
+                               name2 = "min_break")
+    demcheck::err_is_logical_flag(x = open_left,
+                                  name = "open_left")
+    demcheck::err_is_logical_flag(x = open_right,
+                                  name = "open_right")
+    demcheck::err_is_logical_flag(x = include_na,
+                                  name = "include_na")    
+    s <- seq.Date(from = min_break,
+                  to = max_break,
+                  by = unit)
+    year <- format(s, format = "%Y")
+    if (unit == "month")
+        suffix <- months(s, abbreviate = TRUE)
+    else if (unit == "quarter")
+        suffix <- quarters(s)
+    else
+        stop(gettextf("can't handle unit '%s'",
+                      unit))
+    n <- length(s)
+    ans_mid <- paste(year[-n], suffix[-n])
+    if (open_left)
+        ans_left <- sprintf("<%s %s", year[[1L]], suffix[[1L]])
+    else
+        ans_left <- NULL
+    if (open_right)
+        ans_right <- sprintf("%s %s+", year[[n]], suffix[[n]])
+    else
+        ans_right <- NULL
+    if (include_na)
+        ans_na <- NA_character_
+    else
+        ans_na <- NULL
+    ans <- c(ans_left, ans_mid, ans_right, ans_na)
+    ans
+}
 
 
 

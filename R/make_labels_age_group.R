@@ -63,12 +63,12 @@ make_labels_age_group_quarter <- function(min_break = 0,
                                           open_left = FALSE,
                                           open_right = TRUE,
                                           include_na = FALSE) {
-    make_age_labels_month_quarter(min_break = min_break,
-                                  max_break = max_break,
-                                  open_left = open_left,
-                                  open_right = open_right,
-                                  unit = "quarter",
-                                  include_na = include_na)
+    make_labels_age_group_month_quarter(min_break = min_break,
+                                        max_break = max_break,
+                                        open_left = open_left,
+                                        open_right = open_right,
+                                        unit = "quarter",
+                                        include_na = include_na)
 }
 
 ## HAS_TESTS
@@ -79,12 +79,12 @@ make_labels_age_group_month <- function(min_break = 0,
                                         open_left = FALSE,
                                         open_right = TRUE,
                                         include_na = FALSE) {
-    make_age_labels_month_quarter(min_break = min_break,
-                                  max_break = max_break,
-                                  open_left = open_left,
-                                  open_right = open_right,
-                                  unit = "month",
-                                  include_na = include_na)
+    make_labels_age_group_month_quarter(min_break = min_break,
+                                        max_break = max_break,
+                                        open_left = open_left,
+                                        open_right = open_right,
+                                        unit = "month",
+                                        include_na = include_na)
 }
 
 

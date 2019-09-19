@@ -40,27 +40,25 @@ test_that("make_labels_period_year throws correct error with invalid input", {
 })
 
 
-## ## make_labels_period_quarter --------------------------------------------------
+## make_labels_period_quarter --------------------------------------------------
 
-## test_that("make_labels_period_quarter gives correct answers with valid input", {
-##     expect_identical(make_labels_period_quarter(),
-##                      c(paste0(0:399, "q"), "400q+"))
-##     expect_identical(make_labels_period_quarter(max_break = 5,
-##                                                    open_left = TRUE,
-##                                                    open_right = FALSE,
-##                                                    include_na = TRUE),
-##                      c("<0q", "0q", "1q", "2q", "3q", "4q", NA))
-## })
+test_that("make_labels_period_quarter gives correct answers with valid input", {
+    expect_identical(make_labels_period_quarter(min_break = "2000-01-01",
+                                                max_break = "2000-07-01",
+                                                open_left = TRUE,
+                                                open_right = FALSE,
+                                                include_na = TRUE),
+                     c("<2000 Q1", "2000 Q1", "2000 Q2", NA))
+})
 
 
-## ## make_labels_period_month --------------------------------------------------
+## make_labels_period_month ---------------------------------------------------
 
-## test_that("make_labels_period_month gives correct answers with valid input", {
-##     expect_identical(make_labels_period_month(),
-##                      c(paste0(0:1199, "m"), "1200m+"))
-##     expect_identical(make_labels_period_month(max_break = 5,
-##                                                  open_left = TRUE,
-##                                                  open_right = FALSE,
-##                                                  include_na = TRUE),
-##                      c("<0m", "0m", "1m", "2m", "3m", "4m", NA))
-## })
+test_that("make_labels_period_month gives correct answers with valid input", {
+    expect_identical(make_labels_period_month(min_break = "2000-01-01",
+                                              max_break = "2000-05-01",
+                                              open_left = TRUE,
+                                              open_right = FALSE,
+                                              include_na = TRUE),
+                     c("<2000 Jan", "2000 Jan", "2000 Feb", "2000 Mar", "2000 Apr", NA))
+})

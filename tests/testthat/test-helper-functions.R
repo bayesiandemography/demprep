@@ -79,6 +79,22 @@ test_that("'as_ymd' gives correct answer with valid inputs", {
     expect_identical(ans_obtained, ans_expected)
 })
 
+## date_ymd_ge ----------------------------------------------------------------
+
+test_that("'date_ymd_ge' gives correct answer with valid inputs", {
+    expect_true(date_ymd_ge(y1 = 2000L, m1 = 7L, d1 = 1L,
+                            y2 = 2000L, m2 = 7L, d2 = 1L))
+    expect_true(date_ymd_ge(y1 = 2001L, m1 = 7L, d1 = 1L,
+                            y2 = 2000L, m2 = 7L, d2 = 1L))
+    expect_true(date_ymd_ge(y1 = 2000L, m1 = 8L, d1 = 1L,
+                            y2 = 2000L, m2 = 7L, d2 = 1L))
+    expect_true(date_ymd_ge(y1 = 2000L, m1 = 7L, d1 = 2L,
+                            y2 = 2000L, m2 = 7L, d2 = 1L))
+    expect_false(date_ymd_ge(y1 = 2000L, m1 = 12L, d1 = 1L,
+                             y2 = 2001L, m2 = 7L, d2 = 1L))
+    expect_false(date_ymd_ge(y1 = 2000L, m1 = 7L, d1 = 1L,
+                             y2 = 2000L, m2 = 8L, d2 = 1L))
+})
 
 ## diff_completed__year -------------------------------------------------------
 
@@ -125,50 +141,6 @@ test_that("'diff_completed_year' gives correct answer with valid inputs", {
     expect_identical(diff_completed_year(y1 = 1999L, m1 = 1L, d1 = 1L,
                                          y2 = 2000L, m2 = 1L, d2 = 1L),
                      -1L)
-})
-
-
-## make_age_labels_month_quarter ----------------------------------------------
-
-test_that("'make_age_labels_month_quarter' gives correct answer with valid inputs", {
-    expect_identical(make_age_labels_month_quarter(min_break = 0,
-                                                   max_break = 5,
-                                                   open_left = FALSE,
-                                                   open_right = FALSE,
-                                                   unit = "month",
-                                                   include_na = FALSE),
-                     c("0m", "1m", "2m", "3m", "4m"))
-    expect_identical(make_age_labels_month_quarter(min_break = 0,
-                                                   max_break = 5,
-                                                   open_left = FALSE,
-                                                   open_right = FALSE,
-                                                   unit = "quarter",
-                                                   include_na = FALSE),
-                     c("0q", "1q", "2q", "3q", "4q"))
-    expect_identical(make_age_labels_month_quarter(min_break = 0,
-                                                   max_break = 5,
-                                                   open_left = TRUE,
-                                                   open_right = TRUE,
-                                                   unit = "month",
-                                                   include_na = FALSE),
-                     c("<0m", "0m", "1m", "2m", "3m", "4m", "5m+"))
-    expect_identical(make_age_labels_month_quarter(min_break = 0,
-                                                   max_break = 5,
-                                                   open_left = FALSE,
-                                                   open_right = TRUE,
-                                                   unit = "quarter",
-                                                   include_na = TRUE),
-                     c("0q", "1q", "2q", "3q", "4q", "5q+", NA))
-})
-
-test_that("'make_age_labels_month_quarter' gives correct error with invalid inputs", {
-    expect_error(make_age_labels_month_quarter(min_break = 0,
-                                               max_break = 5,
-                                               open_left = FALSE,
-                                               open_right = FALSE,
-                                               unit = "wrong",
-                                               include_na = FALSE),
-                 "can't handle unit 'wrong'")
 })
 
 ## make_breaks_date_year ---------------------------------------------------
@@ -266,9 +238,6 @@ test_that("'make_breaks_date_year' gives correct answer with valid input", {
                               by = "2 years"))
 })
 
-
-
-
 ## make_breaks_integer_lifetab ---------------------------------------------------
 
 test_that("'make_breaks_integer_lifetab' gives correct answer with valid inputs", {
@@ -351,6 +320,86 @@ test_that("'make_breaks_integer_year' gives correct answer when age_max is Inf",
                                               open_right = TRUE),
                      seq.int(from = 0L, by = 5L, to = 80L))
 })
+
+## make_labels_age_group_month_quarter ----------------------------------------
+
+test_that("'make_labels_age_group_month_quarter' gives correct answer with valid inputs", {
+    expect_identical(make_labels_age_group_month_quarter(min_break = 0,
+                                                   max_break = 5,
+                                                   open_left = FALSE,
+                                                   open_right = FALSE,
+                                                   unit = "month",
+                                                   include_na = FALSE),
+                     c("0m", "1m", "2m", "3m", "4m"))
+    expect_identical(make_labels_age_group_month_quarter(min_break = 0,
+                                                   max_break = 5,
+                                                   open_left = FALSE,
+                                                   open_right = FALSE,
+                                                   unit = "quarter",
+                                                   include_na = FALSE),
+                     c("0q", "1q", "2q", "3q", "4q"))
+    expect_identical(make_labels_age_group_month_quarter(min_break = 0,
+                                                   max_break = 5,
+                                                   open_left = TRUE,
+                                                   open_right = TRUE,
+                                                   unit = "month",
+                                                   include_na = FALSE),
+                     c("<0m", "0m", "1m", "2m", "3m", "4m", "5m+"))
+    expect_identical(make_labels_age_group_month_quarter(min_break = 0,
+                                                   max_break = 5,
+                                                   open_left = FALSE,
+                                                   open_right = TRUE,
+                                                   unit = "quarter",
+                                                   include_na = TRUE),
+                     c("0q", "1q", "2q", "3q", "4q", "5q+", NA))
+})
+
+test_that("'make_labels_age_group_month_quarter' gives correct error with invalid inputs", {
+    expect_error(make_labels_age_group_month_quarter(min_break = 0,
+                                               max_break = 5,
+                                               open_left = FALSE,
+                                               open_right = FALSE,
+                                               unit = "wrong",
+                                               include_na = FALSE),
+                 "can't handle unit 'wrong'")
+})
+
+## make_labels_period_month_quarter ----------------------------------------
+
+test_that("'make_labels_period_month_quarter' gives correct answer with valid inputs", {
+    expect_identical(make_labels_period_month_quarter(min_break = "2019-01-01",
+                                                      max_break = "2019-04-01",
+                                                      open_left = FALSE,
+                                                      open_right = FALSE,
+                                                      unit = "month",
+                                                      include_na = FALSE),
+                     c("2019 Jan", "2019 Feb", "2019 Mar"))
+    expect_identical(make_labels_period_month_quarter(min_break = "2019-01-01",
+                                                      max_break = "2020-01-01",
+                                                      open_left = FALSE,
+                                                      open_right = FALSE,
+                                                      unit = "quarter",
+                                                      include_na = FALSE),
+                     c("2019 Q1", "2019 Q2", "2019 Q3", "2019 Q4"))
+    expect_identical(make_labels_period_month_quarter(min_break = "2019-07-01",
+                                                      max_break = "2020-07-01",
+                                                      open_left = TRUE,
+                                                      open_right = TRUE,
+                                                      unit = "quarter",
+                                                      include_na = TRUE),
+                     c("<2019 Q3", "2019 Q3", "2019 Q4", "2020 Q1", "2020 Q2", "2020 Q3+", NA))
+})
+
+test_that("'make_labels_period_month_quarter' gives correct error with invalid inputs", {
+    expect_error(make_labels_period_month_quarter(min_break = "2001-03-01",
+                                                  max_break = "2001-04-01",
+                                                  open_left = FALSE,
+                                                  open_right = FALSE,
+                                                  unit = "wrong",
+                                                  include_na = FALSE),
+                 "value for 'unit' \\[\"wrong\"\\] is not a permitted time unit")
+})
+
 
 
 
