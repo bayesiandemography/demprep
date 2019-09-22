@@ -43,8 +43,8 @@ test_that("make_labels_period_year throws correct error with invalid input", {
 ## make_labels_period_quarter --------------------------------------------------
 
 test_that("make_labels_period_quarter gives correct answers with valid input", {
-    expect_identical(make_labels_period_quarter(min_break = "2000-01-01",
-                                                max_break = "2000-07-01",
+    expect_identical(make_labels_period_quarter(break_min = "2000-01-01",
+                                                break_max = "2000-07-01",
                                                 open_left = TRUE,
                                                 open_right = FALSE,
                                                 include_na = TRUE),
@@ -55,8 +55,8 @@ test_that("make_labels_period_quarter gives correct answers with valid input", {
 ## make_labels_period_month ---------------------------------------------------
 
 test_that("make_labels_period_month gives correct answers with valid input", {
-    expect_identical(make_labels_period_month(min_break = "2000-01-01",
-                                              max_break = "2000-05-01",
+    expect_identical(make_labels_period_month(break_min = "2000-01-01",
+                                              break_max = "2000-05-01",
                                               open_left = TRUE,
                                               open_right = FALSE,
                                               include_na = TRUE),

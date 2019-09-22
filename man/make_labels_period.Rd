@@ -10,10 +10,10 @@
 make_labels_period_year(breaks, open_left = FALSE, open_right = FALSE,
   year_to = TRUE, include_na = FALSE)
 
-make_labels_period_quarter(min_break, max_break, open_left = FALSE,
+make_labels_period_quarter(break_min, break_max, open_left = FALSE,
   open_right = FALSE, include_na = FALSE)
 
-make_labels_period_month(min_break, max_break, open_left = FALSE,
+make_labels_period_month(break_min, break_max, open_left = FALSE,
   open_right = FALSE, include_na = FALSE)
 }
 \description{

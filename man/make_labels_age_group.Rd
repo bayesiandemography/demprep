@@ -10,10 +10,10 @@
 make_labels_age_group_year(breaks, open_left = FALSE,
   open_right = TRUE, include_na = FALSE)
 
-make_labels_age_group_quarter(min_break = 0, max_break = 400,
+make_labels_age_group_quarter(break_min = 0, break_max = 400,
   open_left = FALSE, open_right = TRUE, include_na = FALSE)
 
-make_labels_age_group_month(min_break = 0, max_break = 1200,
+make_labels_age_group_month(break_min = 0, break_max = 1200,
   open_left = FALSE, open_right = TRUE, include_na = FALSE)
 }
 \description{

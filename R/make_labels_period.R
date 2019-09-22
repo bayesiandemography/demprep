@@ -14,15 +14,13 @@ make_labels_period_year <- function(breaks,
                                     include_na = FALSE) {
     breaks <- demcheck::err_tdy_breaks_date(x = breaks,
                                             name = "breaks")
-    demcheck::err_is_first_day_unit(x = breaks,
-                                    name = "breaks",
-                                    unit = "year")
+    demcheck::err_is_first_day_unit_vector(x = breaks,
+                                           name = "breaks",
+                                           unit = "year")
     demcheck::err_is_logical_flag(x = open_left,
                                   name = "open_left")
     demcheck::err_is_logical_flag(x = open_right,
                                   name = "open_right")
-    demcheck::err_is_logical_flag(x = year_to,
-                                  name = "year_to")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")
     n <- length(breaks)
@@ -45,6 +43,8 @@ make_labels_period_year <- function(breaks,
         head <- breaks[-n]
         tail <- breaks[-1L]
         if (is_annual) {
+            demcheck::err_is_logical_flag(x = year_to,
+                                          name = "year_to")
             if (year_to && !is_1_jan)
                 ans_mid <- format(tail, "%Y")
             else
@@ -85,13 +85,13 @@ make_labels_period_year <- function(breaks,
 
 #' @rdname make_labels_period
 #' @export
-make_labels_period_quarter <- function(min_break,
-                                       max_break,
+make_labels_period_quarter <- function(break_min,
+                                       break_max,
                                        open_left = FALSE,
                                        open_right = FALSE,
                                        include_na = FALSE) {
-    make_labels_period_month_quarter(min_break = min_break,
-                                     max_break = max_break,
+    make_labels_period_month_quarter(break_min = break_min,
+                                     break_max = break_max,
                                      open_left = open_left,
                                      open_right = open_right,
                                      unit = "quarter",
@@ -103,17 +103,15 @@ make_labels_period_quarter <- function(min_break,
 
 #' @rdname make_labels_period
 #' @export
-make_labels_period_month <- function(min_break,
-                                     max_break,
+make_labels_period_month <- function(break_min,
+                                     break_max,
                                      open_left = FALSE,
                                      open_right = FALSE,
                                      include_na = FALSE) {
-    make_labels_period_month_quarter(min_break = min_break,
-                                     max_break = max_break,
+    make_labels_period_month_quarter(break_min = break_min,
+                                     break_max = break_max,
                                      open_left = open_left,
                                      open_right = open_right,
                                      unit = "month",
                                      include_na)
 }
-
-

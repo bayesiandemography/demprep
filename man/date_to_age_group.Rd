@@ -11,25 +11,25 @@
 \alias{date_to_age_group_month}
 \title{Convert dates to age groups}
 \usage{
-date_to_age_group_year(date, dob, age_max = 100, open_right = TRUE,
+date_to_age_group_year(date, dob, break_max = 100, open_right = TRUE,
   as_factor = TRUE)
 
-date_to_age_group_multi(date, dob, width = 5, age_max = 100,
+date_to_age_group_multi(date, dob, width = 5, break_max = 100,
   open_right = TRUE, as_factor = TRUE)
 
-date_to_age_group_lifetab(date, dob, age_max = 100, as_factor = TRUE)
+date_to_age_group_lifetab(date, dob, break_max = 100, as_factor = TRUE)
 
-date_to_age_group_fert(date, dob, age_min = 15, age_max = 50,
+date_to_age_group_fert(date, dob, break_min = 15, break_max = 50,
   width = 5, recode_up = FALSE, recode_down = FALSE,
   as_factor = TRUE)
 
 date_to_age_group_custom(date, dob, breaks = NULL, open_right = TRUE,
   as_factor = TRUE)
 
-date_to_age_group_quarter(date, dob, age_max = 400, open_right = TRUE,
-  as_factor = TRUE)
+date_to_age_group_quarter(date, dob, break_max = 400,
+  open_right = TRUE, as_factor = TRUE)
 
-date_to_age_group_month(date, dob, age_max = 1200, open_right = TRUE,
+date_to_age_group_month(date, dob, break_max = 1200, open_right = TRUE,
   as_factor = TRUE)
 }
 \arguments{

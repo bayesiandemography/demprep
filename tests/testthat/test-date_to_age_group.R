@@ -3,7 +3,7 @@ context("date_to_age_group")
 
 ## date_to_age_group_year --------------------------------------------------
 
-test_that("date_to_age_group_year gives correct answers with alternative finite values for 'age_max'", {
+test_that("date_to_age_group_year gives correct answers with alternative finite values for 'break_max'", {
     expect_identical(date_to_age_group_year(date = c("2000-01-01",
                                                      "2010-01-01",
                                                      "2004-12-31"),
@@ -13,35 +13,35 @@ test_that("date_to_age_group_year gives correct answers with alternative finite 
                                                      "2010-01-01",
                                                      "2004-12-31"),
                                             dob = "2000-01-01",
-                                            age_max = 10),
+                                            break_max = 10),
                      factor(c(0, "10+", 4), levels = c(0:9, "10+")))
     expect_identical(date_to_age_group_year(date = c("2000-01-01",
                                                      "2010-01-01",
                                                      "2004-12-31"),
                                             dob = "2000-01-01",
-                                            age_max = 2),
+                                            break_max = 2),
                      factor(c(0, "2+", "2+"), levels = c(0:1, "2+")))
 })
 
-test_that("date_to_age_group_year gives correct answers with infinite values for 'age_max'", {
+test_that("date_to_age_group_year gives correct answers with infinite values for 'break_max'", {
     expect_identical(date_to_age_group_year(date = c("2000-01-01",
                                                      "2010-01-01",
                                                      "2004-12-31"),
                                             dob = "2000-01-01",
-                                            age_max = Inf),
+                                            break_max = NULL),
                      factor(c(0, "10+", 4), levels = c(0:9, "10+")))
     expect_identical(date_to_age_group_year(date = c("2000-01-01",
                                                      "2010-01-01",
                                                      "2004-12-31"),
                                             dob = "2000-01-01",
-                                            age_max = Inf,
+                                            break_max = NULL,
                                             open_right = FALSE),
                      factor(c(0, 10, 4), levels = 0:10))
     expect_identical(date_to_age_group_year(date = c("2000-01-01",
                                                      "2010-01-01",
                                                      "2004-12-31"),
                                             dob = "2000-01-01",
-                                            age_max = Inf,
+                                            break_max = NULL,
                                             open_right = FALSE,
                                             as_factor = FALSE),
                      c("0", "10", "4"))
@@ -62,7 +62,7 @@ test_that("date_to_age_group_year gives correct answers when 'as_factor' is FALS
                                                      "2010-01-01",
                                                      "2004-12-31"),
                                             dob = "2000-01-01",
-                                            age_max = 2,
+                                            break_max = 2,
                                             as_factor = FALSE),
                      c(0, "2+", "2+"))
 })
@@ -101,7 +101,7 @@ test_that("date_to_age_group_multi gives correct answers with valid inputs", {
                                                       "2010-01-01",
                                                       "2004-12-31"),
                                              dob = "2000-01-01",
-                                             age_max = 10),
+                                             break_max = 10),
                      factor(c("0-4", "10+", "0-4"),
                             levels = c("0-4", "5-9", "10+")))
     expect_identical(date_to_age_group_multi(date = c("2000-01-01",
@@ -109,14 +109,14 @@ test_that("date_to_age_group_multi gives correct answers with valid inputs", {
                                                       "2004-12-31"),
                                              dob = "2000-01-01",
                                              width = 10,
-                                             age_max = 10),
+                                             break_max = 10),
                      factor(c("0-9", "10+", "0-9"), levels = c("0-9", "10+")))
     expect_identical(date_to_age_group_multi(date = c("2000-01-01",
                                                       "2010-01-01",
                                                       "2004-12-31"),
                                              dob = "2000-01-01",
                                              width = 5,
-                                             age_max = Inf),
+                                             break_max = NULL),
                      factor(c("0-4", "10+", "0-4"),
                             levels = c("0-4", "5-9", "10+")))
     expect_identical(date_to_age_group_multi(date = c("2000-01-01",
@@ -124,7 +124,7 @@ test_that("date_to_age_group_multi gives correct answers with valid inputs", {
                                                       "2004-12-31"),
                                              dob = "2000-01-01",
                                              width = 5,
-                                             age_max = Inf,
+                                             break_max = NULL,
                                              open_right = FALSE),
                      factor(c("0-4", "10-14", "0-4"),
                             levels = c("0-4", "5-9", "10-14")))
@@ -145,7 +145,7 @@ test_that("date_to_age_group_lifetab gives correct answers with valid inputs", {
                                                         "2010-01-01",
                                                         "2004-12-31"),
                                                dob = "2000-01-01",
-                                               age_max = 10),
+                                               break_max = 10),
                      factor(c("0", "10+", "1-4"),
                             levels = c("0", "1-4", "5-9", "10+")))
 })
@@ -163,16 +163,16 @@ test_that("date_to_age_group_fert gives correct answers with valid inputs", {
                                                      "2025-01-01",
                                                      "2029-12-31"),
                                             dob = "2000-01-01",
-                                            age_min = 10,
-                                            age_max = 55),
+                                            break_min = 10,
+                                            break_max = 55),
                      factor(c("15-19", "25-29", "25-29"),
                             levels = c("10-14", "15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54")))
     expect_identical(date_to_age_group_fert(date = c("2015-01-01",
                                                      "2025-01-01",
                                                      "2029-12-31"),
                                             dob = "2000-01-01",
-                                            age_min = 15,
-                                            age_max = 50,
+                                            break_min = 15,
+                                            break_max = 50,
                                             width = 1),
                      factor(c("15", "25", "29"),
                             levels = 15:49))
@@ -180,8 +180,8 @@ test_that("date_to_age_group_fert gives correct answers with valid inputs", {
                                                      "2025-01-01",
                                                      "2049-12-31"),
                                             dob = "2000-01-01",
-                                            age_min = 20,
-                                            age_max = 40,
+                                            break_min = 20,
+                                            break_max = 40,
                                             recode_up = TRUE,
                                             recode_down = TRUE),
                      factor(c("20-24", "25-29", "35-39"),
@@ -194,21 +194,21 @@ test_that("date_to_age_group_fert throws correct errors with invalid inputs", {
                                                  "2029-12-31"),
                                         dob = "2000-01-01",
                                         width = 3),
-                 "difference between 'age_max' \\[50\\] and 'age_min' \\[15\\] not divisible by 'width' \\[3\\]")
+                 "difference between 'break_max' \\[50\\] and 'break_min' \\[15\\] not divisible by 'width' \\[3\\]")
     expect_error(date_to_age_group_fert(date = c("2015-01-01",
                                                  "2025-01-01",
                                                  "2029-12-31"),
                                         dob = "2000-01-01",
-                                        age_min = 20),
+                                        break_min = 20),
                  paste("'date' of \"2015-01-01\" and 'dob' of \"2000-01-01\" imply age of 15,",
-                       "but 'age_min' is 20 and 'recode_up' is FALSE"))
+                       "but 'break_min' is 20 and 'recode_up' is FALSE"))
     expect_error(date_to_age_group_fert(date = c("2045-01-01",
                                                  "2025-01-01",
                                                  "2029-12-31"),
                                         dob = "2000-01-01",
-                                        age_max = 45),
+                                        break_max = 45),
                  paste("'date' of \"2045-01-01\" and 'dob' of \"2000-01-01\" imply age of 45,",
-                       "but 'age_max' is 45 and 'recode_down' is FALSE"))
+                       "but 'break_max' is 45 and 'recode_down' is FALSE"))
 })
 
 
@@ -269,7 +269,7 @@ test_that("date_to_age_group_quarter gives correct answers with valid inputs", {
                                                         "2000-05-11",
                                                         "2001-04-28"),
                                                dob = "2000-01-01",
-                                               age_max = 5L),
+                                               break_max = 5L),
                      factor(c("0q", "1q", "5q+"),
                             levels = c(paste0(0:4, "q"), "5q+")))
     expect_identical(date_to_age_group_quarter(date = c("2000-01-01",
@@ -277,7 +277,7 @@ test_that("date_to_age_group_quarter gives correct answers with valid inputs", {
                                                         NA,
                                                         "2001-04-28"),
                                                dob = "2000-01-01",
-                                               age_max = 6,
+                                               break_max = 6,
                                                open_right = FALSE),
                      factor(c("0q", "1q", NA, "5q"),
                             levels = c("0q", "1q", "2q", "3q", "4q", "5q", NA),
@@ -297,7 +297,7 @@ test_that("date_to_age_group_month gives correct answers with valid inputs", {
                                                       "2000-03-11",
                                                       "2000-02-29"),
                                              dob = "2000-01-01",
-                                             age_max = 3),
+                                             break_max = 3),
                      factor(c("0m", "2m", "1m"),
                             levels = c("0m", "1m", "2m", "3m+")))
     expect_identical(date_to_age_group_month(date = c("2000-01-01",
@@ -305,7 +305,7 @@ test_that("date_to_age_group_month gives correct answers with valid inputs", {
                                                       NA,
                                                       "2000-02-29"),
                                              dob = "2000-01-01",
-                                             age_max = 3,
+                                             break_max = 3,
                                              open_right = FALSE),
                      factor(c("0m", "2m", NA, "1m"),
                             levels = c("0m", "1m", "2m", NA),

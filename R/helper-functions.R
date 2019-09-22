@@ -22,7 +22,111 @@ as_ymd <- function(date) {
          d = d)
 }
 
-## NO_TESTS
+## HAS_TESTS
+date_to_period_or_cohort_multi <- function(date,
+                                           break_min,
+                                           break_max,
+                                           width,
+                                           open_left,
+                                           as_factor) {
+    date <- demcheck::err_tdy_date_vector(x = date,
+                                          name = "date")
+    l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,
+                                              break_max = break_max,
+                                              unit = "year",
+                                              null_ok = TRUE)
+    break_min <- l$break_min
+    break_max <- l$break_max
+    width <- demcheck::err_tdy_positive_integer_scalar(x = width,
+                                                       name = "width")
+    demcheck::err_is_logical_flag(x = open_left,
+                                  name = "open_left")
+    demcheck::err_is_logical_flag(x = as_factor,
+                                  name = "as_factor")
+    if (!open_left)
+        demcheck::err_ge_break_min_date(date = date,
+                                        break_min = break_min)
+    demcheck::err_lt_break_max_date(date = date,
+                                    break_max = break_max)
+    breaks <- make_breaks_date_year(date = date,
+                                    width = width,
+                                    break_min = break_min,
+                                    break_max = break_max)
+    include_na <- any(is.na(date))
+    labels <- make_labels_period_year(breaks = breaks,
+                                      open_left = open_left,
+                                      open_right = FALSE,
+                                      year_to = NULL,
+                                      include_na = include_na)
+    date_int <- as.integer(date)
+    breaks_int <- as.integer(breaks)
+    i <- findInterval(x = date_int,
+                      vec = breaks_int)
+    if (open_left)
+        i <- i + 1L
+    ans <- labels[i]
+    if (as_factor)
+        ans <- factor(x = ans,
+                      levels = labels,
+                      exclude = NULL)
+    ans   
+}
+
+## HAS_TESTS
+date_to_period_or_cohort_year <- function(date,
+                                          break_min,
+                                          break_max,
+                                          year_to,
+                                          open_left,
+                                          as_factor) {
+    date <- demcheck::err_tdy_date_vector(x = date,
+                                          name = "date")
+    l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,
+                                              break_max = break_max,
+                                              unit = "year",
+                                              null_ok = TRUE)
+    break_min <- l$break_min
+    break_max <- l$break_max
+    if (is.null(break_min) && is.null(break_max))
+        break_min <- assign_break_min(date = date,
+                                      unit = unit)
+    
+    demcheck::err_is_logical_flag(x = year_to,
+                                  name = "year_to")
+    demcheck::err_is_logical_flag(x = open_left,
+                                  name = "open_left")
+    demcheck::err_is_logical_flag(x = as_factor,
+                                  name = "as_factor")
+    if (!open_left)
+        demcheck::err_ge_break_min_date(date = date,
+                                        break_min = break_min)
+    demcheck::err_lt_break_max_date(date = date,
+                                    break_max = break_max)
+    breaks <- make_breaks_date_year(date = date,
+                                    break_min = break_min,
+                                    break_max = break_max,
+                                    width = 1L)
+    include_na <- any(is.na(date))
+    labels <- make_labels_period_year(breaks = breaks,
+                                      open_left = open_left,
+                                      open_right = FALSE,
+                                      year_to = year_to,
+                                      include_na = include_na)
+    date_int <- as.integer(date)
+    breaks_int <- as.integer(breaks)
+    i <- findInterval(x = date_int,
+                      vec = breaks_int)
+    if (open_left)
+        i <- i + 1L
+    ans <- labels[i]
+    if (as_factor)
+        ans <- factor(x = ans,
+                      levels = labels,
+                      exclude = NULL)
+    ans
+}
+
+## HAS_TESTS
 date_ymd_ge <- function(y1, m1, d1, y2, m2, d2) {
     (y1 > y2) ||
         ((y1 == y2) && (m1 > m2)) ||
@@ -49,15 +153,41 @@ diff_completed_year <- function(y1, m1, d1, y2, m2, d2) {
     }
 }
 
+default_break_min <- function(date, unit) {
+    date_first <- min(date, na.rm = TRUE)
+    year <- format(date_first, format = "%Y")
+    ans <- sprintf("%s-01-01", year)
+    as.Date(ans)
+}
+
 ## HAS_TESTS
+## Should already have run 'err_ge_break_min_date'
+## and 'err_lt_break_max_date'
 make_breaks_date_year <- function(date,
-                                  year_min,
-                                  year_max,
-                                  origin,
                                   width,
-                                  first_month) {
-    month_origin <- match(first_month, month.abb)
-    if (is.infinite(year_min)) {
+                                  break_min,
+                                  break_max) {
+    min_supplied <- !is.null(break_min)
+    max_supplied <- !is.null(break_max)
+    if (min_supplied) {
+        min_ymd <- as_ymd(break_min)
+        year_min <- min_ymd$y
+        month_min <- min_ymd$m
+    }
+    if (max_supplied) {
+        max_ymd <- as_ymd(break_max)
+        year_max <- max_ymd$y
+        month_max <- max_ymd$m
+    }
+    if (min_supplied) {
+        year_origin <- year_min
+        month_origin <- month_min
+    }
+    else {
+        year_origin <- year_max
+        month_origin <- month_max
+    }
+    if (!min_supplied) {
         date_first <- min(date, na.rm = TRUE)
         date_first_ymd <- as_ymd(date_first)
         year_first <- date_first_ymd$y
@@ -66,23 +196,25 @@ make_breaks_date_year <- function(date,
         diff_first_origin <- diff_completed_year(y1 = year_first,
                                                  m1 = month_first,
                                                  d1 = day_first,
-                                                 y2 = origin,
+                                                 y2 = year_origin,
                                                  m2 = month_origin,
                                                  d2 = 1L)
         date_first_ge_origin <- date_ymd_ge(y1 = year_first,
                                             m1 = month_first,
                                             d1 = day_first,
-                                            y2 = origin,
+                                            y2 = year_origin,
                                             m2 = month_origin,
                                             d2 = 1L)
         if (date_first_ge_origin)
-            year_from <- origin + (diff_first_origin %/% width) * width
-        else
-            year_from <- origin + ((diff_first_origin - 1L) %/% width) * width
+            year_from <- year_origin + (diff_first_origin %/% width) * width
+        else {
+            same_day <- (month_first == month_origin) && (day_first == 1L)
+            year_from <- year_origin + ((diff_first_origin - 1L + same_day) %/% width) * width
+        }
     }
     else
         year_from <- year_min
-    if (is.infinite(year_max)) {
+    if (!max_supplied) {
         date_last <- max(date, na.rm = TRUE)
         date_last_ymd <- as_ymd(date_last)
         year_last <- date_last_ymd$y
@@ -91,19 +223,20 @@ make_breaks_date_year <- function(date,
         diff_last_origin <- diff_completed_year(y1 = year_last,
                                                 m1 = month_last,
                                                 d1 = day_last,
-                                                y2 = origin,
+                                                y2 = year_origin,
                                                 m2 = month_origin,
                                                 d2 = 1L)
         date_last_ge_origin <- date_ymd_ge(y1 = year_last,
                                            m1 = month_last,
                                            d1 = day_last,
-                                           y2 = origin,
+                                           y2 = year_origin,
                                            m2 = month_origin,
                                            d2 = 1L)
         if (date_last_ge_origin)
-            year_to <- origin + (diff_last_origin %/% width + 1L) * width
-        else
-            year_to <- origin + ((diff_last_origin - 1L) %/% width + 1L) * width
+            year_to <- year_origin + (diff_last_origin %/% width + 1L) * width
+        else {
+            year_to <- year_origin + ((diff_last_origin - 1L) %/% width + 1L) * width
+        }
     }
     else
         year_to <- year_max
@@ -118,18 +251,18 @@ make_breaks_date_year <- function(date,
 }
 
 ## HAS_TESTS
-make_breaks_integer_lifetab <- function(age_max) {
+make_breaks_integer_lifetab <- function(break_max) {
     c(0L,
       1L,
       seq.int(from = 5L,
-              to = age_max,
+              to = break_max,
               by = 5L))
 }
 
 ## HAS_TESTS
-make_breaks_integer_year <- function(age, width, age_max, open_right) {
-    if (is.finite(age_max))
-        break_max <- age_max
+make_breaks_integer_year <- function(age, width, break_max, open_right) {
+    if (!is.null(break_max))
+        break_max <- break_max
     else {
         break_max <- max(age,
                          na.rm = TRUE)
@@ -144,20 +277,15 @@ make_breaks_integer_year <- function(age, width, age_max, open_right) {
 }
 
 ## HAS_TESTS
-make_labels_age_group_month_quarter <- function(min_break,
-                                                max_break,
+make_labels_age_group_month_quarter <- function(break_min,
+                                                break_max,
                                                 open_left,
                                                 open_right,
                                                 unit,
                                                 include_na) {
-    min_break <- demcheck::err_tdy_non_negative_integer_scalar(x = min_break,
-                                                               name = "min_break")
-    max_break <- demcheck::err_tdy_positive_integer_scalar(x = max_break,
-                                                           name = "max_break")
-    demcheck::err_is_gt_scalar(x1 = max_break,
-                               x2 = min_break,
-                               name1 = "max_break",
-                               name2 = "min_break")
+    l <- demcheck::err_tdy_break_min_max_integer(break_min = break_min,
+                                                 break_max = break_max,
+                                                 null_ok = FALSE)
     demcheck::err_is_logical_flag(x = open_left,
                                   name = "open_left")
     demcheck::err_is_logical_flag(x = open_right,
@@ -169,15 +297,15 @@ make_labels_age_group_month_quarter <- function(min_break,
                      quarter = "q",
                      stop(gettextf("can't handle unit '%s'",
                                    unit)))
-    s <- seq.int(from = min_break,
-                 to = max_break - 1L)
+    s <- seq.int(from = break_min,
+                 to = break_max - 1L)
     ans_mid <- sprintf("%d%s", s, suffix)
     if (open_left)
         ans_left <- paste0("<", ans_mid[[1]])
     else
         ans_left <- NULL
     if (open_right)
-        ans_right <- sprintf("%d%s+", max_break, suffix)
+        ans_right <- sprintf("%d%s+", break_max, suffix)
     else
         ans_right <- NULL
     if (include_na)
@@ -189,34 +317,26 @@ make_labels_age_group_month_quarter <- function(min_break,
 }
 
 ## HAS_TESTS
-make_labels_period_month_quarter <- function(min_break,
-                                             max_break,
+make_labels_period_month_quarter <- function(break_min,
+                                             break_max,
                                              open_left,
                                              open_right,
                                              unit,
                                              include_na) {
-    min_break <- demcheck::err_tdy_date_scalar(x = min_break,
-                                               name = "min_break")
-    max_break <- demcheck::err_tdy_date_scalar(x = max_break,
-                                               name = "max_break")
-    demcheck::err_is_first_day_unit(x = min_break,
-                                    name = "min_break",
-                                    unit = unit)
-    demcheck::err_is_first_day_unit(x = max_break,
-                                    name = "max_break",
-                                    unit = unit)
-    demcheck::err_is_gt_scalar(x1 = max_break,
-                               x2 = min_break,
-                               name1 = "max_break",
-                               name2 = "min_break")
+    l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,
+                                              break_max = break_max,
+                                              unit = unit,
+                                              null_ok = FALSE)
+    break_min <- l$break_min
+    break_max <- l$break_max
     demcheck::err_is_logical_flag(x = open_left,
                                   name = "open_left")
     demcheck::err_is_logical_flag(x = open_right,
                                   name = "open_right")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")    
-    s <- seq.Date(from = min_break,
-                  to = max_break,
+    s <- seq.Date(from = break_min,
+                  to = break_max,
                   by = unit)
     year <- format(s, format = "%Y")
     if (unit == "month")

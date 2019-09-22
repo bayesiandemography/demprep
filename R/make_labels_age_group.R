@@ -58,13 +58,13 @@ make_labels_age_group_year <- function(breaks,
 ## HAS_TESTS
 #' @rdname make_labels_age_group
 #' @export
-make_labels_age_group_quarter <- function(min_break = 0,
-                                          max_break = 400,
+make_labels_age_group_quarter <- function(break_min = 0,
+                                          break_max = 400,
                                           open_left = FALSE,
                                           open_right = TRUE,
                                           include_na = FALSE) {
-    make_labels_age_group_month_quarter(min_break = min_break,
-                                        max_break = max_break,
+    make_labels_age_group_month_quarter(break_min = break_min,
+                                        break_max = break_max,
                                         open_left = open_left,
                                         open_right = open_right,
                                         unit = "quarter",
@@ -74,13 +74,13 @@ make_labels_age_group_quarter <- function(min_break = 0,
 ## HAS_TESTS
 #' @rdname make_labels_age_group
 #' @export
-make_labels_age_group_month <- function(min_break = 0,
-                                        max_break = 1200,
+make_labels_age_group_month <- function(break_min = 0,
+                                        break_max = 1200,
                                         open_left = FALSE,
                                         open_right = TRUE,
                                         include_na = FALSE) {
-    make_labels_age_group_month_quarter(min_break = min_break,
-                                        max_break = max_break,
+    make_labels_age_group_month_quarter(break_min = break_min,
+                                        break_max = break_max,
                                         open_left = open_left,
                                         open_right = open_right,
                                         unit = "month",
