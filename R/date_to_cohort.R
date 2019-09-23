@@ -8,17 +8,15 @@ NULL
 #' @rdname date_to_cohort
 #' @export
 date_to_cohort_year <- function(date,
-                                break_min = NULL,
-                                break_max = NULL,
+                                first_month = "Jan",
                                 year_to = TRUE,
-                                open_left = NULL,
+                                break_min = NULL,
+                                open_left = TRUE,
                                 as_factor = TRUE) {
-    if (is.null(open_left))
-        open_left <- !is.null(break_min)
     date_to_period_or_cohort_year(date = date,
-                                  break_min = break_min,
-                                  break_max = break_max,
+                                  first_month = first_month,
                                   year_to = year_to,
+                                  break_min = break_min,
                                   open_left = open_left,
                                   as_factor = as_factor)
 }
@@ -26,17 +24,17 @@ date_to_cohort_year <- function(date,
 #' @rdname date_to_cohort
 #' @export
 date_to_cohort_multi <- function(date,
-                                 break_min = NULL,
-                                 break_max = NULL,
                                  width = 5,
-                                 open_left = NULL,
+                                 origin = 2000,
+                                 first_month = "Jan",
+                                 break_min = NULL,
+                                 open_left = TRUE,
                                  as_factor = TRUE) {
-    if (is.null(open_left))
-        open_left <- !is.null(break_min)
     date_to_period_or_cohort_multi(date = date,
-                                   break_min = break_min,
-                                   break_max = break_max,
                                    width = width,
+                                   origin = origin,
+                                   first_month = first_month,
+                                   break_min = break_min,
                                    open_left = open_left,
                                    as_factor = as_factor)
 }
@@ -45,8 +43,7 @@ date_to_cohort_multi <- function(date,
 #' @export
 date_to_cohort_quarter <- function(date,
                                    break_min = NULL,
-                                   break_max = NULL,
-                                   open_left = NULL,
+                                   open_left = TRUE,
                                    as_factor = TRUE) {
     date <- demcheck::err_tdy_date(x = date,
                                    name = "date")
@@ -57,8 +54,7 @@ date_to_cohort_quarter <- function(date,
 #' @export
 date_to_cohort_month <- function(date,
                                  break_min = NULL,
-                                 break_max = NULL,
-                                 open_left = NULL,
+                                 open_left = TRUE,
                                  as_factor = TRUE) {
     date <- demcheck::err_tdy_date(x = date,
                          name = "date")

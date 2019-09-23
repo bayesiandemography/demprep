@@ -282,83 +282,99 @@ test_that("'diff_completed_year' gives correct answer with valid inputs", {
                      -1L)
 })
 
-## default_break_min ----------------------------------------------------------
-
-test_that("'default_break_min' gives correct answer with valid input", {
-    expect_identical(default_break_min(date = as.Date(c("2007-03-22", NA)),
-                                       
-                                           break_min = "1996-07-01",
-                                           break_max = "2011-07-01",
-                                           width = 1L),
-
-
 ## make_breaks_date_year ---------------------------------------------------
 
 test_that("'make_breaks_date_year' gives correct answer with valid input", {
-    expect_identical(make_breaks_date_year(date = as.Date("2000-01-01"),
-                                           break_min = "1996-07-01",
-                                           break_max = "2011-07-01",
+    expect_identical(make_breaks_date_year(date = as.Date("2001-01-05"),
+                                           break_min = as.Date("1996-01-01"),
+                                           first_month = "Jan",
+                                           origin = NULL,
+                                           width = 1L),
+                     seq.Date(from = as.Date("1996-01-01"),
+                              to = as.Date("2002-01-01"),
+                              by = "1 year"))
+    expect_identical(make_breaks_date_year(date = as.Date("2001-01-05"),
+                                           break_min = NULL,
+                                           first_month = "Jan",
+                                           origin = NULL,
+                                           width = 1L),
+                     seq.Date(from = as.Date("2001-01-01"),
+                              to = as.Date("2002-01-01"),
+                              by = "1 year"))
+    expect_identical(make_breaks_date_year(date = as.Date(c("1996-08-03", "2010-12-31")),
+                                           break_min = NULL,
+                                           first_month = "Jul",
+                                           origin = NULL,
                                            width = 1L),
                      seq.Date(from = as.Date("1996-07-01"),
                               to = as.Date("2011-07-01"),
                               by = "1 year"))
     expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
-                                           break_min = "1996-07-01",
-                                           break_max = NULL,
+                                           break_min = NULL,
+                                           first_month = "Jul",
+                                           origin = 2001,
                                            width = 5L),
                      seq.Date(from = as.Date("1996-07-01"),
                               to = as.Date("2011-07-01"),
                               by = "5 years"))
     expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
-                                           break_min = "1996-07-01",
-                                           break_max = NULL,
+                                           break_min = as.Date("1996-07-01"),
+                                           origin = 2000L,
+                                           first_month = "Jul",
                                            width = 1L),
                      seq.Date(from = as.Date("1996-07-01"),
                               to = as.Date("2011-07-01"),
                               by = "1 years"))
     expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
+                                           origin = 2000,
                                            break_min = NULL,
-                                           break_max = "2015-07-01",
+                                           first_month = "Jul",
                                            width = 5L),
                      seq.Date(from = as.Date("1995-07-01"),
                               to = as.Date("2015-07-01"),
                               by = "5 years"))
     expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
-                                           break_min = "1996-01-01",
-                                           break_max = NULL,
+                                           break_min = NULL,
+                                           origin = 2011,
+                                           first_month = "Jan",
                                            width = 1L),
                      seq.Date(from = as.Date("1996-01-01"),
                               to = as.Date("2012-01-01"),
                               by = "1 years"))
     expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
-                                           break_min = "1994-01-01",
-                                           break_max = NULL,
+                                           break_min = NULL,
+                                           first_month = "Jan",
+                                           origin = 2000,
                                            width = 3L),
                      seq.Date(from = as.Date("1994-01-01"),
                               to = as.Date("2012-01-01"),
                               by = "3 years"))
     expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
                                            break_min = NULL,
-                                           break_max = "2020-04-01",
+                                           first_month = "Apr",
+                                           origin = 2020,
                                            width = 10L),
                      seq.Date(from = as.Date("1990-04-01"),
                               to = as.Date("2020-04-01"),
                               by = "10 years"))
     expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
-                                           break_min = "1990-04-01",
-                                           break_max = NULL,
+                                           origin = 1990,
+                                           first_month = "Apr",
+                                           break_min = NULL,
                                            width = 10L),
                      seq.Date(from = as.Date("1990-04-01"),
                               to = as.Date("2020-04-01"),
                               by = "10 years"))
     expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
-                                           break_min = "1996-04-01",
-                                           break_max = NULL,
+                                           break_min = as.Date("1996-04-01"),
+                                           origin = 2000L,
+                                           first_month = "Apr",
                                            width = 2L),
                      seq.Date(from = as.Date("1996-04-01"),
                               to = as.Date("2012-04-01"),
                               by = "2 years"))
 })
+
 
 ## make_breaks_integer_lifetab ---------------------------------------------------
 

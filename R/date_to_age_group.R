@@ -83,7 +83,8 @@ NULL
 ## HAS_TESTS
 #' @rdname date_to_age_group
 #' @export
-date_to_age_group_year <- function(date, dob,
+date_to_age_group_year <- function(date,
+                                   dob,
                                    break_max = 100,
                                    open_right = TRUE,
                                    as_factor = TRUE) {
@@ -129,7 +130,8 @@ date_to_age_group_year <- function(date, dob,
 ## HAS_TESTS
 #' @rdname date_to_age_group
 #' @export
-date_to_age_group_multi <- function(date, dob,
+date_to_age_group_multi <- function(date,
+                                    dob,
                                     width = 5,
                                     break_max = 100,
                                     open_right = TRUE,

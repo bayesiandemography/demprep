@@ -10,15 +10,14 @@ NULL
 #' @rdname date_to_period
 #' @export
 date_to_period_year <- function(date,
-                                break_min = NULL,
-                                break_max = NULL,
+                                first_month = "Jan",
                                 year_to = TRUE,
                                 as_factor = TRUE) {
     date_to_period_or_cohort_year(date = date,
-                                  break_min = break_min,
-                                  break_max = break_max,
+                                  first_month = first_month,
                                   year_to = year_to,
-                                  open_left = FALSE,
+                                  break_min = NULL,
+                                  open_left = NULL,
                                   as_factor = as_factor)
 }
 
@@ -26,15 +25,16 @@ date_to_period_year <- function(date,
 #' @rdname date_to_period
 #' @export
 date_to_period_multi <- function(date,
-                                 break_min = NULL,
-                                 break_max = NULL,
                                  width = 5,
+                                 origin = 2000,
+                                 first_month = "Jan",
                                  as_factor = TRUE) {
     date_to_period_or_cohort_multi(date = date,
-                                   break_min = break_min,
-                                   break_max = break_max,
                                    width = width,
-                                   open_left = FALSE,
+                                   origin = origin,
+                                   first_month = first_month,
+                                   break_min = NULL,
+                                   open_left = NULL,
                                    as_factor = as_factor)
 }
 
@@ -42,8 +42,6 @@ date_to_period_multi <- function(date,
 #' @rdname date_to_period
 #' @export
 date_to_period_quarter <- function(date,
-                                   break_min = NULL,
-                                   break_max = NULL,
                                    as_factor = TRUE) {
     date <- demcheck::err_tdy_date(x = date,
                                    name = "date")
@@ -66,9 +64,6 @@ date_to_period_quarter <- function(date,
 
 
 date_to_period_or_cohort_quarter <- function(date,
-                                             break_min,
-                                             break_max,
-                                             open_left,
                                              as_factor) {
     date <- demcheck::err_tdy_date(x = date,
                                    name = "date")
@@ -148,8 +143,6 @@ make_breaks_date_quarter <- function(date,
 #' @rdname date_to_period
 #' @export
 date_to_period_month <- function(date,
-                                 break_min = NULL,
-                                 break_max = NULL,
                                  as_factor = TRUE) {
     date <- demcheck::err_tdy_date(x = date,
                          name = "date")

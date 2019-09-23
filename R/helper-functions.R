@@ -24,34 +24,43 @@ as_ymd <- function(date) {
 
 ## HAS_TESTS
 date_to_period_or_cohort_multi <- function(date,
-                                           break_min,
-                                           break_max,
                                            width,
+                                           origin,
+                                           first_month,
+                                           break_min,
                                            open_left,
                                            as_factor) {
     date <- demcheck::err_tdy_date_vector(x = date,
                                           name = "date")
-    l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,
-                                              break_max = break_max,
-                                              unit = "year",
-                                              null_ok = TRUE)
-    break_min <- l$break_min
-    break_max <- l$break_max
     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
                                                        name = "width")
-    demcheck::err_is_logical_flag(x = open_left,
-                                  name = "open_left")
+    origin <- demcheck::err_tidy_integer_scalar(x = origin,
+                                                name = "origin")
+    if (!is.null(break_min)) {
+        demcheck::err_is_length_1(x = break_min,
+                                  name = "break_min")
+        break_min <- demcheck::err_tdy_date_scalar(x = break_min,
+                                                   name = "break_min")
+        demcheck::err_date_consistent_with_width_origin(x = break_min,
+                                                        name = "break_min",
+                                                        width = width,
+                                                        origin = origin)
+        demcheck::err_is_logical_flag(x = open_left,
+                                      name = "open_left")
+    }
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
+    if (!is.null(break_min) && !open_left)
+        demcheck::err_ge_break_min_date(date = date,
+                                        break_min = break_min)
     if (!open_left)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
-    demcheck::err_lt_break_max_date(date = date,
-                                    break_max = break_max)
     breaks <- make_breaks_date_year(date = date,
+                                    first_month = first_month,
                                     width = width,
-                                    break_min = break_min,
-                                    break_max = break_max)
+                                    origin = origin,
+                                    break_min = break_min)
     include_na <- any(is.na(date))
     labels <- make_labels_period_year(breaks = breaks,
                                       open_left = open_left,
@@ -59,6 +68,7 @@ date_to_period_or_cohort_multi <- function(date,
                                       year_to = NULL,
                                       include_na = include_na)
     date_int <- as.integer(date)
+
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
                       vec = breaks_int)
@@ -70,42 +80,78 @@ date_to_period_or_cohort_multi <- function(date,
                       levels = labels,
                       exclude = NULL)
     ans   
+
 }
+
+
+
+chk_date_consistent_with_first_month <- function(x, name, first_month) {
+    x_month <- format(x, format = "%b")
+    if (!identical(x_month, first_month)) {
+        first_month_full <- month.name[match(first_month, month.abb)]
+        x_month_full <- format(x, format = "%B")
+        return(gettextf(paste("'%s' [\"%s\"] implies that year starts in %s,",
+                              "but '%s' implies that year starts in %s"),
+                        name,
+                        x,
+                        x_month_full,
+                        "first_month",
+                        first_month_full))
+    }
+    TRUE
+}
+
+
+chk_date_consistent_with_width_origin <- function(x, name, origin, width) {
+    x_year <- format(x, format = "%Y")
+    x_year <- as.integer(x_year)
+    if ((origin - x_year) %% width != 0L)
+        return(gettextf("'%s' [\"%s\"] inconsistent with '%s' [%d] and '%s' [%d]",
+                        name,
+                        x,
+                        "origin",
+                        origin,
+                        "width",
+                        width))
+    TRUE
+}
+
+        
 
 ## HAS_TESTS
 date_to_period_or_cohort_year <- function(date,
-                                          break_min,
-                                          break_max,
+                                          first_month,
                                           year_to,
+                                          break_min,
                                           open_left,
                                           as_factor) {
     date <- demcheck::err_tdy_date_vector(x = date,
                                           name = "date")
-    l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,
-                                              break_max = break_max,
-                                              unit = "year",
-                                              null_ok = TRUE)
-    break_min <- l$break_min
-    break_max <- l$break_max
-    if (is.null(break_min) && is.null(break_max))
-        break_min <- assign_break_min(date = date,
-                                      unit = unit)
-    
+    first_month <- demcheck::err_tdy_first_month(x = first_month,
+                                                 name = "first_month")
     demcheck::err_is_logical_flag(x = year_to,
                                   name = "year_to")
-    demcheck::err_is_logical_flag(x = open_left,
-                                  name = "open_left")
+    if (!is.null(break_min)) {
+        demcheck::err_is_length_1(x = break_min,
+                                  name = "break_min")
+        break_min <- demcheck::err_tdy_date_scalar(x = break_min,
+                                                   name = "break_min")
+        demcheck::err_date_consistent_with_first_month(x = break_min,
+                                                       name = "break_min",
+                                                       first_month = first_month)
+        demcheck::err_is_logical_flag(x = open_left,
+                                      name = "open_left")
+    }
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    if (!open_left)
+    if (!is.null(break_min) && !open_left)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
-    demcheck::err_lt_break_max_date(date = date,
-                                    break_max = break_max)
     breaks <- make_breaks_date_year(date = date,
-                                    break_min = break_min,
-                                    break_max = break_max,
-                                    width = 1L)
+                                    first_month = first_month,
+                                    width = 1L,
+                                    origin = NULL,
+                                    break_min = break_min)
     include_na <- any(is.na(date))
     labels <- make_labels_period_year(breaks = breaks,
                                       open_left = open_left,
@@ -153,41 +199,24 @@ diff_completed_year <- function(y1, m1, d1, y2, m2, d2) {
     }
 }
 
-default_break_min <- function(date, unit) {
-    date_first <- min(date, na.rm = TRUE)
-    year <- format(date_first, format = "%Y")
-    ans <- sprintf("%s-01-01", year)
-    as.Date(ans)
-}
-
 ## HAS_TESTS
-## Should already have run 'err_ge_break_min_date'
-## and 'err_lt_break_max_date'
 make_breaks_date_year <- function(date,
+                                  first_month,
                                   width,
-                                  break_min,
-                                  break_max) {
-    min_supplied <- !is.null(break_min)
-    max_supplied <- !is.null(break_max)
-    if (min_supplied) {
-        min_ymd <- as_ymd(break_min)
-        year_min <- min_ymd$y
-        month_min <- min_ymd$m
+                                  origin,
+                                  break_min) {
+    ## obtain 'year_origin', 'month_origin', 'day_origin'
+    if (is.null(origin)) {
+        if (!identical(width, 1L))
+            stop(gettextf("'%s' is %s but '%s' equals %d",
+                          "origin", "NULL", "width", width))
+        origin <- 2000L
     }
-    if (max_supplied) {
-        max_ymd <- as_ymd(break_max)
-        year_max <- max_ymd$y
-        month_max <- max_ymd$m
-    }
-    if (min_supplied) {
-        year_origin <- year_min
-        month_origin <- month_min
-    }
-    else {
-        year_origin <- year_max
-        month_origin <- month_max
-    }
-    if (!min_supplied) {
+    year_origin <- origin
+    month_origin <- match(first_month, month.abb)
+    day_origin <- 1L
+    ## obtain 'year_from'
+    if (is.null(break_min)) {
         date_first <- min(date, na.rm = TRUE)
         date_first_ymd <- as_ymd(date_first)
         year_first <- date_first_ymd$y
@@ -198,7 +227,7 @@ make_breaks_date_year <- function(date,
                                                  d1 = day_first,
                                                  y2 = year_origin,
                                                  m2 = month_origin,
-                                                 d2 = 1L)
+                                                 d2 = day_origin)
         date_first_ge_origin <- date_ymd_ge(y1 = year_first,
                                             m1 = month_first,
                                             d1 = day_first,
@@ -212,36 +241,36 @@ make_breaks_date_year <- function(date,
             year_from <- year_origin + ((diff_first_origin - 1L + same_day) %/% width) * width
         }
     }
-    else
-        year_from <- year_min
-    if (!max_supplied) {
-        date_last <- max(date, na.rm = TRUE)
-        date_last_ymd <- as_ymd(date_last)
-        year_last <- date_last_ymd$y
-        month_last <- date_last_ymd$m
-        day_last <- date_last_ymd$d
-        diff_last_origin <- diff_completed_year(y1 = year_last,
-                                                m1 = month_last,
-                                                d1 = day_last,
-                                                y2 = year_origin,
-                                                m2 = month_origin,
-                                                d2 = 1L)
-        date_last_ge_origin <- date_ymd_ge(y1 = year_last,
-                                           m1 = month_last,
-                                           d1 = day_last,
-                                           y2 = year_origin,
-                                           m2 = month_origin,
-                                           d2 = 1L)
-        if (date_last_ge_origin)
-            year_to <- year_origin + (diff_last_origin %/% width + 1L) * width
-        else {
-            year_to <- year_origin + ((diff_last_origin - 1L) %/% width + 1L) * width
-        }
+    else {
+        year_from <- format(break_min, "%Y")
+        year_from <- as.integer(year_from)
     }
-    else
-        year_to <- year_max
-    date_from <- sprintf("%d-%d-%d", year_from, month_origin, 1L)
-    date_to <- sprintf("%d-%d-%d", year_to, month_origin, 1L)
+    ## obtain 'year_to'
+    date_last <- max(date, na.rm = TRUE)
+    date_last_ymd <- as_ymd(date_last)
+    year_last <- date_last_ymd$y
+    month_last <- date_last_ymd$m
+    day_last <- date_last_ymd$d
+    diff_last_origin <- diff_completed_year(y1 = year_last,
+                                            m1 = month_last,
+                                            d1 = day_last,
+                                            y2 = year_origin,
+                                            m2 = month_origin,
+                                            d2 = day_origin)
+    date_last_ge_origin <- date_ymd_ge(y1 = year_last,
+                                       m1 = month_last,
+                                       d1 = day_last,
+                                       y2 = year_origin,
+                                       m2 = month_origin,
+                                       d2 = day_origin)
+    if (date_last_ge_origin)
+        year_to <- year_origin + (diff_last_origin %/% width + 1L) * width
+    else {
+        year_to <- year_origin + ((diff_last_origin - 1L) %/% width + 1L) * width
+    }
+    ## create series
+    date_from <- sprintf("%d-%d-%d", year_from, month_origin, day_origin)
+    date_to <- sprintf("%d-%d-%d", year_to, month_origin, day_origin)
     date_from <- as.Date(date_from, format = "%Y-%m-%d")
     date_to <- as.Date(date_to, format = "%Y-%m-%d")
     by <- paste(width, "year")
