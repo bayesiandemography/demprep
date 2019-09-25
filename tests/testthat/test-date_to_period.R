@@ -7,28 +7,26 @@ test_that("date_to_period_year gives correct answers with valid inputs", {
     expect_identical(date_to_period_year(date = c("2000-01-01",
                                                   "2010-01-01",
                                                   "2004-12-31"),
-                                         break_min = "2000-01-01"),
+                                         first_month = "Jan"),
                      factor(c("2000", "2010", "2004"),
                             levels = 2000:2010))
     expect_identical(date_to_period_year(date = c("2000-01-01",
                                                   "2010-01-01",
                                                   "2004-12-31"),
-                                         break_min = "1990-01-01",
-                                         break_max = "2020-01-01"),
+                                         first_month = "Jan"),
                      factor(c("2000", "2010", "2004"),
-                            levels = 1990:2019))
+                            levels = 2000:2010))
     expect_identical(date_to_period_year(date = c("2000-01-01",
                                                   "2010-01-01",
                                                   "2004-12-31"),
-                                         break_min = "1990-01-01",
-                                         break_max = "2020-01-01",
+                                         first_month = "Jan",
                                          as_factor = FALSE),
                      c("2000", "2010", "2004"))
     expect_identical(date_to_period_year(date = c("2000-01-01",
                                                   "2010-01-01",
                                                   "2004-12-31"),
                                          year_to = FALSE,
-                                         break_min = "1999-04-01"),
+                                         first_month = "Apr"),
                      factor(c("1999", "2009", "2004"),
                             levels = 1999:2009))
 })
@@ -39,22 +37,18 @@ test_that("date_to_period_year gives correct answers with valid inputs", {
 test_that("date_to_period_multi gives correct answers with valid inputs", {
     expect_identical(date_to_period_multi(date = c("2000-01-01",
                                                    "2010-01-01",
-                                                   "2004-12-31"),
-                                          break_min = "2000-01-01"),
+                                                   "2004-12-31")),
                      factor(c("2000-2005", "2010-2015", "2000-2005"),
                             levels = c("2000-2005", "2005-2010", "2010-2015")))
     expect_identical(date_to_period_multi(date = c("2000-01-01",
                                                    "2010-01-01",
-                                                   NA),
-                                          break_max = "2020-01-01"),
+                                                   NA)),
                      factor(c("2000-2005", "2010-2015", NA),
-                            levels = c("2000-2005", "2005-2010", "2010-2015", "2015-2020", NA),
+                            levels = c("2000-2005", "2005-2010", "2010-2015", NA),
                             exclude = NULL))
-    expect_identical(date_to_period_multi(date = character(),
-                                          break_min = "2015-01-01",
-                                          break_max = "2020-01-01"),
+    expect_identical(date_to_period_multi(date = character()),
                      factor(character(),
-                            levels = "2015-2020"))
+                            levels = "2000-2005"))
 })
 
 ## ## date_to_period_quarter ---------------------------------------------------

@@ -80,60 +80,211 @@ test_that("'as_ymd' gives correct answer with valid inputs", {
 })
 
 
+## date_to_period_or_cohort_multi ----------------------------------------------
+
+test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inputs", {
+    expect_identical(date_to_period_or_cohort_multi(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
+                                                    width = 5,
+                                                    origin = 2000,
+                                                    first_month = "Jan",
+                                                    break_min = as.Date("2000-01-01"),
+                                                    open_left = FALSE,
+                                                    as_factor = TRUE),
+                     factor(c("2000-2005", "2000-2005", "2010-2015"),
+                            levels = c("2000-2005", "2005-2010", "2010-2015")))
+    expect_identical(date_to_period_or_cohort_multi(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
+                                                    width = 5,
+                                                    origin = 2000,
+                                                    first_month = "Jan",
+                                                    break_min = NULL,
+                                                    open_left = FALSE,
+                                                    as_factor = TRUE),
+                     factor(c("2000-2005", "2000-2005", "2010-2015"),
+                            levels = c("2000-2005", "2005-2010", "2010-2015")))
+    expect_identical(date_to_period_or_cohort_multi(date = c("2000-03-20", "2001-02-11", "2010-12-30"),
+                                                    width = 5,
+                                                    origin = 0,
+                                                    first_month = "Jul",
+                                                    break_min = NULL,
+                                                    open_left = FALSE,
+                                                    as_factor = TRUE),
+                     factor(c("1995-2000", "2000-2005", "2010-2015"),
+                            levels = c("1995-2000", "2000-2005", "2005-2010", "2010-2015")))
+    expect_identical(date_to_period_or_cohort_multi(date = c("2000-03-20", "2001-02-11", "2010-12-30"),
+                                                    width = 5,
+                                                    first_month = "Jul",
+                                                    break_min = as.Date("1996-07-01"),
+                                                    origin = 2001,
+                                                    open_left = FALSE,
+                                                    as_factor = TRUE),
+                     factor(c("1996-2001", "1996-2001", "2006-2011"),
+                            levels = c("1996-2001", "2001-2006", "2006-2011")))
+    expect_identical(date_to_period_or_cohort_multi(date = c("2000-03-20", "2001-02-11", "2010-12-30"),
+                                                    width = 5,
+                                                    origin = 1996,
+                                                    first_month = "Jul",
+                                                    break_min = NULL,
+                                                    open_left = FALSE,
+                                                    as_factor = FALSE),
+                     c("1996-2001", "1996-2001", "2006-2011"))
+    expect_identical(date_to_period_or_cohort_multi(date = c("2000-03-20", "2001-02-11", "2010-12-30"),
+                                                    width = 5,
+                                                    origin = 2001,
+                                                    first_month = "Apr",
+                                                    break_min = NULL,
+                                                    open_left = TRUE,
+                                                    as_factor = TRUE),
+                     factor(c("1996-2001", "1996-2001", "2006-2011"),
+                            levels = c("<1996", "1996-2001", "2001-2006", "2006-2011")))
+    expect_identical(date_to_period_or_cohort_multi(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
+                                                    width = 10,
+                                                    break_min = as.Date("2000-01-01"),
+                                                    origin = 2000,
+                                                    first_month = "Jan",
+                                                    open_left = FALSE,
+                                                    as_factor = TRUE),
+                     factor(c("2000-2010", "2000-2010", "2010-2020"),
+                            levels = c("2000-2010", "2010-2020")))
+    expect_identical(date_to_period_or_cohort_multi(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
+                                                    width = 10,
+                                                    origin = 1990,
+                                                    first_month = "Jan",
+                                                    break_min = NULL,
+                                                    open_left = FALSE,
+                                                    as_factor = TRUE),
+                     factor(c("2000-2010", "2000-2010", "2010-2020"),
+                            levels = c("2000-2010", "2010-2020")))
+    expect_identical(date_to_period_or_cohort_multi(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
+                                                    width = 10,
+                                                    break_min = as.Date("1990-01-01"),
+                                                    origin = 1990,
+                                                    first_month = "Jan",
+                                                    open_left = FALSE,
+                                                    as_factor = TRUE),
+                     factor(c("2000-2010", "2000-2010", "2010-2020"),
+                            levels = c("1990-2000", "2000-2010", "2010-2020")))
+    expect_identical(date_to_period_or_cohort_multi(date = c(NA, "2003-03-20", "2001-02-11", "2010-12-30"),
+                                                    width = 10,
+                                                    first_month = "Jan",
+                                                    origin = 2000,
+                                                    break_min = as.Date("1990-01-01"),
+                                                    open_left = FALSE,
+                                                    as_factor = TRUE),
+                     factor(c(NA, "2000-2010", "2000-2010", "2010-2020"),
+                            levels = c("1990-2000", "2000-2010", "2010-2020", NA),
+                            exclude = FALSE))
+})
+
+
+## date_to_period_or_cohort_quarter -------------------------------------------
+
+test_that("'date_to_period_or_cohort_quarter' gives correct answer with valid inputs", {
+    expect_identical(date_to_period_or_cohort_quarter(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
+                                                      break_min = as.Date("2000-01-01"),
+                                                      open_left = FALSE,
+                                                      as_factor = TRUE),
+                     factor(c("2003 Q1", "2001 Q1", "2010 Q4"),
+                            levels = paste0(rep(2000:2010, each = 4),
+                                            " Q",
+                                            1:4)))
+    expect_identical(date_to_period_or_cohort_quarter(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
+                                                      break_min = NULL,
+                                                      open_left = FALSE,
+                                                      as_factor = TRUE),
+                     factor(c("2003 Q1", "2001 Q1", "2010 Q4"),
+                            levels = paste0(rep(2001:2010, each = 4),
+                                            " Q",
+                                            1:4)))
+    expect_identical(date_to_period_or_cohort_quarter(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
+                                                      break_min = NULL,
+                                                      open_left = FALSE,
+                                                      as_factor = FALSE),
+                     c("2003 Q1", "2001 Q1", "2010 Q4"))
+    expect_identical(date_to_period_or_cohort_quarter(date = c("2000-01-01", "2000-01-01"),
+                                                      break_min = NULL,
+                                                      open_left = FALSE,
+                                                      as_factor = TRUE),
+                     factor(c("2000 Q1", "2000 Q1"),
+                            levels = "2000 Q1"))
+    expect_identical(date_to_period_or_cohort_quarter(date = c("2000-01-01", NA, "2000-01-01"),
+                                                      break_min = NULL,
+                                                      open_left = FALSE,
+                                                      as_factor = TRUE),
+                     factor(c("2000 Q1", NA, "2000 Q1"),
+                            levels = c("2000 Q1", NA),
+                            exclude = NULL))
+})
+
+
 ## date_to_period_or_cohort_year ----------------------------------------------
 
 test_that("'date_to_period_or_cohort_year' gives correct answer with valid inputs", {
     expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20", "2001-02-11", "2004-12-30"),
                                                    year_to = TRUE,
-                                                   break_min = "2001-01-01",
-                                                   break_max = NULL,
+                                                   first_month = "Jan",
+                                                   break_min = as.Date("2001-01-01"),
                                                    open_left = FALSE,
                                                    as_factor = TRUE),
                      factor(c("2003", "2001", "2004"),
                             levels = as.character(2001:2004)))
     expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20", "2001-02-11", "2004-12-30"),
                                                    year_to = TRUE,
-                                                   break_min = "2000-07-01",
-                                                   break_max = NULL,
+                                                   first_month = "Jan",
+                                                   break_min = NULL,
+                                                   open_left = FALSE,
+                                                   as_factor = TRUE),
+                     factor(c("2003", "2001", "2004"),
+                            levels = as.character(2001:2004)))
+    expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20", "2001-02-11", "2004-12-30"),
+                                                   year_to = TRUE,
+                                                   break_min = NULL,
+                                                   first_month = "Jul",
                                                    open_left = FALSE,
                                                    as_factor = TRUE),
                      factor(c("2003", "2001", "2005"),
                             levels = as.character(2001:2005)))
     expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20", "2001-02-11", "2004-12-30"),
                                                    year_to = FALSE,
-                                                   break_min = "2001-01-01",
-                                                   break_max = NULL,
-                                                   open_left = FALSE,
-                                                   as_factor = TRUE),
-                     factor(c("2003", "2001", "2004"),
-                            levels = as.character(2001:2004)))
-    expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20", "2001-02-11", "2004-12-30"),
-                                                   year_to = FALSE,
-                                                   break_min = "2000-07-01",
-                                                   break_max = NULL,
+                                                   break_min = NULL,
+                                                   first_month = "Jul",
                                                    open_left = FALSE,
                                                    as_factor = TRUE),
                      factor(c("2002", "2000", "2004"),
                             levels = as.character(2000:2004)))
     expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20", "2001-02-11", "2004-12-30"),
                                                    year_to = FALSE,
-                                                   break_min = "2000-07-01",
-                                                   break_max = "2005-07-01",
+                                                   break_min = NULL,
+                                                   first_month = "Jul",
+                                                   open_left = FALSE,
+                                                   as_factor = TRUE),
+                     factor(c("2002", "2000", "2004"),
+                            levels = as.character(2000:2004)))
+    expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20", "2001-02-11", "2004-12-30"),
+                                                   year_to = FALSE,
+                                                   break_min = as.Date("2000-07-01"),
+                                                   first_month = "Jul",
                                                    open_left = TRUE,
                                                    as_factor = TRUE),
                      factor(c("2002", "2000", "2004"),
                             levels = c("<2000", as.character(2000:2004))))
     expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20", "2001-02-11", "2004-12-30"),
                                                    year_to = FALSE,
-                                                   break_min = NULL,
-                                                   break_max = "2005-07-01",
+                                                   first_month = "Jul",
+                                                   break_min = as.Date("2005-07-01"),
                                                    open_left = TRUE,
                                                    as_factor = FALSE),
-                     c("2002", "2000", "2004"))
+                     c("<2005", "<2005", "<2005"))
+    expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20", "2001-02-11", "2004-12-30"),
+                                                   year_to = FALSE,
+                                                   first_month = "Jul",
+                                                   break_min = as.Date("2005-07-01"),
+                                                   open_left = TRUE,
+                                                   as_factor = FALSE),
+                     c("<2005", "<2005", "<2005"))
     expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20", "2001-02-11", NA, "2004-12-30"),
                                                    year_to = FALSE,
-                                                   break_min = "2000-07-01",
-                                                   break_max = "2005-07-01",
+                                                   break_min = as.Date("2000-07-01"),
+                                                   first_month = "Jul",
                                                    open_left = TRUE,
                                                    as_factor = TRUE),
                      factor(c("2002", "2000", NA, "2004"),
@@ -141,82 +292,6 @@ test_that("'date_to_period_or_cohort_year' gives correct answer with valid input
                             exclude = NULL))
 })
 
-## date_to_period_or_cohort_multi ----------------------------------------------
-
-test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inputs", {
-    expect_identical(date_to_period_or_cohort_multi(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
-                                                    width = 5,
-                                                    break_min = "2000-01-01",
-                                                    break_max = NULL,
-                                                    open_left = FALSE,
-                                                    as_factor = TRUE),
-                     factor(c("2000-2005", "2000-2005", "2010-2015"),
-                            levels = c("2000-2005", "2005-2010", "2010-2015")))
-    expect_identical(date_to_period_or_cohort_multi(date = c("2000-03-20", "2001-02-11", "2010-12-30"),
-                                                    width = 5,
-                                                    break_min = NULL,
-                                                    break_max = "2015-07-01",
-                                                    open_left = FALSE,
-                                                    as_factor = TRUE),
-                     factor(c("1995-2000", "2000-2005", "2010-2015"),
-                            levels = c("1995-2000", "2000-2005", "2005-2010", "2010-2015")))
-    expect_identical(date_to_period_or_cohort_multi(date = c("2000-03-20", "2001-02-11", "2010-12-30"),
-                                                    width = 5,
-                                                    break_min = "1996-07-01",
-                                                    break_max = NULL,
-                                                    open_left = FALSE,
-                                                    as_factor = TRUE),
-                     factor(c("1996-2001", "1996-2001", "2006-2011"),
-                            levels = c("1996-2001", "2001-2006", "2006-2011")))
-    expect_identical(date_to_period_or_cohort_multi(date = c("2000-03-20", "2001-02-11", "2010-12-30"),
-                                                    width = 5,
-                                                    break_min = NULL,
-                                                    break_max = "2011-07-01",
-                                                    open_left = FALSE,
-                                                    as_factor = FALSE),
-                     c("1996-2001", "1996-2001", "2006-2011"))
-    expect_identical(date_to_period_or_cohort_multi(date = c("2000-03-20", "2001-02-11", "2010-12-30"),
-                                                    width = 5,
-                                                    break_min = "1996-07-01",
-                                                    break_max = NULL,
-                                                    open_left = TRUE,
-                                                    as_factor = TRUE),
-                     factor(c("1996-2001", "1996-2001", "2006-2011"),
-                            levels = c("<1996", "1996-2001", "2001-2006", "2006-2011")))
-        expect_identical(date_to_period_or_cohort_multi(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
-                                                    width = 10,
-                                                    break_min = "2000-01-01",
-                                                    break_max = NULL,
-                                                    open_left = FALSE,
-                                                    as_factor = TRUE),
-                     factor(c("2000-2010", "2000-2010", "2010-2020"),
-                            levels = c("2000-2010", "2010-2020")))
-        expect_identical(date_to_period_or_cohort_multi(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
-                                                    width = 10,
-                                                    break_min = "1990-01-01",
-                                                    break_max = NULL,
-                                                    open_left = FALSE,
-                                                    as_factor = TRUE),
-                     factor(c("2000-2010", "2000-2010", "2010-2020"),
-                            levels = c("1990-2000", "2000-2010", "2010-2020")))
-        expect_identical(date_to_period_or_cohort_multi(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
-                                                    width = 10,
-                                                    break_min = "1990-01-01",
-                                                    break_max = "2020-01-01",
-                                                    open_left = FALSE,
-                                                    as_factor = TRUE),
-                     factor(c("2000-2010", "2000-2010", "2010-2020"),
-                            levels = c("1990-2000", "2000-2010", "2010-2020")))
-        expect_identical(date_to_period_or_cohort_multi(date = c(NA, "2003-03-20", "2001-02-11", "2010-12-30"),
-                                                    width = 10,
-                                                    break_min = "1990-01-01",
-                                                    break_max = "2020-01-01",
-                                                    open_left = FALSE,
-                                                    as_factor = TRUE),
-                     factor(c(NA, "2000-2010", "2000-2010", "2010-2020"),
-                            levels = c("1990-2000", "2000-2010", "2010-2020", NA),
-                            exclude = FALSE))
-})
 
 ## date_ymd_ge ----------------------------------------------------------------
 
@@ -281,6 +356,75 @@ test_that("'diff_completed_year' gives correct answer with valid inputs", {
                                          y2 = 2000L, m2 = 1L, d2 = 1L),
                      -1L)
 })
+
+
+## make_breaks_date_month -----------------------------------------------------
+
+test_that("'make_breaks_date_month' gives correct answer with valid input", {
+    expect_identical(make_breaks_date_month(date = as.Date("2001-01-05"),
+                                              break_min = NULL),
+                     as.Date(c("2001-01-01", "2001-02-01")))
+    expect_identical(make_breaks_date_month(date = as.Date(c("2001-01-05", "2000-02-29")),
+                                              break_min = NULL),
+                     seq.Date(from = as.Date("2000-02-01"),
+                              to = as.Date("2001-02-01"),
+                              by = "month"))
+    expect_identical(make_breaks_date_month(date = as.Date(c("2001-01-05", NA, "2000-02-29")),
+                                              break_min = NULL),
+                     seq.Date(from = as.Date("2000-02-01"),
+                              to = as.Date("2001-02-01"),
+                              by = "month"))
+    expect_identical(make_breaks_date_month(date = as.Date(c("2001-01-05", NA, "2005-12-29")),
+                                              break_min = NULL),
+                     seq.Date(from = as.Date("2001-01-01"),
+                              to = as.Date("2006-01-01"),
+                              by = "month"))
+    expect_identical(make_breaks_date_month(date = as.Date("2001-01-05"),
+                                              break_min = as.Date("2000-01-01")),
+                     seq.Date(from = as.Date("2000-01-01"),
+                              to = as.Date("2001-02-01"),
+                              by = "month"))
+    expect_identical(make_breaks_date_month(date = as.Date(c("2001-01-05", "2000-02-29")),
+                                              break_min = as.Date("1999-12-01")),
+                     seq.Date(from = as.Date("1999-12-01"),
+                              to = as.Date("2001-02-01"),
+                              by = "month"))
+})
+
+
+## make_breaks_date_quarter ---------------------------------------------------
+
+test_that("'make_breaks_date_quarter' gives correct answer with valid input", {
+    expect_identical(make_breaks_date_quarter(date = as.Date("2001-01-05"),
+                                              break_min = NULL),
+                     as.Date(c("2001-01-01", "2001-04-01")))
+    expect_identical(make_breaks_date_quarter(date = as.Date(c("2001-01-05", "2000-02-29")),
+                                              break_min = NULL),
+                     seq.Date(from = as.Date("2000-01-01"),
+                              to = as.Date("2001-04-01"),
+                              by = "quarter"))
+    expect_identical(make_breaks_date_quarter(date = as.Date(c("2001-01-05", NA, "2000-02-29")),
+                                              break_min = NULL),
+                     seq.Date(from = as.Date("2000-01-01"),
+                              to = as.Date("2001-04-01"),
+                              by = "quarter"))
+    expect_identical(make_breaks_date_quarter(date = as.Date(c("2001-01-05", NA, "2005-12-29")),
+                                              break_min = NULL),
+                     seq.Date(from = as.Date("2001-01-01"),
+                              to = as.Date("2006-01-01"),
+                              by = "quarter"))
+    expect_identical(make_breaks_date_quarter(date = as.Date("2001-01-05"),
+                                              break_min = as.Date("2000-01-01")),
+                     seq.Date(from = as.Date("2000-01-01"),
+                              to = as.Date("2001-04-01"),
+                              by = "quarter"))
+    expect_identical(make_breaks_date_quarter(date = as.Date(c("2001-01-05", "2000-02-29")),
+                                              break_min = as.Date("1999-10-01")),
+                     seq.Date(from = as.Date("1999-10-01"),
+                              to = as.Date("2001-04-01"),
+                              by = "quarter"))
+})
+
 
 ## make_breaks_date_year ---------------------------------------------------
 
@@ -373,6 +517,18 @@ test_that("'make_breaks_date_year' gives correct answer with valid input", {
                      seq.Date(from = as.Date("1996-04-01"),
                               to = as.Date("2012-04-01"),
                               by = "2 years"))
+    expect_identical(make_breaks_date_year(date = as.Date(character()),
+                                           origin = 2000L,
+                                           first_month = "Apr",
+                                           width = 2L,
+                                           break_min = NULL),
+                     as.Date(c("2000-04-01", "2002-04-01")))
+    expect_identical(make_breaks_date_year(date = as.Date(character()),
+                                           origin = 2000L,
+                                           first_month = "Apr",
+                                           width = 2L,
+                                           break_min = as.Date("1996-04-01")),
+                     as.Date(c("1996-04-01", "1998-04-01")))
 })
 
 

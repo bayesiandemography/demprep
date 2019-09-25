@@ -10,17 +10,15 @@
 \code{break_min} and \code{break_max} are for when 'date' does not
 cover the entire range that is wanted}
 \usage{
-date_to_period_year(date, break_min = NULL, break_max = NULL,
-  year_to = TRUE, as_factor = TRUE)
-
-date_to_period_multi(date, break_min = NULL, break_max = NULL,
-  width = 5, as_factor = TRUE)
-
-date_to_period_quarter(date, break_min = NULL, break_max = NULL,
+date_to_period_year(date, first_month = "Jan", year_to = TRUE,
   as_factor = TRUE)
 
-date_to_period_month(date, break_min = NULL, break_max = NULL,
-  as_factor = TRUE)
+date_to_period_multi(date, width = 5, origin = 2000,
+  first_month = "Jan", as_factor = TRUE)
+
+date_to_period_quarter(date, as_factor = TRUE)
+
+date_to_period_month(date, as_factor = TRUE)
 }
 \description{
 Converting dates to periods

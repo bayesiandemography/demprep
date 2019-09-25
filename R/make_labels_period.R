@@ -13,7 +13,9 @@ make_labels_period_year <- function(breaks,
                                     year_to = TRUE,
                                     include_na = FALSE) {
     breaks <- demcheck::err_tdy_breaks_date(x = breaks,
-                                            name = "breaks")
+                                            name = "breaks",
+                                            open_left = open_left,
+                                            open_right = open_right)
     demcheck::err_is_first_day_unit_vector(x = breaks,
                                            name = "breaks",
                                            unit = "year")
@@ -24,16 +26,23 @@ make_labels_period_year <- function(breaks,
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")
     n <- length(breaks)
-    if (n == 0L) {
+    if (n == 0L) { # cannot have 'open_left' or 'open_right'
         ans_mid <- character()
-        if (open_left)
-            stop(gettextf("'%s' has length %d but '%s' is %s",
-                          "breaks", 0L, "open_left", "TRUE"))
-        if (open_right)
-            stop(gettextf("'%s' has length %d but '%s' is %s",
-                          "breaks", 0L, "open_right", "TRUE"))
+        ans_left <- NULL
+        ans_right <- NULL
     }
-    else {
+    else if (n == 1L) { # must have 'open_left' or 'open_right'
+        ans_mid <- format(breaks, "%Y")
+        if (open_left)
+            ans_left <- paste0("<", ans_mid)
+        else
+            ans_left <- NULL
+        if (open_right)
+            ans_right <- paste0(ans_mid, "+")
+        else
+            ans_right <- NULL
+    }
+    else { # may have 'open_left' or 'open_right'
         ans_mid <- character(length = n - 1L)
         breaks_annual <- seq.Date(from = breaks[[1L]],
                                   by = "year",
@@ -55,23 +64,23 @@ make_labels_period_year <- function(breaks,
                              format(tail, "%Y"),
                              sep = "-")
         }
-    }
-    if (open_left) {
-        if (is_annual)
-            ans_left <- paste0("<", ans_mid[[1L]])
+        if (open_left) {
+            if (is_annual)
+                ans_left <- paste0("<", ans_mid[[1L]])
+            else
+                ans_left <- paste0("<", format(head[[1L]], "%Y"))
+        }
         else
-            ans_left <- paste0("<", format(head[[1L]], "%Y"))
-    }
-    else
-        ans_left <- NULL
-    if (open_right) {
-        if (is_annual)
-            ans_right <- paste0(ans_mid[[n - 1L]], "+")
+            ans_left <- NULL
+        if (open_right) {
+            if (is_annual)
+                ans_right <- paste0(ans_mid[[n - 1L]], "+")
+            else
+                ans_right <- paste0(format(tail[[n - 1L]], "%Y"), "+")
+        }
         else
-            ans_right <- paste0(format(tail[[n - 1L]], "%Y"), "+")
+            ans_right <- NULL
     }
-    else
-        ans_right <- NULL
     if (include_na)
         ans_na <- NA_character_
     else
@@ -115,3 +124,5 @@ make_labels_period_month <- function(break_min,
                                      unit = "month",
                                      include_na)
 }
+
+

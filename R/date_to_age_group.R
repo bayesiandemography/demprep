@@ -314,7 +314,9 @@ date_to_age_group_custom <- function(date, dob,
     date <- l$date
     dob <- l$dob
     breaks <- demcheck::err_tdy_breaks_integer(x = breaks,
-                                               name = "breaks")
+                                               name = "breaks",
+                                               open_left = FALSE,
+                                               open_right = open_right)
     demcheck::err_is_logical_flag(x = open_right,
                                   name = "open_right")
     demcheck::err_is_logical_flag(x = as_factor,

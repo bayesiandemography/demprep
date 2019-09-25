@@ -1,6 +1,11 @@
 
 #' Converting dates to cohorts
+#' \code{open_left} is defaults to FALSE if \code{break_min}
+#' not supplied, since count will always be 0.)
 #'
+#' if \code{break_min} supplied, then \code{origin} and
+#' \code{first_month} both ignored.
+#' 
 #' @name date_to_cohort
 NULL
 
@@ -11,8 +16,10 @@ date_to_cohort_year <- function(date,
                                 first_month = "Jan",
                                 year_to = TRUE,
                                 break_min = NULL,
-                                open_left = TRUE,
+                                open_left = NULL,
                                 as_factor = TRUE) {
+    if (is.null(open_left))
+        open_left <- !is.null(break_min)
     date_to_period_or_cohort_year(date = date,
                                   first_month = first_month,
                                   year_to = year_to,
@@ -28,8 +35,10 @@ date_to_cohort_multi <- function(date,
                                  origin = 2000,
                                  first_month = "Jan",
                                  break_min = NULL,
-                                 open_left = TRUE,
+                                 open_left = NULL,
                                  as_factor = TRUE) {
+    if (is.null(open_left))
+        open_left <- !is.null(break_min)
     date_to_period_or_cohort_multi(date = date,
                                    width = width,
                                    origin = origin,

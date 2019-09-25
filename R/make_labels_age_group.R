@@ -12,7 +12,9 @@ make_labels_age_group_year <- function(breaks,
                                        open_right = TRUE,
                                        include_na = FALSE) {
     breaks <- demcheck::err_tdy_breaks_integer(x = breaks,
-                                               name = "breaks")
+                                               name = "breaks",
+                                               open_left = open_left,
+                                               open_right = open_right)
     demcheck::err_is_logical_flag(x = open_left,
                                   name = "open_left")
     demcheck::err_is_logical_flag(x = open_right,
