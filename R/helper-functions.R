@@ -23,6 +23,50 @@ as_ymd <- function(date) {
 }
 
 ## HAS_TESTS
+date_to_period_or_cohort_month <- function(date,
+                                           break_min,
+                                           open_left,
+                                           as_factor) {
+    demcheck::err_is_positive_length(x = date,
+                                     name = "date")
+    date <- demcheck::err_tdy_date_vector(x = date,
+                                          name = "date")
+    if (!is.null(break_min)) {
+        demcheck::err_is_length_1(x = break_min,
+                                  name = "break_min")
+        break_min <- demcheck::err_tdy_date_scalar(x = break_min,
+                                                   name = "break_min")
+    }
+    demcheck::err_is_logical_flag(x = as_factor,
+                                  name = "as_factor")
+    demcheck::err_is_logical_flag(x = open_left,
+                                  name = "open_left")
+    breaks <- make_breaks_date_month(date = date,
+                                     break_min = break_min)
+    n <- length(breaks)
+    break_min <- breaks[[1L]]
+    break_max <- breaks[[n]]
+    include_na <- any(is.na(date))
+    labels <- make_labels_period_quarter(break_min = break_min,
+                                         break_max = break_max,
+                                         open_left = open_left,
+                                         open_right = FALSE,
+                                         include_na = include_na)
+    date_int <- as.integer(date)
+    breaks_int <- as.integer(breaks)
+    i <- findInterval(x = date_int,
+                      vec = breaks_int)
+    if (open_left)
+        i <- i + 1L
+    ans <- labels[i]
+    if (as_factor)
+        ans <- factor(x = ans,
+                      levels = labels,
+                      exclude = NULL)
+    ans   
+}
+
+## HAS_TESTS
 date_to_period_or_cohort_multi <- function(date,
                                            width,
                                            origin,
@@ -84,6 +128,7 @@ date_to_period_or_cohort_multi <- function(date,
 
 }
 
+## HAS_TESTS
 date_to_period_or_cohort_quarter <- function(date,
                                              break_min,
                                              open_left,
@@ -126,7 +171,6 @@ date_to_period_or_cohort_quarter <- function(date,
                       exclude = NULL)
     ans   
 }
-
 
 ## HAS_TESTS
 date_to_period_or_cohort_year <- function(date,

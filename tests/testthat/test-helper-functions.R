@@ -80,6 +80,42 @@ test_that("'as_ymd' gives correct answer with valid inputs", {
 })
 
 
+## date_to_period_or_cohort_month -------------------------------------------
+
+test_that("'date_to_period_or_cohort_month' gives correct answer with valid inputs", {
+    expect_identical(date_to_period_or_cohort_month(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
+                                                    break_min = as.Date("2000-01-01"),
+                                                    open_left = TRUE,
+                                                    as_factor = TRUE),
+                     factor(c("2003 Mar", "2001 Feb", "2010 Dec"),
+                            levels = c("<2000 Jan", paste(rep(2000:2010, each = 12), month.abb))))
+    expect_identical(date_to_period_or_cohort_month(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
+                                                      break_min = NULL,
+                                                      open_left = FALSE,
+                                                      as_factor = TRUE),
+                     factor(c("2003 Mar", "2001 Feb", "2010 Dec"),
+                            levels = paste(rep(2001:2010, each = 12), month.abb)[-1]))
+    expect_identical(date_to_period_or_cohort_month(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
+                                                      break_min = NULL,
+                                                      open_left = FALSE,
+                                                      as_factor = FALSE),
+                     c("2003 Mar", "2001 Feb", "2010 Dec"))
+    expect_identical(date_to_period_or_cohort_month(date = c("2000-01-01", "2000-01-01"),
+                                                      break_min = NULL,
+                                                      open_left = FALSE,
+                                                      as_factor = TRUE),
+                     factor(c("2000 Jan", "2000 Jan"),
+                            levels = "2000 Jan"))
+    expect_identical(date_to_period_or_cohort_month(date = c("2000-01-01", NA, "2000-01-01"),
+                                                      break_min = NULL,
+                                                      open_left = FALSE,
+                                                      as_factor = TRUE),
+                     factor(c("2000 Jan", NA, "2000 Jan"),
+                            levels = c("2000 Jan", NA),
+                            exclude = NULL))
+})
+
+
 ## date_to_period_or_cohort_multi ----------------------------------------------
 
 test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inputs", {

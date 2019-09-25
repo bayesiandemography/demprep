@@ -38,7 +38,7 @@ date_to_period_multi <- function(date,
                                    as_factor = as_factor)
 }
 
-
+## HAS_TESTS
 #' @rdname date_to_period
 #' @export
 date_to_period_quarter <- function(date,
@@ -49,9 +49,7 @@ date_to_period_quarter <- function(date,
                                      as_factor = as_factor)
 }
 
-
-
-
+## HAS_TESTS
 #' @rdname date_to_period
 #' @export
 date_to_period_month <- function(date,
