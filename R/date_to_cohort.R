@@ -28,7 +28,7 @@ date_to_cohort_year <- function(date,
                                   as_factor = as_factor)
 }
 
-
+## HAS_TESTS
 #' @rdname date_to_cohort
 #' @export
 date_to_cohort_multi <- function(date,
@@ -49,11 +49,12 @@ date_to_cohort_multi <- function(date,
                                    as_factor = as_factor)
 }
 
+## HAS_TESTS
 #' @rdname date_to_cohort
 #' @export
 date_to_cohort_quarter <- function(date,
                                    break_min = NULL,
-                                   open_left = TRUE,
+                                   open_left = NULL,
                                    as_factor = TRUE) {
     if (is.null(open_left))
         open_left <- !is.null(break_min)
@@ -63,12 +64,12 @@ date_to_cohort_quarter <- function(date,
                                      as_factor = as_factor)
 }
 
-
+## HAS_TESTS
 #' @rdname date_to_cohort
 #' @export
 date_to_cohort_month <- function(date,
                                  break_min = NULL,
-                                 open_left = TRUE,
+                                 open_left = NULL,
                                  as_factor = TRUE) {
     if (is.null(open_left))
         open_left <- !is.null(break_min)
@@ -77,5 +78,3 @@ date_to_cohort_month <- function(date,
                                    open_left = open_left,
                                    as_factor = as_factor)
 }
-
-

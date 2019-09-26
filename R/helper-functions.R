@@ -47,11 +47,11 @@ date_to_period_or_cohort_month <- function(date,
     break_min <- breaks[[1L]]
     break_max <- breaks[[n]]
     include_na <- any(is.na(date))
-    labels <- make_labels_period_quarter(break_min = break_min,
-                                         break_max = break_max,
-                                         open_left = open_left,
-                                         open_right = FALSE,
-                                         include_na = include_na)
+    labels <- make_labels_period_month(break_min = break_min,
+                                       break_max = break_max,
+                                       open_left = open_left,
+                                       open_right = FALSE,
+                                       include_na = include_na)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
