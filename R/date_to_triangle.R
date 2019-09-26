@@ -1,38 +1,39 @@
 
 
-date_to_triangle_year <- function(date, dob,
+date_to_triangle_year <- function(date,
+                                  dob,
                                   break_max = 100,
                                   open_right = TRUE,
                                   first_month = "Jan",
                                   year_to = TRUE,
                                   as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
-                          dob = dob)
+                                    dob = dob)
     date <- l$date
     dob <- l$dob
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
-                                               name = "break_max",
-                                               null_ok = TRUE)
+                                                           name = "break_max",
+                                                           null_ok = TRUE)
     demcheck::err_is_logical_flag(x = open_right,
-                        name = "open_right")
+                                  name = "open_right")
     first_month <- demcheck::err_tdy_first_month(x = first_month,
-                                       name = "first_month")
+                                                 name = "first_month")
     demcheck::err_is_logical_flag(x = year_to,
-                        name = "year_to")
+                                  name = "year_to")
     demcheck::err_is_logical_flag(x = as_factor,
-                        name = "as_factor")
+                                  name = "as_factor")
     age_months <- date_to_age_completed_months(date = date,
                                                dob = dob)
     age_years <- age_months %/% 12L
-    n <- length(breaks)
-    if (n > 0L) {
-        open_left <- any(age_years < breaks[[1L]], na.rm = TRUE)
-        open_right <- any(age_years >= breaks[[n]], na.rm = TRUE)
-    }
-    else {
-        open_left <- FALSE
-        open_right <- FALSE
-    }
+    if (!open_right)
+        demcheck::err_lt_break_max_age(age = age_years,
+                                       break_max = break_max,
+                                       date = date,
+                                       dob = dob,
+                                       unit = "year")
+
+
+    
     labels <- make_labels_age_group(breaks = breaks,
                                     open_left = open_left,
                                     open_right = open_right)
@@ -80,6 +81,12 @@ date_to_triangle_month <- function(date, dob,
                                   name = "open_right")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
+    if (!is.null(break_max) && !open_right)
+        demcheck::err_exceeds_break_max_age(age = age_months,
+                                            break_max = break_max,
+                                            date = date,
+                                            dob = dob,
+                                            unit = "month")
     date_ymd <- as_ymd(date)
     dob_ymd <- as_ymd(dob)
     ans <- rep.int("Upper", times = n)
@@ -93,13 +100,6 @@ date_to_triangle_month <- function(date, dob,
             is_open_upper <- age_months >= age_open
             ans[is_open_upper] <- "Upper"
         }
-        else {
-            demcheck::err_exceeds_break_max_age(age = age_months,
-                                                break_max = break_max,
-                                                date = date,
-                                                dob = dob,
-                                                unit = "month")
-        }
     }
     if (as_factor) {
         ans <- factor(ans, levels = c("Lower", "Upper"))
@@ -108,7 +108,8 @@ date_to_triangle_month <- function(date, dob,
 }
 
 
-date_to_triangle_quarter <- function(date, dob,
+date_to_triangle_quarter <- function(date,
+                                     dob,
                                      break_max = 400,
                                      open_right = TRUE,
                                      as_factor = TRUE) {
@@ -123,31 +124,34 @@ date_to_triangle_quarter <- function(date, dob,
                                   name = "open_right")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
+    if (!is.null(break_max) && !open_right)
+        demcheck::err_exceeds_break_max_age(age = age_months,
+                                            break_max = break_max,
+                                            date = date,
+                                            dob = dob,
+                                            unit = "month")
+    n <- length(date)
     date_ymd <- as_ymd(date)
     dob_ymd <- as_ymd(dob)
     ans <- rep.int("Upper", times = n)
-    month_index_date <- (date_ymd$m - 1L) %% 3L
-    month_index_dob <- (dob_ymd$m - 1L) %% 3L
-    is_lower_diff_month <- month_index_date > month_index_dob
-    ans[is_lower_diff_month] <- "Lower"
-    is_lower_same_month <- (month_index_date == month_index_dob) &&
-        (((date_ymd$d - 1L) %/% 2L) >= (dob_ymd$d %/% 2L))
-    ans[is_lower_same_month] <- "Lower"
-    if (is.finite(break_max)) {
-        if (open_right) {
-            is_open_upper <- 12L * (date_ymd$y - dob_ymd$y) + (date_ymd$m - dob_ymd$m) - (dob_ymd$d != 1L) >= age_open
-            ans[is_open_upper] <- "Upper"
-        }
-        else {
-            demcheck::err_exceeds_break_max_age(age = age_months,
-                                                break_max = break_max,
-                                                date = date,
-                                                dob = dob,
-                                                unit = "month")
-        }
+    i_month_within_qu_date <- (date_ymd$m - 1L) %% 3L
+    i_month_within_qu_dob <- (dob_ymd$m - 1L) %% 3L
+    is_lower_within_month <- is_lower_within_month(date_ymd = date_ymd,
+                                                   dob_ymd = dob_ymd)
+    is_lower <- ((i_month_within_qu_date > i_month_within_qu_dob)
+        | ((i_month_within_qu_date == i_month_within_qu_dob)
+            & is_lower_within_month))
+    ans[is_lower] <- "Lower"
+    may_have_ages_above_break_max <- !is.null(break_max) && open_right
+    if (may_have_ages_above_break_max) {
+        age <- age_completed_months_start_month(date_ymd = date_ymd,
+                                                dob_ymd = dob_ymd)
+        is_open_upper <- !is.na(age) & (age >= break_max)
+        ans[is_open_upper] <- "Upper"
     }
     if (as_factor) {
-        ans <- factor(ans, levels = c("Lower", "Upper"))
+        ans <- factor(ans,
+                      levels = c("Lower", "Upper"))
     }
     ans
 }

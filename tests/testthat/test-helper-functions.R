@@ -62,6 +62,27 @@ test_that("'age_completed_months' gives correct answer with valid inputs", {
 })
 
 
+## age_completed_months_start_month -------------------------------------------
+
+test_that("'age_completed_months_start_month' gives correct answer with valid inputs", {
+    date <- demprep:::as_ymd(as.Date("2001-01-01"))
+    dob <- demprep:::as_ymd(as.Date("2000-01-01"))
+    expect_identical(age_completed_months_start_month(date = date,
+                                                      dob = dob),
+                     12L)
+    date <- demprep:::as_ymd(as.Date("2001-01-01"))
+    dob <- demprep:::as_ymd(as.Date("2000-01-15"))
+    expect_identical(age_completed_months_start_month(date = date,
+                                                      dob = dob),
+                     11L)
+    date <- demprep:::as_ymd(as.Date("2001-01-31"))
+    dob <- demprep:::as_ymd(as.Date("2000-01-15"))
+    expect_identical(age_completed_months_start_month(date = date,
+                                                      dob = dob),
+                     11L)
+})
+
+
 ## as_ymd ---------------------------------------------------------------------
 
 test_that("'as_ymd' gives correct answer with valid inputs", {
@@ -392,6 +413,28 @@ test_that("'diff_completed_year' gives correct answer with valid inputs", {
                                          y2 = 2000L, m2 = 1L, d2 = 1L),
                      -1L)
 })
+
+
+## is_lower_within_month ------------------------------------------------------
+
+test_that("'is_lower_within_month' gives correct answer with valid input", {
+    date_ymd <- demprep:::as_ymd(seq.Date(from = as.Date("2001-01-01"), by = "day", length.out = 10))
+    dob_ymd <- demprep:::as_ymd(seq.Date(from = as.Date("2000-02-01"), by = "day", length.out = 10))
+    expect_identical(is_lower_within_month(date_ymd = date_ymd,
+                                           dob_ymd = dob_ymd),
+                     rep(c(TRUE, FALSE), times = 5))
+    date_ymd <- demprep:::as_ymd(as.Date("2000-01-02"))
+    dob_ymd <- demprep:::as_ymd(as.Date("2019-12-01"))
+    expect_true(is_lower_within_month(date_ymd = date_ymd,
+                                      dob_ymd = dob_ymd))
+    date_ymd <- demprep:::as_ymd(as.Date("2019-12-01"))
+    dob_ymd <- demprep:::as_ymd(as.Date("2000-01-02"))
+    expect_false(is_lower_within_month(date_ymd = date_ymd,
+                                       dob_ymd = dob_ymd))
+})
+                                           
+                                           
+
 
 
 ## make_breaks_date_month -----------------------------------------------------

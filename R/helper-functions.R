@@ -8,6 +8,13 @@ age_completed_months <- function(date, dob) {
         - (date_ymd$d < dob_ymd$d))
 }
 
+
+age_completed_months_start_month <- function(date_ymd, dob_ymd) {
+    (12L * (date_ymd$y - dob_ymd$y)
+        + (date_ymd$m - dob_ymd$m)
+        - (dob_ymd$d != 1L))
+}
+
 ## HAS_TESTS
 as_ymd <- function(date) {
     if (!inherits(date, "POSIXlt"))
@@ -251,6 +258,11 @@ diff_completed_year <- function(y1, m1, d1, y2, m2, d2) {
         else
             y1 - y2
     }
+}
+
+## HAS_TESTS
+is_lower_within_month <- function(date_ymd, dob_ymd) {
+    ((date_ymd$d - 1L) %/% 2L) >= (dob_ymd$d %/% 2L)
 }
 
 ## HAS_TESTS
@@ -533,20 +545,7 @@ make_labels_period_month_quarter <- function(break_min,
 ## possible ------------------------------------------------------------
 
 
-is_lower_within_month <- function(date_ymd, dob_ymd) {
-    ((date_ymd$d - 1L) %/% 2L) >= (dob_ymd$d %/% 2L)
-}
 
-age_completed_months_start_month <- function(date_ymd, dob_ymd) {
-    (12L * (date_ymd$y - dob_ymd$y)
-        + (date_ymd$m - dob_ymd$m)
-        - (dob_ymd$d != 1L))
-}
 
 
     
-    
-
-
-
-
