@@ -6,21 +6,24 @@
 \alias{date_to_cohort_multi}
 \alias{date_to_cohort_quarter}
 \alias{date_to_cohort_month}
-\title{Converting dates to cohorts}
+\title{Converting dates to cohorts
+\code{open_left} is defaults to FALSE if \code{break_min}
+not supplied, since count will always be 0.)}
 \usage{
 date_to_cohort_year(date, first_month = "Jan", year_to = TRUE,
-  break_min = NULL, open_left = TRUE, as_factor = TRUE)
+  break_min = NULL, open_left = NULL, as_factor = TRUE)
 
 date_to_cohort_multi(date, width = 5, origin = 2000,
-  first_month = "Jan", break_min = NULL, open_left = TRUE,
+  first_month = "Jan", break_min = NULL, open_left = NULL,
   as_factor = TRUE)
 
-date_to_cohort_quarter(date, break_min = NULL, open_left = TRUE,
+date_to_cohort_quarter(date, break_min = NULL, open_left = NULL,
   as_factor = TRUE)
 
-date_to_cohort_month(date, break_min = NULL, open_left = TRUE,
+date_to_cohort_month(date, break_min = NULL, open_left = NULL,
   as_factor = TRUE)
 }
 \description{
-Converting dates to cohorts
+if \code{break_min} supplied, then \code{origin} and
+\code{first_month} both ignored.
 }

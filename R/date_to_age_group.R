@@ -70,7 +70,6 @@
 #' If as_factor is TRUE, and date or dob have NAs, then the
 #' levels of the answer will include NA.
 #' 
-#' @examples
 #' @name date_to_age_group
 NULL
 
