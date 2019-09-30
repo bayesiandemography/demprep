@@ -3,6 +3,7 @@
 #' @name date_to_triangle
 NULL
 
+## HAS_TESTS
 #' @rdname date_to_triangle
 #' @export
 date_to_triangle_year <- function(date,
@@ -10,7 +11,6 @@ date_to_triangle_year <- function(date,
                                   break_max = 100,
                                   open_right = TRUE,
                                   first_month = "Jan",
-                                  year_to = TRUE,
                                   as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
@@ -23,12 +23,10 @@ date_to_triangle_year <- function(date,
                                   name = "open_right")
     first_month <- demcheck::err_tdy_first_month(x = first_month,
                                                  name = "first_month")
-    demcheck::err_is_logical_flag(x = year_to,
-                                  name = "year_to")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    age_months <- date_to_age_completed_months(date = date,
-                                               dob = dob)
+    age_months <- age_completed_months(date = date,
+                                       dob = dob)
     age_years <- age_months %/% 12L
     if (!open_right)
         demcheck::err_lt_break_max_age(age = age_years,
@@ -41,17 +39,24 @@ date_to_triangle_year <- function(date,
     dob_ymd <- as_ymd(dob)
     ans <- rep.int("Upper", times = n)
     ans[is.na(date) | is.na(dob)] <- NA_character_
+    i_first_month <- match(first_month, month.abb)
+    month_date <- date_ymd$m
+    month_dob <- dob_ymd$m
+    i_month_within_yr_date <- month_date - i_first_month 
+    i_month_within_yr_dob <- month_dob - i_first_month
+    is_neg_date <- !is.na(date) & i_month_within_yr_date < 0L
+    is_neg_dob <- !is.na(dob) & i_month_within_yr_dob < 0L
+    i_month_within_yr_date[is_neg_date] <- i_month_within_yr_date[is_neg_date] + 12L
+    i_month_within_yr_dob[is_neg_dob] <- i_month_within_yr_dob[is_neg_dob] + 12L
     is_lower_within_month <- is_lower_within_month(date_ymd = date_ymd,
                                                    dob_ymd = dob_ymd)
-    month_date <- date_ymd$m
-    month_dob <- dob_ymd$d
-    is_lower <- ((month_date > month_dob)
-        | ((month_date == month_dob) & is_lower_within_month))
+    is_lower <- ((i_month_within_yr_date > i_month_within_yr_dob)
+        | ((i_month_within_yr_date == i_month_within_yr_dob) & is_lower_within_month))
     ans[is_lower] <- "Lower"
     may_have_ages_above_break_max <- !is.null(break_max) && open_right
     if (may_have_ages_above_break_max) {
         age_start <- age_completed_months_start_month(date_ymd = date_ymd,
-                                                dob_ymd = dob_ymd)
+                                                      dob_ymd = dob_ymd)
         is_open_upper <- !is.na(age_start) & (age_start >= break_max)
         ans[is_open_upper] <- "Upper"
     }
@@ -72,10 +77,10 @@ date_to_triangle_year <- function(date,
 date_to_triangle_fert <- function(date, dob,
                                   break_min = 15,
                                   break_max = 50,
-                                  recode_up = TRUE,
-                                  recode_down = TRUE,
+                                  width = 5,
+                                  recode_up = FALSE,
+                                  recode_down = FALSE,
                                   first_month = "Jan",
-                                  year_to = TRUE,
                                   as_factor = TRUE) {
     n <- length(date)
     ans <- rep.int("Upper", times = n)
@@ -97,6 +102,7 @@ date_to_triangle_fert <- function(date, dob,
 date_to_triangle_multi <- function(date, dob,
                                    break_max = 100,
                                    width = 5,
+                                   origin = 2000,
                                    first_month = "Jan",
                                    as_factor = TRUE) {
     n <- length(date)

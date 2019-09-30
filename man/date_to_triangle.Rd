@@ -10,7 +10,7 @@
 \title{Use dates and dates of birth to calculate Lexis triangles}
 \usage{
 date_to_triangle_year(date, dob, break_max = 100, open_right = TRUE,
-  first_month = "Jan", year_to = TRUE, as_factor = TRUE)
+  first_month = "Jan", as_factor = TRUE)
 
 date_to_triangle_fert(date, dob, break_min = 15, break_max = 50,
   recode_up = TRUE, recode_down = TRUE, first_month = "Jan",
