@@ -255,9 +255,6 @@ date_to_age_group_fert <- function(date, dob,
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
-    breaks <- seq(from = break_min,
-                  to = break_max,
-                  by = width)
     is_lt_min <- age_years < break_min
     i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
     if (i_lt_min > 0L) {
@@ -286,6 +283,9 @@ date_to_age_group_fert <- function(date, dob,
                           break_max))
         }
     }
+    breaks <- seq(from = break_min,
+                  to = break_max,
+                  by = width)
     include_na <- any(is.na(age_years))
     labels <- make_labels_age_group_year(breaks = breaks,
                                          open_left = FALSE,

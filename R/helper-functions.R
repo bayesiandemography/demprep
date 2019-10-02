@@ -260,6 +260,18 @@ diff_completed_year <- function(y1, m1, d1, y2, m2, d2) {
     }
 }
 
+i_month_within_period_date <- function(date, width, origin, first_month) {
+    year <- date$y
+    month <- date$m
+    i_first_month <- match(first_month, month.abb) # starts at 1
+    i_year <- (year - origin) %% width # starts at 0
+    i_month_within_yr <- month - i_first_month  # starts at 0
+    ans <- 12L * i_year + i_month_within_year + 1L # starts at 1
+    is_neg <- !is.na(date) & i_month_within_yr < 0L
+    ans[is_neg] <- ans[is_neg] + 12L * width
+    ans
+}
+
 ## HAS_TESTS
 is_lower_within_month <- function(date_ymd, dob_ymd) {
     ((date_ymd$d - 1L) %/% 2L) >= (dob_ymd$d %/% 2L)
