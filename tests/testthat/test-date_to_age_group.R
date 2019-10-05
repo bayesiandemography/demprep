@@ -211,6 +211,22 @@ test_that("date_to_age_group_fert throws correct errors with invalid inputs", {
                        "but 'break_max' is 45 and 'recode_down' is FALSE"))
 })
 
+test_that("date_to_age_group_fert throws correct errors with invalid inputs", {
+    expect_error(date_to_age_group_custom(date = c("2001-06-01",
+                                                       "2015-01-01",
+                                                       "2016-12-31"),
+                                              dob = "2000-01-01",
+                                          breaks = c(5, 10, 30)),
+                 "'date' of \"2001-06-01\" and 'dob' of \"2000-01-01\" imply age of 1, but minimum value for 'breaks' is 5")
+    expect_error(date_to_age_group_custom(date = c("2001-06-01",
+                                                       "2015-01-01",
+                                                       "2026-12-31"),
+                                              dob = "2000-01-01",
+                                          breaks = c(0, 10, 20),
+                                          open_right = FALSE),
+                 "'date' of \"2026-12-31\" and 'dob' of \"2000-01-01\" imply age of 26, but 'open_right' is FALSE and maximum value for 'breaks' is 20")
+})
+
 
 ## date_to_age_group_custom ---------------------------------------------------
 
@@ -240,21 +256,6 @@ test_that("date_to_age_group_custom gives correct answers with valid inputs", {
                             levels = c("5-9", "10-29")))
 })
 
-test_that("date_to_age_group_fert throws correct errors with invalid inputs", {
-    expect_error(date_to_age_group_custom(date = c("2001-06-01",
-                                                       "2015-01-01",
-                                                       "2016-12-31"),
-                                              dob = "2000-01-01",
-                                          breaks = c(5, 10, 30)),
-                 "'date' of \"2001-06-01\" and 'dob' of \"2000-01-01\" imply age of 1, but minimum value for 'breaks' is 5")
-    expect_error(date_to_age_group_custom(date = c("2001-06-01",
-                                                       "2015-01-01",
-                                                       "2026-12-31"),
-                                              dob = "2000-01-01",
-                                          breaks = c(0, 10, 20),
-                                          open_right = FALSE),
-                 "'date' of \"2026-12-31\" and 'dob' of \"2000-01-01\" imply age of 26, but 'open_right' is FALSE and maximum value for 'breaks' is 20")
-})
 
 ## date_to_age_group_quarter ---------------------------------------------------
 

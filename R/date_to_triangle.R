@@ -61,14 +61,15 @@ date_to_triangle_fert <- function(date,
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
+    date_ymd <- as_ymd(date)
     dob_ymd <- as_ymd(dob)
     is_lt_min <- age_years < break_min
     i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
     if (i_lt_min > 0L) {
         if (recode_up) {
             dob_ymd$y[is_lt_min] <- date_ymd$y[is_lt_min] - break_min
-            dob_ymd$m[is_lt_min] <- date_ymd$m
-            dob_ymd$d[is_lt_min] <- date_ymd$d
+            dob_ymd$m[is_lt_min] <- date_ymd$m[is_lt_min]
+            dob_ymd$d[is_lt_min] <- date_ymd$d[is_lt_min]
         }
         else {
             stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
@@ -84,8 +85,8 @@ date_to_triangle_fert <- function(date,
     if (i_ge_max > 0L) {
         if (recode_down) {
             dob_ymd$y[is_ge_max] <- date_ymd$y[is_ge_max] - break_max + 1L
-            dob_ymd$m[is_ge_max] <- date_ymd$m
-            dob_ymd$d[is_ge_max] <- date_ymd$d
+            dob_ymd$m[is_ge_max] <- date_ymd$m[is_ge_max]
+            dob_ymd$d[is_ge_max] <- date_ymd$d[is_ge_max]
         }
         else {
             stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
