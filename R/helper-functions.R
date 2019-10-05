@@ -22,7 +22,7 @@ as_ymd <- function(date) {
     y <- date$year + 1900L
     m <- date$mon + 1L
     d <- date$mday
-    is_29_feb <- (m == 2L) & (d == 29L)
+    is_29_feb <- !is.na(m) & (m == 2L) & (d == 29L)
     d[is_29_feb] <- 28L
     list(y = y,
          m = m,
@@ -260,14 +260,15 @@ diff_completed_year <- function(y1, m1, d1, y2, m2, d2) {
     }
 }
 
-i_month_within_period_date <- function(date, width, origin, first_month) {
-    year <- date$y
-    month <- date$m
+
+i_month_within_period <- function(date_ymd, width, origin, first_month) {
+    year <- date_ymd$y
+    month <- date_ymd$m
     i_first_month <- match(first_month, month.abb) # starts at 1
     i_year <- (year - origin) %% width # starts at 0
-    i_month_within_yr <- month - i_first_month  # starts at 0
+    i_month_within_year <- month - i_first_month  # starts at 0
     ans <- 12L * i_year + i_month_within_year + 1L # starts at 1
-    is_neg <- !is.na(date) & i_month_within_yr < 0L
+    is_neg <- !is.na(month) & (i_month_within_year < 0L)
     ans[is_neg] <- ans[is_neg] + 12L * width
     ans
 }

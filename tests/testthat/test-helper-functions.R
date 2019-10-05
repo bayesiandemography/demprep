@@ -98,6 +98,10 @@ test_that("'as_ymd' gives correct answer with valid inputs", {
                          m = integer(),
                          d = integer())
     expect_identical(ans_obtained, ans_expected)
+    expect_identical(as_ymd(c("2000-01-01", NA)),
+                     list(y = c(2000L, NA),
+                          m = c(1L, NA),
+                          d = c(1L, NA)))
 })
 
 
@@ -412,6 +416,52 @@ test_that("'diff_completed_year' gives correct answer with valid inputs", {
     expect_identical(diff_completed_year(y1 = 1999L, m1 = 1L, d1 = 1L,
                                          y2 = 2000L, m2 = 1L, d2 = 1L),
                      -1L)
+})
+
+
+## i_month_within_period ------------------------------------------------------
+
+test_that("'i_month_within_period' gives correct answer with valid inputs", {
+    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-01-01"),
+                                           width = 1L,
+                                           origin = 2000L,
+                                           first_month = "Jan"),
+                     1L)
+    expect_identical(i_month_within_period(date_ymd = as_ymd("1999-12-31"),
+                                           width = 1L,
+                                           origin = 2000L,
+                                           first_month = "Jan"),
+                     12L)
+    expect_identical(i_month_within_period(date_ymd = as_ymd("1999-12-31"),
+                                           width = 5L,
+                                           origin = 2000L,
+                                           first_month = "Jan"),
+                     60L)
+    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-01-01"),
+                                           width = 1L,
+                                           origin = 1998L,
+                                           first_month = "Jan"),
+                     1L)
+    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-01-01"),
+                                           width = 2L,
+                                           origin = 1998L,
+                                           first_month = "Jul"),
+                     19L)
+    expect_identical(i_month_within_period(date_ymd = as_ymd(NA),
+                                           width = 2L,
+                                           origin = 1998L,
+                                           first_month = "Jul"),
+                     NA_integer_)
+    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-06-30"),
+                                           width = 5L,
+                                           origin = 2000L,
+                                           first_month = "Jul"),
+                     60L)
+    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-07-01"),
+                                           width = 5L,
+                                           origin = 2000L,
+                                           first_month = "Jul"),
+                     1L)
 })
 
 

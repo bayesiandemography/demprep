@@ -91,136 +91,58 @@ test_that("date_to_triangle_year gives correct answers with valid inputs - first
                      factor("Upper", levels = c("Lower", "Upper")))
 })
 
+test_that("date_to_triangle_year gives correct answers with open age group", {
+    expect_identical(date_to_triangle_year(date = c("2000-01-01",
+                                                     "2010-01-01",
+                                                    "2004-12-31",
+                                                    "1999-12-31",
+                                                    NA),
+                                            dob = "1900-01-01",
+                                            break_max = 100),
+                     factor(c("Upper", "Upper", "Upper", "Lower", NA),
+                            levels = c("Lower", "Upper", NA),
+                            exclude = NULL))
+})
+
+test_that("date_to_triangle_year gives correct answers with leap years", {
+    expect_identical(date_to_triangle_year(date = c("2001-02-27",
+                                                    "2001-02-28",
+                                                    "2004-02-27",
+                                                    "2004-02-28",
+                                                    "2004-02-29"),
+                                           dob = "2000-02-29"),
+                     factor(c("Upper", "Upper", "Upper", "Upper", "Upper"),
+                            levels = c("Lower", "Upper")))
+})
 
 
+## date_to_triangle_multi --------------------------------------------------
 
+test_that("date_to_triangle_multi gives correct answers with valid inputs", {
+    expect_identical(date_to_triangle_multi(date = c("2000-01-01",
+                                                     "2010-01-01",
+                                                     "2000-01-03"),
+                                            dob = "2000-01-01",
+                                            width = 5),
+                     factor(c("Lower", "Lower", "Lower"), 
+                            levels = c("Lower", "Upper")))
+    expect_identical(date_to_triangle_multi(date = c("2000-01-01",
+                                                     "2010-01-01",
+                                                     "2004-12-31"),
+                                            dob = "2000-01-01",
+                                            break_max = 10),
+                     factor(c("Lower", "Upper", "Lower"),
+                            levels = c("Lower", "Upper")))
+    expect_identical(date_to_triangle_multi(date = c("2001-01-01",
+                                                     "2010-01-01",
+                                                     NA),
+                                            dob = "2000-07-01",
+                                            width = 5),
+                     factor(c("Lower", "Upper", NA),
+                            levels = c("Lower", "Upper", NA),
+                            exclude = NULL))
+})
 
-## test_that("date_to_triangle_year gives correct answers with infinite values for 'break_max'", {
-##     expect_identical(date_to_triangle_year(date = c("2000-01-01",
-##                                                      "2010-01-01",
-##                                                      "2004-12-31"),
-##                                             dob = "2000-01-01",
-##                                             break_max = NULL),
-##                      factor(c(0, "10+", 4), levels = c(0:9, "10+")))
-##     expect_identical(date_to_triangle_year(date = c("2000-01-01",
-##                                                      "2010-01-01",
-##                                                      "2004-12-31"),
-##                                             dob = "2000-01-01",
-##                                             break_max = NULL,
-##                                             open_right = FALSE),
-##                      factor(c(0, 10, 4), levels = 0:10))
-##     expect_identical(date_to_triangle_year(date = c("2000-01-01",
-##                                                      "2010-01-01",
-##                                                      "2004-12-31"),
-##                                             dob = "2000-01-01",
-##                                             break_max = NULL,
-##                                             open_right = FALSE,
-##                                             as_factor = FALSE),
-##                      c("0", "10", "4"))
-## })
-
-
-## test_that("date_to_triangle_year gives correct answers when 'open_right' is FALSE", {
-##     expect_identical(date_to_triangle_year(date = c("2000-01-01",
-##                                                      "2010-01-01",
-##                                                      "2004-12-31"),
-##                                             dob = "2000-01-01",
-##                                             open_right = FALSE),
-##                      factor(c(0, 10, 4), levels = 0:99))
-## })
-
-## test_that("date_to_triangle_year gives correct answers when 'as_factor' is FALSE", {
-##     expect_identical(date_to_triangle_year(date = c("2000-01-01",
-##                                                      "2010-01-01",
-##                                                      "2004-12-31"),
-##                                             dob = "2000-01-01",
-##                                             break_max = 2,
-##                                             as_factor = FALSE),
-##                      c(0, "2+", "2+"))
-## })
-
-## test_that("date_to_triangle_year gives correct answers when 'date' and/or 'dob' has NA", {
-##     expect_identical(date_to_triangle_year(date = c("2000-01-01",
-##                                                      "2010-01-01",
-##                                                      NA),
-##                                             dob = "2000-01-01"),
-##                      factor(c(0, "10", NA), levels = c(0:99, "100+", NA), exclude = NULL))
-## })
-
-## test_that("date_to_triangle_year gives correct answers with leap years", {
-##     expect_identical(date_to_triangle_year(date = c("2001-02-27",
-##                                                      "2001-02-28",
-##                                                      "2004-02-27",
-##                                                      "2004-02-28",
-##                                                      "2004-02-29"),
-##                                             dob = "2000-02-29"),
-##                      factor(c(0, 1, 3, 4, 4), levels = c(0:99, "100+")))
-## })
-
-
-## ## date_to_triangle_multi --------------------------------------------------
-
-## test_that("date_to_triangle_multi gives correct answers with valid inputs", {
-##     expect_identical(date_to_triangle_multi(date = c("2000-01-01",
-##                                                       "2010-01-01",
-##                                                       "2004-12-31"),
-##                                              dob = "2000-01-01",
-##                                              width = 5),
-##                      factor(c("0-4", "10-14", "0-4"),
-##                             levels = c(paste(seq(0, 95, 5), seq(4, 99, 5), sep = "-"),
-##                                        "100+")))
-##     expect_identical(date_to_triangle_multi(date = c("2000-01-01",
-##                                                       "2010-01-01",
-##                                                       "2004-12-31"),
-##                                              dob = "2000-01-01",
-##                                              break_max = 10),
-##                      factor(c("0-4", "10+", "0-4"),
-##                             levels = c("0-4", "5-9", "10+")))
-##     expect_identical(date_to_triangle_multi(date = c("2000-01-01",
-##                                                       "2010-01-01",
-##                                                       "2004-12-31"),
-##                                              dob = "2000-01-01",
-##                                              width = 10,
-##                                              break_max = 10),
-##                      factor(c("0-9", "10+", "0-9"), levels = c("0-9", "10+")))
-##     expect_identical(date_to_triangle_multi(date = c("2000-01-01",
-##                                                       "2010-01-01",
-##                                                       "2004-12-31"),
-##                                              dob = "2000-01-01",
-##                                              width = 5,
-##                                              break_max = NULL),
-##                      factor(c("0-4", "10+", "0-4"),
-##                             levels = c("0-4", "5-9", "10+")))
-##     expect_identical(date_to_triangle_multi(date = c("2000-01-01",
-##                                                       "2010-01-01",
-##                                                       "2004-12-31"),
-##                                              dob = "2000-01-01",
-##                                              width = 5,
-##                                              break_max = NULL,
-##                                              open_right = FALSE),
-##                      factor(c("0-4", "10-14", "0-4"),
-##                             levels = c("0-4", "5-9", "10-14")))
-## })
-
-
-## ## date_to_triangle_lifetab --------------------------------------------------
-
-## test_that("date_to_triangle_lifetab gives correct answers with valid inputs", {
-##     expect_identical(date_to_triangle_lifetab(date = c("2000-01-01",
-##                                                         "2010-01-01",
-##                                                         "2004-12-31"),
-##                                                dob = "2000-01-01"),
-##                      factor(c("0", "10-14", "1-4"),
-##                             levels = c("0", "1-4", paste(seq(5, 95, 5), seq(9, 99, 5), sep = "-"),
-##                                        "100+")))
-##     expect_identical(date_to_triangle_lifetab(date = c("2000-01-01",
-##                                                         "2010-01-01",
-##                                                         "2004-12-31"),
-##                                                dob = "2000-01-01",
-##                                                break_max = 10),
-##                      factor(c("0", "10+", "1-4"),
-##                             levels = c("0", "1-4", "5-9", "10+")))
-## })
 
 ## ## date_to_triangle_fert --------------------------------------------------
 
