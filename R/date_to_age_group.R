@@ -2,8 +2,8 @@
 ## HAS_TESTS
 #' Convert dates to one-year age groups
 #'
-#' Given dates of birth, and dates when events occurred
-#' or measurements were made, derive age groups. These
+#' Given dates when events occurred or measurements were made,
+#' and dates of birth, derive age groups. These
 #' age groups all have widths of one year, except possibly
 #' the final age group.
 #'
@@ -137,8 +137,8 @@ date_to_age_group_year <- function(date,
 ## HAS_TESTS
 #' Convert dates to multi-year age groups
 #'
-#' Given dates of birth, and dates when events occurred
-#' or measurements were made, derive age groups. These
+#' Given dates when events occurred or measurements were made,
+#' and dates of birth, derive age groups. These
 #' age groups all have the same width, except possibly
 #' the final age group. The width must be a multiple
 #' of one year.
@@ -279,8 +279,8 @@ date_to_age_group_multi <- function(date,
 ## HAS_TESTS
 #' Convert dates to age groups used in abridged life table
 #'
-#' Given dates of birth, and dates when events occurred
-#' or measurements were made, derive age groups. These
+#' Given dates of death and dates of birth,
+#' derive age groups. These
 #' age groups are the ones typically used in an
 #' "abridged" (ie not single-year) life table: "0", "1-4",
 #' and "5-9", "10-14", "10-14", and so on up to the
@@ -303,6 +303,7 @@ date_to_age_group_multi <- function(date,
 #' including age groups that not appear in the data.
 #'
 #' @includeParams date_to_age_group_year
+#' @param date Date of death.
 #'
 #' @return If \code{as_factor} is \code{TRUE}, a factor;
 #' otherwise a character vector. The length equals the length
@@ -376,7 +377,98 @@ date_to_age_group_lifetab <- function(date, dob,
 }
 
 ## HAS_TESTS
-#' @rdname date_to_age_group
+#' Convert dates to age groups when measuring fertility 
+#'
+#' Given the dates when the births occur,
+#' and the date of birth of the mothers,
+#' derive age groups. These age groups all have the same width,
+#' which must be a multiple of one year.
+#'
+#' \code{date} and \code{dob} are both vectors of class
+#' \code{\link[base]{Date}}, or vectors that can be coerced to class
+#' \code{Date} via function \code{\link[base]{as.Date}}.
+#'
+#' \code{date} and \code{dob} must have the same length,
+#' unless one of them has length 1, in which case the
+#' length-1 argument is recycled.
+#'
+#' \code{break_min} and \code{break_max} specify
+#' the range of ages over which reproduction
+#' is assumed to occur. For instance, if
+#' \code{break_min} is \code{15} and \code{break_max}
+#' is \code{50}, all births are assumed to
+#' occur to women aged 15 to 49 (inclusive).
+#'
+#' Datasets sometimes contain a few births to mothers
+#' younger than the minimum, or older than the maximum,
+#' expected ages. Demographers often recode births to
+#' unexpectedly young mothers as occurring to women of the youngest
+#' expected age group, and births to unexpectedly old mothers as occurring
+#' to women of the oldest expected age group. This avoids having cells
+#' with very small counts, but also allows for the possibility that
+#' the extreme reported ages may be coding errors. Recoding of
+#' births outside the expected range is controlled by
+#' parameters \code{recode_up} and \code{recode_down}. The default
+#' is for no recoding to occur.
+#'
+#' @includeParams date_to_age_group_year
+#' @param width The width in years of the age intervals.
+#' A positive integer. Defaults to 5.
+#' @param recode_up If \code{TRUE}, births to women
+#' aged less than is \code{TRUE}, are treated as occurring to
+#' women in the lowest repoductive age group.
+#' @param recode_down If \code{TRUE}, births to women
+#' aged \code{break_max} or higher are treated as
+#' occurring to women in the highest reproductive
+#' age group.
+#'
+#' @return If \code{as_factor} is \code{TRUE}, a factor;
+#' otherwise a character vector. The length equals the length
+#' of \code{date} or the length of \code{dob}, whichever
+#' is greater.
+#'
+#' @seealso Other functions for creating age groups are
+#' \code{\link{date_to_age_group_year}},
+#' \code{\link{date_to_age_group_multi}},
+#' \code{\link{date_to_age_group_lifetab}},
+#' \code{\link{date_to_age_group_custom}},
+#' \code{\link{date_to_age_group_quarter}},
+#' and \code{\link{date_to_age_group_month}}.
+#'
+#' @examples
+#' date_to_age_group_fert(date = c("2024-03-27", "2022-11-09"),
+#'                        dob = c("2001-03-21", "2000-07-13"))
+#'
+#' ## alternative values for 'width'
+#' date_to_age_group_fert(date = c("2024-03-27", "2022-11-09"),
+#'                        dob = c("2001-03-21", "2000-07-13"),
+#'                        width = 10,
+#'                        break_min = 20)
+#' date_to_age_group_fert(date = c("2024-03-27", "2022-11-09"),
+#'                        dob = c("2001-03-21", "2000-07-13"),
+#'                        width = 1)
+#'
+#' ## replicate date of birth
+#' date_to_age_group_fert(date = c("2024-03-27", "2022-11-09"),
+#'                        dob = "2001-05-18")
+#'
+#' ## return non-factor
+#' date_to_age_group_fert(date = c("2024-03-27", "2022-11-09"),
+#'                        dob = "2001-05-18",
+#'                        as_factor = FALSE)
+#'
+#' ## allow youngest and oldest age groups to be
+#' ## set by the data
+#' date_to_age_group_fert(date = c("2052-01-02", "2019-09-22", "2022-10-08"),
+#'                        dob = c("2000-01-01", "2001-03-17", "2010-07-05"),
+#'                        break_min = NULL,
+#'                        break_max = NULL)
+#'
+#' ## recode ages outside the expected range
+#' date_to_age_group_fert(date = c("2052-01-02", "2019-09-22", "2022-10-08"),
+#'                        dob = c("2000-01-01", "2001-03-17", "2010-07-05"),
+#'                        recode_up = TRUE,
+#'                        recode_down = TRUE)
 #' @export
 date_to_age_group_fert <- function(date, dob,
                                    break_min = 15,
