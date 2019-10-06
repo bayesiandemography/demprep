@@ -1,87 +1,95 @@
 
-#' Convert dates to age groups
+## HAS_TESTS
+#' Convert dates to one-year age groups
 #'
-#' Convert precise dates into broader age groups,
-#' in a dataset describing individual people or events.
+#' Given dates of birth, and dates when events occurred
+#' or measurements were made, derive age groups. These
+#' age groups all have widths of one year, except possibly
+#' the final age group.
 #'
-#' Raw data on individual people or events often do not
-#' give people's ages but instead give the
-#' date when the data was collected or the event occurred,
-#' plus the person's date of birth. Functions \code{date_to_age_group_month},
-#' \code{date_to_age_group_quarter}, and \code{date_to_age_group_year}
-#' can be used to calculate ages from information on dates.
-#' The functions focus on the typical cases, rather than try to
-#' cover every possible input or output.
-#' 
-#' With one exception, the age groups constructed
-#' by \code{date_to_age_group_month} always have a
-#' width of one month, and the age groups constructed
-#' by \code{date_to_age_group_year} always have a
-#' width of one quarter.  The exception is the
-#' highest age group, which is typically 'open', i.e. has
-#' no upper limit. The age groups constructed by \code{date_to_age_group_year}
-#' by default have a width of one year. However, setting \code{width}
-#' to a number other than 1 will give wider intervals.
-#' For intervals with varying lengths, use \code{breaks}.
-#' See below for examples.
+#' A person belongs to age group \code{"a"} if that
+#' person was exactly \code{a} years
+#' old at their most recent birthday. For instance, a person
+#' who had their fifth birthday two days ago belongs to age
+#' group \code{"5"} and a person who was born (had their zero-th
+#' birthday) three months ago belongs to age group \code{"0"}.
 #'
-#' The \code{age_open} argument specifies the start of
-#' the open age group. By default this is 1200 months
-#' for \code{date_to_age_group_month},
-#' 400 quarters for \code{date_to_age_group_quarter}, 
-#' and for \code{date_to_age_group_year}.  If you don't want an
-#' open age group, set \code{age_open} to \code{NULL}.
+#' \code{date} and \code{dob} are both vectors of class
+#' \code{\link[base]{Date}}, or vectors that can be coerced to class
+#' \code{Date} via function \code{\link[base]{as.Date}}.
 #'
 #' \code{date} and \code{dob} must have the same length,
 #' unless one of them has length 1, in which case the
 #' length-1 argument is recycled.
 #'
-#' By default, the functions returns a factor. The levels of this
-#' factor contain all intermediate age groups between the lowest
-#' and highest, even if these were not found in the data.
-#' To return a character vector instead, set \code{as_factor}
-#' to \code{FALSE}.
-#' 
-#' @param date The date of the event or measurement.
-#' @param dob The individual's date of birth.
-#' @param age_open The minimum age for the open age group 
-#' age, measured in months, quarters, or years.
-#' @param width The width, in years, of the age groups.
-#' A positive integer.
-#' @param breaks The points dividing the intervals. 
-#' @param as_factor Whether the return value should be a factor
+#' \code{break_max} and \code{open_right} are used to specify
+#' the oldest age group.
+#' When \code{break_max} is non-\code{NULL} and
+#' \code{open_right} is \code{TRUE}, the oldest
+#' age group is \code{[break_max, Inf)} years. When
+#' \code{break_max} is non-\code{NULL} and 
+#' \code{open_right} is \code{FALSE}, the oldest age
+#' group is \code{[break_max-1, break_max)} years.
+#' When \code{break_max} is \code{NULL}, the oldest age
+#' group depends on the highest value in the data.
+#'
+#' When \code{as_factor} is \code{TRUE} the levels of
+#' the factor include all intermediate age groups,
+#' including age groups that not appear in the data.
+#'
+#' @param date Dates of events or measurements.
+#' @param dob Dates of birth.
+#' @param break_max An integer, defining the
+#' maximum age group.
+#' @param open_right Whether the final age group
+#' has no upper limit. Defaults to \code{TRUE}.
+#' @param as_factor Whether the return value should be a factor.
 #' Defaults to \code{TRUE}.
-#' 
+#'
 #' @return If \code{as_factor} is \code{TRUE}, a factor;
 #' otherwise a character vector. The length equals the length
 #' of \code{date} or the length of \code{dob}, whichever
 #' is greater.
 #'
-#' @seealso To turn dates into periods, cohorts, or Lexis triangles,
-#' use functions such as \code{date_to_period_year},
-#' \code{date_to_cohort_year}, and \code{date_to_triangle_year}.
-#' If none of these functions can do the job, try \code{\link[base]{cut}},
-#' possibly in combination with \code{\link{make_age_labels}}.
+#' @seealso Other functions for creating age groups are
+#' \code{\link{date_to_age_group_multi}},
+#' \code{\link{date_to_age_group_lifetab}},
+#' \code{\link{date_to_age_group_fert}},
+#' \code{\link{date_to_age_group_custom}},
+#' \code{\link{date_to_age_group_quarter}},
+#' and \code{\link{date_to_age_group_month}}.
+#' Other functions for working with one-year intervals are
+#' \code{\link{date_to_period_year}},
+#' \code{\link{date_to_cohort_year}},
+#' and \code{\link{date_to_triangle_year}}.
 #'
-#' WHAT ABOUT LOWEST AGE GROUP? HOW TO SPECIFY OPEN AGE GROUP WHEN
-#' USING BREAKS ARG?
+#' @examples
+#' date_to_age_group_year(date = c("2024-03-27", "2022-11-09"),
+#'                        dob = c("2001-03-21", "2000-07-13"))
 #'
+#' ## replicate date of birth
+#' date_to_age_group_year(date = c("2024-03-27", "2022-11-09"),
+#'                        dob = "2011-05-18")
 #'
-#' If as_factor is TRUE, and date or dob have NAs, then the
-#' levels of the answer will include NA.
-#' 
-#' @name date_to_age_group
-NULL
-
-## Assume every (non-NA) record belongs to appropriate age range.
-## Do not use these functions for filtering.
-## Leave NAs in because these records might later have age imputed.
-
-## 'break_max' can be NULL - except for lifetab. In that case, the levels run from 0 to maximum observed age.
-
-## HAS_TESTS
-#' @rdname date_to_age_group
-#' @export
+#' ## return non-factor
+#' date_to_age_group_year(date = c("2024-03-27", "2022-11-09"),
+#'                        dob = "2011-05-18",
+#'                        as_factor = FALSE)
+#'
+#' ## alternative specifications for oldest age group
+#' date_to_age_group_year(date = "2019-09-22",
+#'                        dob = "1910-01-01")
+#' date_to_age_group_year(date = "2019-09-22",
+#'                        dob = "1910-01-01",
+#'                        break_max = 80)
+#' date_to_age_group_year(date = "2019-09-22",
+#'                        dob = "1910-01-01",
+#'                        break_max = NULL)
+#' date_to_age_group_year(date = "2019-09-22",
+#'                        dob = "1910-01-01",
+#'                        break_max = NULL,
+#'                        open_right = FALSE)
+#' @export 
 date_to_age_group_year <- function(date,
                                    dob,
                                    break_max = 100,
@@ -101,7 +109,7 @@ date_to_age_group_year <- function(date,
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
-    if (!open_right)
+    if (!is.null(break_max) && !open_right)
         demcheck::err_lt_break_max_age(age = age_years,
                                        break_max = break_max,
                                        date = date,
@@ -127,7 +135,92 @@ date_to_age_group_year <- function(date,
 }    
 
 ## HAS_TESTS
-#' @rdname date_to_age_group
+#' Convert dates to multi-year age groups
+#'
+#' Given dates of birth, and dates when events occurred
+#' or measurements were made, derive age groups. These
+#' age groups all have the same width, except possibly
+#' the final age group. The width must be a multiple
+#' of one year.
+#'
+#' \code{date} and \code{dob} are both vectors of class
+#' \code{\link[base]{Date}}, or vectors that can be coerced to class
+#' \code{Date} via function \code{\link[base]{as.Date}}.
+#'
+#' \code{date} and \code{dob} must have the same length,
+#' unless one of them has length 1, in which case the
+#' length-1 argument is recycled.
+#'
+#' \code{break_max} and \code{open_right} are used to specify
+#' the oldest age group.
+#' When \code{break_max} is non-\code{NULL} and
+#' \code{open_right} is \code{TRUE}, the oldest
+#' age group is \code{[break_max, Inf)} years. When
+#' \code{break_max} is non-\code{NULL} and 
+#' \code{open_right} is \code{FALSE}, the oldest age
+#' group is \code{[break_max-width, break_max)} years.
+#' When \code{break_max} is \code{NULL}, the oldest age
+#' group depends on the highest value in the data.
+#'
+#' When \code{as_factor} is \code{TRUE} the levels of
+#' the factor include all intermediate age groups,
+#' including age groups that not appear in the data.
+#'
+#' @includeParams date_to_age_group_year
+#' @param width The width in years of the age intervals.
+#' A positive integer. Defaults to 5.
+#'
+#' @return If \code{as_factor} is \code{TRUE}, a factor;
+#' otherwise a character vector. The length equals the length
+#' of \code{date} or the length of \code{dob}, whichever
+#' is greater.
+#'
+#' @seealso Other functions for creating age groups are
+#' \code{\link{date_to_age_group_year}},
+#' \code{\link{date_to_age_group_lifetab}},
+#' \code{\link{date_to_age_group_fert}},
+#' \code{\link{date_to_age_group_custom}},
+#' \code{\link{date_to_age_group_quarter}},
+#' and \code{\link{date_to_age_group_month}}.
+#' Other functions for working with multi-year intervals are
+#' \code{\link{date_to_period_multi}},
+#' \code{\link{date_to_cohort_multi}},
+#' and \code{\link{date_to_triangle_multi}}.
+#'
+#' @examples
+#' date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
+#'                         dob = c("2001-03-21", "2000-07-13"))
+#'
+#' ## alternative values for 'width'
+#' date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
+#'                         dob = c("2001-03-21", "2000-07-13"),
+#'                         width = 10)
+#' date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
+#'                         dob = c("2001-03-21", "2000-07-13"),
+#'                         width = 1)
+#'
+#' ## replicate date of birth
+#' date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
+#'                         dob = "2011-05-18")
+#'
+#' ## return non-factor
+#' date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
+#'                         dob = "2011-05-18",
+#'                         as_factor = FALSE)
+#'
+#' ## alternative specifications for oldest age group
+#' date_to_age_group_multi(date = "2019-09-22",
+#'                         dob = "1910-01-01")
+#' date_to_age_group_multi(date = "2019-09-22",
+#'                         dob = "1910-01-01",
+#'                         break_max = 80)
+#' date_to_age_group_multi(date = "2019-09-22",
+#'                         dob = "1910-01-01",
+#'                         break_max = NULL)
+#' date_to_age_group_multi(date = "2019-09-22",
+#'                         dob = "1910-01-01",
+#'                         break_max = NULL,
+#'                         open_right = FALSE)
 #' @export
 date_to_age_group_multi <- function(date,
                                     dob,
@@ -144,8 +237,9 @@ date_to_age_group_multi <- function(date,
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = TRUE)
-    demcheck::err_is_logical_flag(x = open_right,
-                                  name = "open_right")
+    if (!is.null(break_max))
+        demcheck::err_is_logical_flag(x = open_right,
+                                      name = "open_right")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
     demcheck::err_is_multiple_of(x1 = break_max,
@@ -181,8 +275,70 @@ date_to_age_group_multi <- function(date,
     ans
 }
 
+
 ## HAS_TESTS
-#' @rdname date_to_age_group
+#' Convert dates to age groups used in abridged life table
+#'
+#' Given dates of birth, and dates when events occurred
+#' or measurements were made, derive age groups. These
+#' age groups are the ones typically used in an
+#' "abridged" (ie not single-year) life table: "0", "1-4",
+#' and "5-9", "10-14", "10-14", and so on up to the
+#' highest age group.
+#'
+#' \code{date} and \code{dob} are both vectors of class
+#' \code{\link[base]{Date}}, or vectors that can be coerced to class
+#' \code{Date} via function \code{\link[base]{as.Date}}.
+#'
+#' \code{date} and \code{dob} must have the same length,
+#' unless one of them has length 1, in which case the
+#' length-1 argument is recycled.
+#'
+#' \code{break_max} is used to specify
+#' the oldest age group, which is always open
+# on the right.
+#'
+#' When \code{as_factor} is \code{TRUE} the levels of
+#' the factor include all intermediate age groups,
+#' including age groups that not appear in the data.
+#'
+#' @includeParams date_to_age_group_year
+#'
+#' @return If \code{as_factor} is \code{TRUE}, a factor;
+#' otherwise a character vector. The length equals the length
+#' of \code{date} or the length of \code{dob}, whichever
+#' is greater.
+#'
+#' @seealso Other functions for creating age groups are
+#' \code{\link{date_to_age_group_year}},
+#' \code{\link{date_to_age_group_multi}},
+#' \code{\link{date_to_age_group_fert}},
+#' \code{\link{date_to_age_group_custom}},
+#' \code{\link{date_to_age_group_quarter}},
+#' and \code{\link{date_to_age_group_month}}.
+#'
+#' @examples
+#' date_to_age_group_lifetab(date = c("2024-03-27", "2022-11-09"),
+#'                           dob = c("2001-03-21", "2000-07-13"))
+#'
+#' ## replicate date of birth
+#' date_to_age_group_lifetab(date = c("2024-03-27", "2022-11-09"),
+#'                           dob = "2011-05-18")
+#'
+#' ## return non-factor
+#' date_to_age_group_lifetab(date = c("2024-03-27", "2022-11-09"),
+#'                           dob = "2011-05-18",
+#'                           as_factor = FALSE)
+#'
+#' ## alternative specifications for oldest age group
+#' date_to_age_group_multi(date = "2019-09-22",
+#'                         dob = "1910-01-01")
+#' date_to_age_group_multi(date = "2019-09-22",
+#'                         dob = "1910-01-01",
+#'                         break_max = 80)
+#' date_to_age_group_multi(date = "2019-09-22",
+#'                         dob = "1910-01-01",
+#'                         break_max = NULL)
 #' @export
 date_to_age_group_lifetab <- function(date, dob,
                                       break_max = 100,
@@ -365,7 +521,8 @@ date_to_age_group_custom <- function(date, dob,
 
 #' @rdname date_to_age_group
 #' @export
-date_to_age_group_quarter <- function(date, dob,
+date_to_age_group_quarter <- function(date,
+                                      dob,
                                       break_max = 400,
                                       open_right = TRUE,
                                       as_factor = TRUE) {
