@@ -62,6 +62,8 @@
 #' \code{\link{date_to_period_year}},
 #' \code{\link{date_to_cohort_year}},
 #' and \code{\link{date_to_triangle_year}}.
+#' See \code{\link{make_labels_age_group_year}} for the rules
+#' on constructing labels for age groups.
 #'
 #' @examples
 #' date_to_age_group_year(date = c("2024-03-27", "2022-11-09"),
@@ -166,7 +168,7 @@ date_to_age_group_year <- function(date,
 #' the factor include all intermediate age groups,
 #' including age groups that not appear in the data.
 #'
-#' @includeParams date_to_age_group_year
+#' @inheritParams date_to_age_group_year
 #' @param width The width in years of the age intervals.
 #' A positive integer. Defaults to 5.
 #'
@@ -186,6 +188,8 @@ date_to_age_group_year <- function(date,
 #' \code{\link{date_to_period_multi}},
 #' \code{\link{date_to_cohort_multi}},
 #' and \code{\link{date_to_triangle_multi}}.
+#' See \code{\link{make_labels_age_group_year}} for the rules
+#' on constructing labels for age groups.
 #'
 #' @examples
 #' date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
@@ -275,7 +279,6 @@ date_to_age_group_multi <- function(date,
     ans
 }
 
-
 ## HAS_TESTS
 #' Convert dates to age groups used in abridged life table
 #'
@@ -302,7 +305,7 @@ date_to_age_group_multi <- function(date,
 #' the factor include all intermediate age groups,
 #' including age groups that not appear in the data.
 #'
-#' @includeParams date_to_age_group_year
+#' @inheritParams date_to_age_group_year
 #' @param date Date of death.
 #'
 #' @return If \code{as_factor} is \code{TRUE}, a factor;
@@ -317,6 +320,8 @@ date_to_age_group_multi <- function(date,
 #' \code{\link{date_to_age_group_custom}},
 #' \code{\link{date_to_age_group_quarter}},
 #' and \code{\link{date_to_age_group_month}}.
+#' See \code{\link{make_labels_age_group_year}} for the rules
+#' on constructing labels for age groups.
 #'
 #' @examples
 #' date_to_age_group_lifetab(date = c("2024-03-27", "2022-11-09"),
@@ -332,14 +337,14 @@ date_to_age_group_multi <- function(date,
 #'                           as_factor = FALSE)
 #'
 #' ## alternative specifications for oldest age group
-#' date_to_age_group_multi(date = "2019-09-22",
-#'                         dob = "1910-01-01")
-#' date_to_age_group_multi(date = "2019-09-22",
-#'                         dob = "1910-01-01",
-#'                         break_max = 80)
-#' date_to_age_group_multi(date = "2019-09-22",
-#'                         dob = "1910-01-01",
-#'                         break_max = NULL)
+#' date_to_age_group_lifetab(date = "2019-09-22",
+#'                           dob = "1910-01-01")
+#' date_to_age_group_lifetab(date = "2019-09-22",
+#'                           dob = "1910-01-01",
+#'                           break_max = 80)
+#' date_to_age_group_lifetab(date = "2019-09-22",
+#'                           dob = "1910-01-01",
+#'                           break_max = NULL)
 #' @export
 date_to_age_group_lifetab <- function(date, dob,
                                       break_max = 100,
@@ -411,7 +416,7 @@ date_to_age_group_lifetab <- function(date, dob,
 #' parameters \code{recode_up} and \code{recode_down}. The default
 #' is for no recoding to occur.
 #'
-#' @includeParams date_to_age_group_year
+#' @inheritParams date_to_age_group_year
 #' @param width The width in years of the age intervals.
 #' A positive integer. Defaults to 5.
 #' @param recode_up If \code{TRUE}, births to women
@@ -434,6 +439,8 @@ date_to_age_group_lifetab <- function(date, dob,
 #' \code{\link{date_to_age_group_custom}},
 #' \code{\link{date_to_age_group_quarter}},
 #' and \code{\link{date_to_age_group_month}}.
+#' See \code{\link{make_labels_age_group_year}} for the rules
+#' on constructing labels for age groups.
 #'
 #' @examples
 #' date_to_age_group_fert(date = c("2024-03-27", "2022-11-09"),
@@ -482,20 +489,22 @@ date_to_age_group_fert <- function(date, dob,
     date <- l$date
     dob <- l$dob
     break_min <- demcheck::err_tdy_positive_integer_scalar(x = break_min,
-                                                         name = "break_min",
-                                                         null_ok = FALSE)
+                                                           name = "break_min",
+                                                           null_ok = TRUE)
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
-                                                         name = "break_max",
-                                                         null_ok = FALSE)
-    demcheck::err_is_gt_scalar(x1 = break_max,
-                               x2 = break_min,
-                               name1 = "break_max",
-                               name2 = "break_min")
+                                                           name = "break_max",
+                                                           null_ok = TRUE)
     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
                                                        name = "width")
-    if ((break_max - break_min) %% width != 0L)
-        stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
-                      "break_max", break_max, "break_min", break_min, "width", width))
+    if (!is.null(break_min) && !is.null(break_max)) {
+        demcheck::err_is_gt_scalar(x1 = break_max,
+                                   x2 = break_min,
+                                   name1 = "break_max",
+                                   name2 = "break_min")
+        if ((break_max - break_min) %% width != 0L)
+            stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
+                          "break_max", break_max, "break_min", break_min, "width", width))
+    }
     demcheck::err_is_logical_flag(x = recode_up,
                                   name = "recode_up")
     demcheck::err_is_logical_flag(x = recode_down,
@@ -503,37 +512,42 @@ date_to_age_group_fert <- function(date, dob,
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
-    is_lt_min <- age_years < break_min
-    i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
-    if (i_lt_min > 0L) {
-        if (recode_up)
-            age_years[is_lt_min] <- break_min
-        else {
-            stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
-                                "but 'break_min' is %d and 'recode_up' is FALSE"),
-                                date[[i_lt_min]],
-                                dob[[i_lt_min]],
-                                age_years[[i_lt_min]],
-                                break_min))
+    if (!is.null(break_min)) {
+        is_lt_min <- age_years < break_min
+        i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
+        if (i_lt_min > 0L) {
+            if (recode_up)
+                age_years[is_lt_min] <- break_min
+            else {
+                stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
+                                    "but 'break_min' is %d and 'recode_up' is FALSE"),
+                              date[[i_lt_min]],
+                              dob[[i_lt_min]],
+                              age_years[[i_lt_min]],
+                              break_min))
+            }
         }
     }
-    is_ge_max <- age_years >= break_max
-    i_ge_max <- match(TRUE, is_ge_max, nomatch = 0L)
-    if (i_ge_max > 0L) {
-        if (recode_down)
-            age_years[is_ge_max] <- break_max - 1L
-        else {
-            stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
-                                "but 'break_max' is %d and 'recode_down' is FALSE"),
-                          date[[i_ge_max]],
-                          dob[[i_ge_max]],
-                          age_years[[i_ge_max]],
-                          break_max))
+    if (!is.null(break_max)) {
+        is_ge_max <- age_years >= break_max
+        i_ge_max <- match(TRUE, is_ge_max, nomatch = 0L)
+        if (i_ge_max > 0L) {
+            if (recode_down)
+                age_years[is_ge_max] <- break_max - 1L
+            else {
+                stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
+                                    "but 'break_max' is %d and 'recode_down' is FALSE"),
+                              date[[i_ge_max]],
+                              dob[[i_ge_max]],
+                              age_years[[i_ge_max]],
+                              break_max))
+            }
         }
     }
-    breaks <- seq(from = break_min,
-                  to = break_max,
-                  by = width)
+    breaks <- make_breaks_integer_fert(age = age_years,
+                                       width = width,
+                                       break_min = break_min,
+                                       break_max = break_max)
     include_na <- any(is.na(age_years))
     labels <- make_labels_age_group_year(breaks = breaks,
                                          open_left = FALSE,
@@ -550,7 +564,82 @@ date_to_age_group_fert <- function(date, dob,
 }
 
 ## HAS_TESTS
-#' @rdname date_to_age_group
+#' Convert dates to customized age groups
+#'
+#' Given dates when events occurred or measurements were made,
+#' and dates of birth, derive age groups.
+#' \code{date_to_age_group_custom} is the most flexible
+#' of the various \code{date_to_age_group} functions
+#' in that the age groups can have any combination of widths,
+#' though must be composed of complete years.
+#'
+#' \code{date} and \code{dob} are both vectors of class
+#' \code{\link[base]{Date}}, or vectors that can be coerced to class
+#' \code{Date} via function \code{\link[base]{as.Date}}.
+#'
+#' \code{date} and \code{dob} must have the same length,
+#' unless one of them has length 1, in which case the
+#' length-1 argument is recycled.
+#'
+#' \code{breaks} is used to specify the points at which
+#' each age group starts and the next one begins. If 
+#' \code{open_right} is \code{TRUE}, and \code{b} is
+#' the last value for \code{breaks}, then the oldest
+#' age group is \code{[b, Inf)} years. 
+#' If \code{open_right} is \code{FALSE}, \code{a} is the
+#' second-to-last value for \code{breaks} and \code{b}
+#' is the last value, then the oldest age
+#' group is \code{[a, b)} years.
+#'
+#' When \code{as_factor} is \code{TRUE} the levels of
+#' the factor include all intermediate age groups,
+#' including age groups that not appear in the data.
+#'
+#' @inheritParams date_to_age_group_year
+#' @param breaks A vector of strictly increasing integer values.
+#'
+#' @return If \code{as_factor} is \code{TRUE}, a factor;
+#' otherwise a character vector. The length equals the length
+#' of \code{date} or the length of \code{dob}, whichever
+#' is greater.
+#'
+#' @seealso Other functions for creating age groups are
+#' \code{\link{date_to_age_group_year}},
+#' \code{\link{date_to_age_group_multi}},
+#' \code{\link{date_to_age_group_lifetab}},
+#' \code{\link{date_to_age_group_fert}},
+#' \code{\link{date_to_age_group_quarter}},
+#' and \code{\link{date_to_age_group_month}}.
+#' See \code{\link{make_labels_age_group_year}} for the rules
+#' on constructing labels for age groups.
+#'
+#' @examples
+#' date_to_age_group_custom(date = c("2024-03-27", "2022-11-09"),
+#'                          dob = c("2001-03-21", "2000-07-13"),
+#'                          breaks = c(0, 15, 60))
+#' date_to_age_group_custom(date = c("2024-03-27", "2022-11-09"),
+#'                          dob = c("2001-03-21", "2000-07-13"),
+#'                          breaks = c(15, 40, 65))
+#'
+#' ## replicate date of birth
+#' date_to_age_group_custom(date = c("2024-03-27", "2022-11-09"),
+#'                          dob = "2001-01-01",
+#'                          breaks = c(0, 15, 60))
+#'
+#' ## return non-factor
+#' date_to_age_group_custom(date = c("2024-03-27", "2022-11-09"),
+#'                          dob = "2001-01-01",
+#'                          breaks = c(0, 15, 60),
+#'                          as_factor = FALSE)
+#'
+#' ## alternative specifications for oldest age group
+#' date_to_age_group_custom(date = c("2024-03-27", "2022-11-09"),
+#'                          dob = c("2001-03-21", "2000-07-13"),
+#'                          breaks = c(15, 65, 100))
+#' date_to_age_group_custom(date = c("2024-03-27", "2022-11-09"),
+#'                          dob = c("2001-03-21", "2000-07-13"),
+#'                          breaks = c(15, 65, 100),
+#'                          open_right = FALSE)
 #' @export
 date_to_age_group_custom <- function(date, dob,
                                      breaks = NULL,
@@ -699,6 +788,5 @@ date_to_age_group_month <- function(date, dob,
                       exclude = NULL)
     ans
 }
-
 
 

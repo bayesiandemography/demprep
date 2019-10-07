@@ -260,7 +260,7 @@ diff_completed_year <- function(y1, m1, d1, y2, m2, d2) {
     }
 }
 
-
+## HAS_TESTS
 i_month_within_period <- function(date_ymd, width, origin, first_month) {
     year <- date_ymd$y
     month <- date_ymd$m
@@ -343,7 +343,6 @@ make_breaks_date_quarter <- function(date, break_min) {
              to = date_to,
              by = "quarter")
 }
-
 
 ## HAS_TESTS
 make_breaks_date_year <- function(date,
@@ -436,6 +435,22 @@ make_breaks_date_year <- function(date,
              by = by)
 }
 
+
+make_breaks_integer_fert <- function(age, width, break_min, break_max) {
+    if (is.null(break_min)) {
+        break_min <- min(age, na.rm = TRUE)
+        break_min <- (break_min %/% width) * width
+    }
+    if (is.null(break_max)) {
+        break_max <- max(age, na.rm = TRUE)
+        break_max <- (break_max %/% width + 1L) * width
+    }
+    seq.int(from = break_min,
+            to = break_max,
+            by = width)
+}
+
+
 ## HAS_TESTS
 make_breaks_integer_lifetab <- function(break_max) {
     c(0L,
@@ -447,19 +462,16 @@ make_breaks_integer_lifetab <- function(break_max) {
 
 ## HAS_TESTS
 make_breaks_integer_year <- function(age, width, break_max, open_right) {
-    if (!is.null(break_max))
-        break_max <- break_max
-    else {
-        break_max <- max(age,
-                         na.rm = TRUE)
+    if (is.null(break_max)) {
+        break_max <- max(age, na.rm = TRUE)
         if (open_right)
             break_max <- (break_max %/% width) * width
         else
             break_max <- (break_max %/% width + 1L) * width
     }
-    breaks <- seq.int(from = 0L,
-                      to = break_max,
-                      by = width)
+    seq.int(from = 0L,
+            to = break_max,
+            by = width)
 }
 
 ## HAS_TESTS

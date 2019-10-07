@@ -661,6 +661,32 @@ test_that("'make_breaks_date_year' gives correct answer with valid input", {
 })
 
 
+## make_breaks_integer_fert ---------------------------------------------------
+
+test_that("'make_breaks_integer_fert' gives correct answer when break_max is finite", {
+    expect_identical(make_breaks_integer_fert(age = c(17L, 22L, 37L),
+                                              width = 5L,
+                                              break_min = 15L,
+                                              break_max = 50L),
+                     seq.int(from = 15L, by = 5L, to = 50L))
+    expect_identical(make_breaks_integer_fert(age = c(17L, 22L, 37L, NA),
+                                              width = 5L,
+                                              break_min = 15L,
+                                              break_max = 50L),
+                     seq.int(from = 15L, by = 5L, to = 50L))
+    expect_identical(make_breaks_integer_fert(age = c(17L, 22L, 37L, NA),
+                                              width = 5L,
+                                              break_min = NULL,
+                                              break_max = NULL),
+                     seq.int(from = 15L, by = 5L, to = 40L))
+    expect_identical(make_breaks_integer_fert(age = c(17L, 22L, 37L, NA),
+                                              width = 5L,
+                                              break_min = NULL,
+                                              break_max = 45L),
+                     seq.int(from = 15L, by = 5L, to = 45L))
+})
+
+
 ## make_breaks_integer_lifetab ---------------------------------------------------
 
 test_that("'make_breaks_integer_lifetab' gives correct answer with valid inputs", {
