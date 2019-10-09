@@ -384,46 +384,50 @@ date_to_age_group_lifetab <- function(date, dob,
 ## HAS_TESTS
 #' Convert dates to age groups when measuring fertility 
 #'
-#' Given the dates when the births occur,
-#' and the date of birth of the mothers,
-#' derive age groups. These age groups all have the same width,
-#' which must be a multiple of one year.
+#' Given the dates when births occur,
+#' and the dates of birth of the mothers,
+#' derive age groups. These age groups all have the same widths,
+#' and are measured in years.
 #'
 #' \code{date} and \code{dob} are both vectors of class
 #' \code{\link[base]{Date}}, or vectors that can be coerced to class
 #' \code{Date} via function \code{\link[base]{as.Date}}.
-#'
 #' \code{date} and \code{dob} must have the same length,
 #' unless one of them has length 1, in which case the
 #' length-1 argument is recycled.
 #'
 #' \code{break_min} and \code{break_max} specify
 #' the range of ages over which reproduction
-#' is assumed to occur. For instance, if
+#' is assumed to occur. If, for instance,
 #' \code{break_min} is \code{15} and \code{break_max}
 #' is \code{50}, all births are assumed to
 #' occur to women aged 15 to 49 (inclusive).
 #'
 #' Datasets sometimes contain a few births to mothers
-#' younger than the minimum, or older than the maximum,
-#' expected ages. Demographers often recode births to
-#' unexpectedly young mothers as occurring to women of the youngest
-#' expected age group, and births to unexpectedly old mothers as occurring
-#' to women of the oldest expected age group. This avoids having cells
-#' with very small counts, but also allows for the possibility that
-#' the extreme reported ages may be coding errors. Recoding of
-#' births outside the expected range is controlled by
-#' parameters \code{recode_up} and \code{recode_down}. The default
+#' younger than the assumed minimum age for reproduction,
+#' or to mothers older than the assumed maximum age
+#' for reproduction. Demographers often recode such births,
+#' so that births to unexpectedly young mothers are
+#' treated as occurring just above the minimum age
+#' for reproduction, and births to unexpectedly old mothers
+#' are treated as occurring just below the maximum
+#' age for reproduction. This recoding can be justified
+#' on the grounds that some of the original ages may have
+#' been misreported, but it also alleviates any problems
+#' with tabulations having small counts at extreme ages.
+#' Recoding of mothers' ages outside the expected range
+#' is controlled by parameters \code{recode_up}
+#' and \code{recode_down}. The default
 #' is for no recoding to occur.
 #'
 #' @inheritParams date_to_age_group_year
 #' @param width The width in years of the age intervals.
-#' A positive integer. Defaults to 5.
+#' A positive integer defaulting to 5.
 #' @param recode_up If \code{TRUE}, births to women
-#' aged less than is \code{TRUE}, are treated as occurring to
+#' aged less than \code{\break_min} are treated as occurring to
 #' women in the lowest repoductive age group.
 #' @param recode_down If \code{TRUE}, births to women
-#' aged \code{break_max} or higher are treated as
+#' aged \code{break_max} or more are treated as
 #' occurring to women in the highest reproductive
 #' age group.
 #'
