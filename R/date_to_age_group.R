@@ -121,18 +121,15 @@ date_to_age_group_year <- function(date,
                                        width = 1L,
                                        break_max = break_max,
                                        open_right = open_right)
-    include_na <- any(is.na(age_years))
     labels <- make_labels_age_group_year(breaks = breaks,
                                          open_left = FALSE,
-                                         open_right = open_right,
-                                         include_na = include_na)
+                                         open_right = open_right)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
     if (as_factor)
         ans <- factor(x = ans,
-                      levels = labels,
-                      exclude = NULL)
+                      levels = labels)
     ans
 }    
 
@@ -264,18 +261,15 @@ date_to_age_group_multi <- function(date,
                                        width = width,
                                        break_max = break_max,
                                        open_right = open_right)
-    include_na <- any(is.na(age_years))
     labels <- make_labels_age_group_year(breaks = breaks,
                                          open_left = FALSE,
-                                         open_right = open_right,
-                                         include_na = include_na)
+                                         open_right = open_right)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
     if (as_factor)
         ans <- factor(x = ans,
-                      levels = labels,
-                      exclude = NULL)
+                      levels = labels)
     ans
 }
 
@@ -366,18 +360,15 @@ date_to_age_group_lifetab <- function(date, dob,
                                        dob = dob)
     age_years <- age_months %/% 12L
     breaks <- make_breaks_integer_lifetab(break_max)
-    include_na <- any(is.na(age_years))
     labels <- make_labels_age_group_year(breaks = breaks,
                                          open_left = FALSE,
-                                         open_right = TRUE,
-                                         include_na = include_na)
+                                         open_right = TRUE)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
     if (as_factor)
         ans <- factor(x = ans,
-                      levels = labels,
-                      exclude = NULL)
+                      levels = labels)
     ans
 }
 
@@ -552,18 +543,15 @@ date_to_age_group_fert <- function(date, dob,
                                        width = width,
                                        break_min = break_min,
                                        break_max = break_max)
-    include_na <- any(is.na(age_years))
     labels <- make_labels_age_group_year(breaks = breaks,
                                          open_left = FALSE,
-                                         open_right = FALSE,
-                                         include_na = include_na)
+                                         open_right = FALSE)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
     if (as_factor)
         ans <- factor(x = ans,
-                      levels = labels,
-                      exclude = NULL)
+                      levels = labels)
     ans
 }
 
@@ -688,18 +676,15 @@ date_to_age_group_custom <- function(date, dob,
                           breaks[[n]]))
         }
     }
-    include_na <- any(is.na(age_years))
     labels <- make_labels_age_group_year(breaks = breaks,
                                          open_left = FALSE,
-                                         open_right = open_right,
-                                         include_na = include_na)
+                                         open_right = open_right)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
     if (as_factor)
         ans <- factor(x = ans,
-                      levels = labels,
-                      exclude = NULL)
+                      levels = labels)
     ans
 }
 
@@ -733,19 +718,16 @@ date_to_age_group_quarter <- function(date,
                                  unit = "quarter")    
     breaks <- seq.int(from = 0L,
                       to = break_max)
-    include_na <- any(is.na(age_quarters))
     labels <- make_labels_age_group_quarter(break_min = 0L,
                                             break_max = break_max,
                                             open_left = FALSE,
-                                            open_right = open_right,
-                                            include_na = include_na)
+                                            open_right = open_right)
     i <- findInterval(x = age_quarters,
                       vec = breaks)
     ans <- labels[i]
     if (as_factor)
         ans <- factor(x = ans,
-                      levels = labels,
-                      exclude = NULL)
+                      levels = labels)
     ans
 }
 
@@ -777,19 +759,16 @@ date_to_age_group_month <- function(date, dob,
                                  unit = "month")    
     breaks <- seq.int(from = 0L,
                       to = break_max)
-    include_na <- any(is.na(age_months))
     labels <- make_labels_age_group_month(break_min = 0L,
                                           break_max = break_max,
                                           open_left = FALSE,
-                                          open_right = open_right,
-                                          include_na = include_na)
+                                          open_right = open_right)
     i <- findInterval(x = age_months,
                       vec = breaks)
     ans <- labels[i]
     if (as_factor)
         ans <- factor(x = ans,
-                      levels = labels,
-                      exclude = NULL)
+                      levels = labels)
     ans
 }
 

@@ -136,8 +136,7 @@ test_that("'date_to_period_or_cohort_month' gives correct answer with valid inpu
                                                       open_left = FALSE,
                                                       as_factor = TRUE),
                      factor(c("2000 Jan", NA, "2000 Jan"),
-                            levels = c("2000 Jan", NA),
-                            exclude = NULL))
+                            levels = c("2000 Jan")))
 })
 
 
@@ -232,8 +231,7 @@ test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inpu
                                                     open_left = FALSE,
                                                     as_factor = TRUE),
                      factor(c(NA, "2000-2010", "2000-2010", "2010-2020"),
-                            levels = c("1990-2000", "2000-2010", "2010-2020", NA),
-                            exclude = FALSE))
+                            levels = c("1990-2000", "2000-2010", "2010-2020")))
 })
 
 
@@ -272,8 +270,7 @@ test_that("'date_to_period_or_cohort_quarter' gives correct answer with valid in
                                                       open_left = FALSE,
                                                       as_factor = TRUE),
                      factor(c("2000 Q1", NA, "2000 Q1"),
-                            levels = c("2000 Q1", NA),
-                            exclude = NULL))
+                            levels = "2000 Q1"))
 })
 
 
@@ -349,8 +346,7 @@ test_that("'date_to_period_or_cohort_year' gives correct answer with valid input
                                                    open_left = TRUE,
                                                    as_factor = TRUE),
                      factor(c("2002", "2000", NA, "2004"),
-                            levels = c("<2000", as.character(2000:2004), NA),
-                            exclude = NULL))
+                            levels = c("<2000", as.character(2000:2004))))
 })
 
 

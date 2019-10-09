@@ -177,13 +177,8 @@ date_to_triangle_multi <- function(date,
         ans[is_open_upper] <- "Upper"
     }
     if (as_factor) {
-        levels <- c("Lower", "Upper")
-        has_na <- any(is.na(date)) || any(is.na(dob))
-        if (has_na)
-            levels <- c(levels, NA)
         ans <- factor(ans,
-                      levels = levels,
-                      exclude = NULL)
+                      levels = c("Lower", "Upper"))
     }
     ans
 }
@@ -234,13 +229,8 @@ date_to_triangle_quarter <- function(date,
         ans[is_open_upper] <- "Upper"
     }
     if (as_factor) {
-        levels <- c("Lower", "Upper")
-        has_na <- any(is.na(date)) || any(is.na(dob))
-        if (has_na)
-            levels <- c(levels, NA)
         ans <- factor(ans,
-                      levels = levels,
-                      exclude = NULL)
+                      levels = c("Lower", "Upper"))
     }
     ans
 }
@@ -285,13 +275,8 @@ date_to_triangle_month <- function(date, dob,
         ans[is_open_upper] <- "Upper"
     }
     if (as_factor) {
-        levels <- c("Lower", "Upper")
-        has_na <- any(is.na(date)) || any(is.na(dob))
-        if (has_na)
-            levels <- c(levels, NA)
         ans <- factor(ans,
-                      levels = levels,
-                      exclude = NULL)
+                      levels = c("Lower", "Upper"))
     }
     ans
 }

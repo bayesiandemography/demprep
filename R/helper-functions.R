@@ -53,12 +53,10 @@ date_to_period_or_cohort_month <- function(date,
     n <- length(breaks)
     break_min <- breaks[[1L]]
     break_max <- breaks[[n]]
-    include_na <- any(is.na(date))
     labels <- make_labels_period_month(break_min = break_min,
                                        break_max = break_max,
                                        open_left = open_left,
-                                       open_right = FALSE,
-                                       include_na = include_na)
+                                       open_right = FALSE)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
@@ -68,8 +66,7 @@ date_to_period_or_cohort_month <- function(date,
     ans <- labels[i]
     if (as_factor)
         ans <- factor(x = ans,
-                      levels = labels,
-                      exclude = NULL)
+                      levels = labels)
     ans   
 }
 
@@ -114,12 +111,10 @@ date_to_period_or_cohort_multi <- function(date,
                                     width = width,
                                     origin = origin,
                                     break_min = break_min)
-    include_na <- any(is.na(date))
     labels <- make_labels_period_year(breaks = breaks,
                                       open_left = open_left,
                                       open_right = FALSE,
-                                      year_to = NULL,
-                                      include_na = include_na)
+                                      year_to = NULL)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
@@ -129,8 +124,7 @@ date_to_period_or_cohort_multi <- function(date,
     ans <- labels[i]
     if (as_factor)
         ans <- factor(x = ans,
-                      levels = labels,
-                      exclude = NULL)
+                      levels = labels)
     ans
 
 }
@@ -159,12 +153,10 @@ date_to_period_or_cohort_quarter <- function(date,
     n <- length(breaks)
     break_min <- breaks[[1L]]
     break_max <- breaks[[n]]
-    include_na <- any(is.na(date))
     labels <- make_labels_period_quarter(break_min = break_min,
                                          break_max = break_max,
                                          open_left = open_left,
-                                         open_right = FALSE,
-                                         include_na = include_na)
+                                         open_right = FALSE)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
@@ -174,8 +166,7 @@ date_to_period_or_cohort_quarter <- function(date,
     ans <- labels[i]
     if (as_factor)
         ans <- factor(x = ans,
-                      levels = labels,
-                      exclude = NULL)
+                      levels = labels)
     ans   
 }
 
@@ -213,12 +204,10 @@ date_to_period_or_cohort_year <- function(date,
                                     width = 1L,
                                     origin = NULL,
                                     break_min = break_min)
-    include_na <- any(is.na(date))
     labels <- make_labels_period_year(breaks = breaks,
                                       open_left = open_left,
                                       open_right = FALSE,
-                                      year_to = year_to,
-                                      include_na = include_na)
+                                      year_to = year_to)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
@@ -228,8 +217,7 @@ date_to_period_or_cohort_year <- function(date,
     ans <- labels[i]
     if (as_factor)
         ans <- factor(x = ans,
-                      levels = labels,
-                      exclude = NULL)
+                      levels = labels)
     ans
 }
 

@@ -44,8 +44,7 @@ test_that("date_to_period_multi gives correct answers with valid inputs", {
                                                    "2010-01-01",
                                                    NA)),
                      factor(c("2000-2005", "2010-2015", NA),
-                            levels = c("2000-2005", "2005-2010", "2010-2015", NA),
-                            exclude = NULL))
+                            levels = c("2000-2005", "2005-2010", "2010-2015")))
     expect_identical(date_to_period_multi(date = character()),
                      factor(character(),
                             levels = "2000-2005"))
@@ -61,8 +60,7 @@ test_that("date_to_period_quarter gives correct answers with valid inputs", {
                                                      "2001-02-28")),
                      factor(c("2000 Q1", "2000 Q2", NA,  "2001 Q1"),
                             levels = c("2000 Q1", "2000 Q2", "2000 Q3", "2000 Q4",
-                                       "2001 Q1", NA),
-                            exclude = NULL))
+                                       "2001 Q1")))
     expect_identical(date_to_period_quarter(date = "2000-01-01"),
                      factor("2000 Q1", levels = "2000 Q1"))
     expect_identical(date_to_period_quarter(date = "2000-01-01",
@@ -80,9 +78,7 @@ test_that("date_to_period_month gives correct answers with valid inputs", {
                                                    "2001-02-28")),
                      factor(c("2000 Jan", "2000 May", NA,  "2001 Feb"),
                             levels = c(paste("2000", month.abb),
-                                       "2001 Jan", "2001 Feb",
-                                       NA),
-                            exclude = NULL))
+                                       "2001 Jan", "2001 Feb")))
     expect_identical(date_to_period_month(date = "2000-01-01"),
                      factor("2000 Jan", levels = "2000 Jan"))
     expect_identical(date_to_period_month(date = "2000-01-01",

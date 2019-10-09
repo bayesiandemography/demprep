@@ -72,7 +72,7 @@ test_that("date_to_age_group_year gives correct answers when 'date' and/or 'dob'
                                                      "2010-01-01",
                                                      NA),
                                             dob = "2000-01-01"),
-                     factor(c(0, "10", NA), levels = c(0:99, "100+", NA), exclude = NULL))
+                     factor(c(0, "10", NA), levels = c(0:99, "100+")))
 })
 
 test_that("date_to_age_group_year gives correct answers with leap years", {
@@ -281,8 +281,7 @@ test_that("date_to_age_group_quarter gives correct answers with valid inputs", {
                                                break_max = 6,
                                                open_right = FALSE),
                      factor(c("0q", "1q", NA, "5q"),
-                            levels = c("0q", "1q", "2q", "3q", "4q", "5q", NA),
-                            exclude = NULL))
+                            levels = c("0q", "1q", "2q", "3q", "4q", "5q")))
 })
 
 ## date_to_age_group_month ---------------------------------------------------
@@ -309,8 +308,7 @@ test_that("date_to_age_group_month gives correct answers with valid inputs", {
                                              break_max = 3,
                                              open_right = FALSE),
                      factor(c("0m", "2m", NA, "1m"),
-                            levels = c("0m", "1m", "2m", NA),
-                            exclude = NULL))
+                            levels = c("0m", "1m", "2m")))
 })
 
 

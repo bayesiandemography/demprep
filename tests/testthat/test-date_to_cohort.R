@@ -94,16 +94,14 @@ test_that("date_to_cohort_year gives correct answers with valid inputs", {
                                           first_month = "Jul",
                                           origin = 2001),
                      factor(c("1996-2001", "2006-2011", "2001-2006", NA),
-                            levels = c("1996-2001", "2001-2006", "2006-2011", NA),
-                            exclude = NULL))
+                            levels = c("1996-2001", "2001-2006", "2006-2011")))
     expect_identical(date_to_cohort_multi(date = c("2000-01-01",
                                                    "2010-01-01",
                                                    "2004-12-31",
                                                    NA),
                                           break_min = "1996-07-01"),
                      factor(c("1996-2001", "2006-2011", "2001-2006", NA),
-                            levels = c("<1996", "1996-2001", "2001-2006", "2006-2011", NA),
-                            exclude = NULL))
+                            levels = c("<1996", "1996-2001", "2001-2006", "2006-2011")))
     expect_identical(date_to_cohort_multi(date = character()),
                      factor(integer(), levels = "2000-2005"))
 })
@@ -132,8 +130,7 @@ test_that("date_to_cohort_year gives correct answers with valid inputs", {
                                        "2010 Q1")))
     expect_identical(date_to_cohort_quarter(date = c(NA, "2004-12-31")),
                      factor(c(NA, "2004 Q4"),
-                            levels = c("2004 Q4", NA),
-                            exclude = NULL))
+                            levels = "2004 Q4"))
 })
 
 
@@ -158,8 +155,7 @@ test_that("date_to_cohort_year gives correct answers with valid inputs", {
                                        "2010 Jan")))
     expect_identical(date_to_cohort_month(date = c(NA, "2004-12-31")),
                      factor(c(NA, "2004 Dec"),
-                            levels = c("2004 Dec", NA),
-                            exclude = NULL))
+                            levels = c("2004 Dec")))
 })
 
 
