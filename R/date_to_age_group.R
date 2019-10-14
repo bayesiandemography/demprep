@@ -39,15 +39,16 @@
 #'
 #' @param date Dates of events or measurements.
 #' @param dob Dates of birth.
-#' @param break_max An integer, defining the
-#' maximum age group.
+#' @param break_max An integer or \code{NULL}.
+#' Defaults to 100.
 #' @param open_right Whether the final age group
 #' has no upper limit. Defaults to \code{TRUE}.
-#' @param as_factor Whether the return value should be a factor.
+#' @param as_factor Whether the return value is a factor.
 #' Defaults to \code{TRUE}.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, a factor;
-#' otherwise a character vector. The length equals the length
+#' @return If \code{as_factor} is \code{TRUE}, then the return
+#' value is a factor; otherwise it is a character vector.
+#' The length of the return value equals the length
 #' of \code{date} or the length of \code{dob}, whichever
 #' is greater.
 #'
@@ -169,8 +170,9 @@ date_to_age_group_year <- function(date,
 #' @param width The width in years of the age intervals.
 #' A positive integer. Defaults to 5.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, a factor;
-#' otherwise a character vector. The length equals the length
+#' @return If \code{as_factor} is \code{TRUE}, then the
+#' return value is a factor; otherwise it is a character vector.
+#' The length of the return value equals the length
 #' of \code{date} or the length of \code{dob}, whichever
 #' is greater.
 #'
@@ -293,7 +295,7 @@ date_to_age_group_multi <- function(date,
 #'
 #' \code{break_max} is used to specify
 #' the oldest age group, which is always open
-# on the right.
+#' on the right.
 #'
 #' When \code{as_factor} is \code{TRUE} the levels of
 #' the factor include all intermediate age groups,
@@ -302,8 +304,9 @@ date_to_age_group_multi <- function(date,
 #' @inheritParams date_to_age_group_year
 #' @param date Date of death.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, a factor;
-#' otherwise a character vector. The length equals the length
+#' @return If \code{as_factor} is \code{TRUE}, then the return
+#' value is a factor; otherwise it is a character vector.
+#' The length of the return value equals the length
 #' of \code{date} or the length of \code{dob}, whichever
 #' is greater.
 #'
@@ -336,9 +339,6 @@ date_to_age_group_multi <- function(date,
 #' date_to_age_group_lifetab(date = "2019-09-22",
 #'                           dob = "1910-01-01",
 #'                           break_max = 80)
-#' date_to_age_group_lifetab(date = "2019-09-22",
-#'                           dob = "1910-01-01",
-#'                           break_max = NULL)
 #' @export
 date_to_age_group_lifetab <- function(date, dob,
                                       break_max = 100,
@@ -412,18 +412,23 @@ date_to_age_group_lifetab <- function(date, dob,
 #' is for no recoding to occur.
 #'
 #' @inheritParams date_to_age_group_year
+#' @param break_min An integer or \code{NULL}.
+#' Defaults to 15.
+#' @param break_max An integer or \code{NULL}.
+#' Defaults to 50.
 #' @param width The width in years of the age intervals.
 #' A positive integer defaulting to 5.
 #' @param recode_up If \code{TRUE}, births to women
-#' aged less than \code{\break_min} are treated as occurring to
+#' aged less than \code{break_min} are treated as occurring to
 #' women in the lowest repoductive age group.
 #' @param recode_down If \code{TRUE}, births to women
 #' aged \code{break_max} or more are treated as
 #' occurring to women in the highest reproductive
 #' age group.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, a factor;
-#' otherwise a character vector. The length equals the length
+#' @return If \code{as_factor} is \code{TRUE}, then the return
+#' value is a factor; otherwise it is a character vector.
+#' The length of the return value equals the length
 #' of \code{date} or the length of \code{dob}, whichever
 #' is greater.
 #'
@@ -590,8 +595,9 @@ date_to_age_group_fert <- function(date, dob,
 #' @inheritParams date_to_age_group_year
 #' @param breaks A vector of strictly increasing integer values.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, a factor;
-#' otherwise a character vector. The length equals the length
+#' @return If \code{as_factor} is \code{TRUE}, then the
+#' return value is a factor; otherwise it is a character vector.
+#' The length of the return value equals the length
 #' of \code{date} or the length of \code{dob}, whichever
 #' is greater.
 #'
@@ -688,8 +694,99 @@ date_to_age_group_custom <- function(date, dob,
     ans
 }
 
-
-#' @rdname date_to_age_group
+## HAS_TESTS
+#' Convert dates to quarter age groups
+#'
+#' Given dates when events occurred or measurements were made,
+#' and dates of birth, derive age groups. These
+#' age groups all have widths of one quarter (ie three months),
+#' except possibly the final age group.
+#'
+#' A person belongs to age group \code{"a"} if that
+#' person was exactly \code{a} quarters
+#' old at their most recent birthday. For instance, a person
+#' who had their fifth birthday two days ago belongs to age
+#' group \code{"20q"} and a person who was born (had their zero-th
+#' birthday) three months ago belongs to age group \code{"0q"}.
+#'
+#' \code{date} and \code{dob} are both vectors of class
+#' \code{\link[base]{Date}}, or vectors that can be coerced to class
+#' \code{Date} via function \code{\link[base]{as.Date}}.
+#'
+#' \code{date} and \code{dob} must have the same length,
+#' unless one of them has length 1, in which case the
+#' length-1 argument is recycled.
+#'
+#' \code{break_max} and \code{open_right} are used to specify
+#' the oldest age group.
+#' When \code{break_max} is non-\code{NULL} and
+#' \code{open_right} is \code{TRUE}, the oldest
+#' age group is \code{[break_max, Inf)} quarters. When
+#' \code{break_max} is non-\code{NULL} and 
+#' \code{open_right} is \code{FALSE}, the oldest age
+#' group is \code{[break_max-1, break_max)} quarters.
+#' When \code{break_max} is \code{NULL}, the oldest age
+#' group depends on the highest value in the data.
+#'
+#' When \code{as_factor} is \code{TRUE} the levels of
+#' the factor include all intermediate age groups,
+#' including age groups that not appear in the data.
+#'
+#' @param date Dates of events or measurements.
+#' @param dob Dates of birth.
+#' @param break_max An integer or \code{NULL}.
+#' Defaults to 400.
+#' @param open_right Whether the final age group
+#' has no upper limit. Defaults to \code{TRUE}.
+#' @param as_factor Whether the return value is a factor.
+#' Defaults to \code{TRUE}.
+#'
+#' @return If \code{as_factor} is \code{TRUE}, then the return
+#' value is a factor; otherwise it is a character vector.
+#' The length of the return value equals the length
+#' of \code{date} or the length of \code{dob}, whichever
+#' is greater.
+#'
+#' @seealso Other functions for creating age groups are
+#' \code{\link{date_to_age_group_year}},
+#' \code{\link{date_to_age_group_multi}},
+#' \code{\link{date_to_age_group_lifetab}},
+#' \code{\link{date_to_age_group_fert}},
+#' \code{\link{date_to_age_group_custom}},
+#' and \code{\link{date_to_age_group_month}}.
+#' Other functions for working with one-quarter intervals are
+#' \code{\link{date_to_period_quarter}},
+#' \code{\link{date_to_cohort_quarter}},
+#' and \code{\link{date_to_triangle_quarter}}.
+#' See \code{\link{make_labels_age_group_quarter}} for the rules
+#' on constructing labels for age groups.
+#'
+#' @examples
+#' date_to_age_group_quarter(date = c("2024-03-27", "2022-11-09"),
+#'                           dob = c("2001-03-21", "2000-07-13"))
+#'
+#' ## replicate date of birth
+#' date_to_age_group_quarter(date = c("2024-03-27", "2022-11-09"),
+#'                           dob = "2011-05-18")
+#'
+#' ## return non-factor
+#' date_to_age_group_quarter(date = c("2024-03-27", "2022-11-09"),
+#'                           dob = "2011-05-18",
+#'                           as_factor = FALSE)
+#'
+#' ## alternative specifications for oldest age group
+#' date_to_age_group_quarter(date = "2019-09-22",
+#'                           dob = "1910-01-01")
+#' date_to_age_group_quarter(date = "2019-09-22",
+#'                           dob = "1910-01-01",
+#'                           break_max = 320)
+#' date_to_age_group_quarter(date = "2019-09-22",
+#'                           dob = "1910-01-01",
+#'                           break_max = NULL)
+#' date_to_age_group_quarter(date = "2019-09-22",
+#'                           dob = "1910-01-01",
+#'                           break_max = NULL,
+#'                           open_right = FALSE)
 #' @export
 date_to_age_group_quarter <- function(date,
                                       dob,
@@ -701,8 +798,8 @@ date_to_age_group_quarter <- function(date,
     date <- l$date
     dob <- l$dob
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
-                                                         name = "break_max",
-                                                         null_ok = TRUE)
+                                                           name = "break_max",
+                                                           null_ok = TRUE)
     demcheck::err_is_logical_flag(x = open_right,
                                   name = "open_right")
     demcheck::err_is_logical_flag(x = as_factor,
@@ -710,14 +807,16 @@ date_to_age_group_quarter <- function(date,
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_quarters <- age_months %/% 3L
-    if (!open_right)
+    if (!is.null(break_max) && !open_right)
         demcheck::err_lt_break_max_age(age = age_quarters,
                                  break_max = break_max,
                                  date = date,
                                  dob = dob,
                                  unit = "quarter")    
-    breaks <- seq.int(from = 0L,
-                      to = break_max)
+    breaks <- make_breaks_integer_month_quarter(age = age_quarters,
+                                                break_max = break_max,
+                                                open_right = open_right)
+    break_max <- breaks[length(breaks)]
     labels <- make_labels_age_group_quarter(break_min = 0L,
                                             break_max = break_max,
                                             open_left = FALSE,
@@ -731,8 +830,99 @@ date_to_age_group_quarter <- function(date,
     ans
 }
 
-
-#' @rdname date_to_age_group
+## HAS_TESTS
+#' Convert dates to month age groups
+#'
+#' Given dates when events occurred or measurements were made,
+#' and dates of birth, derive age groups. These
+#' age groups all have widths of one month,
+#' except possibly the final age group.
+#'
+#' A person belongs to age group \code{"a"} if that
+#' person was exactly \code{a} months
+#' old at their most recent birthday. For instance, a person
+#' who had their fifth birthday two days ago belongs to age
+#' group \code{"60m"} and a person who was born (had their zero-th
+#' birthday) three months ago belongs to age group \code{"60m"}.
+#'
+#' \code{date} and \code{dob} are both vectors of class
+#' \code{\link[base]{Date}}, or vectors that can be coerced to class
+#' \code{Date} via function \code{\link[base]{as.Date}}.
+#'
+#' \code{date} and \code{dob} must have the same length,
+#' unless one of them has length 1, in which case the
+#' length-1 argument is recycled.
+#'
+#' \code{break_max} and \code{open_right} are used to specify
+#' the oldest age group.
+#' When \code{break_max} is non-\code{NULL} and
+#' \code{open_right} is \code{TRUE}, the oldest
+#' age group is \code{[break_max, Inf)} months. When
+#' \code{break_max} is non-\code{NULL} and 
+#' \code{open_right} is \code{FALSE}, the oldest age
+#' group is \code{[break_max-1, break_max)} months.
+#' When \code{break_max} is \code{NULL}, the oldest age
+#' group depends on the highest value in the data.
+#'
+#' When \code{as_factor} is \code{TRUE} the levels of
+#' the factor include all intermediate age groups,
+#' including age groups that not appear in the data.
+#'
+#' @param date Dates of events or measurements.
+#' @param dob Dates of birth.
+#' @param break_max An integer or \code{NULL}.
+#' Defaults to 1200.
+#' @param open_right Whether the final age group
+#' has no upper limit. Defaults to \code{TRUE}.
+#' @param as_factor Whether the return value is a factor.
+#' Defaults to \code{TRUE}.
+#'
+#' @return If \code{as_factor} is \code{TRUE}, then the return
+#' value is a factor; otherwise it is a character vector.
+#' The length of the return value equals the length
+#' of \code{date} or the length of \code{dob}, whichever
+#' is greater.
+#'
+#' @seealso Other functions for creating age groups are
+#' \code{\link{date_to_age_group_year}},
+#' \code{\link{date_to_age_group_multi}},
+#' \code{\link{date_to_age_group_lifetab}},
+#' \code{\link{date_to_age_group_fert}},
+#' \code{\link{date_to_age_group_custom}},
+#' \code{\link{date_to_age_group_quarter}}.
+#' Other functions for working with one-month intervals are
+#' \code{\link{date_to_period_month}},
+#' \code{\link{date_to_cohort_month}},
+#' and \code{\link{date_to_triangle_month}}.
+#' See \code{\link{make_labels_age_group_month}} for the rules
+#' on constructing labels for age groups.
+#'
+#' @examples
+#' date_to_age_group_month(date = c("2024-03-27", "2022-11-09"),
+#'                         dob = c("2001-03-21", "2000-07-13"))
+#'
+#' ## replicate date of birth
+#' date_to_age_group_month(date = c("2024-03-27", "2022-11-09"),
+#'                         dob = "2011-05-18")
+#'
+#' ## return non-factor
+#' date_to_age_group_month(date = c("2024-03-27", "2022-11-09"),
+#'                         dob = "2011-05-18",
+#'                         as_factor = FALSE)
+#'
+#' ## alternative specifications for oldest age group
+#' date_to_age_group_month(date = "2019-09-22",
+#'                         dob = "1910-01-01")
+#' date_to_age_group_month(date = "2019-09-22",
+#'                         dob = "1910-01-01",
+#'                         break_max = 320)
+#' date_to_age_group_month(date = "2019-09-22",
+#'                         dob = "1910-01-01",
+#'                         break_max = NULL)
+#' date_to_age_group_month(date = "2019-09-22",
+#'                         dob = "1910-01-01",
+#'                         break_max = NULL,
+#'                         open_right = FALSE)
 #' @export
 date_to_age_group_month <- function(date, dob,
                                     break_max = 1200,
@@ -751,14 +941,16 @@ date_to_age_group_month <- function(date, dob,
                                   name = "as_factor")
     age_months <- age_completed_months(date = date,
                                        dob = dob)
-    if (!open_right)
+    if (!is.null(break_max) && !open_right)
         demcheck::err_lt_break_max_age(age = age_months,
                                  break_max = break_max,
                                  date = date,
                                  dob = dob,
                                  unit = "month")    
-    breaks <- seq.int(from = 0L,
-                      to = break_max)
+    breaks <- make_breaks_integer_month_quarter(age = age_months,
+                                                break_max = break_max,
+                                                open_right = open_right)
+    break_max <- breaks[length(breaks)]
     labels <- make_labels_age_group_month(break_min = 0L,
                                           break_max = break_max,
                                           open_left = FALSE,

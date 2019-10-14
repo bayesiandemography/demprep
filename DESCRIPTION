@@ -13,7 +13,8 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
-    methods
+    methods,
+    demcheck
 Suggests: 
     testthat
 RoxygenNote: 6.1.1

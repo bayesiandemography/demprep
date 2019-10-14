@@ -17,12 +17,13 @@ date_to_age_group_custom(date, dob, breaks = NULL, open_right = TRUE,
 \item{open_right}{Whether the final age group
 has no upper limit. Defaults to \code{TRUE}.}
 
-\item{as_factor}{Whether the return value should be a factor.
+\item{as_factor}{Whether the return value is a factor.
 Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, a factor;
-otherwise a character vector. The length equals the length
+If \code{as_factor} is \code{TRUE}, then the
+return value is a factor; otherwise it is a character vector.
+The length of the return value equals the length
 of \code{date} or the length of \code{dob}, whichever
 is greater.
 }

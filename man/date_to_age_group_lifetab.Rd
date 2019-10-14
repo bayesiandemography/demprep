@@ -11,15 +11,16 @@ date_to_age_group_lifetab(date, dob, break_max = 100, as_factor = TRUE)
 
 \item{dob}{Dates of birth.}
 
-\item{break_max}{An integer, defining the
-maximum age group.}
+\item{break_max}{An integer or \code{NULL}.
+Defaults to 100.}
 
-\item{as_factor}{Whether the return value should be a factor.
+\item{as_factor}{Whether the return value is a factor.
 Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, a factor;
-otherwise a character vector. The length equals the length
+If \code{as_factor} is \code{TRUE}, then the return
+value is a factor; otherwise it is a character vector.
+The length of the return value equals the length
 of \code{date} or the length of \code{dob}, whichever
 is greater.
 }
@@ -42,6 +43,7 @@ length-1 argument is recycled.
 
 \code{break_max} is used to specify
 the oldest age group, which is always open
+on the right.
 
 When \code{as_factor} is \code{TRUE} the levels of
 the factor include all intermediate age groups,
@@ -66,9 +68,6 @@ date_to_age_group_lifetab(date = "2019-09-22",
 date_to_age_group_lifetab(date = "2019-09-22",
                           dob = "1910-01-01",
                           break_max = 80)
-date_to_age_group_lifetab(date = "2019-09-22",
-                          dob = "1910-01-01",
-                          break_max = NULL)
 }
 \seealso{
 Other functions for creating age groups are

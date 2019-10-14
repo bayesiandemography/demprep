@@ -438,7 +438,6 @@ make_breaks_integer_fert <- function(age, width, break_min, break_max) {
             by = width)
 }
 
-
 ## HAS_TESTS
 make_breaks_integer_lifetab <- function(break_max) {
     c(0L,
@@ -446,6 +445,17 @@ make_breaks_integer_lifetab <- function(break_max) {
       seq.int(from = 5L,
               to = break_max,
               by = 5L))
+}
+
+## HAS_TESTS
+make_breaks_integer_month_quarter <- function(age, break_max, open_right) {
+    if (is.null(break_max)) {
+        break_max <- max(age, na.rm = TRUE)
+        if (!open_right)
+            break_max <- break_max + 1L
+    }
+    seq.int(from = 0L,
+            to = break_max)
 }
 
 ## HAS_TESTS
