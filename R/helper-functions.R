@@ -74,7 +74,7 @@ date_to_period_or_cohort_month <- function(date,
 date_to_period_or_cohort_multi <- function(date,
                                            width,
                                            origin,
-                                           first_month,
+                                           month_start,
                                            break_min,
                                            open_left,
                                            as_factor) {
@@ -85,8 +85,8 @@ date_to_period_or_cohort_multi <- function(date,
     if (is.null(break_min)) {
         origin <- demcheck::err_tdy_integer_scalar(x = origin,
                                                    name = "origin")
-        first_month <- demcheck::err_tdy_first_month(x = first_month,
-                                                     name = "first_month")
+        month_start <- demcheck::err_tdy_month_start(x = month_start,
+                                                     name = "month_start")
     }
     else {
         demcheck::err_is_length_1(x = break_min,
@@ -94,7 +94,7 @@ date_to_period_or_cohort_multi <- function(date,
         break_min <- demcheck::err_tdy_date_scalar(x = break_min,
                                                    name = "break_min")
         origin <- as.integer(format(break_min, "%Y"))
-        first_month <- format(break_min, "%b")
+        month_start <- format(break_min, "%b")
     }
     demcheck::err_is_logical_flag(x = open_left,
                                   name = "open_left")
@@ -107,14 +107,14 @@ date_to_period_or_cohort_multi <- function(date,
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
     breaks <- make_breaks_date_year(date = date,
-                                    first_month = first_month,
+                                    month_start = month_start,
                                     width = width,
                                     origin = origin,
                                     break_min = break_min)
     labels <- make_labels_period_year(breaks = breaks,
                                       open_left = open_left,
                                       open_right = FALSE,
-                                      year_to = NULL)
+                                      label_year_start = NULL)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
@@ -172,26 +172,26 @@ date_to_period_or_cohort_quarter <- function(date,
 
 ## HAS_TESTS
 date_to_period_or_cohort_year <- function(date,
-                                          first_month,
-                                          year_to,
+                                          month_start,
+                                          label_year_start,
                                           break_min,
                                           open_left,
                                           as_factor) {
     date <- demcheck::err_tdy_date_vector(x = date,
                                           name = "date")
     if (is.null(break_min)) {
-        first_month <- demcheck::err_tdy_first_month(x = first_month,
-                                                     name = "first_month")
+        month_start <- demcheck::err_tdy_month_start(x = month_start,
+                                                     name = "month_start")
     }
     else {
         demcheck::err_is_length_1(x = break_min,
                                   name = "break_min")
         break_min <- demcheck::err_tdy_date_scalar(x = break_min,
                                                    name = "break_min")
-        first_month <- format(break_min, format = "%b")
+        month_start <- format(break_min, format = "%b")
     }
-    demcheck::err_is_logical_flag(x = year_to,
-                                  name = "year_to")
+    demcheck::err_is_logical_flag(x = label_year_start,
+                                  name = "label_year_start")
     demcheck::err_is_logical_flag(x = open_left,
                                   name = "open_left")
     demcheck::err_is_logical_flag(x = as_factor,
@@ -200,14 +200,14 @@ date_to_period_or_cohort_year <- function(date,
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
     breaks <- make_breaks_date_year(date = date,
-                                    first_month = first_month,
+                                    month_start = month_start,
                                     width = 1L,
                                     origin = NULL,
                                     break_min = break_min)
     labels <- make_labels_period_year(breaks = breaks,
                                       open_left = open_left,
                                       open_right = FALSE,
-                                      year_to = year_to)
+                                      label_year_start = label_year_start)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
@@ -249,12 +249,12 @@ diff_completed_year <- function(y1, m1, d1, y2, m2, d2) {
 }
 
 ## HAS_TESTS
-i_month_within_period <- function(date_ymd, width, origin, first_month) {
+i_month_within_period <- function(date_ymd, width, origin, month_start) {
     year <- date_ymd$y
     month <- date_ymd$m
-    i_first_month <- match(first_month, month.abb) # starts at 1
+    i_month_start <- match(month_start, month.abb) # starts at 1
     i_year <- (year - origin) %% width # starts at 0
-    i_month_within_year <- month - i_first_month  # starts at 0
+    i_month_within_year <- month - i_month_start  # starts at 0
     ans <- 12L * i_year + i_month_within_year + 1L # starts at 1
     is_neg <- !is.na(month) & (i_month_within_year < 0L)
     ans[is_neg] <- ans[is_neg] + 12L * width
@@ -334,7 +334,7 @@ make_breaks_date_quarter <- function(date, break_min) {
 
 ## HAS_TESTS
 make_breaks_date_year <- function(date,
-                                  first_month,
+                                  month_start,
                                   width,
                                   origin,
                                   break_min) {
@@ -347,7 +347,7 @@ make_breaks_date_year <- function(date,
     }
     n <- length(date)
     year_origin <- origin
-    month_origin <- match(first_month, month.abb)
+    month_origin <- match(month_start, month.abb)
     day_origin <- 1L
     ## obtain 'year_from'
     if (is.null(break_min)) {

@@ -3,7 +3,7 @@ context("date_to_triangle")
 
 ## date_to_triangle_year --------------------------------------------------
 
-test_that("date_to_triangle_year gives correct answers with valid inputs - first_month is Jan", {
+test_that("date_to_triangle_year gives correct answers with valid inputs - month_start is Jan", {
     expect_identical(date_to_triangle_year(date = c("2000-01-01",
                                                     "2000-01-02",
                                                     "2000-03-11",
@@ -42,7 +42,7 @@ test_that("date_to_triangle_year gives correct answers with valid inputs - first
                      factor("Upper", levels = c("Lower", "Upper")))
 })
 
-test_that("date_to_triangle_year gives correct answers with valid inputs - first_month is Jul", {
+test_that("date_to_triangle_year gives correct answers with valid inputs - month_start is Jul", {
     expect_identical(date_to_triangle_year(date = c("2000-01-01",
                                                     "2000-01-02",
                                                     "2000-03-11",
@@ -50,7 +50,7 @@ test_that("date_to_triangle_year gives correct answers with valid inputs - first
                                                     "2000-07-01",
                                                     "2000-12-31"),
                                            dob = "2000-01-01",
-                                           first_month = "Jul"),
+                                           month_start = "Jul"),
                      factor(c("Lower", "Lower", "Lower", "Lower", "Upper", "Upper"),
                             levels = c("Lower", "Upper")))
     expect_identical(date_to_triangle_year(date = c("2000-01-01",
@@ -61,7 +61,7 @@ test_that("date_to_triangle_year gives correct answers with valid inputs - first
                                                     "2000-06-15",
                                                     "2000-06-16"),
                                            dob = "1999-06-15",
-                                           first_month = "Jul"),
+                                           month_start = "Jul"),
                      factor(c("Upper", "Upper", "Upper", "Upper", "Upper", "Lower", "Lower"),
                             levels = c("Lower", "Upper")))
     expect_identical(date_to_triangle_year(date = c("2000-01-01",
@@ -71,20 +71,20 @@ test_that("date_to_triangle_year gives correct answers with valid inputs - first
                                                     "2000-12-29",
                                                     "2000-07-01"),
                                            dob = "1999-12-15",
-                                           first_month = "Jul"),
+                                           month_start = "Jul"),
                      factor(c("Lower", "Lower", "Lower", NA, "Lower", "Upper"),
                             levels = c("Lower", "Upper")))
     expect_identical(date_to_triangle_year(date = "2001-02-28",
                                            dob = c("2000-02-29",
                                                    "2000-02-28"),
-                                           first_month = "Jul"),
+                                           month_start = "Jul"),
                      factor(c("Upper", "Upper"), levels = c("Lower", "Upper")))
     expect_identical(date_to_triangle_year(date = "2001-01-31",
                                            dob = "2000-02-29"),
                      factor("Upper", levels = c("Lower", "Upper")))
     expect_identical(date_to_triangle_year(date = "2001-01-31",
                                            dob = "1960-02-29",
-                                           first_month = "Jul",
+                                           month_start = "Jul",
                                            break_max = 30),
                      factor("Upper", levels = c("Lower", "Upper")))
 })

@@ -4,7 +4,7 @@
 #' not supplied, since count will always be 0.)
 #'
 #' if \code{break_min} supplied, then \code{origin} and
-#' \code{first_month} both ignored.
+#' \code{month_start} both ignored.
 #' 
 #' @name date_to_cohort
 NULL
@@ -13,16 +13,16 @@ NULL
 #' @rdname date_to_cohort
 #' @export
 date_to_cohort_year <- function(date,
-                                first_month = "Jan",
-                                year_to = TRUE,
+                                month_start = "Jan",
+                                label_year_start = TRUE,
                                 break_min = NULL,
                                 open_left = NULL,
                                 as_factor = TRUE) {
     if (is.null(open_left))
         open_left <- !is.null(break_min)
     date_to_period_or_cohort_year(date = date,
-                                  first_month = first_month,
-                                  year_to = year_to,
+                                  month_start = month_start,
+                                  label_year_start = label_year_start,
                                   break_min = break_min,
                                   open_left = open_left,
                                   as_factor = as_factor)
@@ -34,7 +34,7 @@ date_to_cohort_year <- function(date,
 date_to_cohort_multi <- function(date,
                                  width = 5,
                                  origin = 2000,
-                                 first_month = "Jan",
+                                 month_start = "Jan",
                                  break_min = NULL,
                                  open_left = NULL,
                                  as_factor = TRUE) {
@@ -43,7 +43,7 @@ date_to_cohort_multi <- function(date,
     date_to_period_or_cohort_multi(date = date,
                                    width = width,
                                    origin = origin,
-                                   first_month = first_month,
+                                   month_start = month_start,
                                    break_min = break_min,
                                    open_left = open_left,
                                    as_factor = as_factor)

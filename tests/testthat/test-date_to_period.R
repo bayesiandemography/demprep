@@ -7,28 +7,28 @@ test_that("date_to_period_year gives correct answers with valid inputs", {
     expect_identical(date_to_period_year(date = c("2000-01-01",
                                                   "2010-01-01",
                                                   "2004-12-31"),
-                                         first_month = "Jan"),
+                                         month_start = "Jan"),
                      factor(c("2000", "2010", "2004"),
                             levels = 2000:2010))
     expect_identical(date_to_period_year(date = c("2000-01-01",
                                                   "2010-01-01",
                                                   "2004-12-31"),
-                                         first_month = "Jan"),
-                     factor(c("2000", "2010", "2004"),
-                            levels = 2000:2010))
+                                         month_start = "Jun"),
+                     factor(c("1999", "2009", "2004"),
+                            levels = 1999:2009))
     expect_identical(date_to_period_year(date = c("2000-01-01",
                                                   "2010-01-01",
                                                   "2004-12-31"),
-                                         first_month = "Jan",
+                                         month_start = "Jan",
                                          as_factor = FALSE),
                      c("2000", "2010", "2004"))
     expect_identical(date_to_period_year(date = c("2000-01-01",
                                                   "2010-01-01",
                                                   "2004-12-31"),
-                                         year_to = FALSE,
-                                         first_month = "Apr"),
-                     factor(c("1999", "2009", "2004"),
-                            levels = 1999:2009))
+                                         label_year_start = FALSE,
+                                         month_start = "Apr"),
+                     factor(c("2000", "2010", "2005"),
+                            levels = 2000:2010))
 })
 
 

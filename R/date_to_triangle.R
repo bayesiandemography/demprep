@@ -10,7 +10,7 @@ date_to_triangle_year <- function(date,
                                   dob,
                                   break_max = 100,
                                   open_right = TRUE,
-                                  first_month = "Jan",
+                                  month_start = "Jan",
                                   as_factor = TRUE) {
     date_to_triangle_multi(date = date,
                            dob = dob,
@@ -18,7 +18,7 @@ date_to_triangle_year <- function(date,
                            break_max = break_max,
                            open_right = open_right,
                            origin = 2000L,
-                           first_month = first_month,
+                           month_start = month_start,
                            as_factor = as_factor)
 }
 
@@ -33,7 +33,7 @@ date_to_triangle_fert <- function(date,
                                   recode_up = FALSE,
                                   recode_down = FALSE,
                                   origin = 2000,
-                                  first_month = "Jan",
+                                  month_start = "Jan",
                                   as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
@@ -108,7 +108,7 @@ date_to_triangle_fert <- function(date,
                            break_max = NULL,
                            open_right = FALSE,
                            origin = origin,
-                           first_month = first_month,
+                           month_start = month_start,
                            as_factor = as_factor)    
 }
 
@@ -122,7 +122,7 @@ date_to_triangle_multi <- function(date,
                                    break_max = 100,
                                    open_right = TRUE,
                                    origin = 2000,
-                                   first_month = "Jan",
+                                   month_start = "Jan",
                                    as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
@@ -137,8 +137,8 @@ date_to_triangle_multi <- function(date,
                                   name = "open_right")
     origin <- demcheck::err_tdy_integer_scalar(x = origin,
                                                name = "origin")
-    first_month <- demcheck::err_tdy_first_month(x = first_month,
-                                                 name = "first_month")
+    month_start <- demcheck::err_tdy_month_start(x = month_start,
+                                                 name = "month_start")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
     age_months <- age_completed_months(date = date,
@@ -158,11 +158,11 @@ date_to_triangle_multi <- function(date,
     i_month_within_period_date <- i_month_within_period(date_ymd = date_ymd,
                                                         width = width,
                                                         origin = origin,
-                                                        first_month = first_month)
+                                                        month_start = month_start)
     i_month_within_period_dob <- i_month_within_period(date_ymd = dob_ymd,
                                                        width = width,
                                                        origin = origin,
-                                                       first_month = first_month)
+                                                       month_start = month_start)
     is_lower_within_month <- is_lower_within_month(date_ymd = date_ymd,
                                                    dob_ymd = dob_ymd)
     is_lower <- ((i_month_within_period_date > i_month_within_period_dob)

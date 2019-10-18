@@ -4,22 +4,36 @@ context("make_labels_period")
 ## make_labels_period_year ----------------------------------------------------
 
 test_that("make_labels_period_year gives correct answers with valid input", {
-    expect_identical(make_labels_period_year(breaks = as.Date(c("2000-01-01", "2001-01-01", "2002-01-01"))),
+    expect_identical(make_labels_period_year(breaks = as.Date(c("2000-01-01",
+                                                                "2001-01-01",
+                                                                "2002-01-01"))),
                      c("2000", "2001"))
-    expect_identical(make_labels_period_year(breaks = as.Date(c("2000-01-01", "2001-01-01", "2002-01-01")),
-                                             year_to = FALSE),
+    expect_identical(make_labels_period_year(breaks = as.Date(c("2000-01-01",
+                                                                "2001-01-01",
+                                                                "2002-01-01")),
+                                             label_year_start = FALSE),
                      c("2000", "2001"))
-    expect_identical(make_labels_period_year(breaks = as.Date(c("2000-02-01", "2001-02-01", "2002-02-01"))),
+    expect_identical(make_labels_period_year(breaks = as.Date(c("2000-02-01",
+                                                                "2001-02-01",
+                                                                "2002-02-01"))),
+                     c("2000", "2001"))
+    expect_identical(make_labels_period_year(breaks = as.Date(c("2000-02-01",
+                                                                "2001-02-01",
+                                                                "2002-02-01")),
+                                             label_year_start = FALSE),
                      c("2001", "2002"))
-    expect_identical(make_labels_period_year(breaks = as.Date(c("2000-02-01", "2001-02-01", "2002-02-01")),
-                                             year_to = FALSE),
-                     c("2000", "2001"))
-    expect_identical(make_labels_period_year(breaks = as.Date(c("2001-07-01", "2006-07-01", "2011-07-01"))),
+    expect_identical(make_labels_period_year(breaks = as.Date(c("2001-07-01",
+                                                                "2006-07-01",
+                                                                "2011-07-01"))),
                      c("2001-2006", "2006-2011"))
-    expect_identical(make_labels_period_year(breaks = as.Date(c("2001-07-01", "2006-07-01", "2011-07-01")),
-                                             year_to = FALSE),
+    expect_identical(make_labels_period_year(breaks = as.Date(c("2001-07-01",
+                                                                "2006-07-01",
+                                                                "2011-07-01")),
+                                             label_year_start = FALSE),
                      c("2001-2006", "2006-2011"))
-    expect_identical(make_labels_period_year(breaks = as.Date(c("2001-07-01", "2006-07-01", "2011-07-01")),
+    expect_identical(make_labels_period_year(breaks = as.Date(c("2001-07-01",
+                                                                "2006-07-01",
+                                                                "2011-07-01")),
                                              open_left = TRUE,
                                              open_right = TRUE,
                                              include_na = TRUE),

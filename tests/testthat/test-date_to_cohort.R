@@ -50,19 +50,19 @@ test_that("date_to_cohort_year gives correct answers with valid inputs", {
                                                   "2010-01-01",
                                                   "2004-12-31"),
                                          break_min = "1999-04-01",
-                                         year_to = FALSE,
+                                         label_year_start = FALSE,
                                          open_left = TRUE),
-                     factor(c("1999", "2009", "2004"),
-                            levels = c("<1999", 1999:2009)))
+                     factor(c("2000", "2010", "2005"),
+                            levels = c("<2000", 2000:2010)))
     expect_identical(date_to_cohort_year(date = c("2000-01-01",
                                                   "2010-01-01",
                                                   "2004-12-31"),
                                          break_min = NULL,
-                                         first_month = "Apr",
-                                         year_to = FALSE,
+                                         month_start = "Apr",
+                                         label_year_start = FALSE,
                                          open_left = TRUE),
-                     factor(c("1999", "2009", "2004"),
-                            levels = c("<1999", 1999:2009)))
+                     factor(c("2000", "2010", "2005"),
+                            levels = c("<2000", 2000:2010)))
 })
 
 ## date_to_cohort_multi -------------------------------------------------------
@@ -76,14 +76,14 @@ test_that("date_to_cohort_year gives correct answers with valid inputs", {
     expect_identical(date_to_cohort_multi(date = c("2000-01-01",
                                                    "2010-01-01",
                                                    "2004-12-31"),
-                                          first_month = "Jul",
+                                          month_start = "Jul",
                                           open_left = TRUE),
                      factor(c("1995-2000", "2005-2010", "2000-2005"),
                             levels = c("<1995", "1995-2000", "2000-2005", "2005-2010")))
     expect_identical(date_to_cohort_multi(date = c("2000-01-01",
                                                    "2010-01-01",
                                                    "2004-12-31"),
-                                          first_month = "Jul",
+                                          month_start = "Jul",
                                           origin = 2001),
                      factor(c("1996-2001", "2006-2011", "2001-2006"),
                             levels = c("1996-2001", "2001-2006", "2006-2011")))
@@ -91,7 +91,7 @@ test_that("date_to_cohort_year gives correct answers with valid inputs", {
                                                    "2010-01-01",
                                                    "2004-12-31",
                                                    NA),
-                                          first_month = "Jul",
+                                          month_start = "Jul",
                                           origin = 2001),
                      factor(c("1996-2001", "2006-2011", "2001-2006", NA),
                             levels = c("1996-2001", "2001-2006", "2006-2011")))

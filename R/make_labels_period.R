@@ -10,7 +10,7 @@ NULL
 make_labels_period_year <- function(breaks,
                                     open_left = FALSE,
                                     open_right = FALSE,
-                                    year_to = TRUE,
+                                    label_year_start = TRUE,
                                     include_na = FALSE) {
     breaks <- demcheck::err_tdy_breaks_date(x = breaks,
                                             name = "breaks",
@@ -52,12 +52,12 @@ make_labels_period_year <- function(breaks,
         head <- breaks[-n]
         tail <- breaks[-1L]
         if (is_annual) {
-            demcheck::err_is_logical_flag(x = year_to,
-                                          name = "year_to")
-            if (year_to && !is_1_jan)
-                ans_mid <- format(tail, "%Y")
-            else
+            demcheck::err_is_logical_flag(x = label_year_start,
+                                          name = "label_year_start")
+            if (label_year_start || is_1_jan)
                 ans_mid <- format(head, "%Y")
+            else
+                ans_mid <- format(tail, "%Y")
         }
         else {
             ans_mid <- paste(format(head, "%Y"),
