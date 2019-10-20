@@ -51,6 +51,34 @@ test_that("date_to_period_multi gives correct answers with valid inputs", {
 })
 
 
+## date_to_period_custom --------------------------------------------------
+
+test_that("date_to_period_custom gives correct answers with valid inputs", {
+    expect_identical(date_to_period_custom(date = c("2000-01-01",
+                                                    "2010-01-01",
+                                                    "2004-12-31"),
+                                           breaks = c("2000-01-01",
+                                                      "2008-01-01",
+                                                      "2015-01-01")),
+                     factor(c("2000-2008", "2008-2015", "2000-2008"),
+                            levels = c("2000-2008", "2008-2015")))
+    expect_identical(date_to_period_custom(date = c("2000-01-01",
+                                                    "2010-01-01",
+                                                    NA,
+                                                    "2004-12-31"),
+                                           breaks = c("1991-07-01",
+                                                      "2008-07-01",
+                                                      "2015-07-01")),
+                     factor(c("1991-2008", "2008-2015", NA, "1991-2008"),
+                            levels = c("1991-2008", "2008-2015")))
+    expect_identical(date_to_period_custom(date = character(),
+                                           breaks = c("2000-03-01",
+                                                      "2005-03-01")),
+                     factor(character(),
+                            levels = "2000-2005"))
+})
+
+
 ## date_to_period_quarter ---------------------------------------------------
 
 test_that("date_to_period_quarter gives correct answers with valid inputs", {

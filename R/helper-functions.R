@@ -30,6 +30,41 @@ as_ymd <- function(date) {
 }
 
 ## HAS_TESTS
+date_to_period_or_cohort_custom <- function(date,
+                                            breaks,
+                                            open_left,
+                                            as_factor) {
+    date <- demcheck::err_tdy_date_vector(x = date,
+                                          name = "date")
+    breaks <- demcheck::err_tdy_breaks_date(x = breaks,
+                                            name = "breaks",
+                                            open_left = open_left,
+                                            open_right = open_right)
+    demcheck::err_is_logical_flag(x = open_left,
+                                  name = "open_left")
+    demcheck::err_is_logical_flag(x = as_factor,
+                                  name = "as_factor")
+    if (!open_left)
+        demcheck::err_ge_break_min_date(date = date,
+                                        break_min = breaks[1L])
+    labels <- make_labels_period_year(breaks = breaks,
+                                      open_left = open_left,
+                                      open_right = FALSE,
+                                      label_year_start = NULL)
+    date_int <- as.integer(date)
+    breaks_int <- as.integer(breaks)
+    i <- findInterval(x = date_int,
+                      vec = breaks_int)
+    if (open_left)
+        i <- i + 1L
+    ans <- labels[i]
+    if (as_factor)
+        ans <- factor(x = ans,
+                      levels = labels)
+    ans
+}
+
+## HAS_TESTS
 date_to_period_or_cohort_month <- function(date,
                                            break_min,
                                            open_left,
@@ -101,9 +136,6 @@ date_to_period_or_cohort_multi <- function(date,
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
     if (!is.null(break_min) && !open_left)
-        demcheck::err_ge_break_min_date(date = date,
-                                        break_min = break_min)
-    if (!open_left)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
     breaks <- make_breaks_date_year(date = date,

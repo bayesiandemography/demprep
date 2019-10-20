@@ -44,8 +44,9 @@ is greater.
 \description{
 Given the dates when births occur,
 and the dates of birth of the mothers,
-derive age groups. These age groups all have the same widths,
-and are measured in years.
+allocate the births to age groups. These age groups all
+have the same width, which is measured in years,
+and in an integer.
 }
 \details{
 \code{date} and \code{dob} are both vectors of class

@@ -30,7 +30,8 @@ is greater.
 }
 \description{
 Given dates when events occurred or measurements were made,
-and dates of birth, derive age groups. These
+and dates of birth, allocate the events or measurements
+to age groups. These
 age groups all have widths of one quarter (ie three months),
 except possibly the final age group.
 }

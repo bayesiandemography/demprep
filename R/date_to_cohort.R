@@ -52,6 +52,20 @@ date_to_cohort_multi <- function(date,
 ## HAS_TESTS
 #' @rdname date_to_cohort
 #' @export
+date_to_cohort_custom <- function(date,
+                                  breaks,
+                                  open_left = FALSE,
+                                  as_factor = TRUE) {
+    date_to_period_or_cohort_custom(date = date,
+                                    breaks = breaks,
+                                    open_left = open_left,
+                                    as_factor = as_factor)
+}
+
+
+## HAS_TESTS
+#' @rdname date_to_cohort
+#' @export
 date_to_cohort_quarter <- function(date,
                                    break_min = NULL,
                                    open_left = NULL,

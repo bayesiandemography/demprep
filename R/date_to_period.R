@@ -2,70 +2,40 @@
 ## HAS_TESTS
 #' Convert dates to one-year periods
 #'
-#' Given dates when events occurred or measurements were made,
-#' derive one-year periods.
+#' Allocate dates to one-year periods. The periods are,
+#' by default, calendar years.
 #'
-#' By default, one-year periods start on 1 January and end on
-#' 31 December. However, by supplying other values of
-#' \code{month_start}, periods can start on the first day
-#' of any other month. For instance, if \code{month_start}
-#' is \code{"July"}, then the periods start on 1 July
-#' and end on 31 June of the following year.
-#'
-#' \code{month_start} can be an element of \code{\link[base]{month.name}},
+#' \code{date} is a vector of class \code{\link[base]{Date}},
+#' or can be coerced to class \code{Date}
+#' via function \code{\link[base]{as.Date}}.
+#' 
+#' One-year periods start on the first day of \code{month_start},
+#' and end one year minus one day later.
+#' The default value for \code{"month_start"} is \code{"January"},
+#' so one-year periods by default start on 1 January and
+#' end on 31 December. \code{month_start} can be an
+#' a full or abbreviated month name: more precisely,
+#' it can be an element of \code{\link[base]{month.name}},
 #' or an element of \code{\link[base]{month.abb}}.
 #'
-#' If a period starts on 1 January, the first day and final day
-#' belong to the same calendar year. But if a period starts on,
-#' for example, 1 July, then the first day belongs on one calendar
-#' year and the final day belongs to the next calendear year.
-#' Some organizations label such periods using the start year,
-#' and some label them using the end year. If, for instance,
-#' a period extends from 1 July 2000 to 30 June 2001, some
-#' organizations will label the period \code{"2000"}, and
-#' others will label it \code{"2001"}. Function \code{date_to_period_year}
-#' uses the start year when \code{label_year_start} is \code{FALSE}
-#' and the end year when \code{label_year_start} is argument
-#' \code{
-#'
-#' instance,
-#' some organizations label the period between 1 July 2000
-#' and 30 Jun 2001 \code{"2000"} and others will label it
-#' \code{"2001"}. Function \code{date_to_period} labels according
-#' to the 
-#' 
-#' S
-#' 
-#' 
-#' A person belongs to age group \code{"a"} if that
-#' person was exactly \code{a} years
-#' old at their most recent birthday. For instance, a person
-#' who had their fifth birthday two days ago belongs to age
-#' group \code{"5"} and a person who was born (had their zero-th
-#' birthday) three months ago belongs to age group \code{"0"}.
-#'
-#' \code{date} and \code{dob} are both vectors of class
-#' \code{\link[base]{Date}}, or vectors that can be coerced to class
-#' \code{Date} via function \code{\link[base]{as.Date}}.
-#'
-#' \code{date} and \code{dob} must have the same length,
-#' unless one of them has length 1, in which case the
-#' length-1 argument is recycled.
-#'
-#' \code{break_max} and \code{open_right} are used to specify
-#' the oldest age group.
-#' When \code{break_max} is non-\code{NULL} and
-#' \code{open_right} is \code{TRUE}, the oldest
-#' age group is \code{[break_max, Inf)} years. When
-#' \code{break_max} is non-\code{NULL} and 
-#' \code{open_right} is \code{FALSE}, the oldest age
-#' group is \code{[break_max-1, break_max)} years.
-#' When \code{break_max} is \code{NULL}, the oldest age
-#' group depends on the highest value in the data.
+#' If a period starts on 1 January, the first day and last day
+#' of the period belong to the same calendar year.
+#' But if a period starts on,
+#' for example, 1 July, then the first day belongs to one calendar
+#' year and the last day belongs to the next calendear year.
+#' Some people use the start year to label periods that
+#' cross calendar years, and others use the end year.
+#' For instance, if a period extends from
+#' 1 July 2000 to 30 June 2001, some people
+#' label the period \code{"2000"}, and
+#' others label it \code{"2001"}. Function
+#' \code{date_to_period_year} by default uses
+#' the start year. To use the end year, set
+#' \code{label_year_start} to \code{FALSE}.
 #'
 #' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate age groups,
-#' including age groups that not appear in the data.
+#' the factor include all intermediate periods,
+#' including periods that not appear in the data.
 #'
 #' @param date Dates of events or measurements.
 #' @param month_start
@@ -79,12 +49,10 @@
 #' of \code{date}.
 #'
 #' @seealso Other functions for creating periods are
-#' \code{\link{date_to_age_group_multi}},
-#' \code{\link{date_to_age_group_lifetab}},
-#' \code{\link{date_to_age_group_fert}},
-#' \code{\link{date_to_age_group_custom}},
-#' \code{\link{date_to_age_group_quarter}},
-#' and \code{\link{date_to_age_group_month}}.
+#' \code{\link{date_to_period_multi}},
+#' \code{\link{date_to_period_custom}},
+#' \code{\link{date_to_period_quarter}},
+#' and \code{\link{date_to_period_month}}.
 #' Other functions for working with one-year intervals are
 #' \code{\link{date_to_age_group_year}},
 #' \code{\link{date_to_cohort_year}},
@@ -93,31 +61,20 @@
 #' on constructing labels for periods.
 #'
 #' @examples
-#' date_to_age_group_year(date = c("2024-03-27", "2022-11-09"),
-#'                        dob = c("2001-03-21", "2000-07-13"))
+#' date_to_period_year(date = c("2024-03-27", "2022-11-09"))
 #'
-#' ## replicate date of birth
-#' date_to_age_group_year(date = c("2024-03-27", "2022-11-09"),
-#'                        dob = "2011-05-18")
+#' ## July to June
+#' date_to_period_year(date = c("2024-03-27", "2022-11-09"),
+#'                     month_start = "Jul")
+#'
+#' ## July to Jun, using calendar year at end for label
+#' date_to_period_year(date = c("2024-03-27", "2022-11-09"),
+#'                     month_start = "Jul",
+#'                     label_year_start = FALSE)
 #'
 #' ## return non-factor
-#' date_to_age_group_year(date = c("2024-03-27", "2022-11-09"),
-#'                        dob = "2011-05-18",
-#'                        as_factor = FALSE)
-#'
-#' ## alternative specifications for oldest age group
-#' date_to_age_group_year(date = "2019-09-22",
-#'                        dob = "1910-01-01")
-#' date_to_age_group_year(date = "2019-09-22",
-#'                        dob = "1910-01-01",
-#'                        break_max = 80)
-#' date_to_age_group_year(date = "2019-09-22",
-#'                        dob = "1910-01-01",
-#'                        break_max = NULL)
-#' date_to_age_group_year(date = "2019-09-22",
-#'                        dob = "1910-01-01",
-#'                        break_max = NULL,
-#'                        open_right = FALSE)
+#' date_to_period_year(date = c("2024-03-27", "2022-11-09"),
+#'                     as_factor = FALSE)
 #' @export
 date_to_period_year <- function(date,
                                 month_start = "Jan",
@@ -146,6 +103,18 @@ date_to_period_multi <- function(date,
                                    break_min = NULL,
                                    open_left = FALSE,
                                    as_factor = as_factor)
+}
+
+## HAS_TESTS
+#' @rdname date_to_period
+#' @export
+date_to_period_custom <- function(date,
+                                  breaks,
+                                  as_factor = TRUE) {
+    date_to_period_or_cohort_custom(date = date,
+                                    breaks = breaks,
+                                    open_left = FALSE,
+                                    as_factor = as_factor)
 }
 
 ## HAS_TESTS

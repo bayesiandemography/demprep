@@ -10,14 +10,14 @@
 \title{Use dates and dates of birth to calculate Lexis triangles}
 \usage{
 date_to_triangle_year(date, dob, break_max = 100, open_right = TRUE,
-  first_month = "Jan", as_factor = TRUE)
+  month_start = "Jan", as_factor = TRUE)
 
 date_to_triangle_fert(date, dob, width = 5, break_min = 15,
   break_max = 50, recode_up = FALSE, recode_down = FALSE,
-  origin = 2000, first_month = "Jan", as_factor = TRUE)
+  origin = 2000, month_start = "Jan", as_factor = TRUE)
 
 date_to_triangle_multi(date, dob, width = 5, break_max = 100,
-  open_right = TRUE, origin = 2000, first_month = "Jan",
+  open_right = TRUE, origin = 2000, month_start = "Jan",
   as_factor = TRUE)
 
 date_to_triangle_quarter(date, dob, break_max = 400, open_right = TRUE,

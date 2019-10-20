@@ -29,11 +29,11 @@ is greater.
 }
 \description{
 Given dates when events occurred or measurements were made,
-and dates of birth, derive age groups.
-\code{date_to_age_group_custom} is the most flexible
-of the various \code{date_to_age_group} functions
+and dates of birth, allocate the events or measurements
+to age groups. \code{date_to_age_group_custom} is the most flexible
+of the \code{date_to_age_group} functions
 in that the age groups can have any combination of widths,
-though must be composed of complete years.
+though the widths must be defined in whole numbers of years.
 }
 \details{
 \code{date} and \code{dob} are both vectors of class

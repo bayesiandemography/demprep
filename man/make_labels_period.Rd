@@ -8,7 +8,7 @@
 \title{Make period labels}
 \usage{
 make_labels_period_year(breaks, open_left = FALSE, open_right = FALSE,
-  year_to = TRUE, include_na = FALSE)
+  label_year_start = TRUE, include_na = FALSE)
 
 make_labels_period_quarter(break_min, break_max, open_left = FALSE,
   open_right = FALSE, include_na = FALSE)

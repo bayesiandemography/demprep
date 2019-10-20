@@ -33,10 +33,11 @@ is greater.
 }
 \description{
 Given dates when events occurred or measurements were made,
-and dates of birth, derive age groups. These
+together with dates of birth, allocate the events or
+measurements to age groups. These
 age groups all have the same width, except possibly
-the final age group. The width must be a multiple
-of one year.
+the final age group. The width is measured in years
+and must be an integer.
 }
 \details{
 \code{date} and \code{dob} are both vectors of class

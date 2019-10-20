@@ -105,6 +105,34 @@ test_that("'as_ymd' gives correct answer with valid inputs", {
 })
 
 
+## date_to_period_or_cohort_custom --------------------------------------------
+
+test_that("'date_to_period_or_cohort_custom' gives correct answer with valid inputs", {
+    expect_identical(date_to_period_or_cohort_custom(date = c("2003-03-20",
+                                                              "2001-02-11",
+                                                              "2010-12-30"),
+                                                     breaks = c("2000-01-01",
+                                                                "2006-01-01",
+                                                                "2020-01-01"),
+                                                     open_left = FALSE,
+                                                     as_factor = TRUE),
+                     factor(c("2000-2006", "2000-2006", "2006-2020"),
+                            levels = c("2000-2006", "2006-2020")))
+    expect_identical(date_to_period_or_cohort_custom(date = c("2003-03-20",
+                                                              "2001-02-11",
+                                                              NA,
+                                                              "2010-12-30",
+                                                              "1999-03-02"),
+                                                     breaks = c("2000-03-01",
+                                                                "2006-03-01",
+                                                                "2020-03-01"),
+                                                     open_left = TRUE,
+                                                     as_factor = TRUE),
+                     factor(c("2000-2006", "2000-2006", NA, "2006-2020", "<2000"),
+                            levels = c("<2000", "2000-2006", "2006-2020")))
+})
+
+
 ## date_to_period_or_cohort_month -------------------------------------------
 
 test_that("'date_to_period_or_cohort_month' gives correct answer with valid inputs", {

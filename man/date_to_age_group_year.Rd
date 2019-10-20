@@ -30,9 +30,9 @@ is greater.
 }
 \description{
 Given dates when events occurred or measurements were made,
-and dates of birth, derive age groups. These
-age groups all have widths of one year, except possibly
-the final age group.
+together with dates of birth, allocate the events or measurements
+to age groups. All the age groups have widths
+of one year, except possibly the final age group.
 }
 \details{
 A person belongs to age group \code{"a"} if that

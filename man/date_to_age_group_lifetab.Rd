@@ -26,9 +26,9 @@ is greater.
 }
 \description{
 Given dates of death and dates of birth,
-derive age groups. These
-age groups are the ones typically used in an
-"abridged" (ie not single-year) life table: "0", "1-4",
+allocate the deaths to age groups. These
+age groups are the ones typically used in
+"abridged" (ie not single-year) life tables: "0", "1-4",
 and "5-9", "10-14", "10-14", and so on up to the
 highest age group.
 }

@@ -3,9 +3,9 @@
 #' Convert dates to one-year age groups
 #'
 #' Given dates when events occurred or measurements were made,
-#' and dates of birth, derive age groups. These
-#' age groups all have widths of one year, except possibly
-#' the final age group.
+#' together with dates of birth, allocate the events or measurements
+#' to age groups. All the age groups have widths
+#' of one year, except possibly the final age group.
 #'
 #' A person belongs to age group \code{"a"} if that
 #' person was exactly \code{a} years
@@ -138,10 +138,11 @@ date_to_age_group_year <- function(date,
 #' Convert dates to multi-year age groups
 #'
 #' Given dates when events occurred or measurements were made,
-#' and dates of birth, derive age groups. These
+#' together with dates of birth, allocate the events or
+#' measurements to age groups. These
 #' age groups all have the same width, except possibly
-#' the final age group. The width must be a multiple
-#' of one year.
+#' the final age group. The width is measured in years
+#' and must be an integer.
 #'
 #' \code{date} and \code{dob} are both vectors of class
 #' \code{\link[base]{Date}}, or vectors that can be coerced to class
@@ -279,9 +280,9 @@ date_to_age_group_multi <- function(date,
 #' Convert dates to age groups used in abridged life table
 #'
 #' Given dates of death and dates of birth,
-#' derive age groups. These
-#' age groups are the ones typically used in an
-#' "abridged" (ie not single-year) life table: "0", "1-4",
+#' allocate the deaths to age groups. These
+#' age groups are the ones typically used in
+#' "abridged" (ie not single-year) life tables: "0", "1-4",
 #' and "5-9", "10-14", "10-14", and so on up to the
 #' highest age group.
 #'
@@ -377,8 +378,9 @@ date_to_age_group_lifetab <- function(date, dob,
 #'
 #' Given the dates when births occur,
 #' and the dates of birth of the mothers,
-#' derive age groups. These age groups all have the same widths,
-#' and are measured in years.
+#' allocate the births to age groups. These age groups all
+#' have the same width, which is measured in years,
+#' and in an integer.
 #'
 #' \code{date} and \code{dob} are both vectors of class
 #' \code{\link[base]{Date}}, or vectors that can be coerced to class
@@ -564,11 +566,11 @@ date_to_age_group_fert <- function(date, dob,
 #' Convert dates to customized age groups
 #'
 #' Given dates when events occurred or measurements were made,
-#' and dates of birth, derive age groups.
-#' \code{date_to_age_group_custom} is the most flexible
-#' of the various \code{date_to_age_group} functions
+#' and dates of birth, allocate the events or measurements
+#' to age groups. \code{date_to_age_group_custom} is the most flexible
+#' of the \code{date_to_age_group} functions
 #' in that the age groups can have any combination of widths,
-#' though must be composed of complete years.
+#' though the widths must be defined in whole numbers of years.
 #'
 #' \code{date} and \code{dob} are both vectors of class
 #' \code{\link[base]{Date}}, or vectors that can be coerced to class
@@ -698,7 +700,8 @@ date_to_age_group_custom <- function(date, dob,
 #' Convert dates to quarter age groups
 #'
 #' Given dates when events occurred or measurements were made,
-#' and dates of birth, derive age groups. These
+#' and dates of birth, allocate the events or measurements
+#' to age groups. These
 #' age groups all have widths of one quarter (ie three months),
 #' except possibly the final age group.
 #'
@@ -834,7 +837,8 @@ date_to_age_group_quarter <- function(date,
 #' Convert dates to month age groups
 #'
 #' Given dates when events occurred or measurements were made,
-#' and dates of birth, derive age groups. These
+#' and dates of birth, allocate the events or
+#' measurements to age groups. These
 #' age groups all have widths of one month,
 #' except possibly the final age group.
 #'
