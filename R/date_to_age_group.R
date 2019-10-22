@@ -581,7 +581,7 @@ date_to_age_group_fert <- function(date, dob,
 #' length-1 argument is recycled.
 #'
 #' \code{breaks} is used to specify the points at which
-#' each age group starts and the next one begins. If 
+#' each age group starts and finishes. If 
 #' \code{open_right} is \code{TRUE}, and \code{b} is
 #' the last value for \code{breaks}, then the oldest
 #' age group is \code{[b, Inf)} years. 

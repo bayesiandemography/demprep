@@ -10,17 +10,25 @@ date_to_period_year(date, month_start = "Jan", label_year_start = TRUE,
 \arguments{
 \item{date}{Dates of events or measurements.}
 
+\item{month_start}{An element of \code{\link[base]{month.name}},
+or \code{\link[base]{month.abb}}. The period starts on
+the first day of this month.}
+
+\item{label_year_start}{Logical. Whether to label a period
+by the calendar year at the beginning of the period
+or the calendar year at the end. Not needed for periods
+that start on 1 January.}
+
 \item{as_factor}{Whether the return value is a factor.
 Defaults to \code{TRUE}.}
 }
 \value{
 If \code{as_factor} is \code{TRUE}, then the return
 value is a factor; otherwise it is a character vector.
-The length of the return value equals the length
-of \code{date}.
+The return value has the same length as \code{date}.
 }
 \description{
-Allocate dates to one-year periods. The periods are,
+Allocate dates to one-year periods. The one-year periods are,
 by default, calendar years.
 }
 \details{
@@ -28,24 +36,26 @@ by default, calendar years.
 or can be coerced to class \code{Date}
 via function \code{\link[base]{as.Date}}.
 
-One-year periods start on the first day of \code{month_start},
-and end one year minus one day later.
-The default value for \code{"month_start"} is \code{"January"},
-so one-year periods by default start on 1 January and
-end on 31 December. \code{month_start} can be an
-a full or abbreviated month name: more precisely,
-it can be an element of \code{\link[base]{month.name}},
-or an element of \code{\link[base]{month.abb}}.
+The periods start on the first day of \code{month_start},
+and end one-year-minus-one-day later.
+The default value for \code{month_start} is \code{"January"},
+so periods by default start on 1 January and
+end on 31 December. \code{month_start} can be a
+full month name or an abbreviation.
 
-If a period starts on 1 January, the first day and last day
+If a period starts on 1 January, then the first day and last day
 of the period belong to the same calendar year.
-But if a period starts on,
-for example, 1 July, then the first day belongs to one calendar
-year and the last day belongs to the next calendear year.
-Some people use the start year to label periods that
-cross calendar years, and others use the end year.
+But if a period starts on any other day, then
+the first day belongs to one calendar
+year and the last day belongs to the next calendar year.
 For instance, if a period extends from
-1 July 2000 to 30 June 2001, some people
+1 July 2000 to 30 June 2001, then the first
+day belongs to the year 2000, and the last
+day belongs to the year 2001. Some authors
+use the first year to label such periods,
+and others use the last year.
+For instance, if a period extends from
+1 July 2000 to 30 June 2001, some authors
 label the period \code{"2000"}, and
 others label it \code{"2001"}. Function
 \code{date_to_period_year} by default uses
@@ -63,7 +73,8 @@ date_to_period_year(date = c("2024-03-27", "2022-11-09"))
 date_to_period_year(date = c("2024-03-27", "2022-11-09"),
                     month_start = "Jul")
 
-## July to Jun, using calendar year at end for label
+## July to June, using the calendar year at
+## the end for the label
 date_to_period_year(date = c("2024-03-27", "2022-11-09"),
                     month_start = "Jul",
                     label_year_start = FALSE)

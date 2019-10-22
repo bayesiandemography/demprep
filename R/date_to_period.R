@@ -2,31 +2,33 @@
 ## HAS_TESTS
 #' Convert dates to one-year periods
 #'
-#' Allocate dates to one-year periods. The periods are,
+#' Allocate dates to one-year periods. The one-year periods are,
 #' by default, calendar years.
 #'
 #' \code{date} is a vector of class \code{\link[base]{Date}},
 #' or can be coerced to class \code{Date}
 #' via function \code{\link[base]{as.Date}}.
 #' 
-#' One-year periods start on the first day of \code{month_start},
-#' and end one year minus one day later.
-#' The default value for \code{"month_start"} is \code{"January"},
-#' so one-year periods by default start on 1 January and
-#' end on 31 December. \code{month_start} can be an
-#' a full or abbreviated month name: more precisely,
-#' it can be an element of \code{\link[base]{month.name}},
-#' or an element of \code{\link[base]{month.abb}}.
+#' The periods start on the first day of \code{month_start},
+#' and end one-year-minus-one-day later.
+#' The default value for \code{month_start} is \code{"January"},
+#' so periods by default start on 1 January and
+#' end on 31 December. \code{month_start} can be a
+#' full month name or an abbreviation.
 #'
-#' If a period starts on 1 January, the first day and last day
+#' If a period starts on 1 January, then the first day and last day
 #' of the period belong to the same calendar year.
-#' But if a period starts on,
-#' for example, 1 July, then the first day belongs to one calendar
-#' year and the last day belongs to the next calendear year.
-#' Some people use the start year to label periods that
-#' cross calendar years, and others use the end year.
+#' But if a period starts on any other day, then
+#' the first day belongs to one calendar
+#' year and the last day belongs to the next calendar year.
 #' For instance, if a period extends from
-#' 1 July 2000 to 30 June 2001, some people
+#' 1 July 2000 to 30 June 2001, then the first
+#' day belongs to the year 2000, and the last
+#' day belongs to the year 2001. Some authors
+#' use the first year to label such periods,
+#' and others use the last year.
+#' For instance, if a period extends from
+#' 1 July 2000 to 30 June 2001, some authors
 #' label the period \code{"2000"}, and
 #' others label it \code{"2001"}. Function
 #' \code{date_to_period_year} by default uses
@@ -38,15 +40,19 @@
 #' including periods that not appear in the data.
 #'
 #' @param date Dates of events or measurements.
-#' @param month_start
-#' @param label_year_start
+#' @param month_start An element of \code{\link[base]{month.name}},
+#' or \code{\link[base]{month.abb}}. The period starts on
+#' the first day of this month.
+#' @param label_year_start Logical. Whether to label a period
+#' by the calendar year at the beginning of the period
+#' or the calendar year at the end. Not needed for periods
+#' that start on 1 January.
 #' @param as_factor Whether the return value is a factor.
 #' Defaults to \code{TRUE}.
 #'
 #' @return If \code{as_factor} is \code{TRUE}, then the return
 #' value is a factor; otherwise it is a character vector.
-#' The length of the return value equals the length
-#' of \code{date}.
+#' The return value has the same length as \code{date}.
 #'
 #' @seealso Other functions for creating periods are
 #' \code{\link{date_to_period_multi}},
@@ -67,7 +73,8 @@
 #' date_to_period_year(date = c("2024-03-27", "2022-11-09"),
 #'                     month_start = "Jul")
 #'
-#' ## July to Jun, using calendar year at end for label
+#' ## July to June, using the calendar year at
+#' ## the end for the label
 #' date_to_period_year(date = c("2024-03-27", "2022-11-09"),
 #'                     month_start = "Jul",
 #'                     label_year_start = FALSE)
@@ -89,7 +96,80 @@ date_to_period_year <- function(date,
 }
 
 ## HAS_TESTS
-#' @rdname date_to_period
+#' Convert dates to multi-year periods
+#'
+#' Allocate dates to multi-year periods. The periods all have
+#' the same width, which by default is 5 years.
+#'
+#' \code{date} is a vector of class \code{\link[base]{Date}},
+#' or can be coerced to class \code{Date}
+#' via function \code{\link[base]{as.Date}}.
+#' 
+#' Periods are \code{width} years long.
+#' They start on the first day of \code{month_start},
+#' and end \code{width}-years-minus-one-day later.
+#' The default value for \code{month_start} is \code{"January"},
+#' so periods by default start on 1 January and
+#' end on 31 December. \code{month_start} can be a
+#' full month name or an abbreviation.
+#'
+#' The location of the periods can be shifted
+#' by using different values for \code{origin}.
+#' 
+#' When \code{as_factor} is \code{TRUE} the levels of
+#' the factor include all intermediate periods,
+#' including periods that not appear in the data.
+#'
+#' @inheritParams date_to_period_year
+#' @param width The length, in whole years, of the periods.
+#' Defaults to 5.
+#' @param origin An integer. Defaults to 2000. 
+#' 
+#' @return If \code{as_factor} is \code{TRUE}, then the return
+#' value is a factor; otherwise it is a character vector.
+#' The return value has the same length as \code{date}.
+#'
+#' @seealso Other functions for creating periods are
+#' \code{\link{date_to_period_year}},
+#' \code{\link{date_to_period_custom}},
+#' \code{\link{date_to_period_quarter}},
+#' and \code{\link{date_to_period_month}}.
+#' Other functions for working with multi-year intervals are
+#' \code{\link{date_to_age_group_multi}},
+#' \code{\link{date_to_cohort_multi}},
+#' and \code{\link{date_to_triangle_multi}}.
+#' See \code{\link{make_labels_period_year}} for the rules
+#' on constructing labels for periods.
+#'
+#' @examples
+#' date_to_period_multi(date = c("2024-03-27",
+#'                               "2018-11-09",
+#'                               "2021-03-02"))
+#'
+#' ## width is 10
+#' date_to_period_multi(date = c("2024-03-27",
+#'                               "2018-11-09",
+#'                               "2021-03-02"),
+#'                      width = 5)
+#'
+#' ## origin is 2001
+#' date_to_period_multi(date = c("2024-03-27",
+#'                               "2018-11-09",
+#'                               "2021-03-02"),
+#'                      origin = 2001)
+#'
+#' ## July to June
+#' date_to_period_multi(date = c("2024-03-27",
+#'                               "2018-11-09",
+#'                               "2021-03-02"),
+#'                      origin = 2001,
+#'                      month_start = "Jul")
+#'
+#' ## return non-factor
+#' date_to_period_multi(date = c("2024-03-27",
+#'                               "2018-11-09",
+#'                               "2021-03-02"),
+#'                      as_factor = FALSE)
 #' @export
 date_to_period_multi <- function(date,
                                  width = 5,
@@ -106,7 +186,78 @@ date_to_period_multi <- function(date,
 }
 
 ## HAS_TESTS
-#' @rdname date_to_period
+#' Convert dates to customized periods
+#'
+#' Allocate dates to periods with varying widths,
+#' though all widths are measured in whole years.
+#'
+#' \code{date} is a vector of class \code{\link[base]{Date}},
+#' or can be coerced to class \code{Date}
+#' via function \code{\link[base]{as.Date}}.
+#'
+#' \code{breaks} is also vector of class \code{\link[base]{Date}},
+#' or can be coerced to to one. \code{breaks} is
+#' used to define the points where each period starts and finishes.
+#' The dates in \code{break} must all be the first day of
+#' the same month. For instance, \code{breaks} could consist of
+#' the values \code{"2010-01-01"} and \code{"2017-01-01"},
+#' but not \code{"2010-01-01"} and \code{"2017-01-02"},
+#' or \code{"2010-01-01"} and \code{"2017-02-01"}.
+#' The final period finishes
+#' one day before the final break.
+#' If, for instance, \code{breaks} has values \code{"2010-01-01"},
+#' \code{"2017-01-01"}, and \code{"2021-01-01"}, then the first period
+#' starts on 1 January 2010 and ends on 31 December 2016,
+#' and the second period starts on 1 January 2017 and ends
+#' on 31 December 2020.
+#'
+#' When \code{as_factor} is \code{TRUE} the levels of
+#' the factor include all intermediate periods,
+#' including periods that not appear in the data.
+#'
+#' @inheritParams date_to_period_year
+#' @param breaks Dates defining starts and ends of periods.
+#' 
+#' @return If \code{as_factor} is \code{TRUE}, then the return
+#' value is a factor; otherwise it is a character vector.
+#' The return value has the same length as \code{date}.
+#'
+#' @seealso Other functions for creating periods are
+#' \code{\link{date_to_period_year}},
+#' \code{\link{date_to_period_multi}},
+#' \code{\link{date_to_period_quarter}},
+#' and \code{\link{date_to_period_month}}.
+#' Other functions for working with customized intervals are
+#' \code{\link{date_to_age_group_custom}},
+#' and \code{\link{date_to_cohort_custom}}.
+#' See \code{\link{make_labels_period_year}} for the rules
+#' on constructing labels for periods.
+#'
+#' @examples
+#' ## periods start on 1 January
+#' date_to_period_custom(date = c("2024-03-27",
+#'                               "2018-11-09",
+#'                               "2021-03-02"),
+#'                       breaks = c("2000-01-01",
+#'                                  "2019-01-01",
+#'                                  "2026-01-01"))
+#'
+#' ## periods start on 1 March
+#' date_to_period_custom(date = c("2024-03-27",
+#'                               "2018-11-09",
+#'                               "2021-03-02"),
+#'                       breaks = c("2000-03-01",
+#'                                  "2019-03-01",
+#'                                  "2026-03-01"))
+#'
+#' ## return non-factor
+#' date_to_period_custom(date = c("2024-03-27",
+#'                                "2018-11-09",
+#'                                "2021-03-02"),
+#'                       breaks = c("2000-01-01",
+#'                                  "2019-01-01",
+#'                                  "2026-01-01"),
+#'                       as_factor = FALSE)
 #' @export
 date_to_period_custom <- function(date,
                                   breaks,
