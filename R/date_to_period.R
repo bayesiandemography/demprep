@@ -269,7 +269,49 @@ date_to_period_custom <- function(date,
 }
 
 ## HAS_TESTS
-#' @rdname date_to_period
+#' Convert dates to quarter periods
+#'
+#' Allocate dates to periods with periods one quarter
+#' (ie three month) long. Q1 (the first quarter)
+#' starts on 1 January
+#' and ends on 31 March; Q2 starts on 1 April and ends on
+#' 30 June; Q3 starts on 1 July and ends on 30 September;
+#' Q4 starts on 1 October and ends on 31 December.
+#'
+#' \code{date} is a vector of class \code{\link[base]{Date}},
+#' or can be coerced to class \code{Date}
+#' via function \code{\link[base]{as.Date}}.
+#'
+#' When \code{as_factor} is \code{TRUE} the levels of
+#' the factor include all intermediate periods,
+#' including periods that not appear in the data.
+#'
+#' @inheritParams date_to_period_year
+#'
+#' @return If \code{as_factor} is \code{TRUE}, then the return
+#' value is a factor; otherwise it is a character vector.
+#' The return value has the same length as \code{date}.
+#'
+#' @seealso Other functions for creating periods are
+#' \code{\link{date_to_period_year}},
+#' \code{\link{date_to_period_multi}},
+#' \code{\link{date_to_period_customer}},
+#' and \code{\link{date_to_period_month}}.
+#' Other functions for working with quarter intervals are
+#' \code{\link{date_to_age_group_quarter}},
+#' and \code{\link{date_to_cohort_quarter}},
+#' and \code{\link{date_to_triangle_quarter}}.
+#' See \code{\link{make_labels_period_quarter}} on the rules
+#' for constructing labels for quarter periods.
+#' @examples
+#' date_to_period_quarter(date = c("2024-03-27",
+#'                                 "2020-01-03",
+#'                                 "2022-11-09"))
+#' ## return non-factor
+#' date_to_period_quarter(date = c("2024-03-27",
+#'                                 "2020-01-03",
+#'                                 "2022-11-09"),
+#'                        as_factor = FALSE)
 #' @export
 date_to_period_quarter <- function(date,
                                    as_factor = TRUE) {
@@ -280,7 +322,45 @@ date_to_period_quarter <- function(date,
 }
 
 ## HAS_TESTS
-#' @rdname date_to_period
+#' Convert dates to month periods
+#'
+#' Allocate dates to periods with month-long
+#' periods.
+#'
+#' \code{date} is a vector of class \code{\link[base]{Date}},
+#' or can be coerced to class \code{Date}
+#' via function \code{\link[base]{as.Date}}.
+#'
+#' When \code{as_factor} is \code{TRUE} the levels of
+#' the factor include all intermediate periods,
+#' including periods that not appear in the data.
+#'
+#' @inheritParams date_to_period_year
+#'
+#' @return If \code{as_factor} is \code{TRUE}, then the return
+#' value is a factor; otherwise it is a character vector.
+#' The return value has the same length as \code{date}.
+#'
+#' @seealso Other functions for creating periods are
+#' \code{\link{date_to_period_year}},
+#' \code{\link{date_to_period_multi}},
+#' \code{\link{date_to_period_customer}},
+#' and \code{\link{date_to_period_quarter}}.
+#' Other functions for working with month intervals are
+#' \code{\link{date_to_age_group_month}},
+#' and \code{\link{date_to_cohort_month}},
+#' and \code{\link{date_to_triangle_month}}.
+#' See \code{\link{make_labels_period_month}} on the rules
+#' for constructing labels for month periods.
+#' @examples
+#' date_to_period_month(date = c("2024-03-27",
+#'                               "2020-01-03",
+#'                               "2022-11-09"))
+#' ## return non-factor
+#' date_to_period_month(date = c("2024-03-27",
+#'                               "2020-01-03",
+#'                               "2022-11-09"),
+#'                      as_factor = FALSE)
 #' @export
 date_to_period_month <- function(date,
                                  as_factor = TRUE) {
