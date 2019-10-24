@@ -36,7 +36,7 @@ by default, calendar years.
 or can be coerced to class \code{Date}
 via function \code{\link[base]{as.Date}}.
 
-The periods start on the first day of \code{month_start},
+Periods start on the first day of \code{month_start},
 and end one-year-minus-one-day later.
 The default value for \code{month_start} is \code{"January"},
 so periods by default start on 1 January and
