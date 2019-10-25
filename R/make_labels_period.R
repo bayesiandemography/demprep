@@ -7,11 +7,11 @@ NULL
 ## HAS_TESTS
 #' @rdname make_labels_period
 #' @export
-make_labels_period_year <- function(breaks,
-                                    open_left = FALSE,
-                                    open_right = FALSE,
-                                    label_year_start = TRUE,
-                                    include_na = FALSE) {
+make_labels_period <- function(breaks,
+                               open_left = FALSE,
+                               open_right = FALSE,
+                               label_year_start = TRUE,
+                               include_na = FALSE) {
     breaks <- demcheck::err_tdy_breaks_date(x = breaks,
                                             name = "breaks",
                                             open_left = open_left,

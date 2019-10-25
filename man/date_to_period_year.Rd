@@ -93,6 +93,6 @@ Other functions for working with one-year intervals are
 \code{\link{date_to_age_group_year}},
 \code{\link{date_to_cohort_year}},
 and \code{\link{date_to_triangle_year}}.
-See \code{\link{make_labels_period_year}} for the rules
+See \code{\link{make_labels_period}} for the rules
 on constructing labels for periods.
 }

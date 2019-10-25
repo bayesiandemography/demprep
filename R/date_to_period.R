@@ -63,7 +63,7 @@
 #' \code{\link{date_to_age_group_year}},
 #' \code{\link{date_to_cohort_year}},
 #' and \code{\link{date_to_triangle_year}}.
-#' See \code{\link{make_labels_period_year}} for the rules
+#' See \code{\link{make_labels_period}} for the rules
 #' on constructing labels for periods.
 #'
 #' @examples
@@ -138,7 +138,7 @@ date_to_period_year <- function(date,
 #' \code{\link{date_to_age_group_multi}},
 #' \code{\link{date_to_cohort_multi}},
 #' and \code{\link{date_to_triangle_multi}}.
-#' See \code{\link{make_labels_period_year}} for the rules
+#' See \code{\link{make_labels_period}} for the rules
 #' on constructing labels for periods.
 #'
 #' @examples
@@ -198,8 +198,9 @@ date_to_period_multi <- function(date,
 #' \code{breaks} is also vector of class \code{\link[base]{Date}},
 #' or can be coerced to to one. \code{breaks} is
 #' used to define the points where each period starts and finishes.
-#' The dates in \code{break} must all be the first day of
-#' the same month. For instance, \code{breaks} could consist of
+#' The dates in \code{breaks} must all be the first day of
+#' the same month of the year. For instance,
+#' \code{breaks} could consist of
 #' the values \code{"2010-01-01"} and \code{"2017-01-01"},
 #' but not \code{"2010-01-01"} and \code{"2017-01-02"},
 #' or \code{"2010-01-01"} and \code{"2017-02-01"}.
@@ -230,7 +231,7 @@ date_to_period_multi <- function(date,
 #' Other functions for working with customized intervals are
 #' \code{\link{date_to_age_group_custom}},
 #' and \code{\link{date_to_cohort_custom}}.
-#' See \code{\link{make_labels_period_year}} for the rules
+#' See \code{\link{make_labels_period}} for the rules
 #' on constructing labels for periods.
 #'
 #' @examples

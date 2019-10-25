@@ -47,7 +47,7 @@ date_to_period_or_cohort_custom <- function(date,
     if (!open_left)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = breaks[1L])
-    labels <- make_labels_period_year(breaks = breaks,
+    labels <- make_labels_period(breaks = breaks,
                                       open_left = open_left,
                                       open_right = FALSE,
                                       label_year_start = NULL)
@@ -143,7 +143,7 @@ date_to_period_or_cohort_multi <- function(date,
                                     width = width,
                                     origin = origin,
                                     break_min = break_min)
-    labels <- make_labels_period_year(breaks = breaks,
+    labels <- make_labels_period(breaks = breaks,
                                       open_left = open_left,
                                       open_right = FALSE,
                                       label_year_start = NULL)
@@ -236,10 +236,10 @@ date_to_period_or_cohort_year <- function(date,
                                     width = 1L,
                                     origin = NULL,
                                     break_min = break_min)
-    labels <- make_labels_period_year(breaks = breaks,
-                                      open_left = open_left,
-                                      open_right = FALSE,
-                                      label_year_start = label_year_start)
+    labels <- make_labels_period(breaks = breaks,
+                                 open_left = open_left,
+                                 open_right = FALSE,
+                                 label_year_start = label_year_start)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,

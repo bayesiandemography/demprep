@@ -2,13 +2,12 @@
 % Please edit documentation in R/make_labels_age_group.R
 \name{make_labels_age_group}
 \alias{make_labels_age_group}
-\alias{make_labels_age_group_year}
 \alias{make_labels_age_group_quarter}
 \alias{make_labels_age_group_month}
 \title{Make age labels}
 \usage{
-make_labels_age_group_year(breaks, open_left = FALSE,
-  open_right = TRUE, include_na = FALSE)
+make_labels_age_group(breaks, open_left = FALSE, open_right = TRUE,
+  include_na = FALSE)
 
 make_labels_age_group_quarter(break_min = 0, break_max = 400,
   open_left = FALSE, open_right = TRUE, include_na = FALSE)

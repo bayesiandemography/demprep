@@ -63,7 +63,7 @@
 #' \code{\link{date_to_period_year}},
 #' \code{\link{date_to_cohort_year}},
 #' and \code{\link{date_to_triangle_year}}.
-#' See \code{\link{make_labels_age_group_year}} for the rules
+#' See \code{\link{make_labels_age_group}} for the rules
 #' on constructing labels for age groups.
 #'
 #' @examples
@@ -122,7 +122,7 @@ date_to_age_group_year <- function(date,
                                        width = 1L,
                                        break_max = break_max,
                                        open_right = open_right)
-    labels <- make_labels_age_group_year(breaks = breaks,
+    labels <- make_labels_age_group(breaks = breaks,
                                          open_left = FALSE,
                                          open_right = open_right)
     i <- findInterval(x = age_years,
@@ -188,7 +188,7 @@ date_to_age_group_year <- function(date,
 #' \code{\link{date_to_period_multi}},
 #' \code{\link{date_to_cohort_multi}},
 #' and \code{\link{date_to_triangle_multi}}.
-#' See \code{\link{make_labels_age_group_year}} for the rules
+#' See \code{\link{make_labels_age_group}} for the rules
 #' on constructing labels for age groups.
 #'
 #' @examples
@@ -264,7 +264,7 @@ date_to_age_group_multi <- function(date,
                                        width = width,
                                        break_max = break_max,
                                        open_right = open_right)
-    labels <- make_labels_age_group_year(breaks = breaks,
+    labels <- make_labels_age_group(breaks = breaks,
                                          open_left = FALSE,
                                          open_right = open_right)
     i <- findInterval(x = age_years,
@@ -318,7 +318,7 @@ date_to_age_group_multi <- function(date,
 #' \code{\link{date_to_age_group_custom}},
 #' \code{\link{date_to_age_group_quarter}},
 #' and \code{\link{date_to_age_group_month}}.
-#' See \code{\link{make_labels_age_group_year}} for the rules
+#' See \code{\link{make_labels_age_group}} for the rules
 #' on constructing labels for age groups.
 #'
 #' @examples
@@ -361,7 +361,7 @@ date_to_age_group_lifetab <- function(date, dob,
                                        dob = dob)
     age_years <- age_months %/% 12L
     breaks <- make_breaks_integer_lifetab(break_max)
-    labels <- make_labels_age_group_year(breaks = breaks,
+    labels <- make_labels_age_group(breaks = breaks,
                                          open_left = FALSE,
                                          open_right = TRUE)
     i <- findInterval(x = age_years,
@@ -441,7 +441,7 @@ date_to_age_group_lifetab <- function(date, dob,
 #' \code{\link{date_to_age_group_custom}},
 #' \code{\link{date_to_age_group_quarter}},
 #' and \code{\link{date_to_age_group_month}}.
-#' See \code{\link{make_labels_age_group_year}} for the rules
+#' See \code{\link{make_labels_age_group}} for the rules
 #' on constructing labels for age groups.
 #'
 #' @examples
@@ -550,7 +550,7 @@ date_to_age_group_fert <- function(date, dob,
                                        width = width,
                                        break_min = break_min,
                                        break_max = break_max)
-    labels <- make_labels_age_group_year(breaks = breaks,
+    labels <- make_labels_age_group(breaks = breaks,
                                          open_left = FALSE,
                                          open_right = FALSE)
     i <- findInterval(x = age_years,
@@ -610,7 +610,7 @@ date_to_age_group_fert <- function(date, dob,
 #' \code{\link{date_to_age_group_fert}},
 #' \code{\link{date_to_age_group_quarter}},
 #' and \code{\link{date_to_age_group_month}}.
-#' See \code{\link{make_labels_age_group_year}} for the rules
+#' See \code{\link{make_labels_age_group}} for the rules
 #' on constructing labels for age groups.
 #'
 #' @examples
@@ -684,9 +684,9 @@ date_to_age_group_custom <- function(date, dob,
                           breaks[[n]]))
         }
     }
-    labels <- make_labels_age_group_year(breaks = breaks,
-                                         open_left = FALSE,
-                                         open_right = open_right)
+    labels <- make_labels_age_group(breaks = breaks,
+                                    open_left = FALSE,
+                                    open_right = open_right)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]

@@ -36,9 +36,9 @@ value is a factor; otherwise it is a character vector.
 The return value has the same length as \code{date}.
 }
 \description{
-Allocate dates of events (typically, but not always, birth)
-to cohorts of length one year. The cohorts by default
-align with calendar years.
+Allocate dates of events to cohorts with widths of one year.
+The cohorts by default align with calendar years.
+The events are typically, but not always, births.
 }
 \details{
 The interface for \code{date_to_cohort_year} is the similar
@@ -51,17 +51,17 @@ or can be coerced to class \code{Date}
 via function \code{\link[base]{as.Date}}.
 
 \code{break_min} is a single value of
-class \code{\link[base]{Date}}, a value that
+class \code{\link[base]{Date}}, or a value that
 can be coerced to class \code{Date}
 via function \code{\link[base]{as.Date}}.
 \code{break_min} must be the first day of
 a month, e.g \code{"2020-01-01"} or
 \code{"2020-04-01"}.
 
-Supplying a \code{break_min} is essentially equivalent
+Supplying a value for \code{break_min} is essentially equivalent
 to supplying a value for \code{break_max} in
-\code{\link{date_to_age_year}}, in that it
-defines how the oldest ages are handled. If
+\code{\link{date_to_age_year}}, in that it is a way of
+defining how the oldest ages are handled. If
 \code{open_left} is \code{TRUE}, then the first cohort
 is \code{(-Inf, break_min)}; otherwise the
 first cohort is \code{[break_min, break_min - 1)}.
@@ -140,6 +140,6 @@ Other functions for working with one-year intervals are
 \code{\link{date_to_age_group_year}},
 \code{\link{date_to_period_year}},
 and \code{\link{date_to_triangle_year}}.
-See \code{\link{make_labels_period_year}} for the rules
+See \code{\link{make_labels_period}} for the rules
 on constructing labels for periods and cohorts.
 }

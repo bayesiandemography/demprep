@@ -7,10 +7,10 @@ NULL
 ## HAS_TESTS
 #' @rdname make_labels_age_group
 #' @export
-make_labels_age_group_year <- function(breaks,
-                                       open_left = FALSE,
-                                       open_right = TRUE,
-                                       include_na = FALSE) {
+make_labels_age_group <- function(breaks,
+                                  open_left = FALSE,
+                                  open_right = TRUE,
+                                  include_na = FALSE) {
     breaks <- demcheck::err_tdy_breaks_integer(x = breaks,
                                                name = "breaks",
                                                open_left = open_left,

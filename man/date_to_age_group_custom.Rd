@@ -94,6 +94,6 @@ Other functions for creating age groups are
 \code{\link{date_to_age_group_fert}},
 \code{\link{date_to_age_group_quarter}},
 and \code{\link{date_to_age_group_month}}.
-See \code{\link{make_labels_age_group_year}} for the rules
+See \code{\link{make_labels_age_group}} for the rules
 on constructing labels for age groups.
 }

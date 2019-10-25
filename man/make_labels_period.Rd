@@ -2,12 +2,11 @@
 % Please edit documentation in R/make_labels_period.R
 \name{make_labels_period}
 \alias{make_labels_period}
-\alias{make_labels_period_year}
 \alias{make_labels_period_quarter}
 \alias{make_labels_period_month}
 \title{Make period labels}
 \usage{
-make_labels_period_year(breaks, open_left = FALSE, open_right = FALSE,
+make_labels_period(breaks, open_left = FALSE, open_right = FALSE,
   label_year_start = TRUE, include_na = FALSE)
 
 make_labels_period_quarter(break_min, break_max, open_left = FALSE,
