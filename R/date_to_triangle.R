@@ -1,10 +1,96 @@
-#' Use dates and dates of birth to calculate Lexis triangles
-#' 
-#' @name date_to_triangle
-NULL
 
 ## HAS_TESTS
-#' @rdname date_to_triangle
+#' Convert dates to one-year Lexis triangles
+#'
+#' Given dates when events occurred, together with dates of birth,
+#' allocate the events to Lexis triangles.
+#' All the Lexis triangles have widths
+#' of one year, though the final upper triangle
+#' may have no age limit.
+#'
+#' An event occurring during period \code{[t, t+1)} to
+#' a person in age group \code{[a, a+1)} belongs to an
+#' upper Lexis triangle if the person was already in age group
+#' \code{[a, a+1)} at time \code{t}, and belongs to a
+#' lower Lexis triangle if the person joins age group
+#' \code{[a, a+1)} during period \code{[t, t+1)}.
+#'
+#' Information on the Lexis triangle of an event, in addition
+#' to the period and age group, allows that event to
+#' be allocated to a birth cohort. The ability to allocate
+#' events to birth cohorts is essential for demographic accounting.
+#'
+#' \code{date} and \code{dob} are both vectors of class
+#' \code{\link[base]{Date}}, or vectors that can be coerced to class
+#' \code{Date} via function \code{\link[base]{as.Date}}.
+#'
+#' \code{date} and \code{dob} must have the same length,
+#' unless one of them has length 1, in which case the
+#' length-1 argument is recycled.
+#'
+#' \code{break_max} and \code{open_right} are used to specify
+#' the oldest age group.
+#' When \code{break_max} is non-\code{NULL} and
+#' \code{open_right} is \code{TRUE}, the oldest
+#' age group is \code{[break_max, Inf)} years. When
+#' \code{break_max} is non-\code{NULL} and 
+#' \code{open_right} is \code{FALSE}, the oldest age
+#' group is \code{[break_max-1, break_max)} years.
+#' 
+#' If \code{break_max} is \code{NULL}, \code{date_to_triangle}
+#' derives a value, based on the highest age in the data,
+#' and the value for \code{open_right}.
+#' 
+#' Periods start on the first day of \code{month_start},
+#' and end one-year-minus-one-day later.
+#' The default value for \code{month_start} is \code{"Jan"},
+#' so periods by default start on 1 January and
+#' end on 31 December. \code{month_start} can be a
+#' full month name or an abbreviation.
+#'
+#' When \code{as_factor} is \code{TRUE}, the levels of
+#' the factor includes both \code{"Lower"} and
+#' \code{"Upper"}, even when they do not both appear
+#' in the data.
+#'
+#' @param date Dates of events or measurements.
+#' @param dob Dates of birth.
+#' @param break_max An integer or \code{NULL}.
+#' Defaults to 100.
+#' @param open_right Whether the final age group
+#' has no upper limit. Defaults to \code{TRUE}.
+#' @param as_factor Whether the return value is a factor.
+#' Defaults to \code{TRUE}.
+#'
+#' @return If \code{as_factor} is \code{TRUE}, then the return
+#' value is a factor; otherwise it is a character vector.
+#' The return value has the same length as \code{date}.
+#'
+#' @seealso Other functions for creating Lexis triangles are
+#' \code{\link{date_to_triangle_multi}},
+#' \code{\link{date_to_triangle_quarter}},
+#' and \code{\link{date_to_triangle_month}}.
+#' Other functions for working with one-year intervals are
+#' \code{\link{date_to_age_group_year}},
+#' \code{\link{date_to_period_year}},
+#' and \code{\link{date_to_cohort_year}}.
+#'
+#' @examples
+#' date_to_triangle_year(date = c("2024-03-27", "2022-11-09"))
+#'
+#' ## July to June
+#' date_to_triangle_year(date = c("2024-03-27", "2022-11-09"),
+#'                     month_start = "Jul")
+#'
+#' ## July to June, using the calendar year at
+#' ## the end for the label
+#' date_to_triangle_year(date = c("2024-03-27", "2022-11-09"),
+#'                     month_start = "Jul",
+#'                     label_year_start = FALSE)
+#'
+#' ## return non-factor
+#' date_to_triangle_year(date = c("2024-03-27", "2022-11-09"),
+#'                     as_factor = FALSE)
 #' @export
 date_to_triangle_year <- function(date,
                                   dob,
