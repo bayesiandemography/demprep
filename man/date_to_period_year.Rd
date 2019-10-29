@@ -38,7 +38,7 @@ via function \code{\link[base]{as.Date}}.
 
 Periods start on the first day of \code{month_start},
 and end one-year-minus-one-day later.
-The default value for \code{month_start} is \code{"January"},
+The default value for \code{month_start} is \code{"Jan"},
 so periods by default start on 1 January and
 end on 31 December. \code{month_start} can be a
 full month name or an abbreviation.

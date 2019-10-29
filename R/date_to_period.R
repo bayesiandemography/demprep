@@ -11,7 +11,7 @@
 #' 
 #' Periods start on the first day of \code{month_start},
 #' and end one-year-minus-one-day later.
-#' The default value for \code{month_start} is \code{"January"},
+#' The default value for \code{month_start} is \code{"Jan"},
 #' so periods by default start on 1 January and
 #' end on 31 December. \code{month_start} can be a
 #' full month name or an abbreviation.
@@ -108,7 +108,7 @@ date_to_period_year <- function(date,
 #' Periods are \code{width} years long.
 #' They start on the first day of \code{month_start},
 #' and end \code{width}-years-minus-one-day later.
-#' The default value for \code{month_start} is \code{"January"},
+#' The default value for \code{month_start} is \code{"Jan"},
 #' so periods by default start on 1 January and
 #' end on 31 December. \code{month_start} can be a
 #' full month name or an abbreviation.
@@ -296,7 +296,7 @@ date_to_period_custom <- function(date,
 #' @seealso Other functions for creating periods are
 #' \code{\link{date_to_period_year}},
 #' \code{\link{date_to_period_multi}},
-#' \code{\link{date_to_period_customer}},
+#' \code{\link{date_to_period_custom}},
 #' and \code{\link{date_to_period_month}}.
 #' Other functions for working with quarter intervals are
 #' \code{\link{date_to_age_group_quarter}},
@@ -345,7 +345,7 @@ date_to_period_quarter <- function(date,
 #' @seealso Other functions for creating periods are
 #' \code{\link{date_to_period_year}},
 #' \code{\link{date_to_period_multi}},
-#' \code{\link{date_to_period_customer}},
+#' \code{\link{date_to_period_custom}},
 #' and \code{\link{date_to_period_quarter}}.
 #' Other functions for working with month intervals are
 #' \code{\link{date_to_age_group_month}},

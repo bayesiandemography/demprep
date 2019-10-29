@@ -58,8 +58,10 @@ age group is \code{[break_max, Inf)} years. When
 \code{break_max} is non-\code{NULL} and 
 \code{open_right} is \code{FALSE}, the oldest age
 group is \code{[break_max-1, break_max)} years.
-When \code{break_max} is \code{NULL}, the oldest age
-group depends on the highest value in the data.
+
+If \code{break_max} is \code{NULL}, \code{date_to_age_group_year}
+derives a value, based on the highest age in the data,
+and the value for \code{open_right}.
 
 When \code{as_factor} is \code{TRUE} the levels of
 the factor include all intermediate age groups,

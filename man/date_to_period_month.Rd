@@ -44,7 +44,7 @@ date_to_period_month(date = c("2024-03-27",
 Other functions for creating periods are
 \code{\link{date_to_period_year}},
 \code{\link{date_to_period_multi}},
-\code{\link{date_to_period_customer}},
+\code{\link{date_to_period_custom}},
 and \code{\link{date_to_period_quarter}}.
 Other functions for working with month intervals are
 \code{\link{date_to_age_group_month}},

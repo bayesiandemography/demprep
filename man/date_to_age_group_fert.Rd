@@ -9,9 +9,9 @@ date_to_age_group_fert(date, dob, break_min = 15, break_max = 50,
   as_factor = TRUE)
 }
 \arguments{
-\item{date}{Dates of events or measurements.}
+\item{date}{Dates when births being measured occur.}
 
-\item{dob}{Dates of birth.}
+\item{dob}{Dates of birth of monthers.}
 
 \item{break_min}{An integer or \code{NULL}.
 Defaults to 15.}
@@ -64,12 +64,12 @@ is \code{50}, all births are assumed to
 occur to women aged 15 to 49 (inclusive).
 
 Datasets sometimes contain a few births to mothers
-younger than the assumed minimum age for reproduction,
-or to mothers older than the assumed maximum age
-for reproduction. Demographers often recode such births,
-so that births to unexpectedly young mothers are
+younger than the assumed minimum age of reproduction,
+or births to mothers older than the assumed maximum age
+of reproduction. Demographers often recode such births,
+so that ones to unexpectedly young mothers are
 treated as occurring just above the minimum age
-for reproduction, and births to unexpectedly old mothers
+for reproduction, and ones to unexpectedly old mothers
 are treated as occurring just below the maximum
 age for reproduction. This recoding can be justified
 on the grounds that some of the original ages may have

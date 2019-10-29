@@ -50,7 +50,7 @@ a month, e.g \code{"2020-01-01"} or
 
 Supplying a value for \code{break_min} is essentially equivalent
 to supplying a value for \code{break_max} in
-\code{\link{date_to_age_month}}, in that it is a way of
+\code{\link{date_to_age_group_month}}, in that it is a way of
 defining how the oldest ages are handled. If
 \code{open_left} is \code{TRUE}, then the first cohort
 is \code{(-Inf, break_min)}; otherwise the
