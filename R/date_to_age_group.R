@@ -22,18 +22,18 @@
 #' unless one of them has length 1, in which case the
 #' length-1 argument is recycled.
 #'
-#' \code{break_max} and \code{open_right} are used to specify
+#' \code{break_max} and \code{open_last} are used to specify
 #' the oldest age group.
 #' When \code{break_max} is non-\code{NULL} and
-#' \code{open_right} is \code{TRUE}, the oldest
+#' \code{open_last} is \code{TRUE}, the oldest
 #' age group is \code{[break_max, Inf)} years. When
 #' \code{break_max} is non-\code{NULL} and 
-#' \code{open_right} is \code{FALSE}, the oldest age
+#' \code{open_last} is \code{FALSE}, the oldest age
 #' group is \code{[break_max-1, break_max)} years.
 #'
 #' If \code{break_max} is \code{NULL}, \code{date_to_age_group_year}
 #' derives a value, based on the highest age in the data,
-#' and the value for \code{open_right}.
+#' and the value for \code{open_last}.
 #'
 #' When \code{as_factor} is \code{TRUE} the levels of
 #' the factor include all intermediate age groups,
@@ -43,7 +43,7 @@
 #' @param dob Dates of birth.
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 100.
-#' @param open_right Whether the final age group
+#' @param open_last Whether the final age group
 #' has no upper limit. Defaults to \code{TRUE}.
 #' @param as_factor Whether the return value is a factor.
 #' Defaults to \code{TRUE}.
@@ -93,12 +93,12 @@
 #' date_to_age_group_year(date = "2019-09-22",
 #'                        dob = "1910-01-01",
 #'                        break_max = NULL,
-#'                        open_right = FALSE)
+#'                        open_last = FALSE)
 #' @export 
 date_to_age_group_year <- function(date,
                                    dob,
                                    break_max = 100,
-                                   open_right = TRUE,
+                                   open_last = TRUE,
                                    as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
@@ -107,14 +107,14 @@ date_to_age_group_year <- function(date,
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = TRUE)
-    demcheck::err_is_logical_flag(x = open_right,
-                                  name = "open_right")
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
-    if (!is.null(break_max) && !open_right)
+    if (!is.null(break_max) && !open_last)
         demcheck::err_lt_break_max_age(age = age_years,
                                        break_max = break_max,
                                        date = date,
@@ -123,10 +123,10 @@ date_to_age_group_year <- function(date,
     breaks <- make_breaks_integer_year(age = age_years,
                                        width = 1L,
                                        break_max = break_max,
-                                       open_right = open_right)
+                                       open_last = open_last)
     labels <- make_labels_age_group(breaks = breaks,
-                                         open_left = FALSE,
-                                         open_right = open_right)
+                                         open_first = FALSE,
+                                         open_last = open_last)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
@@ -154,18 +154,18 @@ date_to_age_group_year <- function(date,
 #' unless one of them has length 1, in which case the
 #' length-1 argument is recycled.
 #'
-#' \code{break_max} and \code{open_right} are used to specify
+#' \code{break_max} and \code{open_last} are used to specify
 #' the oldest age group.
 #' When \code{break_max} is non-\code{NULL} and
-#' \code{open_right} is \code{TRUE}, the oldest
+#' \code{open_last} is \code{TRUE}, the oldest
 #' age group is \code{[break_max, Inf)} years. When
 #' \code{break_max} is non-\code{NULL} and 
-#' \code{open_right} is \code{FALSE}, the oldest age
+#' \code{open_last} is \code{FALSE}, the oldest age
 #' group is \code{[break_max-width, break_max)} years.
 #'
 #' If \code{break_max} is \code{NULL}, \code{date_to_age_group_multi}
 #' derives a value, based on the highest age in the data,
-#' and the value for \code{open_right}.
+#' and the value for \code{open_last}.
 #'
 #' When \code{as_factor} is \code{TRUE} the levels of
 #' the factor include all intermediate age groups,
@@ -228,13 +228,13 @@ date_to_age_group_year <- function(date,
 #' date_to_age_group_multi(date = "2019-09-22",
 #'                         dob = "1910-01-01",
 #'                         break_max = NULL,
-#'                         open_right = FALSE)
+#'                         open_last = FALSE)
 #' @export
 date_to_age_group_multi <- function(date,
                                     dob,
                                     width = 5,
                                     break_max = 100,
-                                    open_right = TRUE,
+                                    open_last = TRUE,
                                     as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
@@ -246,8 +246,8 @@ date_to_age_group_multi <- function(date,
                                                            name = "break_max",
                                                            null_ok = TRUE)
     if (!is.null(break_max))
-        demcheck::err_is_logical_flag(x = open_right,
-                                      name = "open_right")
+        demcheck::err_is_logical_flag(x = open_last,
+                                      name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
     demcheck::err_is_multiple_of(x1 = break_max,
@@ -258,7 +258,7 @@ date_to_age_group_multi <- function(date,
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
-    if (!open_right)
+    if (!open_last)
         demcheck::err_lt_break_max_age(age = age_years,
                                        break_max = break_max,
                                        date = date,
@@ -267,10 +267,10 @@ date_to_age_group_multi <- function(date,
     breaks <- make_breaks_integer_year(age = age_years,
                                        width = width,
                                        break_max = break_max,
-                                       open_right = open_right)
+                                       open_last = open_last)
     labels <- make_labels_age_group(breaks = breaks,
-                                         open_left = FALSE,
-                                         open_right = open_right)
+                                         open_first = FALSE,
+                                         open_last = open_last)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
@@ -366,8 +366,8 @@ date_to_age_group_lifetab <- function(date, dob,
     age_years <- age_months %/% 12L
     breaks <- make_breaks_integer_lifetab(break_max)
     labels <- make_labels_age_group(breaks = breaks,
-                                         open_left = FALSE,
-                                         open_right = TRUE)
+                                         open_first = FALSE,
+                                         open_last = TRUE)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
@@ -557,8 +557,8 @@ date_to_age_group_fert <- function(date, dob,
                                        break_min = break_min,
                                        break_max = break_max)
     labels <- make_labels_age_group(breaks = breaks,
-                                         open_left = FALSE,
-                                         open_right = FALSE)
+                                         open_first = FALSE,
+                                         open_last = FALSE)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
@@ -588,10 +588,10 @@ date_to_age_group_fert <- function(date, dob,
 #'
 #' \code{breaks} is used to specify the points at which
 #' each age group starts and finishes. If 
-#' \code{open_right} is \code{TRUE}, and \code{b} is
+#' \code{open_last} is \code{TRUE}, and \code{b} is
 #' the last value for \code{breaks}, then the oldest
 #' age group is \code{[b, Inf)} years. 
-#' If \code{open_right} is \code{FALSE}, \code{a} is the
+#' If \code{open_last} is \code{FALSE}, \code{a} is the
 #' second-to-last value for \code{breaks} and \code{b}
 #' is the last value, then the oldest age
 #' group is \code{[a, b)} years.
@@ -645,11 +645,11 @@ date_to_age_group_fert <- function(date, dob,
 #' date_to_age_group_custom(date = c("2024-03-27", "2022-11-09"),
 #'                          dob = c("2001-03-21", "2000-07-13"),
 #'                          breaks = c(15, 65, 100),
-#'                          open_right = FALSE)
+#'                          open_last = FALSE)
 #' @export
 date_to_age_group_custom <- function(date, dob,
                                      breaks = NULL,
-                                     open_right = TRUE,
+                                     open_last = TRUE,
                                      as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
@@ -657,10 +657,10 @@ date_to_age_group_custom <- function(date, dob,
     dob <- l$dob
     breaks <- demcheck::err_tdy_breaks_integer(x = breaks,
                                                name = "breaks",
-                                               open_left = FALSE,
-                                               open_right = open_right)
-    demcheck::err_is_logical_flag(x = open_right,
-                                  name = "open_right")
+                                               open_first = FALSE,
+                                               open_last = open_last)
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
     age_months <- age_completed_months(date = date,
@@ -677,13 +677,13 @@ date_to_age_group_custom <- function(date, dob,
                       "breaks",
                       breaks[[1L]]))
     }
-    if (!open_right) {
+    if (!open_last) {
         n <- length(breaks)
         is_ge_max <- age_years >= breaks[[n]]
         i_ge_max <- match(TRUE, is_ge_max, nomatch = 0L)
         if (i_ge_max > 0L) {
             stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
-                                "but 'open_right' is FALSE and maximum value for 'breaks' is %d"),
+                                "but 'open_last' is FALSE and maximum value for 'breaks' is %d"),
                           date[[i_ge_max]],
                           dob[[i_ge_max]],
                           age_years[[i_ge_max]],
@@ -691,8 +691,8 @@ date_to_age_group_custom <- function(date, dob,
         }
     }
     labels <- make_labels_age_group(breaks = breaks,
-                                    open_left = FALSE,
-                                    open_right = open_right)
+                                    open_first = FALSE,
+                                    open_last = open_last)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
@@ -726,18 +726,18 @@ date_to_age_group_custom <- function(date, dob,
 #' unless one of them has length 1, in which case the
 #' length-1 argument is recycled.
 #'
-#' \code{break_max} and \code{open_right} are used to specify
+#' \code{break_max} and \code{open_last} are used to specify
 #' the oldest age group.
 #' When \code{break_max} is non-\code{NULL} and
-#' \code{open_right} is \code{TRUE}, the oldest
+#' \code{open_last} is \code{TRUE}, the oldest
 #' age group is \code{[break_max, Inf)} quarters. When
 #' \code{break_max} is non-\code{NULL} and 
-#' \code{open_right} is \code{FALSE}, the oldest age
+#' \code{open_last} is \code{FALSE}, the oldest age
 #' group is \code{[break_max-1, break_max)} quarters.
 #'
 #' If \code{break_max} is \code{NULL}, \code{date_to_age_group_quarter}
 #' derives a value, based on the highest age in the data,
-#' and the value for \code{open_right}.
+#' and the value for \code{open_last}.
 #'
 #' When \code{as_factor} is \code{TRUE} the levels of
 #' the factor include all intermediate age groups,
@@ -747,7 +747,7 @@ date_to_age_group_custom <- function(date, dob,
 #' @param dob Dates of birth.
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 400.
-#' @param open_right Whether the final age group
+#' @param open_last Whether the final age group
 #' has no upper limit. Defaults to \code{TRUE}.
 #' @param as_factor Whether the return value is a factor.
 #' Defaults to \code{TRUE}.
@@ -797,12 +797,12 @@ date_to_age_group_custom <- function(date, dob,
 #' date_to_age_group_quarter(date = "2019-09-22",
 #'                           dob = "1910-01-01",
 #'                           break_max = NULL,
-#'                           open_right = FALSE)
+#'                           open_last = FALSE)
 #' @export
 date_to_age_group_quarter <- function(date,
                                       dob,
                                       break_max = 400,
-                                      open_right = TRUE,
+                                      open_last = TRUE,
                                       as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
@@ -811,14 +811,14 @@ date_to_age_group_quarter <- function(date,
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = TRUE)
-    demcheck::err_is_logical_flag(x = open_right,
-                                  name = "open_right")
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_quarters <- age_months %/% 3L
-    if (!is.null(break_max) && !open_right)
+    if (!is.null(break_max) && !open_last)
         demcheck::err_lt_break_max_age(age = age_quarters,
                                  break_max = break_max,
                                  date = date,
@@ -826,12 +826,12 @@ date_to_age_group_quarter <- function(date,
                                  unit = "quarter")    
     breaks <- make_breaks_integer_month_quarter(age = age_quarters,
                                                 break_max = break_max,
-                                                open_right = open_right)
+                                                open_last = open_last)
     break_max <- breaks[length(breaks)]
     labels <- make_labels_age_group_quarter(break_min = 0L,
                                             break_max = break_max,
-                                            open_left = FALSE,
-                                            open_right = open_right)
+                                            open_first = FALSE,
+                                            open_last = open_last)
     i <- findInterval(x = age_quarters,
                       vec = breaks)
     ans <- labels[i]
@@ -865,18 +865,18 @@ date_to_age_group_quarter <- function(date,
 #' unless one of them has length 1, in which case the
 #' length-1 argument is recycled.
 #'
-#' \code{break_max} and \code{open_right} are used to specify
+#' \code{break_max} and \code{open_last} are used to specify
 #' the oldest age group.
 #' When \code{break_max} is non-\code{NULL} and
-#' \code{open_right} is \code{TRUE}, the oldest
+#' \code{open_last} is \code{TRUE}, the oldest
 #' age group is \code{[break_max, Inf)} months. When
 #' \code{break_max} is non-\code{NULL} and 
-#' \code{open_right} is \code{FALSE}, the oldest age
+#' \code{open_last} is \code{FALSE}, the oldest age
 #' group is \code{[break_max-1, break_max)} months.
 #'
 #' If \code{break_max} is \code{NULL}, \code{date_to_age_group_month}
 #' derives a value, based on the highest age in the data,
-#' and the value for \code{open_right}.
+#' and the value for \code{open_last}.
 #'
 #' When \code{as_factor} is \code{TRUE} the levels of
 #' the factor include all intermediate age groups,
@@ -886,7 +886,7 @@ date_to_age_group_quarter <- function(date,
 #' @param dob Dates of birth.
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 1200.
-#' @param open_right Whether the final age group
+#' @param open_last Whether the final age group
 #' has no upper limit. Defaults to \code{TRUE}.
 #' @param as_factor Whether the return value is a factor.
 #' Defaults to \code{TRUE}.
@@ -936,11 +936,11 @@ date_to_age_group_quarter <- function(date,
 #' date_to_age_group_month(date = "2019-09-22",
 #'                         dob = "1910-01-01",
 #'                         break_max = NULL,
-#'                         open_right = FALSE)
+#'                         open_last = FALSE)
 #' @export
 date_to_age_group_month <- function(date, dob,
                                     break_max = 1200,
-                                    open_right = TRUE,
+                                    open_last = TRUE,
                                     as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
@@ -949,13 +949,13 @@ date_to_age_group_month <- function(date, dob,
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                          name = "break_max",
                                                          null_ok = TRUE)
-    demcheck::err_is_logical_flag(x = open_right,
-                                  name = "open_right")
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
     age_months <- age_completed_months(date = date,
                                        dob = dob)
-    if (!is.null(break_max) && !open_right)
+    if (!is.null(break_max) && !open_last)
         demcheck::err_lt_break_max_age(age = age_months,
                                  break_max = break_max,
                                  date = date,
@@ -963,12 +963,12 @@ date_to_age_group_month <- function(date, dob,
                                  unit = "month")    
     breaks <- make_breaks_integer_month_quarter(age = age_months,
                                                 break_max = break_max,
-                                                open_right = open_right)
+                                                open_last = open_last)
     break_max <- breaks[length(breaks)]
     labels <- make_labels_age_group_month(break_min = 0L,
                                           break_max = break_max,
-                                          open_left = FALSE,
-                                          open_right = open_right)
+                                          open_first = FALSE,
+                                          open_last = open_last)
     i <- findInterval(x = age_months,
                       vec = breaks)
     ans <- labels[i]

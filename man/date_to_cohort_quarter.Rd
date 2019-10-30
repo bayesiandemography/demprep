@@ -4,7 +4,7 @@
 \alias{date_to_cohort_quarter}
 \title{Convert dates to quarter cohorts}
 \usage{
-date_to_cohort_quarter(date, break_min = NULL, open_left = NULL,
+date_to_cohort_quarter(date, break_min = NULL, open_first = NULL,
   as_factor = TRUE)
 }
 \arguments{
@@ -12,10 +12,10 @@ date_to_cohort_quarter(date, break_min = NULL, open_left = NULL,
 
 \item{break_min}{An integer or \code{NULL}.}
 
-\item{open_left}{Whether the first cohort
+\item{open_first}{Whether the first cohort
 has no lower limit. If \code{break_min} is \code{NULL},
-then \code{open_left} is ignored. If \code{break_min} is
-non-\code{NULL}, then \code{open_left} defaults to
+then \code{open_first} is ignored. If \code{break_min} is
+non-\code{NULL}, then \code{open_first} defaults to
 \code{TRUE}.}
 
 \item{as_factor}{Whether the return value is a factor.
@@ -39,7 +39,7 @@ Q4 starts on 1 October and ends on 31 December.
 The interface for \code{date_to_cohort_quarter} is the similar
 to that of \code{\link{date_to_period_quarter}}, except that
 \code{date_to_cohort_quarter} also has arguments \code{break_min}
-and \code{open_left}.
+and \code{open_first}.
 
 \code{date} is a vector of class \code{\link[base]{Date}},
 or can be coerced to class \code{Date}
@@ -57,7 +57,7 @@ Supplying a value for \code{break_min} is essentially equivalent
 to supplying a value for \code{break_max} in
 \code{\link{date_to_age_group_quarter}}, in that it is a way of
 defining how the oldest ages are handled. If
-\code{open_left} is \code{TRUE}, then the first cohort
+\code{open_first} is \code{TRUE}, then the first cohort
 is \code{(-Inf, break_min)}; otherwise the
 first cohort is \code{[break_min, break_min - 1)}.
 
@@ -69,19 +69,19 @@ including cohorts that not appear in the data.
 date_to_cohort_quarter(date = c("2024-03-27",
                                 "2022-11-09"))
 
-## Specify oldest cohort, with open_left
+## Specify oldest cohort, with open_first
 ## at default value of TRUE
 date_to_cohort_quarter(date = c("2024-03-27",
                                 "2019-08-22",
                                 "2022-11-09"),
                        break_min = "2020-01-01")
 
-## Specify oldest cohort, with open_left = FALSE
+## Specify oldest cohort, with open_first = FALSE
 date_to_cohort_quarter(date = c("2024-03-27",
                                 "2019-08-22",
                                 "2022-11-09"),
                     break_min = "2015-07-01",
-                    open_left = FALSE)
+                    open_first = FALSE)
 
 ## return non-factor
 date_to_cohort_quarter(date = c("2024-03-27", "2022-11-09"),

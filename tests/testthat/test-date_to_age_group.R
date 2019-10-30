@@ -35,25 +35,25 @@ test_that("date_to_age_group_year gives correct answers with infinite values for
                                                      "2004-12-31"),
                                             dob = "2000-01-01",
                                             break_max = NULL,
-                                            open_right = FALSE),
+                                            open_last = FALSE),
                      factor(c(0, 10, 4), levels = 0:10))
     expect_identical(date_to_age_group_year(date = c("2000-01-01",
                                                      "2010-01-01",
                                                      "2004-12-31"),
                                             dob = "2000-01-01",
                                             break_max = NULL,
-                                            open_right = FALSE,
+                                            open_last = FALSE,
                                             as_factor = FALSE),
                      c("0", "10", "4"))
 })
 
 
-test_that("date_to_age_group_year gives correct answers when 'open_right' is FALSE", {
+test_that("date_to_age_group_year gives correct answers when 'open_last' is FALSE", {
     expect_identical(date_to_age_group_year(date = c("2000-01-01",
                                                      "2010-01-01",
                                                      "2004-12-31"),
                                             dob = "2000-01-01",
-                                            open_right = FALSE),
+                                            open_last = FALSE),
                      factor(c(0, 10, 4), levels = 0:99))
 })
 
@@ -125,7 +125,7 @@ test_that("date_to_age_group_multi gives correct answers with valid inputs", {
                                              dob = "2000-01-01",
                                              width = 5,
                                              break_max = NULL,
-                                             open_right = FALSE),
+                                             open_last = FALSE),
                      factor(c("0-4", "10-14", "0-4"),
                             levels = c("0-4", "5-9", "10-14")))
 })
@@ -223,8 +223,8 @@ test_that("date_to_age_group_fert throws correct errors with invalid inputs", {
                                                        "2026-12-31"),
                                               dob = "2000-01-01",
                                           breaks = c(0, 10, 20),
-                                          open_right = FALSE),
-                 "'date' of \"2026-12-31\" and 'dob' of \"2000-01-01\" imply age of 26, but 'open_right' is FALSE and maximum value for 'breaks' is 20")
+                                          open_last = FALSE),
+                 "'date' of \"2026-12-31\" and 'dob' of \"2000-01-01\" imply age of 26, but 'open_last' is FALSE and maximum value for 'breaks' is 20")
 })
 
 
@@ -243,7 +243,7 @@ test_that("date_to_age_group_custom gives correct answers with valid inputs", {
                                                        "2016-12-31"),
                                               dob = "2000-01-01",
                                               breaks = c(0, 1, 30),
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      factor(c("0", "1-29", "1-29"),
                             levels = c("0", "1-29")))
     expect_identical(date_to_age_group_custom(date = c("2005-06-01",
@@ -251,7 +251,7 @@ test_that("date_to_age_group_custom gives correct answers with valid inputs", {
                                                        "2016-12-31"),
                                               dob = "2000-01-01",
                                               breaks = c(5, 10, 30),
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      factor(c("5-9", "10-29", "10-29"),
                             levels = c("5-9", "10-29")))
 })
@@ -279,7 +279,7 @@ test_that("date_to_age_group_quarter gives correct answers with valid inputs", {
                                                         "2001-04-28"),
                                                dob = "2000-01-01",
                                                break_max = 6,
-                                               open_right = FALSE),
+                                               open_last = FALSE),
                      factor(c("0q", "1q", NA, "5q"),
                             levels = c("0q", "1q", "2q", "3q", "4q", "5q")))
 })
@@ -306,7 +306,7 @@ test_that("date_to_age_group_month gives correct answers with valid inputs", {
                                                       "2000-02-29"),
                                              dob = "2000-01-01",
                                              break_max = 3,
-                                             open_right = FALSE),
+                                             open_last = FALSE),
                      factor(c("0m", "2m", NA, "1m"),
                             levels = c("0m", "1m", "2m")))
 })

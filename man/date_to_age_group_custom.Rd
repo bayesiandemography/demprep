@@ -4,7 +4,7 @@
 \alias{date_to_age_group_custom}
 \title{Convert dates to customized age groups}
 \usage{
-date_to_age_group_custom(date, dob, breaks = NULL, open_right = TRUE,
+date_to_age_group_custom(date, dob, breaks = NULL, open_last = TRUE,
   as_factor = TRUE)
 }
 \arguments{
@@ -14,7 +14,7 @@ date_to_age_group_custom(date, dob, breaks = NULL, open_right = TRUE,
 
 \item{breaks}{A vector of strictly increasing integer values.}
 
-\item{open_right}{Whether the final age group
+\item{open_last}{Whether the final age group
 has no upper limit. Defaults to \code{TRUE}.}
 
 \item{as_factor}{Whether the return value is a factor.
@@ -46,10 +46,10 @@ length-1 argument is recycled.
 
 \code{breaks} is used to specify the points at which
 each age group starts and finishes. If 
-\code{open_right} is \code{TRUE}, and \code{b} is
+\code{open_last} is \code{TRUE}, and \code{b} is
 the last value for \code{breaks}, then the oldest
 age group is \code{[b, Inf)} years. 
-If \code{open_right} is \code{FALSE}, \code{a} is the
+If \code{open_last} is \code{FALSE}, \code{a} is the
 second-to-last value for \code{breaks} and \code{b}
 is the last value, then the oldest age
 group is \code{[a, b)} years.
@@ -84,7 +84,7 @@ date_to_age_group_custom(date = c("2024-03-27", "2022-11-09"),
 date_to_age_group_custom(date = c("2024-03-27", "2022-11-09"),
                          dob = c("2001-03-21", "2000-07-13"),
                          breaks = c(15, 65, 100),
-                         open_right = FALSE)
+                         open_last = FALSE)
 }
 \seealso{
 Other functions for creating age groups are

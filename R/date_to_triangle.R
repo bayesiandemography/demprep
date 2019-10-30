@@ -28,18 +28,18 @@
 #' unless one of them has length 1, in which case the
 #' length-1 argument is recycled.
 #'
-#' \code{break_max} and \code{open_right} are used to specify
+#' \code{break_max} and \code{open_last} are used to specify
 #' the oldest age group.
 #' When \code{break_max} is non-\code{NULL} and
-#' \code{open_right} is \code{TRUE}, the oldest
+#' \code{open_last} is \code{TRUE}, the oldest
 #' age group is \code{[break_max, Inf)} years. When
 #' \code{break_max} is non-\code{NULL} and 
-#' \code{open_right} is \code{FALSE}, the oldest age
+#' \code{open_last} is \code{FALSE}, the oldest age
 #' group is \code{[break_max-1, break_max)} years.
 #' 
 #' If \code{break_max} is \code{NULL}, \code{date_to_triangle_year}
 #' derives a value, based on the highest age in the data,
-#' and the value for \code{open_right}.
+#' and the value for \code{open_last}.
 #' 
 #' Periods start on the first day of \code{month_start},
 #' and end one-year-minus-one-day later.
@@ -72,7 +72,7 @@
 #' @param dob Dates of birth.
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 100.
-#' @param open_right Whether the final age group
+#' @param open_last Whether the final age group
 #' has no upper limit. Defaults to \code{TRUE}.
 #' @param month_start An element of \code{\link[base]{month.name}},
 #' or \code{\link[base]{month.abb}}. The period starts on
@@ -132,14 +132,14 @@
 date_to_triangle_year <- function(date,
                                   dob,
                                   break_max = 100,
-                                  open_right = TRUE,
+                                  open_last = TRUE,
                                   month_start = "Jan",
                                   as_factor = TRUE) {
     date_to_triangle_multi(date = date,
                            dob = dob,
                            width = 1L,
                            break_max = break_max,
-                           open_right = open_right,
+                           open_last = open_last,
                            origin = 2000L,
                            month_start = month_start,
                            as_factor = as_factor)
@@ -175,18 +175,18 @@ date_to_triangle_year <- function(date,
 #' unless one of them has length 1, in which case the
 #' length-1 argument is recycled.
 #'
-#' \code{break_max} and \code{open_right} are used to specify
+#' \code{break_max} and \code{open_last} are used to specify
 #' the oldest age group.
 #' When \code{break_max} is non-\code{NULL} and
-#' \code{open_right} is \code{TRUE}, the oldest
+#' \code{open_last} is \code{TRUE}, the oldest
 #' age group is \code{[break_max, Inf)} years. When
 #' \code{break_max} is non-\code{NULL} and 
-#' \code{open_right} is \code{FALSE}, the oldest age
+#' \code{open_last} is \code{FALSE}, the oldest age
 #' group is \code{[break_max-width, break_max)} years.
 #' 
 #' If \code{break_max} is \code{NULL}, \code{date_to_triangle_multi}
 #' derives a value, based on the highest age in the data,
-#' and the value for \code{open_right}.
+#' and the value for \code{open_last}.
 #' 
 #' Periods start on the first day of \code{month_start},
 #' and end \code{width}-years-minus-one-day later.
@@ -285,7 +285,7 @@ date_to_triangle_multi <- function(date,
                                    dob,
                                    width = 5,
                                    break_max = 100,
-                                   open_right = TRUE,
+                                   open_last = TRUE,
                                    origin = 2000,
                                    month_start = "Jan",
                                    as_factor = TRUE) {
@@ -298,8 +298,8 @@ date_to_triangle_multi <- function(date,
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = TRUE)
-    demcheck::err_is_logical_flag(x = open_right,
-                                  name = "open_right")
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
     origin <- demcheck::err_tdy_integer_scalar(x = origin,
                                                name = "origin")
     month_start <- demcheck::err_tdy_month_start(x = month_start,
@@ -309,7 +309,7 @@ date_to_triangle_multi <- function(date,
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
-    if (!is.null(break_max) && !open_right)
+    if (!is.null(break_max) && !open_last)
         demcheck::err_lt_break_max_age(age = age_years,
                                        break_max = break_max,
                                        date = date,
@@ -334,7 +334,7 @@ date_to_triangle_multi <- function(date,
         | ((i_month_within_period_date == i_month_within_period_dob)
             & is_lower_within_month))
     ans[is_lower] <- "Lower"
-    may_have_ages_above_break_max <- !is.null(break_max) && open_right
+    may_have_ages_above_break_max <- !is.null(break_max) && open_last
     if (may_have_ages_above_break_max) {
         age_start <- age_completed_months_start_month(date_ymd = date_ymd,
                                                       dob_ymd = dob_ymd)
@@ -570,7 +570,7 @@ date_to_triangle_fert <- function(date,
                            dob = dob,
                            width = width,
                            break_max = NULL,
-                           open_right = FALSE,
+                           open_last = FALSE,
                            origin = origin,
                            month_start = month_start,
                            as_factor = as_factor)    
@@ -605,18 +605,18 @@ date_to_triangle_fert <- function(date,
 #' unless one of them has length 1, in which case the
 #' length-1 argument is recycled.
 #'
-#' \code{break_max} and \code{open_right} are used to specify
+#' \code{break_max} and \code{open_last} are used to specify
 #' the oldest age group.
 #' When \code{break_max} is non-\code{NULL} and
-#' \code{open_right} is \code{TRUE}, the oldest
+#' \code{open_last} is \code{TRUE}, the oldest
 #' age group is \code{[break_max, Inf)} years. When
 #' \code{break_max} is non-\code{NULL} and 
-#' \code{open_right} is \code{FALSE}, the oldest age
+#' \code{open_last} is \code{FALSE}, the oldest age
 #' group is \code{[break_max-1, break_max)} years.
 #' 
 #' If \code{break_max} is \code{NULL}, \code{date_to_triangle_quarter}
 #' derives a value, based on the highest age in the data,
-#' and the value for \code{open_right}.
+#' and the value for \code{open_last}.
 #' 
 #' The allocation of events to Lexis triangles becomes
 #' tricky when the event and the date of birth share the same
@@ -688,7 +688,7 @@ date_to_triangle_fert <- function(date,
 date_to_triangle_quarter <- function(date,
                                      dob,
                                      break_max = 400,
-                                     open_right = TRUE,
+                                     open_last = TRUE,
                                      as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
@@ -697,16 +697,20 @@ date_to_triangle_quarter <- function(date,
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = TRUE)
-    demcheck::err_is_logical_flag(x = open_right,
-                                  name = "open_right")
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    if (!is.null(break_max) && !open_right)
-        demcheck::err_exceeds_break_max_age(age = age_months,
-                                            break_max = break_max,
-                                            date = date,
-                                            dob = dob,
-                                            unit = "month")
+    if (!is.null(break_max) && !open_last) {
+        age_months <- age_completed_months(date = date,
+                                           dob = dob)
+        age_quarters <- age_months %/% 3L
+        demcheck::err_lt_break_max_age(age = age_quarters,
+                                       break_max = break_max,
+                                       date = date,
+                                       dob = dob,
+                                       unit = "month")
+    }
     n <- length(date)
     date_ymd <- as_ymd(date)
     dob_ymd <- as_ymd(dob)
@@ -720,7 +724,7 @@ date_to_triangle_quarter <- function(date,
         | ((i_month_within_qu_date == i_month_within_qu_dob)
             & is_lower_within_month))
     ans[is_lower] <- "Lower"
-    may_have_ages_above_break_max <- !is.null(break_max) && open_right
+    may_have_ages_above_break_max <- !is.null(break_max) && open_last
     if (may_have_ages_above_break_max) {
         age_start <- age_completed_months_start_month(date_ymd = date_ymd,
                                                       dob_ymd = dob_ymd)
@@ -763,18 +767,18 @@ date_to_triangle_quarter <- function(date,
 #' unless one of them has length 1, in which case the
 #' length-1 argument is recycled.
 #'
-#' \code{break_max} and \code{open_right} are used to specify
+#' \code{break_max} and \code{open_last} are used to specify
 #' the oldest age group.
 #' When \code{break_max} is non-\code{NULL} and
-#' \code{open_right} is \code{TRUE}, the oldest
+#' \code{open_last} is \code{TRUE}, the oldest
 #' age group is \code{[break_max, Inf)} years. When
 #' \code{break_max} is non-\code{NULL} and 
-#' \code{open_right} is \code{FALSE}, the oldest age
+#' \code{open_last} is \code{FALSE}, the oldest age
 #' group is \code{[break_max-1, break_max)} years.
 #' 
 #' If \code{break_max} is \code{NULL}, \code{date_to_triangle_month}
 #' derives a value, based on the highest age in the data,
-#' and the value for \code{open_right}.
+#' and the value for \code{open_last}.
 #' 
 #' The allocation of events to Lexis triangles becomes
 #' tricky when the event and the date of birth share the same
@@ -843,7 +847,7 @@ date_to_triangle_quarter <- function(date,
 #' @export
 date_to_triangle_month <- function(date, dob,
                                    break_max = 1200,
-                                   open_right = TRUE,
+                                   open_last = TRUE,
                                    as_factor = TRUE) {
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
@@ -852,16 +856,20 @@ date_to_triangle_month <- function(date, dob,
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = TRUE)
-    demcheck::err_is_logical_flag(x = open_right,
-                                  name = "open_right")
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    if (!is.null(break_max) && !open_right)
-        demcheck::err_exceeds_break_max_age(age = age_months,
-                                            break_max = break_max,
-                                            date = date,
-                                            dob = dob,
-                                            unit = "month")
+    if (!is.null(break_max) && !open_last) {
+        age_months <- age_completed_months(date = date,
+                                           dob = dob)
+        demcheck::err_lt_break_max_age(age = age_months,
+                                       break_max = break_max,
+                                       date = date,
+                                       dob = dob,
+                                       unit = "month")
+        
+    }
     date_ymd <- as_ymd(date)
     dob_ymd <- as_ymd(dob)
     n <- length(date)
@@ -870,7 +878,7 @@ date_to_triangle_month <- function(date, dob,
     is_lower <- is_lower_within_month(date_ymd = date_ymd,
                                       dob_ymd = dob_ymd)
     ans[is_lower] <- "Lower"
-    may_have_ages_above_break_max <- !is.null(break_max) && open_right
+    may_have_ages_above_break_max <- !is.null(break_max) && open_last
     if (may_have_ages_above_break_max) {
         age_start <- age_completed_months_start_month(date_ymd = date_ymd,
                                                       dob_ymd = dob_ymd)

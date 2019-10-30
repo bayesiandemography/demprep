@@ -9,7 +9,7 @@
 #' The interface for \code{date_to_cohort_year} is the similar
 #' to that of \code{\link{date_to_period_year}}, except that
 #' \code{date_to_cohort_year} also has arguments \code{break_min}
-#' and \code{open_left}.
+#' and \code{open_first}.
 #'
 #' \code{date} is a vector of class \code{\link[base]{Date}},
 #' or can be coerced to class \code{Date}
@@ -27,7 +27,7 @@
 #' to supplying a value for \code{break_max} in
 #' \code{\link{date_to_age_group_year}}, in that it is a way of
 #' defining how the oldest ages are handled. If
-#' \code{open_left} is \code{TRUE}, then the first cohort
+#' \code{open_first} is \code{TRUE}, then the first cohort
 #' is \code{(-Inf, break_min)}; otherwise the
 #' first cohort is \code{[break_min, break_min - 1)}.
 #'
@@ -73,10 +73,10 @@
 #' or the calendar year at the end. Not needed for cohorts
 #' that start on 1 January.
 #' @param break_min An integer or \code{NULL}.
-#' @param open_left Whether the first cohort
+#' @param open_first Whether the first cohort
 #' has no lower limit. If \code{break_min} is \code{NULL},
-#' then \code{open_left} is ignored. If \code{break_min} is
-#' non-\code{NULL}, then \code{open_left} defaults to
+#' then \code{open_first} is ignored. If \code{break_min} is
+#' non-\code{NULL}, then \code{open_first} defaults to
 #' \code{TRUE}.
 #' @param as_factor Whether the return value is a factor.
 #' Defaults to \code{TRUE}.
@@ -110,19 +110,19 @@
 #'                     month_start = "Jul",
 #'                     label_year_start = FALSE)
 #'
-#' ## Specify oldest cohort, with open_left
+#' ## Specify oldest cohort, with open_first
 #' ## at default value of TRUE
 #' date_to_cohort_year(date = c("2024-03-27",
 #'                              "2019-08-22",
 #'                              "2022-11-09"),
 #'                     break_min = "2020-01-01")
 #'
-#' ## Specify oldest cohort, with open_left = FALSE
+#' ## Specify oldest cohort, with open_first = FALSE
 #' date_to_cohort_year(date = c("2024-03-27",
 #'                              "2019-08-22",
 #'                              "2022-11-09"),
 #'                     break_min = "2015-07-01",
-#'                     open_left = FALSE)
+#'                     open_first = FALSE)
 #'
 #' ## return non-factor
 #' date_to_cohort_year(date = c("2024-03-27", "2022-11-09"),
@@ -132,15 +132,15 @@ date_to_cohort_year <- function(date,
                                 month_start = "Jan",
                                 label_year_start = TRUE,
                                 break_min = NULL,
-                                open_left = NULL,
+                                open_first = NULL,
                                 as_factor = TRUE) {
-    if (is.null(open_left))
-        open_left <- !is.null(break_min)
+    if (is.null(open_first))
+        open_first <- !is.null(break_min)
     date_to_period_or_cohort_year(date = date,
                                   month_start = month_start,
                                   label_year_start = label_year_start,
                                   break_min = break_min,
-                                  open_left = open_left,
+                                  open_first = open_first,
                                   as_factor = as_factor)
 }
 
@@ -155,7 +155,7 @@ date_to_cohort_year <- function(date,
 #' The interface for \code{date_to_cohort_multi} is the similar
 #' to that of \code{\link{date_to_period_multi}}, except that
 #' \code{date_to_cohort_multi} also has arguments \code{break_min}
-#' and \code{open_left}.
+#' and \code{open_first}.
 #'
 #' \code{date} is a vector of class \code{\link[base]{Date}},
 #' or can be coerced to class \code{Date}
@@ -173,7 +173,7 @@ date_to_cohort_year <- function(date,
 #' to supplying a value for \code{break_max} in
 #' \code{\link{date_to_age_group_year}}, in that it is a way of
 #' defining how the oldest ages are handled. If
-#' \code{open_left} is \code{TRUE}, then the first cohort
+#' \code{open_first} is \code{TRUE}, then the first cohort
 #' is \code{(-Inf, break_min)}; otherwise the
 #' first cohort is \code{[break_min, break_min - width)}.
 #'
@@ -239,19 +239,19 @@ date_to_cohort_year <- function(date,
 #'                      origin = 2001,
 #'                      month_start = "Jul")
 #'
-#' ## Specify oldest cohort, with open_left
+#' ## Specify oldest cohort, with open_first
 #' ## at default value of TRUE
 #' date_to_cohort_multi(date = c("2024-03-27",
 #'                               "2019-08-22",
 #'                               "2022-11-09"),
 #'                      break_min = "2015-01-01")
 #'
-#' ## Specify oldest cohort, with open_left = FALSE
+#' ## Specify oldest cohort, with open_first = FALSE
 #' date_to_cohort_multi(date = c("2024-03-27",
 #'                               "2019-08-22",
 #'                               "2022-11-09"),
 #'                      break_min = "2015-07-01",
-#'                      open_left = FALSE)
+#'                      open_first = FALSE)
 #'
 #' ## return non-factor
 #' date_to_cohort_multi(date = c("2024-03-27",
@@ -263,16 +263,16 @@ date_to_cohort_multi <- function(date,
                                  origin = 2000,
                                  month_start = "Jan",
                                  break_min = NULL,
-                                 open_left = NULL,
+                                 open_first = NULL,
                                  as_factor = TRUE) {
-    if (is.null(open_left))
-        open_left <- !is.null(break_min)
+    if (is.null(open_first))
+        open_first <- !is.null(break_min)
     date_to_period_or_cohort_multi(date = date,
                                    width = width,
                                    origin = origin,
                                    month_start = month_start,
                                    break_min = break_min,
-                                   open_left = open_left,
+                                   open_first = open_first,
                                    as_factor = as_factor)
 }
 
@@ -287,7 +287,7 @@ date_to_cohort_multi <- function(date,
 #' The interface for \code{date_to_cohort_custom} is the similar
 #' to that of \code{\link{date_to_period_custom}}, except that
 #' \code{date_to_cohort_custom} also has arguments \code{break_min}
-#' and \code{open_left}.
+#' and \code{open_first}.
 #'
 #' \code{date} is a vector of class \code{\link[base]{Date}},
 #' or can be coerced to class \code{Date}
@@ -304,12 +304,12 @@ date_to_cohort_multi <- function(date,
 #' or \code{"2010-01-01"} and \code{"2017-02-01"}.
 #'
 #' The definition of the first cohort depends on the
-#' value of \code{open_left}. If \code{open_left} is
+#' value of \code{open_first}. If \code{open_first} is
 #' is \code{TRUE} (the default), then the first cohort consists of
 #' all dates before the first break. Setting
-#' \code{open_left} to \code{TRUE} is essentially
+#' \code{open_first} to \code{TRUE} is essentially
 #' the same as having no upper limit on the oldest age group.
-#' If \code{open_left} is \code{FALSE}, then the first cohort
+#' If \code{open_first} is \code{FALSE}, then the first cohort
 #' is defined by the first two dates.
 #'
 #' When \code{as_factor} is \code{TRUE} the levels of
@@ -318,7 +318,7 @@ date_to_cohort_multi <- function(date,
 #'
 #' @inheritParams date_to_cohort_year
 #' @param breaks Dates defining starts and ends of cohorts.
-#' @param open_left Whether the first cohort
+#' @param open_first Whether the first cohort
 #' has no lower limit. Defaults to \code{TRUE}.
 #'
 #' @return If \code{as_factor} is \code{TRUE}, then the return
@@ -363,7 +363,7 @@ date_to_cohort_multi <- function(date,
 #'                       breaks = c("2018-01-01",
 #'                                  "2021-01-01",
 #'                                  "2026-01-01"),
-#'                       open_left = FALSE)
+#'                       open_first = FALSE)
 #'
 #'
 #' ## return non-factor
@@ -378,11 +378,11 @@ date_to_cohort_multi <- function(date,
 #' @export
 date_to_cohort_custom <- function(date,
                                   breaks,
-                                  open_left = TRUE,
+                                  open_first = TRUE,
                                   as_factor = TRUE) {
     date_to_period_or_cohort_custom(date = date,
                                     breaks = breaks,
-                                    open_left = open_left,
+                                    open_first = open_first,
                                     as_factor = as_factor)
 }
 
@@ -400,7 +400,7 @@ date_to_cohort_custom <- function(date,
 #' The interface for \code{date_to_cohort_quarter} is the similar
 #' to that of \code{\link{date_to_period_quarter}}, except that
 #' \code{date_to_cohort_quarter} also has arguments \code{break_min}
-#' and \code{open_left}.
+#' and \code{open_first}.
 #'
 #' \code{date} is a vector of class \code{\link[base]{Date}},
 #' or can be coerced to class \code{Date}
@@ -418,7 +418,7 @@ date_to_cohort_custom <- function(date,
 #' to supplying a value for \code{break_max} in
 #' \code{\link{date_to_age_group_quarter}}, in that it is a way of
 #' defining how the oldest ages are handled. If
-#' \code{open_left} is \code{TRUE}, then the first cohort
+#' \code{open_first} is \code{TRUE}, then the first cohort
 #' is \code{(-Inf, break_min)}; otherwise the
 #' first cohort is \code{[break_min, break_min - 1)}.
 #'
@@ -448,19 +448,19 @@ date_to_cohort_custom <- function(date,
 #' date_to_cohort_quarter(date = c("2024-03-27",
 #'                                 "2022-11-09"))
 #'
-#' ## Specify oldest cohort, with open_left
+#' ## Specify oldest cohort, with open_first
 #' ## at default value of TRUE
 #' date_to_cohort_quarter(date = c("2024-03-27",
 #'                                 "2019-08-22",
 #'                                 "2022-11-09"),
 #'                        break_min = "2020-01-01")
 #'
-#' ## Specify oldest cohort, with open_left = FALSE
+#' ## Specify oldest cohort, with open_first = FALSE
 #' date_to_cohort_quarter(date = c("2024-03-27",
 #'                                 "2019-08-22",
 #'                                 "2022-11-09"),
 #'                     break_min = "2015-07-01",
-#'                     open_left = FALSE)
+#'                     open_first = FALSE)
 #'
 #' ## return non-factor
 #' date_to_cohort_quarter(date = c("2024-03-27", "2022-11-09"),
@@ -468,13 +468,13 @@ date_to_cohort_custom <- function(date,
 #' @export
 date_to_cohort_quarter <- function(date,
                                    break_min = NULL,
-                                   open_left = NULL,
+                                   open_first = NULL,
                                    as_factor = TRUE) {
-    if (is.null(open_left))
-        open_left <- !is.null(break_min)
+    if (is.null(open_first))
+        open_first <- !is.null(break_min)
     date_to_period_or_cohort_quarter(date = date,
                                      break_min = break_min,
-                                     open_left = open_left,
+                                     open_first = open_first,
                                      as_factor = as_factor)
 }
 
@@ -487,7 +487,7 @@ date_to_cohort_quarter <- function(date,
 #' The interface for \code{date_to_cohort_month} is the similar
 #' to that of \code{\link{date_to_period_month}}, except that
 #' \code{date_to_cohort_month} also has arguments \code{break_min}
-#' and \code{open_left}.
+#' and \code{open_first}.
 #'
 #' \code{date} is a vector of class \code{\link[base]{Date}},
 #' or can be coerced to class \code{Date}
@@ -505,7 +505,7 @@ date_to_cohort_quarter <- function(date,
 #' to supplying a value for \code{break_max} in
 #' \code{\link{date_to_age_group_month}}, in that it is a way of
 #' defining how the oldest ages are handled. If
-#' \code{open_left} is \code{TRUE}, then the first cohort
+#' \code{open_first} is \code{TRUE}, then the first cohort
 #' is \code{(-Inf, break_min)}; otherwise the
 #' first cohort is \code{[break_min, break_min - 1)}.
 #'
@@ -535,19 +535,19 @@ date_to_cohort_quarter <- function(date,
 #' date_to_cohort_month(date = c("2024-03-27",
 #'                               "2022-11-09"))
 #'
-#' ## Specify oldest cohort, with open_left
+#' ## Specify oldest cohort, with open_first
 #' ## at default value of TRUE
 #' date_to_cohort_month(date = c("2024-03-27",
 #'                               "2019-08-22",
 #'                               "2022-11-09"),
 #'                        break_min = "2020-01-01")
 #'
-#' ## Specify oldest cohort, with open_left = FALSE
+#' ## Specify oldest cohort, with open_first = FALSE
 #' date_to_cohort_month(date = c("2024-03-27",
 #'                               "2019-08-22",
 #'                               "2022-11-09"),
 #'                     break_min = "2015-07-01",
-#'                     open_left = FALSE)
+#'                     open_first = FALSE)
 #'
 #' ## return non-factor
 #' date_to_cohort_month(date = c("2024-03-27",
@@ -556,12 +556,12 @@ date_to_cohort_quarter <- function(date,
 #' @export
 date_to_cohort_month <- function(date,
                                  break_min = NULL,
-                                 open_left = NULL,
+                                 open_first = NULL,
                                  as_factor = TRUE) {
-    if (is.null(open_left))
-        open_left <- !is.null(break_min)
+    if (is.null(open_first))
+        open_first <- !is.null(break_min)
     date_to_period_or_cohort_month(date = date,
                                    break_min = break_min,
-                                   open_left = open_left,
+                                   open_first = open_first,
                                    as_factor = as_factor)
 }

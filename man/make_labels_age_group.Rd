@@ -6,15 +6,17 @@
 \alias{make_labels_age_group_month}
 \title{Make age labels}
 \usage{
-make_labels_age_group(breaks, open_left = FALSE, open_right = TRUE,
+make_labels_age_group(breaks, open_first = FALSE, open_last = TRUE,
   include_na = FALSE)
 
 make_labels_age_group_quarter(break_min = 0, break_max = 400,
-  open_left = FALSE, open_right = TRUE, include_na = FALSE)
+  open_first = FALSE, open_last = TRUE, include_na = FALSE)
 
 make_labels_age_group_month(break_min = 0, break_max = 1200,
-  open_left = FALSE, open_right = TRUE, include_na = FALSE)
+  open_first = FALSE, open_last = TRUE, include_na = FALSE)
 }
 \description{
 Make age labels
+
+Make labels for age groups measured in years
 }

@@ -43,10 +43,10 @@
 #' @param month_start An element of \code{\link[base]{month.name}},
 #' or \code{\link[base]{month.abb}}. The period starts on
 #' the first day of this month.
-#' @param label_year_start Logical. Whether to label a period
+#' @param label_year_start Whether to label a period
 #' by the calendar year at the beginning of the period
 #' or the calendar year at the end. Not needed for periods
-#' that start on 1 January.
+#' that start on 1 January. Defaults to \code{FALSE}.
 #' @param as_factor Whether the return value is a factor.
 #' Defaults to \code{TRUE}.
 #'
@@ -91,7 +91,7 @@ date_to_period_year <- function(date,
                                   month_start = month_start,
                                   label_year_start = label_year_start,
                                   break_min = NULL,
-                                  open_left = FALSE,
+                                  open_first = FALSE,
                                   as_factor = as_factor)
 }
 
@@ -181,7 +181,7 @@ date_to_period_multi <- function(date,
                                    origin = origin,
                                    month_start = month_start,
                                    break_min = NULL,
-                                   open_left = FALSE,
+                                   open_first = FALSE,
                                    as_factor = as_factor)
 }
 
@@ -265,7 +265,7 @@ date_to_period_custom <- function(date,
                                   as_factor = TRUE) {
     date_to_period_or_cohort_custom(date = date,
                                     breaks = breaks,
-                                    open_left = FALSE,
+                                    open_first = FALSE,
                                     as_factor = as_factor)
 }
 
@@ -318,7 +318,7 @@ date_to_period_quarter <- function(date,
                                    as_factor = TRUE) {
     date_to_period_or_cohort_quarter(date = date,
                                      break_min = NULL,
-                                     open_left = FALSE,
+                                     open_first = FALSE,
                                      as_factor = as_factor)
 }
 
@@ -367,6 +367,6 @@ date_to_period_month <- function(date,
                                  as_factor = TRUE) {
     date_to_period_or_cohort_month(date = date,
                                    break_min = NULL,
-                                   open_left = FALSE,
+                                   open_first = FALSE,
                                    as_factor = as_factor)
 }

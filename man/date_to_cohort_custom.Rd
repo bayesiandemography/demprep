@@ -4,14 +4,15 @@
 \alias{date_to_cohort_custom}
 \title{Convert dates to customized cohorts}
 \usage{
-date_to_cohort_custom(date, breaks, open_left = TRUE, as_factor = TRUE)
+date_to_cohort_custom(date, breaks, open_first = TRUE,
+  as_factor = TRUE)
 }
 \arguments{
 \item{date}{Dates of events defining cohorts.}
 
 \item{breaks}{Dates defining starts and ends of cohorts.}
 
-\item{open_left}{Whether the first cohort
+\item{open_first}{Whether the first cohort
 has no lower limit. Defaults to \code{TRUE}.}
 
 \item{as_factor}{Whether the return value is a factor.
@@ -32,7 +33,7 @@ The events are typically, but not always, births.
 The interface for \code{date_to_cohort_custom} is the similar
 to that of \code{\link{date_to_period_custom}}, except that
 \code{date_to_cohort_custom} also has arguments \code{break_min}
-and \code{open_left}.
+and \code{open_first}.
 
 \code{date} is a vector of class \code{\link[base]{Date}},
 or can be coerced to class \code{Date}
@@ -49,12 +50,12 @@ but not \code{"2010-01-01"} and \code{"2017-01-02"},
 or \code{"2010-01-01"} and \code{"2017-02-01"}.
 
 The definition of the first cohort depends on the
-value of \code{open_left}. If \code{open_left} is
+value of \code{open_first}. If \code{open_first} is
 is \code{TRUE} (the default), then the first cohort consists of
 all dates before the first break. Setting
-\code{open_left} to \code{TRUE} is essentially
+\code{open_first} to \code{TRUE} is essentially
 the same as having no upper limit on the oldest age group.
-If \code{open_left} is \code{FALSE}, then the first cohort
+If \code{open_first} is \code{FALSE}, then the first cohort
 is defined by the first two dates.
 
 When \code{as_factor} is \code{TRUE} the levels of
@@ -88,7 +89,7 @@ date_to_cohort_custom(date = c("2024-03-27",
                       breaks = c("2018-01-01",
                                  "2021-01-01",
                                  "2026-01-01"),
-                      open_left = FALSE)
+                      open_first = FALSE)
 
 
 ## return non-factor

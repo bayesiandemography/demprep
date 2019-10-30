@@ -114,7 +114,7 @@ test_that("'date_to_period_or_cohort_custom' gives correct answer with valid inp
                                                      breaks = c("2000-01-01",
                                                                 "2006-01-01",
                                                                 "2020-01-01"),
-                                                     open_left = FALSE,
+                                                     open_first = FALSE,
                                                      as_factor = TRUE),
                      factor(c("2000-2006", "2000-2006", "2006-2020"),
                             levels = c("2000-2006", "2006-2020")))
@@ -126,7 +126,7 @@ test_that("'date_to_period_or_cohort_custom' gives correct answer with valid inp
                                                      breaks = c("2000-03-01",
                                                                 "2006-03-01",
                                                                 "2020-03-01"),
-                                                     open_left = TRUE,
+                                                     open_first = TRUE,
                                                      as_factor = TRUE),
                      factor(c("2000-2006", "2000-2006", NA, "2006-2020", "<2000"),
                             levels = c("<2000", "2000-2006", "2006-2020")))
@@ -138,30 +138,30 @@ test_that("'date_to_period_or_cohort_custom' gives correct answer with valid inp
 test_that("'date_to_period_or_cohort_month' gives correct answer with valid inputs", {
     expect_identical(date_to_period_or_cohort_month(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
                                                     break_min = as.Date("2000-01-01"),
-                                                    open_left = TRUE,
+                                                    open_first = TRUE,
                                                     as_factor = TRUE),
                      factor(c("2003 Mar", "2001 Feb", "2010 Dec"),
                             levels = c("<2000 Jan", paste(rep(2000:2010, each = 12), month.abb))))
     expect_identical(date_to_period_or_cohort_month(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
                                                       break_min = NULL,
-                                                      open_left = FALSE,
+                                                      open_first = FALSE,
                                                       as_factor = TRUE),
                      factor(c("2003 Mar", "2001 Feb", "2010 Dec"),
                             levels = paste(rep(2001:2010, each = 12), month.abb)[-1]))
     expect_identical(date_to_period_or_cohort_month(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
                                                       break_min = NULL,
-                                                      open_left = FALSE,
+                                                      open_first = FALSE,
                                                       as_factor = FALSE),
                      c("2003 Mar", "2001 Feb", "2010 Dec"))
     expect_identical(date_to_period_or_cohort_month(date = c("2000-01-01", "2000-01-01"),
                                                       break_min = NULL,
-                                                      open_left = FALSE,
+                                                      open_first = FALSE,
                                                       as_factor = TRUE),
                      factor(c("2000 Jan", "2000 Jan"),
                             levels = "2000 Jan"))
     expect_identical(date_to_period_or_cohort_month(date = c("2000-01-01", NA, "2000-01-01"),
                                                       break_min = NULL,
-                                                      open_left = FALSE,
+                                                      open_first = FALSE,
                                                       as_factor = TRUE),
                      factor(c("2000 Jan", NA, "2000 Jan"),
                             levels = c("2000 Jan")))
@@ -176,7 +176,7 @@ test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inpu
                                                     origin = 2000,
                                                     month_start = "Jan",
                                                     break_min = as.Date("2000-01-01"),
-                                                    open_left = FALSE,
+                                                    open_first = FALSE,
                                                     as_factor = TRUE),
                      factor(c("2000-2005", "2000-2005", "2010-2015"),
                             levels = c("2000-2005", "2005-2010", "2010-2015")))
@@ -185,7 +185,7 @@ test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inpu
                                                     origin = 2000,
                                                     month_start = "Jan",
                                                     break_min = NULL,
-                                                    open_left = FALSE,
+                                                    open_first = FALSE,
                                                     as_factor = TRUE),
                      factor(c("2000-2005", "2000-2005", "2010-2015"),
                             levels = c("2000-2005", "2005-2010", "2010-2015")))
@@ -194,7 +194,7 @@ test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inpu
                                                     origin = 0,
                                                     month_start = "Jul",
                                                     break_min = NULL,
-                                                    open_left = FALSE,
+                                                    open_first = FALSE,
                                                     as_factor = TRUE),
                      factor(c("1995-2000", "2000-2005", "2010-2015"),
                             levels = c("1995-2000", "2000-2005", "2005-2010", "2010-2015")))
@@ -203,7 +203,7 @@ test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inpu
                                                     month_start = "Jul",
                                                     break_min = as.Date("1996-07-01"),
                                                     origin = 2001,
-                                                    open_left = FALSE,
+                                                    open_first = FALSE,
                                                     as_factor = TRUE),
                      factor(c("1996-2001", "1996-2001", "2006-2011"),
                             levels = c("1996-2001", "2001-2006", "2006-2011")))
@@ -212,7 +212,7 @@ test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inpu
                                                     origin = 1996,
                                                     month_start = "Jul",
                                                     break_min = NULL,
-                                                    open_left = FALSE,
+                                                    open_first = FALSE,
                                                     as_factor = FALSE),
                      c("1996-2001", "1996-2001", "2006-2011"))
     expect_identical(date_to_period_or_cohort_multi(date = c("2000-03-20", "2001-02-11", "2010-12-30"),
@@ -220,7 +220,7 @@ test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inpu
                                                     origin = 2001,
                                                     month_start = "Apr",
                                                     break_min = NULL,
-                                                    open_left = TRUE,
+                                                    open_first = TRUE,
                                                     as_factor = TRUE),
                      factor(c("1996-2001", "1996-2001", "2006-2011"),
                             levels = c("<1996", "1996-2001", "2001-2006", "2006-2011")))
@@ -229,7 +229,7 @@ test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inpu
                                                     break_min = as.Date("2000-01-01"),
                                                     origin = 2000,
                                                     month_start = "Jan",
-                                                    open_left = FALSE,
+                                                    open_first = FALSE,
                                                     as_factor = TRUE),
                      factor(c("2000-2010", "2000-2010", "2010-2020"),
                             levels = c("2000-2010", "2010-2020")))
@@ -238,7 +238,7 @@ test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inpu
                                                     origin = 1990,
                                                     month_start = "Jan",
                                                     break_min = NULL,
-                                                    open_left = FALSE,
+                                                    open_first = FALSE,
                                                     as_factor = TRUE),
                      factor(c("2000-2010", "2000-2010", "2010-2020"),
                             levels = c("2000-2010", "2010-2020")))
@@ -247,7 +247,7 @@ test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inpu
                                                     break_min = as.Date("1990-01-01"),
                                                     origin = 1990,
                                                     month_start = "Jan",
-                                                    open_left = FALSE,
+                                                    open_first = FALSE,
                                                     as_factor = TRUE),
                      factor(c("2000-2010", "2000-2010", "2010-2020"),
                             levels = c("1990-2000", "2000-2010", "2010-2020")))
@@ -256,7 +256,7 @@ test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inpu
                                                     month_start = "Jan",
                                                     origin = 2000,
                                                     break_min = as.Date("1990-01-01"),
-                                                    open_left = FALSE,
+                                                    open_first = FALSE,
                                                     as_factor = TRUE),
                      factor(c(NA, "2000-2010", "2000-2010", "2010-2020"),
                             levels = c("1990-2000", "2000-2010", "2010-2020")))
@@ -268,7 +268,7 @@ test_that("'date_to_period_or_cohort_multi' gives correct answer with valid inpu
 test_that("'date_to_period_or_cohort_quarter' gives correct answer with valid inputs", {
     expect_identical(date_to_period_or_cohort_quarter(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
                                                       break_min = as.Date("2000-01-01"),
-                                                      open_left = FALSE,
+                                                      open_first = FALSE,
                                                       as_factor = TRUE),
                      factor(c("2003 Q1", "2001 Q1", "2010 Q4"),
                             levels = paste0(rep(2000:2010, each = 4),
@@ -276,7 +276,7 @@ test_that("'date_to_period_or_cohort_quarter' gives correct answer with valid in
                                             1:4)))
     expect_identical(date_to_period_or_cohort_quarter(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
                                                       break_min = NULL,
-                                                      open_left = FALSE,
+                                                      open_first = FALSE,
                                                       as_factor = TRUE),
                      factor(c("2003 Q1", "2001 Q1", "2010 Q4"),
                             levels = paste0(rep(2001:2010, each = 4),
@@ -284,18 +284,18 @@ test_that("'date_to_period_or_cohort_quarter' gives correct answer with valid in
                                             1:4)))
     expect_identical(date_to_period_or_cohort_quarter(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
                                                       break_min = NULL,
-                                                      open_left = FALSE,
+                                                      open_first = FALSE,
                                                       as_factor = FALSE),
                      c("2003 Q1", "2001 Q1", "2010 Q4"))
     expect_identical(date_to_period_or_cohort_quarter(date = c("2000-01-01", "2000-01-01"),
                                                       break_min = NULL,
-                                                      open_left = FALSE,
+                                                      open_first = FALSE,
                                                       as_factor = TRUE),
                      factor(c("2000 Q1", "2000 Q1"),
                             levels = "2000 Q1"))
     expect_identical(date_to_period_or_cohort_quarter(date = c("2000-01-01", NA, "2000-01-01"),
                                                       break_min = NULL,
-                                                      open_left = FALSE,
+                                                      open_first = FALSE,
                                                       as_factor = TRUE),
                      factor(c("2000 Q1", NA, "2000 Q1"),
                             levels = "2000 Q1"))
@@ -311,7 +311,7 @@ test_that("'date_to_period_or_cohort_year' gives correct answer with valid input
                                                    label_year_start = TRUE,
                                                    month_start = "Jan",
                                                    break_min = as.Date("2001-01-01"),
-                                                   open_left = FALSE,
+                                                   open_first = FALSE,
                                                    as_factor = TRUE),
                      factor(c("2003", "2001", "2004"),
                             levels = as.character(2001:2004)))
@@ -321,7 +321,7 @@ test_that("'date_to_period_or_cohort_year' gives correct answer with valid input
                                                    label_year_start = TRUE,
                                                    month_start = "Jan",
                                                    break_min = NULL,
-                                                   open_left = FALSE,
+                                                   open_first = FALSE,
                                                    as_factor = TRUE),
                      factor(c("2003", "2001", "2004"),
                             levels = as.character(2001:2004)))
@@ -331,7 +331,17 @@ test_that("'date_to_period_or_cohort_year' gives correct answer with valid input
                                                    label_year_start = TRUE,
                                                    break_min = NULL,
                                                    month_start = "Jul",
-                                                   open_left = FALSE,
+                                                   open_first = FALSE,
+                                                   as_factor = TRUE),
+                     factor(c("2002", "2000", "2004"),
+                            levels = as.character(2000:2004)))
+    expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20",
+                                                            "2001-02-11",
+                                                            "2004-12-30"),
+                                                   label_year_start = TRUE,
+                                                   break_min = NULL,
+                                                   month_start = "Jul",
+                                                   open_first = FALSE,
                                                    as_factor = TRUE),
                      factor(c("2002", "2000", "2004"),
                             levels = as.character(2000:2004)))
@@ -341,59 +351,40 @@ test_that("'date_to_period_or_cohort_year' gives correct answer with valid input
                                                    label_year_start = FALSE,
                                                    break_min = NULL,
                                                    month_start = "Jul",
-                                                   open_left = FALSE,
+                                                   open_first = FALSE,
                                                    as_factor = TRUE),
                      factor(c("2003", "2001", "2005"),
                             levels = as.character(2001:2005)))
     expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20",
                                                             "2001-02-11",
                                                             "2004-12-30"),
-                                                   label_year_start = FALSE,
-                                                   break_min = NULL,
-                                                   month_start = "Jul",
-                                                   open_left = FALSE,
-                                                   as_factor = TRUE),
-                     factor(c("2003", "2001", "2005"),
-                            levels = as.character(2001:2005)))
-    expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20",
-                                                            "2001-02-11",
-                                                            "2004-12-30"),
-                                                   label_year_start = FALSE,
+                                                   label_year_start = TRUE,
                                                    break_min = as.Date("2000-07-01"),
                                                    month_start = "Jul",
-                                                   open_left = TRUE,
+                                                   open_first = TRUE,
                                                    as_factor = TRUE),
-                     factor(c("2003", "2001", "2005"),
-                            levels = c("<2001", as.character(2001:2005))))
+                     factor(c("2002", "2000", "2004"),
+                            levels = c("<2000", as.character(2000:2004))))
     expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20",
                                                             "2001-02-11",
                                                             "2004-12-30"),
-                                                   label_year_start = FALSE,
+                                                   label_year_start = TRUE,
                                                    month_start = "Jul",
                                                    break_min = as.Date("2005-07-01"),
-                                                   open_left = TRUE,
-                                                   as_factor = FALSE),
-                     c("<2005", "<2005", "<2005"))
-    expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20",
-                                                            "2001-02-11",
-                                                            "2004-12-30"),
-                                                   label_year_start = FALSE,
-                                                   month_start = "Jul",
-                                                   break_min = as.Date("2005-07-01"),
-                                                   open_left = TRUE,
+                                                   open_first = TRUE,
                                                    as_factor = FALSE),
                      c("<2005", "<2005", "<2005"))
     expect_identical(date_to_period_or_cohort_year(date = c("2003-03-20",
                                                             "2001-02-11",
                                                             NA,
                                                             "2004-12-30"),
-                                                   label_year_start = FALSE,
+                                                   label_year_start = TRUE,
                                                    break_min = as.Date("2000-07-01"),
                                                    month_start = "Jul",
-                                                   open_left = TRUE,
+                                                   open_first = TRUE,
                                                    as_factor = TRUE),
-                     factor(c("2003", "2001", NA, "2005"),
-                            levels = c("<2001", as.character(2001:2005))))
+                     factor(c("2002", "2000", NA, "2004"),
+                            levels = c("<2000", as.character(2000:2004))))
 })
 
 
@@ -742,58 +733,58 @@ test_that("'make_breaks_integer_lifetab' gives correct answer with valid inputs"
 test_that("'make_breaks_integer_month_quarter' gives correct answer when break_max is non-NULL", {
     expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L),
                                                        break_max = 100L,
-                                                       open_right = TRUE),
+                                                       open_last = TRUE),
                      seq.int(from = 0L, to = 100L))
     expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L, NA),
                                                        break_max = 100L,
-                                                       open_right = TRUE),
+                                                       open_last = TRUE),
                      seq.int(from = 0L, to = 100L))
     expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 21L),
                                                        break_max = 100L,
-                                                       open_right = FALSE),
+                                                       open_last = FALSE),
                      seq.int(from = 0L, to = 100L))
     expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 21L, NA),
                                                        break_max = 100L,
-                                                       open_right = FALSE),
+                                                       open_last = FALSE),
                      seq.int(from = 0L, to = 100L))
 })
 
 test_that("'make_breaks_integer_month_quarter' gives correct answer when break_max is NULL", {
     expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L),
                                               break_max = NULL,
-                                              open_right = TRUE),
+                                              open_last = TRUE),
                      seq.int(from = 0L, to = 121L))
     expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L, NA),
                                               break_max = NULL,
-                                              open_right = TRUE),
+                                              open_last = TRUE),
                      seq.int(from = 0L, to = 121L))
     expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L),
                                               break_max = NULL,
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      seq.int(from = 0L, to = 122L))
     expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L, NA),
                                               break_max = NULL,
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      seq.int(from = 0L, to = 122L))
     expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 80L),
                                               break_max = NULL,
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      seq.int(from = 0L, to = 81L))
     expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 80L, NA),
                                               break_max = NULL,
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      seq.int(from = 0L, to = 81L))
     expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 84L),
                                               break_max = NULL,
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      seq.int(from = 0L, to = 85L))
     expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 84L, NA),
                                               break_max = NULL,
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      seq.int(from = 0L, to = 85L))
     expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 84L, NA),
                                               break_max = NULL,
-                                              open_right = TRUE),
+                                              open_last = TRUE),
                      seq.int(from = 0L, to = 84L))
 })
 
@@ -804,22 +795,22 @@ test_that("'make_breaks_integer_year' gives correct answer when break_max is non
     expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L),
                                               width = 5L,
                                               break_max = 100L,
-                                              open_right = TRUE),
+                                              open_last = TRUE),
                      seq.int(from = 0L, by = 5L, to = 100L))
     expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L, NA),
                                               width = 5L,
                                               break_max = 100L,
-                                              open_right = TRUE),
+                                              open_last = TRUE),
                      seq.int(from = 0L, by = 5L, to = 100L))
     expect_identical(make_breaks_integer_year(age = c(50L, 22L, 21L),
                                               width = 5L,
                                               break_max = 100L,
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 100L))
     expect_identical(make_breaks_integer_year(age = c(50L, 22L, 21L, NA),
                                               width = 5L,
                                               break_max = 100L,
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 100L))
 })
 
@@ -827,47 +818,47 @@ test_that("'make_breaks_integer_year' gives correct answer when break_max is NUL
     expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L),
                                               width = 5L,
                                               break_max = NULL,
-                                              open_right = TRUE),
+                                              open_last = TRUE),
                      seq.int(from = 0L, by = 5L, to = 120L))
     expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L, NA),
                                               width = 5L,
                                               break_max = NULL,
-                                              open_right = TRUE),
+                                              open_last = TRUE),
                      seq.int(from = 0L, by = 5L, to = 120L))
     expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L),
                                               width = 5L,
                                               break_max = NULL,
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 125L))
     expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L, NA),
                                               width = 5L,
                                               break_max = NULL,
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 125L))
     expect_identical(make_breaks_integer_year(age = c(50L, 22L, 80L),
                                               width = 5L,
                                               break_max = NULL,
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 85L))
     expect_identical(make_breaks_integer_year(age = c(50L, 22L, 80L, NA),
                                               width = 5L,
                                               break_max = NULL,
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 85L))
     expect_identical(make_breaks_integer_year(age = c(50L, 22L, 84L),
                                               width = 5L,
                                               break_max = NULL,
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 85L))
     expect_identical(make_breaks_integer_year(age = c(50L, 22L, 84L, NA),
                                               width = 5L,
                                               break_max = NULL,
-                                              open_right = FALSE),
+                                              open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 85L))
     expect_identical(make_breaks_integer_year(age = c(50L, 22L, 84L, NA),
                                               width = 5L,
                                               break_max = NULL,
-                                              open_right = TRUE),
+                                              open_last = TRUE),
                      seq.int(from = 0L, by = 5L, to = 80L))
 })
 
@@ -876,29 +867,29 @@ test_that("'make_breaks_integer_year' gives correct answer when break_max is NUL
 test_that("'make_labels_age_group_month_quarter' gives correct answer with valid inputs", {
     expect_identical(make_labels_age_group_month_quarter(break_min = 0,
                                                          break_max = 5,
-                                                         open_left = FALSE,
-                                                         open_right = FALSE,
+                                                         open_first = FALSE,
+                                                         open_last = FALSE,
                                                          unit = "month",
                                                          include_na = FALSE),
                      c("0m", "1m", "2m", "3m", "4m"))
     expect_identical(make_labels_age_group_month_quarter(break_min = 0,
                                                          break_max = 5,
-                                                         open_left = FALSE,
-                                                         open_right = FALSE,
+                                                         open_first = FALSE,
+                                                         open_last = FALSE,
                                                          unit = "quarter",
                                                          include_na = FALSE),
                      c("0q", "1q", "2q", "3q", "4q"))
     expect_identical(make_labels_age_group_month_quarter(break_min = 0,
                                                          break_max = 5,
-                                                         open_left = TRUE,
-                                                         open_right = TRUE,
+                                                         open_first = TRUE,
+                                                         open_last = TRUE,
                                                          unit = "month",
                                                          include_na = FALSE),
                      c("<0m", "0m", "1m", "2m", "3m", "4m", "5m+"))
     expect_identical(make_labels_age_group_month_quarter(break_min = 0,
                                                          break_max = 5,
-                                                         open_left = FALSE,
-                                                         open_right = TRUE,
+                                                         open_first = FALSE,
+                                                         open_last = TRUE,
                                                          unit = "quarter",
                                                          include_na = TRUE),
                      c("0q", "1q", "2q", "3q", "4q", "5q+", NA))
@@ -907,8 +898,8 @@ test_that("'make_labels_age_group_month_quarter' gives correct answer with valid
 test_that("'make_labels_age_group_month_quarter' gives correct error with invalid inputs", {
     expect_error(make_labels_age_group_month_quarter(break_min = 0,
                                                break_max = 5,
-                                               open_left = FALSE,
-                                               open_right = FALSE,
+                                               open_first = FALSE,
+                                               open_last = FALSE,
                                                unit = "wrong",
                                                include_na = FALSE),
                  "can't handle unit 'wrong'")
@@ -919,22 +910,22 @@ test_that("'make_labels_age_group_month_quarter' gives correct error with invali
 test_that("'make_labels_period_month_quarter' gives correct answer with valid inputs", {
     expect_identical(make_labels_period_month_quarter(break_min = "2019-01-01",
                                                       break_max = "2019-04-01",
-                                                      open_left = FALSE,
-                                                      open_right = FALSE,
+                                                      open_first = FALSE,
+                                                      open_last = FALSE,
                                                       unit = "month",
                                                       include_na = FALSE),
                      c("2019 Jan", "2019 Feb", "2019 Mar"))
     expect_identical(make_labels_period_month_quarter(break_min = "2019-01-01",
                                                       break_max = "2020-01-01",
-                                                      open_left = FALSE,
-                                                      open_right = FALSE,
+                                                      open_first = FALSE,
+                                                      open_last = FALSE,
                                                       unit = "quarter",
                                                       include_na = FALSE),
                      c("2019 Q1", "2019 Q2", "2019 Q3", "2019 Q4"))
     expect_identical(make_labels_period_month_quarter(break_min = "2019-07-01",
                                                       break_max = "2020-07-01",
-                                                      open_left = TRUE,
-                                                      open_right = TRUE,
+                                                      open_first = TRUE,
+                                                      open_last = TRUE,
                                                       unit = "quarter",
                                                       include_na = TRUE),
                      c("<2019 Q3", "2019 Q3", "2019 Q4", "2020 Q1", "2020 Q2", "2020 Q3+", NA))
@@ -943,8 +934,8 @@ test_that("'make_labels_period_month_quarter' gives correct answer with valid in
 test_that("'make_labels_period_month_quarter' gives correct error with invalid inputs", {
     expect_error(make_labels_period_month_quarter(break_min = "2001-03-01",
                                                   break_max = "2001-04-01",
-                                                  open_left = FALSE,
-                                                  open_right = FALSE,
+                                                  open_first = FALSE,
+                                                  open_last = FALSE,
                                                   unit = "wrong",
                                                   include_na = FALSE),
                  "value for 'unit' \\[\"wrong\"\\] is not a permitted time unit")

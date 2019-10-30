@@ -14,10 +14,10 @@ date_to_period_year(date, month_start = "Jan", label_year_start = TRUE,
 or \code{\link[base]{month.abb}}. The period starts on
 the first day of this month.}
 
-\item{label_year_start}{Logical. Whether to label a period
+\item{label_year_start}{Whether to label a period
 by the calendar year at the beginning of the period
 or the calendar year at the end. Not needed for periods
-that start on 1 January.}
+that start on 1 January. Defaults to \code{FALSE}.}
 
 \item{as_factor}{Whether the return value is a factor.
 Defaults to \code{TRUE}.}

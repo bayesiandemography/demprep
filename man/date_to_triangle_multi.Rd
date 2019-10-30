@@ -5,7 +5,7 @@
 \title{Convert dates to multi-year Lexis triangles}
 \usage{
 date_to_triangle_multi(date, dob, width = 5, break_max = 100,
-  open_right = TRUE, origin = 2000, month_start = "Jan",
+  open_last = TRUE, origin = 2000, month_start = "Jan",
   as_factor = TRUE)
 }
 \arguments{
@@ -19,7 +19,7 @@ age groups. A positive integer defaulting to 5.}
 \item{break_max}{An integer or \code{NULL}.
 Defaults to 100.}
 
-\item{open_right}{Whether the final age group
+\item{open_last}{Whether the final age group
 has no upper limit. Defaults to \code{TRUE}.}
 
 \item{origin}{An integer. Defaults to 2000.}
@@ -64,18 +64,18 @@ events to birth cohorts is essential for demographic accounting.
 unless one of them has length 1, in which case the
 length-1 argument is recycled.
 
-\code{break_max} and \code{open_right} are used to specify
+\code{break_max} and \code{open_last} are used to specify
 the oldest age group.
 When \code{break_max} is non-\code{NULL} and
-\code{open_right} is \code{TRUE}, the oldest
+\code{open_last} is \code{TRUE}, the oldest
 age group is \code{[break_max, Inf)} years. When
 \code{break_max} is non-\code{NULL} and 
-\code{open_right} is \code{FALSE}, the oldest age
+\code{open_last} is \code{FALSE}, the oldest age
 group is \code{[break_max-width, break_max)} years.
 
 If \code{break_max} is \code{NULL}, \code{date_to_triangle_multi}
 derives a value, based on the highest age in the data,
-and the value for \code{open_right}.
+and the value for \code{open_last}.
 
 Periods start on the first day of \code{month_start},
 and end \code{width}-years-minus-one-day later.

@@ -34,23 +34,48 @@ test_that("make_labels_period gives correct answers with valid input", {
     expect_identical(make_labels_period(breaks = as.Date(c("2001-07-01",
                                                            "2006-07-01",
                                                            "2011-07-01")),
-                                        open_left = TRUE,
-                                        open_right = TRUE,
+                                        open_first = TRUE,
+                                        open_last = TRUE,
                                         include_na = TRUE),
                      c("<2001", "2001-2006", "2006-2011", "2011+", NA))
     expect_identical(make_labels_period(breaks = as.Date(character())),
                      character())
+    expect_identical(make_labels_period(breaks = as.Date(c("2001-01-01",
+                                                           "2002-01-01")),
+                                        open_first = TRUE,
+                                        open_last = TRUE),
+                     c("<2001", "2001", "2002+"))
+    expect_identical(make_labels_period(breaks = as.Date(c("2001-07-01",
+                                                           "2002-07-01")),
+                                        open_first = TRUE,
+                                        open_last = TRUE),
+                     c("<2001", "2001", "2002+"))
+    expect_identical(make_labels_period(breaks = as.Date(c("2001-07-01",
+                                                           "2006-07-01")),
+                                        open_first = TRUE,
+                                        open_last = TRUE),
+                     c("<2001", "2001-2006", "2006+"))
 })
 
 test_that("make_labels_period throws correct error with invalid input", {
     expect_error(make_labels_period(breaks = character(),
-                                    open_left = TRUE,
-                                    open_right = FALSE),
-                 "'breaks' has length 0 but 'open_left' is TRUE")
+                                    open_first = TRUE,
+                                    open_last = FALSE),
+                 "'breaks' has length 0 but 'open_first' is TRUE")
     expect_error(make_labels_period(breaks = character(),
-                                    open_left = FALSE,
-                                    open_right = TRUE),
-                 "'breaks' has length 0 but 'open_right' is TRUE")
+                                    open_first = FALSE,
+                                    open_last = TRUE),
+                 "'breaks' has length 0 but 'open_last' is TRUE")
+    expect_error(make_labels_period(breaks = c("2001-01-01",
+                                               "2002-01-01"),
+                                    open_first = TRUE,
+                                    label_year_start = FALSE),
+                 "'open_first' is TRUE but 'label_year_start' is FALSE")
+    expect_error(make_labels_period(breaks = c("2001-01-01",
+                                               "2002-01-01"),
+                                    open_last = TRUE,
+                                    label_year_start = FALSE),
+                 "'open_last' is TRUE but 'label_year_start' is FALSE")
 })
 
 
@@ -59,8 +84,8 @@ test_that("make_labels_period throws correct error with invalid input", {
 test_that("make_labels_period_quarter gives correct answers with valid input", {
     expect_identical(make_labels_period_quarter(break_min = "2000-01-01",
                                                 break_max = "2000-07-01",
-                                                open_left = TRUE,
-                                                open_right = FALSE,
+                                                open_first = TRUE,
+                                                open_last = FALSE,
                                                 include_na = TRUE),
                      c("<2000 Q1", "2000 Q1", "2000 Q2", NA))
 })
@@ -71,8 +96,8 @@ test_that("make_labels_period_quarter gives correct answers with valid input", {
 test_that("make_labels_period_month gives correct answers with valid input", {
     expect_identical(make_labels_period_month(break_min = "2000-01-01",
                                               break_max = "2000-05-01",
-                                              open_left = TRUE,
-                                              open_right = FALSE,
+                                              open_first = TRUE,
+                                              open_last = FALSE,
                                               include_na = TRUE),
                      c("<2000 Jan", "2000 Jan", "2000 Feb", "2000 Mar", "2000 Apr", NA))
 })

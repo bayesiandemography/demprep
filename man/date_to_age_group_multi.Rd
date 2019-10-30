@@ -5,7 +5,7 @@
 \title{Convert dates to multi-year age groups}
 \usage{
 date_to_age_group_multi(date, dob, width = 5, break_max = 100,
-  open_right = TRUE, as_factor = TRUE)
+  open_last = TRUE, as_factor = TRUE)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}
@@ -18,7 +18,7 @@ A positive integer. Defaults to 5.}
 \item{break_max}{An integer or \code{NULL}.
 Defaults to 100.}
 
-\item{open_right}{Whether the final age group
+\item{open_last}{Whether the final age group
 has no upper limit. Defaults to \code{TRUE}.}
 
 \item{as_factor}{Whether the return value is a factor.
@@ -48,18 +48,18 @@ and must be an integer.
 unless one of them has length 1, in which case the
 length-1 argument is recycled.
 
-\code{break_max} and \code{open_right} are used to specify
+\code{break_max} and \code{open_last} are used to specify
 the oldest age group.
 When \code{break_max} is non-\code{NULL} and
-\code{open_right} is \code{TRUE}, the oldest
+\code{open_last} is \code{TRUE}, the oldest
 age group is \code{[break_max, Inf)} years. When
 \code{break_max} is non-\code{NULL} and 
-\code{open_right} is \code{FALSE}, the oldest age
+\code{open_last} is \code{FALSE}, the oldest age
 group is \code{[break_max-width, break_max)} years.
 
 If \code{break_max} is \code{NULL}, \code{date_to_age_group_multi}
 derives a value, based on the highest age in the data,
-and the value for \code{open_right}.
+and the value for \code{open_last}.
 
 When \code{as_factor} is \code{TRUE} the levels of
 the factor include all intermediate age groups,
@@ -98,7 +98,7 @@ date_to_age_group_multi(date = "2019-09-22",
 date_to_age_group_multi(date = "2019-09-22",
                         dob = "1910-01-01",
                         break_max = NULL,
-                        open_right = FALSE)
+                        open_last = FALSE)
 }
 \seealso{
 Other functions for creating age groups are

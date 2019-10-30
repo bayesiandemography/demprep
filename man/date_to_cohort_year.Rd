@@ -5,7 +5,7 @@
 \title{Convert dates to one-year cohorts}
 \usage{
 date_to_cohort_year(date, month_start = "Jan", label_year_start = TRUE,
-  break_min = NULL, open_left = NULL, as_factor = TRUE)
+  break_min = NULL, open_first = NULL, as_factor = TRUE)
 }
 \arguments{
 \item{date}{Dates of events defining cohorts.}
@@ -21,10 +21,10 @@ that start on 1 January.}
 
 \item{break_min}{An integer or \code{NULL}.}
 
-\item{open_left}{Whether the first cohort
+\item{open_first}{Whether the first cohort
 has no lower limit. If \code{break_min} is \code{NULL},
-then \code{open_left} is ignored. If \code{break_min} is
-non-\code{NULL}, then \code{open_left} defaults to
+then \code{open_first} is ignored. If \code{break_min} is
+non-\code{NULL}, then \code{open_first} defaults to
 \code{TRUE}.}
 
 \item{as_factor}{Whether the return value is a factor.
@@ -44,7 +44,7 @@ The events are typically, but not always, births.
 The interface for \code{date_to_cohort_year} is the similar
 to that of \code{\link{date_to_period_year}}, except that
 \code{date_to_cohort_year} also has arguments \code{break_min}
-and \code{open_left}.
+and \code{open_first}.
 
 \code{date} is a vector of class \code{\link[base]{Date}},
 or can be coerced to class \code{Date}
@@ -62,7 +62,7 @@ Supplying a value for \code{break_min} is essentially equivalent
 to supplying a value for \code{break_max} in
 \code{\link{date_to_age_group_year}}, in that it is a way of
 defining how the oldest ages are handled. If
-\code{open_left} is \code{TRUE}, then the first cohort
+\code{open_first} is \code{TRUE}, then the first cohort
 is \code{(-Inf, break_min)}; otherwise the
 first cohort is \code{[break_min, break_min - 1)}.
 
@@ -112,19 +112,19 @@ date_to_cohort_year(date = c("2024-03-27", "2022-11-09"),
                     month_start = "Jul",
                     label_year_start = FALSE)
 
-## Specify oldest cohort, with open_left
+## Specify oldest cohort, with open_first
 ## at default value of TRUE
 date_to_cohort_year(date = c("2024-03-27",
                              "2019-08-22",
                              "2022-11-09"),
                     break_min = "2020-01-01")
 
-## Specify oldest cohort, with open_left = FALSE
+## Specify oldest cohort, with open_first = FALSE
 date_to_cohort_year(date = c("2024-03-27",
                              "2019-08-22",
                              "2022-11-09"),
                     break_min = "2015-07-01",
-                    open_left = FALSE)
+                    open_first = FALSE)
 
 ## return non-factor
 date_to_cohort_year(date = c("2024-03-27", "2022-11-09"),

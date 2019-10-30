@@ -32,30 +32,30 @@ as_ymd <- function(date) {
 ## HAS_TESTS
 date_to_period_or_cohort_custom <- function(date,
                                             breaks,
-                                            open_left,
+                                            open_first,
                                             as_factor) {
     date <- demcheck::err_tdy_date_vector(x = date,
                                           name = "date")
     breaks <- demcheck::err_tdy_breaks_date(x = breaks,
                                             name = "breaks",
-                                            open_left = open_left,
-                                            open_right = open_right)
-    demcheck::err_is_logical_flag(x = open_left,
-                                  name = "open_left")
+                                            open_first = open_first,
+                                            open_last = FALSE)
+    demcheck::err_is_logical_flag(x = open_first,
+                                  name = "open_first")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    if (!open_left)
+    if (!open_first)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = breaks[1L])
     labels <- make_labels_period(breaks = breaks,
-                                      open_left = open_left,
-                                      open_right = FALSE,
-                                      label_year_start = NULL)
+                                 open_first = open_first,
+                                 open_last = FALSE,
+                                 label_year_start = TRUE)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
                       vec = breaks_int)
-    if (open_left)
+    if (open_first)
         i <- i + 1L
     ans <- labels[i]
     if (as_factor)
@@ -67,7 +67,7 @@ date_to_period_or_cohort_custom <- function(date,
 ## HAS_TESTS
 date_to_period_or_cohort_month <- function(date,
                                            break_min,
-                                           open_left,
+                                           open_first,
                                            as_factor) {
     demcheck::err_is_positive_length(x = date,
                                      name = "date")
@@ -81,8 +81,8 @@ date_to_period_or_cohort_month <- function(date,
     }
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    demcheck::err_is_logical_flag(x = open_left,
-                                  name = "open_left")
+    demcheck::err_is_logical_flag(x = open_first,
+                                  name = "open_first")
     breaks <- make_breaks_date_month(date = date,
                                      break_min = break_min)
     n <- length(breaks)
@@ -90,13 +90,13 @@ date_to_period_or_cohort_month <- function(date,
     break_max <- breaks[[n]]
     labels <- make_labels_period_month(break_min = break_min,
                                        break_max = break_max,
-                                       open_left = open_left,
-                                       open_right = FALSE)
+                                       open_first = open_first,
+                                       open_last = FALSE)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
                       vec = breaks_int)
-    if (open_left)
+    if (open_first)
         i <- i + 1L
     ans <- labels[i]
     if (as_factor)
@@ -111,7 +111,7 @@ date_to_period_or_cohort_multi <- function(date,
                                            origin,
                                            month_start,
                                            break_min,
-                                           open_left,
+                                           open_first,
                                            as_factor) {
     date <- demcheck::err_tdy_date_vector(x = date,
                                           name = "date")
@@ -131,11 +131,11 @@ date_to_period_or_cohort_multi <- function(date,
         origin <- as.integer(format(break_min, "%Y"))
         month_start <- format(break_min, "%b")
     }
-    demcheck::err_is_logical_flag(x = open_left,
-                                  name = "open_left")
+    demcheck::err_is_logical_flag(x = open_first,
+                                  name = "open_first")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    if (!is.null(break_min) && !open_left)
+    if (!is.null(break_min) && !open_first)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
     breaks <- make_breaks_date_year(date = date,
@@ -144,14 +144,14 @@ date_to_period_or_cohort_multi <- function(date,
                                     origin = origin,
                                     break_min = break_min)
     labels <- make_labels_period(breaks = breaks,
-                                      open_left = open_left,
-                                      open_right = FALSE,
-                                      label_year_start = NULL)
+                                      open_first = open_first,
+                                      open_last = FALSE,
+                                      label_year_start = TRUE)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
                       vec = breaks_int)
-    if (open_left)
+    if (open_first)
         i <- i + 1L
     ans <- labels[i]
     if (as_factor)
@@ -164,7 +164,7 @@ date_to_period_or_cohort_multi <- function(date,
 ## HAS_TESTS
 date_to_period_or_cohort_quarter <- function(date,
                                              break_min,
-                                             open_left,
+                                             open_first,
                                              as_factor) {
     demcheck::err_is_positive_length(x = date,
                                      name = "date")
@@ -178,8 +178,8 @@ date_to_period_or_cohort_quarter <- function(date,
     }
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    demcheck::err_is_logical_flag(x = open_left,
-                                  name = "open_left")
+    demcheck::err_is_logical_flag(x = open_first,
+                                  name = "open_first")
     breaks <- make_breaks_date_quarter(date = date,
                                        break_min = break_min)
     n <- length(breaks)
@@ -187,13 +187,13 @@ date_to_period_or_cohort_quarter <- function(date,
     break_max <- breaks[[n]]
     labels <- make_labels_period_quarter(break_min = break_min,
                                          break_max = break_max,
-                                         open_left = open_left,
-                                         open_right = FALSE)
+                                         open_first = open_first,
+                                         open_last = FALSE)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
                       vec = breaks_int)
-    if (open_left)
+    if (open_first)
         i <- i + 1L
     ans <- labels[i]
     if (as_factor)
@@ -207,7 +207,7 @@ date_to_period_or_cohort_year <- function(date,
                                           month_start,
                                           label_year_start,
                                           break_min,
-                                          open_left,
+                                          open_first,
                                           as_factor) {
     date <- demcheck::err_tdy_date_vector(x = date,
                                           name = "date")
@@ -224,11 +224,11 @@ date_to_period_or_cohort_year <- function(date,
     }
     demcheck::err_is_logical_flag(x = label_year_start,
                                   name = "label_year_start")
-    demcheck::err_is_logical_flag(x = open_left,
-                                  name = "open_left")
+    demcheck::err_is_logical_flag(x = open_first,
+                                  name = "open_first")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    if (!is.null(break_min) && !open_left)
+    if (!is.null(break_min) && !open_first)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
     breaks <- make_breaks_date_year(date = date,
@@ -237,14 +237,14 @@ date_to_period_or_cohort_year <- function(date,
                                     origin = NULL,
                                     break_min = break_min)
     labels <- make_labels_period(breaks = breaks,
-                                 open_left = open_left,
-                                 open_right = FALSE,
+                                 open_first = open_first,
+                                 open_last = FALSE,
                                  label_year_start = label_year_start)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
                       vec = breaks_int)
-    if (open_left)
+    if (open_first)
         i <- i + 1L
     ans <- labels[i]
     if (as_factor)
@@ -480,10 +480,10 @@ make_breaks_integer_lifetab <- function(break_max) {
 }
 
 ## HAS_TESTS
-make_breaks_integer_month_quarter <- function(age, break_max, open_right) {
+make_breaks_integer_month_quarter <- function(age, break_max, open_last) {
     if (is.null(break_max)) {
         break_max <- max(age, na.rm = TRUE)
-        if (!open_right)
+        if (!open_last)
             break_max <- break_max + 1L
     }
     seq.int(from = 0L,
@@ -491,10 +491,10 @@ make_breaks_integer_month_quarter <- function(age, break_max, open_right) {
 }
 
 ## HAS_TESTS
-make_breaks_integer_year <- function(age, width, break_max, open_right) {
+make_breaks_integer_year <- function(age, width, break_max, open_last) {
     if (is.null(break_max)) {
         break_max <- max(age, na.rm = TRUE)
-        if (open_right)
+        if (open_last)
             break_max <- (break_max %/% width) * width
         else
             break_max <- (break_max %/% width + 1L) * width
@@ -507,17 +507,17 @@ make_breaks_integer_year <- function(age, width, break_max, open_right) {
 ## HAS_TESTS
 make_labels_age_group_month_quarter <- function(break_min,
                                                 break_max,
-                                                open_left,
-                                                open_right,
+                                                open_first,
+                                                open_last,
                                                 unit,
                                                 include_na) {
     l <- demcheck::err_tdy_break_min_max_integer(break_min = break_min,
                                                  break_max = break_max,
                                                  null_ok = FALSE)
-    demcheck::err_is_logical_flag(x = open_left,
-                                  name = "open_left")
-    demcheck::err_is_logical_flag(x = open_right,
-                                  name = "open_right")
+    demcheck::err_is_logical_flag(x = open_first,
+                                  name = "open_first")
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")
     suffix <- switch(unit,
@@ -528,11 +528,11 @@ make_labels_age_group_month_quarter <- function(break_min,
     s <- seq.int(from = break_min,
                  to = break_max - 1L)
     ans_mid <- sprintf("%d%s", s, suffix)
-    if (open_left)
+    if (open_first)
         ans_left <- paste0("<", ans_mid[[1]])
     else
         ans_left <- NULL
-    if (open_right)
+    if (open_last)
         ans_right <- sprintf("%d%s+", break_max, suffix)
     else
         ans_right <- NULL
@@ -548,8 +548,8 @@ make_labels_age_group_month_quarter <- function(break_min,
 ## HAS_TESTS
 make_labels_period_month_quarter <- function(break_min,
                                              break_max,
-                                             open_left,
-                                             open_right,
+                                             open_first,
+                                             open_last,
                                              unit,
                                              include_na) {
     l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,
@@ -558,10 +558,10 @@ make_labels_period_month_quarter <- function(break_min,
                                               null_ok = FALSE)
     break_min <- l$break_min
     break_max <- l$break_max
-    demcheck::err_is_logical_flag(x = open_left,
-                                  name = "open_left")
-    demcheck::err_is_logical_flag(x = open_right,
-                                  name = "open_right")
+    demcheck::err_is_logical_flag(x = open_first,
+                                  name = "open_first")
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")    
     s <- seq.Date(from = break_min,
@@ -577,11 +577,11 @@ make_labels_period_month_quarter <- function(break_min,
                       unit))
     n <- length(s)
     ans_mid <- paste(year[-n], suffix[-n])
-    if (open_left)
+    if (open_first)
         ans_left <- sprintf("<%s %s", year[[1L]], suffix[[1L]])
     else
         ans_left <- NULL
-    if (open_right)
+    if (open_last)
         ans_right <- sprintf("%s %s+", year[[n]], suffix[[n]])
     else
         ans_right <- NULL
