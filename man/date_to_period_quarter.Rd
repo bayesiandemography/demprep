@@ -18,12 +18,15 @@ value is a factor; otherwise it is a character vector.
 The return value has the same length as \code{date}.
 }
 \description{
-Allocate dates to periods with periods one quarter
-(ie three month) long. Q1 (the first quarter)
-starts on 1 January
-and ends on 31 March; Q2 starts on 1 April and ends on
-30 June; Q3 starts on 1 July and ends on 30 September;
-Q4 starts on 1 October and ends on 31 December.
+Allocate dates to periods with periods one quarter long.
+Quarters are defined as follows:
+\tabular{lll}{
+  \strong{Quarter} \tab \strong{Start} \tab \strong{End} \cr
+  Q1 \tab 1 January \tab 31 March \cr
+  Q2 \tab 1 April \tab 30 June \cr
+  Q3 \tab 1 July \tab 30 September \cr
+  Q4 \tab 1 October \tab 31 December
+}
 }
 \details{
 \code{date} is a vector of class \code{\link[base]{Date}},

@@ -8,9 +8,15 @@ date_to_cohort_custom(date, breaks, open_first = TRUE,
   as_factor = TRUE)
 }
 \arguments{
-\item{date}{Dates of events defining cohorts.}
+\item{date}{Dates of events defining cohorts.
+A vector of class \code{\link[base]{Date}},
+or a vector that can be coerced to class \code{Date}
+via function \code{\link[base]{as.Date}}.}
 
-\item{breaks}{Dates defining starts and ends of cohorts.}
+\item{breaks}{Dates defining starts and ends of cohorts.
+A vector of class \code{\link[base]{Date}},
+or a vector that can be coerced to class \code{Date}
+via function \code{\link[base]{as.Date}}.}
 
 \item{open_first}{Whether the first cohort
 has no lower limit. Defaults to \code{TRUE}.}
@@ -35,12 +41,7 @@ to that of \code{\link{date_to_period_custom}}, except that
 \code{date_to_cohort_custom} also has arguments \code{break_min}
 and \code{open_first}.
 
-\code{date} is a vector of class \code{\link[base]{Date}},
-or can be coerced to class \code{Date}
-via function \code{\link[base]{as.Date}}.
-
-\code{breaks} is also vector of class \code{\link[base]{Date}},
-or can be coerced to to one. \code{breaks} is
+\code{breaks} is
 used to define the points where each cohort starts and finishes.
 The dates in \code{breaks} must all be the first day of
 the same month of the year. For instance,

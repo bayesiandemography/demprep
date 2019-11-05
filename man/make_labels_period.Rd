@@ -24,73 +24,71 @@ Defaults to \code{FALSE}.}
 by the calendar year at the beginning of the period.
 Not needed for multi-year periods, or for single-year
 periods that start on 1 January.
-Defaults to \code{FALSE}.}
+Defaults to \code{TRUE}.}
 
 \item{include_na}{Whether to append an \code{NA} to
 the end of the labels. Defaults to \code{FALSE}.}
 }
 \value{
-A character value. If \code{breaks} has length 0,
-then the return value also has length 0; otherwise
-it has length \code{length(breaks) - 1 + open_first + open_last}.
+A character vector.
 }
 \description{
-Make labels for periods, with lengths measured in whole years.
+Make labels for periods with lengths measured in whole years.
+The labels follow standard demographic conventions, though
+these conventions are sometimes ambiguous.
 }
 \details{
 Periods are defined by the dates specified in \code{breaks}.
-The typical period starts at one date given in \code{breaks}
-and ends the day before the next date.
-For instance, when the breaks are
-\code{"2000-01-01", "2001-01-01", "2002-01-01"}
-the first period extends starts on 2000-01-01, 
-and ends on 2000-12-31, and the second period starts on
-2001-01-01 and ends on 2002-12-31.
-
-When \code{open_first} is \code{TRUE}, an extra 'open' period
+A period ordinarily starts at one date in \code{breaks} and ends
+the day before the next date. For instance, if \code{breaks} is
+\code{c("2000-01-01", "2001-01-01", "2002-01-01")},
+one period begins on 2000-01-01 and ends on 2000-12-31,
+and the other starts on 2001-01-01 and ends on 2001-12-31.
+However, when \code{open_first} is \code{TRUE}, an 'open' period
 extending indefinitely into the past is appended to the start
-of the series. When \code{open_last} is \code{TRUE},
-an extra period extending indefintely into the future is
-appended to the end of the series. By default,
-\code{open_first} and \code{open_last} are both \code{FALSE}.
+of the series, and when \code{open_last} is \code{TRUE},
+an open period extending indefinitely into the future is
+appended to the end. By default, \code{open_first}
+and \code{open_last} are both \code{FALSE}.
 
-The labels constructed by \code{make_labels_period}
-try to reflect demographic conventions.
-If two breaks are exactly one year apart, then the
+In accordance with standard demographic conventions,
+if a period has a width of one year, then the
 corresponding label consists of a single year, eg
-\code{"2020"} or \code{"1951"}. If two breaks are
-more than one year apart, then the label consists of
-two years, separated by a dash, eg \code{"2020-2025"}
+\code{"2020"} or \code{"1951"}. If a period has a width
+of two or more year, then the label consists of
+the start year and the end year,
+separated by a dash, eg \code{"2020-2025"}
 or \code{"1951-1961"}.
 
-Unfortunately, single-year labels can be ambiguous.
-If a period starts on 2020-01-01 and ends
-on 2020-12-31, then it is obvious that the single-year
-label should be \code{"2020"}. But what about a year
-that starts on 2020-07-01 and ends on 2021-06-30?
+Unfortunately, the practice of using a single year to label
+one-year periods can be ambiguous.
+If a period starts on 2020-01-01 and ends on 2020-12-31,
+it is clear that the single-year
+label should be \code{"2020"}. However, if a period
+starts on 2020-07-01 and ends on 2021-06-30, it is
+not obvious how the label should be constructed.
 Some authorities use the calendar year at the \emph{start} of
-the period, so that the label would be
+the period, so that the label is
 \code{"2020"}. Other authorities use the calendar
 year at the \emph{end} of the period, so that the label
-would be \code{"2021"}. (In the latter case,
-the years are often called "year to", eg "year to June".)
+is \code{"2021"}. (In the latter case,
+periods are often called "years to", eg "years to June".)
 
-\code{make_label_period} by default labels periods according
-to the calendar year at the start of the period. To label
-periods according the the calendar year at the end of the
-period, use set \code{label_year_start} to \code{FALSE}.
+\code{make_labels_period} by default uses the start year
+to label single-year periods. To use the end year,
+set \code{label_year_start} to \code{FALSE}.
 
-\code{label_year_start} can only be \code{FALSE} if
-\code{open_first} and \code{open_last} are both \code{FALSE}.
+If \code{label_year_start} is \code{FALSE}, then
+\code{open_right} must also be \code{FALSE}.
 
 When \code{include_na} is \code{TRUE}, an \code{NA}
 is added to the end of the labels. This can be useful
-when dealing with data that include \code{NA}s.
+when dealing with dates that include \code{NA}s.
 
-\code{breaks} can have length 0, provided that \code{open_first}
-and \code{open_last} are both \code{FALSE}. It can
-have length 1, provided that at last one of \code{open_first}
-and \code{open_last} are TRUE.
+\code{breaks} can only have length 0 if \code{open_first}
+and \code{open_last} are both \code{FALSE}. \code{breaks} can
+have only have length 1 if at least one of \code{open_first}
+and \code{open_last} is TRUE.
 }
 \examples{
 ## 5-year periods
@@ -99,17 +97,18 @@ make_labels_period(breaks = c("2005-01-01",
                               "2015-01-01",
                               "2020-01-01"))
 
-## one-year periods, using default setting
-## where label based on calender year at start 
+## one-year periods, using default setting where
+## labels use calender year at start 
 make_labels_period(breaks = c("2005-07-01",
                               "2006-07-01",
                               "2007-07-01"))
 
-## this time with label based on
+## this time with label using
 ## calendar year at end
 make_labels_period(breaks = c("2005-07-01",
                               "2006-07-01",
-                              "2007-07-01"))
+                              "2007-07-01"),
+                   label_year_start = FALSE)
 
 ## add an open period at the beginning...
 make_labels_period(breaks = c("2005-01-01",
@@ -137,7 +136,7 @@ To make labels for age groups, use
 \code{\link{make_labels_age_group}}. There is
 no \code{make_labels_cohort} function. To construct
 labels for cohorts, just use \code{make_labels_period}.
-To make labels for periods of one quarter or on month,
-use functions \code{make_label_period_quarter} or
-\code{make_label_period_month}.
+To make labels for periods with widths of one quarter or one month,
+use functions \code{\link{make_labels_period_quarter}} or
+\code{\link{make_labels_period_month}}.
 }

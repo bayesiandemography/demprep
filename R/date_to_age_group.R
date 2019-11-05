@@ -125,8 +125,7 @@ date_to_age_group_year <- function(date,
                                        break_max = break_max,
                                        open_last = open_last)
     labels <- make_labels_age_group(breaks = breaks,
-                                         open_first = FALSE,
-                                         open_last = open_last)
+                                    open_last = open_last)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
@@ -269,8 +268,7 @@ date_to_age_group_multi <- function(date,
                                        break_max = break_max,
                                        open_last = open_last)
     labels <- make_labels_age_group(breaks = breaks,
-                                         open_first = FALSE,
-                                         open_last = open_last)
+                                    open_last = open_last)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
@@ -366,8 +364,7 @@ date_to_age_group_lifetab <- function(date, dob,
     age_years <- age_months %/% 12L
     breaks <- make_breaks_integer_lifetab(break_max)
     labels <- make_labels_age_group(breaks = breaks,
-                                         open_first = FALSE,
-                                         open_last = TRUE)
+                                    open_last = TRUE)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
@@ -557,8 +554,7 @@ date_to_age_group_fert <- function(date, dob,
                                        break_min = break_min,
                                        break_max = break_max)
     labels <- make_labels_age_group(breaks = breaks,
-                                         open_first = FALSE,
-                                         open_last = FALSE)
+                                    open_last = FALSE)
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
@@ -657,7 +653,6 @@ date_to_age_group_custom <- function(date, dob,
     dob <- l$dob
     breaks <- demcheck::err_tdy_breaks_integer(x = breaks,
                                                name = "breaks",
-                                               open_first = FALSE,
                                                open_last = open_last)
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
@@ -691,7 +686,6 @@ date_to_age_group_custom <- function(date, dob,
         }
     }
     labels <- make_labels_age_group(breaks = breaks,
-                                    open_first = FALSE,
                                     open_last = open_last)
     i <- findInterval(x = age_years,
                       vec = breaks)
@@ -830,7 +824,6 @@ date_to_age_group_quarter <- function(date,
     break_max <- breaks[length(breaks)]
     labels <- make_labels_age_group_quarter(break_min = 0L,
                                             break_max = break_max,
-                                            open_first = FALSE,
                                             open_last = open_last)
     i <- findInterval(x = age_quarters,
                       vec = breaks)
@@ -967,7 +960,6 @@ date_to_age_group_month <- function(date, dob,
     break_max <- breaks[length(breaks)]
     labels <- make_labels_age_group_month(break_min = 0L,
                                           break_max = break_max,
-                                          open_first = FALSE,
                                           open_last = open_last)
     i <- findInterval(x = age_months,
                       vec = breaks)

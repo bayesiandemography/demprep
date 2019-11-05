@@ -2,21 +2,75 @@
 % Please edit documentation in R/make_labels_age_group.R
 \name{make_labels_age_group}
 \alias{make_labels_age_group}
-\alias{make_labels_age_group_quarter}
-\alias{make_labels_age_group_month}
-\title{Make age labels}
+\title{Make labels for age groups measured in years}
 \usage{
-make_labels_age_group(breaks, open_first = FALSE, open_last = TRUE,
-  include_na = FALSE)
+make_labels_age_group(breaks, open_last = TRUE, include_na = FALSE)
+}
+\arguments{
+\item{breaks}{A integer vector, or a vector that can
+be coerced to integer via function \code{\link[base]{as.integer}}.}
 
-make_labels_age_group_quarter(break_min = 0, break_max = 400,
-  open_first = FALSE, open_last = TRUE, include_na = FALSE)
+\item{open_last}{Whether to append an open-ended
+age group to the end of the labels.
+Defaults to \code{TRUE}.}
 
-make_labels_age_group_month(break_min = 0, break_max = 1200,
-  open_first = FALSE, open_last = TRUE, include_na = FALSE)
+\item{include_na}{Whether to append an \code{NA} to
+the end of the labels. Defaults to \code{FALSE}.}
+}
+\value{
+A character vector.
 }
 \description{
-Make age labels
+Make labels for age groups with lengths measured in
+whole years. The labels follow standard
+demographic conventions.
+}
+\details{
+Age groups are defined via the \code{breaks} argument.
+The elements of \code{breaks} must be non-negative integers,
+and must be strictly increasing.  
+Labels for single-year age groups, eg from birth to exact age 1, from
+exact age 1 to exact age 2, and so on, take the form
+\code{"0", "1", "2", ...}. Labels for multi-year age groups,
+eg from birth to exact age 5, from exact age 5 to
+exact age 10, and so on, take the form \code{"0-4", "5-9", ...}.
 
-Make labels for age groups measured in years
+When \code{open_last} is \code{TRUE}, an 'open' age
+group with no upper limit is appended to the end of the labels.
+By default, \code{open_last} is \code{TRUE}.
+
+When \code{include_na} is \code{TRUE}, an \code{NA}
+is added to the end of the labels. This can be useful
+when dealing with dates that include \code{NA}s.
+
+\code{breaks} can only have length 0 if \code{open_last}
+is \code{FALSE}. \code{breaks} can
+have only have length 1 if \code{open_last}
+ is TRUE.
+}
+\examples{
+## single-year
+make_labels_age_group(breaks = 0:100)
+
+## 5-year
+make_labels_age_group(breaks = seq(0, 80, 5))
+
+## mixed
+make_labels_age_group(breaks = c(0, 1, 4, seq(5, 80, 5)))
+
+## no open age group
+make_labels_age_group(breaks = seq(15, 65, 5))
+
+## allow for missing
+make_labels_age_group(breaks = seq(15, 65, 5),
+                      include_na = TRUE)
+}
+\seealso{
+To make labels for periods measured in years, use
+\code{\link{make_labels_period}}. There is
+no \code{make_labels_cohort} function. To construct
+labels for cohorts, just use \code{make_labels_period}.
+To make labels for age groups with widths of one quarter or one month,
+use functions \code{\link{make_labels_age_group_quarter}} or
+\code{\link{make_labels_age_group_month}}.
 }

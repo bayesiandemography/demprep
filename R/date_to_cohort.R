@@ -6,36 +6,25 @@
 #' The cohorts by default align with calendar years.
 #' The events are typically, but not always, births.
 #' 
-#' The interface for \code{date_to_cohort_year} is the similar
+#' The interface for \code{date_to_cohort_year} is similar
 #' to that of \code{\link{date_to_period_year}}, except that
 #' \code{date_to_cohort_year} also has arguments \code{break_min}
 #' and \code{open_first}.
-#'
-#' \code{date} is a vector of class \code{\link[base]{Date}},
-#' or can be coerced to class \code{Date}
-#' via function \code{\link[base]{as.Date}}.
 #' 
-#' \code{break_min} is a single value of
-#' class \code{\link[base]{Date}}, or a value that
-#' can be coerced to class \code{Date}
-#' via function \code{\link[base]{as.Date}}.
-#' \code{break_min} must be the first day of
-#' a month, e.g \code{"2020-01-01"} or
-#' \code{"2020-04-01"}.
-#' 
-#' Supplying a value for \code{break_min} is essentially equivalent
+#' Supplying a date for \code{break_min} defines
+#' the first cohort. It is similar to
 #' to supplying a value for \code{break_max} in
-#' \code{\link{date_to_age_group_year}}, in that it is a way of
-#' defining how the oldest ages are handled. If
-#' \code{open_first} is \code{TRUE}, then the first cohort
-#' is \code{(-Inf, break_min)}; otherwise the
-#' first cohort is \code{[break_min, break_min - 1)}.
+#' \code{\link{date_to_age_group_year}}. If
+#' \code{open_first} is \code{TRUE}, then \code{break_min}
+#' forms the upper limit for the first cohort, and there is no lower
+#' limit. If \code{open_first} is \code{FALSE}, then
+#' \code{break_min} forms the lower limit for the first cohort.
 #'
-#' If \code{break_min} is specified, then
-#' cohorts start on the day and month supplied;
+#' If a value for \code{break_min} is supplied, then
+#' cohorts start on the day and month specified by \code{break_min};
 #' otherwise they start on first day of \code{month_start}.
 #' Cohorts end one-year-minus-one-day later.
-#' The default value for \code{month_start} is \code{"January"},
+#' The default value for \code{month_start} is \code{"Jan"},
 #' so when \code{break_min} is not specified,
 #' cohorts by default start on 1 January and
 #' end on 31 December. \code{month_start} can be a
@@ -65,14 +54,24 @@
 #' including cohorts that not appear in the data.
 #'
 #' @param date Dates of events defining cohorts.
+#' A vector of class \code{\link[base]{Date}},
+#' or a vector that can be coerced to class \code{Date}
+#' via function \code{\link[base]{as.Date}}.
 #' @param month_start An element of \code{\link[base]{month.name}},
-#' or \code{\link[base]{month.abb}}. The cohort starts on
+#' or \code{\link[base]{month.abb}}. Cohorts start on
 #' the first day of this month.
 #' @param label_year_start Logical. Whether to label a cohort
 #' by the calendar year at the beginning of the cohort
 #' or the calendar year at the end. Not needed for cohorts
 #' that start on 1 January.
-#' @param break_min An integer or \code{NULL}.
+#' @param break_min The start date of the first cohort,
+#' or \code{NULL} (the default.)
+#' If non-\code{NULL}, \code{break_min} can be a single value of
+#' class \code{\link[base]{Date}}, or a value that
+#' can be coerced to class \code{Date}
+#' via function \code{\link[base]{as.Date}};
+#' in either case, it must be the first day of
+#' a month.
 #' @param open_first Whether the first cohort
 #' has no lower limit. If \code{break_min} is \code{NULL},
 #' then \code{open_first} is ignored. If \code{break_min} is
@@ -157,25 +156,14 @@ date_to_cohort_year <- function(date,
 #' \code{date_to_cohort_multi} also has arguments \code{break_min}
 #' and \code{open_first}.
 #'
-#' \code{date} is a vector of class \code{\link[base]{Date}},
-#' or can be coerced to class \code{Date}
-#' via function \code{\link[base]{as.Date}}.
-#' 
-#' \code{break_min} is a single value of
-#' class \code{\link[base]{Date}}, or a value that
-#' can be coerced to class \code{Date}
-#' via function \code{\link[base]{as.Date}}.
-#' \code{break_min} must be the first day of
-#' a month, e.g \code{"2020-01-01"} or
-#' \code{"2020-04-01"}.
-#' 
-#' Supplying a value for \code{break_min} is essentially equivalent
+#' Supplying a date for \code{break_min} defines
+#' the first cohort. It is similar
 #' to supplying a value for \code{break_max} in
-#' \code{\link{date_to_age_group_year}}, in that it is a way of
-#' defining how the oldest ages are handled. If
-#' \code{open_first} is \code{TRUE}, then the first cohort
-#' is \code{(-Inf, break_min)}; otherwise the
-#' first cohort is \code{[break_min, break_min - width)}.
+#' \code{\link{date_to_age_group_multi}}. If
+#' \code{open_first} is \code{TRUE}, then \code{break_min}
+#' forms the upper limit for the first cohort, and there is no lower
+#' limit. If \code{open_first} is \code{FALSE}, then
+#' \code{break_min} forms the lower limit for the first cohort.
 #'
 #' If \code{break_min} is specified, then
 #' cohorts start on the day and month supplied;
@@ -289,12 +277,7 @@ date_to_cohort_multi <- function(date,
 #' \code{date_to_cohort_custom} also has arguments \code{break_min}
 #' and \code{open_first}.
 #'
-#' \code{date} is a vector of class \code{\link[base]{Date}},
-#' or can be coerced to class \code{Date}
-#' via function \code{\link[base]{as.Date}}.
-#' 
-#' \code{breaks} is also vector of class \code{\link[base]{Date}},
-#' or can be coerced to to one. \code{breaks} is
+#' \code{breaks} is
 #' used to define the points where each cohort starts and finishes.
 #' The dates in \code{breaks} must all be the first day of
 #' the same month of the year. For instance,
@@ -318,6 +301,9 @@ date_to_cohort_multi <- function(date,
 #'
 #' @inheritParams date_to_cohort_year
 #' @param breaks Dates defining starts and ends of cohorts.
+#' A vector of class \code{\link[base]{Date}},
+#' or a vector that can be coerced to class \code{Date}
+#' via function \code{\link[base]{as.Date}}.
 #' @param open_first Whether the first cohort
 #' has no lower limit. Defaults to \code{TRUE}.
 #'
@@ -402,31 +388,28 @@ date_to_cohort_custom <- function(date,
 #' \code{date_to_cohort_quarter} also has arguments \code{break_min}
 #' and \code{open_first}.
 #'
-#' \code{date} is a vector of class \code{\link[base]{Date}},
-#' or can be coerced to class \code{Date}
-#' via function \code{\link[base]{as.Date}}.
-#' 
-#' \code{break_min} is a single value of
-#' class \code{\link[base]{Date}}, or a value that
-#' can be coerced to class \code{Date}
-#' via function \code{\link[base]{as.Date}}.
-#' \code{break_min} must be the first day of
-#' a quarter, e.g \code{"2020-01-01"} or
-#' \code{"2020-04-01"}.
-#' 
-#' Supplying a value for \code{break_min} is essentially equivalent
+#' Supplying a date for \code{break_min} defines
+#' the first cohort. It is similar
 #' to supplying a value for \code{break_max} in
-#' \code{\link{date_to_age_group_quarter}}, in that it is a way of
-#' defining how the oldest ages are handled. If
-#' \code{open_first} is \code{TRUE}, then the first cohort
-#' is \code{(-Inf, break_min)}; otherwise the
-#' first cohort is \code{[break_min, break_min - 1)}.
+#' \code{\link{date_to_age_group_multi}}. If
+#' \code{open_first} is \code{TRUE}, then \code{break_min}
+#' forms the upper limit for the first cohort, and there is no lower
+#' limit. If \code{open_first} is \code{FALSE}, then
+#' \code{break_min} forms the lower limit for the first cohort.
 #'
 #' When \code{as_factor} is \code{TRUE} the levels of
 #' the factor include all intermediate cohorts,
 #' including cohorts that not appear in the data.
 #'
 #' @inheritParams date_to_cohort_year
+#' @param break_min The start date of the first cohort,
+#' or \code{NULL} (the default.)
+#' If non-\code{NULL}, \code{break_min} can be a single value of
+#' class \code{\link[base]{Date}}, or a value that
+#' can be coerced to class \code{Date}
+#' via function \code{\link[base]{as.Date}};
+#' in either case, it must be the first day of
+#' a quarter.
 #'
 #' @return If \code{as_factor} is \code{TRUE}, then the return
 #' value is a factor; otherwise it is a character vector.
@@ -488,26 +471,15 @@ date_to_cohort_quarter <- function(date,
 #' to that of \code{\link{date_to_period_month}}, except that
 #' \code{date_to_cohort_month} also has arguments \code{break_min}
 #' and \code{open_first}.
-#'
-#' \code{date} is a vector of class \code{\link[base]{Date}},
-#' or can be coerced to class \code{Date}
-#' via function \code{\link[base]{as.Date}}.
 #' 
-#' \code{break_min} is a single value of
-#' class \code{\link[base]{Date}}, or a value that
-#' can be coerced to class \code{Date}
-#' via function \code{\link[base]{as.Date}}.
-#' \code{break_min} must be the first day of
-#' a month, e.g \code{"2020-01-01"} or
-#' \code{"2020-04-01"}.
-#' 
-#' Supplying a value for \code{break_min} is essentially equivalent
+#' Supplying a date for \code{break_min} defines
+#' the first cohort. It is similar
 #' to supplying a value for \code{break_max} in
-#' \code{\link{date_to_age_group_month}}, in that it is a way of
-#' defining how the oldest ages are handled. If
-#' \code{open_first} is \code{TRUE}, then the first cohort
-#' is \code{(-Inf, break_min)}; otherwise the
-#' first cohort is \code{[break_min, break_min - 1)}.
+#' \code{\link{date_to_age_group_multi}}. If
+#' \code{open_first} is \code{TRUE}, then \code{break_min}
+#' forms the upper limit for the first cohort, and there is no lower
+#' limit. If \code{open_first} is \code{FALSE}, then
+#' \code{break_min} forms the lower limit for the first cohort.
 #'
 #' When \code{as_factor} is \code{TRUE} the levels of
 #' the factor include all intermediate cohorts,

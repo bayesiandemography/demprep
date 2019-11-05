@@ -8,9 +8,19 @@ date_to_cohort_quarter(date, break_min = NULL, open_first = NULL,
   as_factor = TRUE)
 }
 \arguments{
-\item{date}{Dates of events defining cohorts.}
+\item{date}{Dates of events defining cohorts.
+A vector of class \code{\link[base]{Date}},
+or a vector that can be coerced to class \code{Date}
+via function \code{\link[base]{as.Date}}.}
 
-\item{break_min}{An integer or \code{NULL}.}
+\item{break_min}{The start date of the first cohort,
+or \code{NULL} (the default.)
+If non-\code{NULL}, \code{break_min} can be a single value of
+class \code{\link[base]{Date}}, or a value that
+can be coerced to class \code{Date}
+via function \code{\link[base]{as.Date}};
+in either case, it must be the first day of
+a quarter.}
 
 \item{open_first}{Whether the first cohort
 has no lower limit. If \code{break_min} is \code{NULL},
@@ -41,25 +51,14 @@ to that of \code{\link{date_to_period_quarter}}, except that
 \code{date_to_cohort_quarter} also has arguments \code{break_min}
 and \code{open_first}.
 
-\code{date} is a vector of class \code{\link[base]{Date}},
-or can be coerced to class \code{Date}
-via function \code{\link[base]{as.Date}}.
-
-\code{break_min} is a single value of
-class \code{\link[base]{Date}}, or a value that
-can be coerced to class \code{Date}
-via function \code{\link[base]{as.Date}}.
-\code{break_min} must be the first day of
-a quarter, e.g \code{"2020-01-01"} or
-\code{"2020-04-01"}.
-
-Supplying a value for \code{break_min} is essentially equivalent
+Supplying a date for \code{break_min} defines
+the first cohort. It is similar
 to supplying a value for \code{break_max} in
-\code{\link{date_to_age_group_quarter}}, in that it is a way of
-defining how the oldest ages are handled. If
-\code{open_first} is \code{TRUE}, then the first cohort
-is \code{(-Inf, break_min)}; otherwise the
-first cohort is \code{[break_min, break_min - 1)}.
+\code{\link{date_to_age_group_multi}}. If
+\code{open_first} is \code{TRUE}, then \code{break_min}
+forms the upper limit for the first cohort, and there is no lower
+limit. If \code{open_first} is \code{FALSE}, then
+\code{break_min} forms the lower limit for the first cohort.
 
 When \code{as_factor} is \code{TRUE} the levels of
 the factor include all intermediate cohorts,

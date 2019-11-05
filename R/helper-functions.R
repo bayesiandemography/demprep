@@ -8,7 +8,7 @@ age_completed_months <- function(date, dob) {
         - (date_ymd$d < dob_ymd$d))
 }
 
-
+## HAS_TESTS
 age_completed_months_start_month <- function(date_ymd, dob_ymd) {
     (12L * (date_ymd$y - dob_ymd$y)
         + (date_ymd$m - dob_ymd$m)
@@ -505,17 +505,60 @@ make_breaks_integer_year <- function(age, width, break_max, open_last) {
 }
 
 ## HAS_TESTS
+make_fill <- function(fill, X, INDEX) {
+    stopifnot(is.data.frame(INDEX))
+    stopifnot(all(sapply(INDEX, is.factor)))
+    stopifnot(identical(length(X), nrow(INDEX)))
+    if (is.null(fill)) {
+        if (!is.null(X)) { 
+            if (identical(length(X), 0L))
+                return(0L)
+            ## try to infer value of 'fill'
+            X_obs <- stats::na.omit(X)
+            if (length(X_obs) > 0L) {
+                is_pos <- X_obs > 0L
+                is_int <- X_obs == round(X_obs)
+                if (all(is_pos & is_int))
+                    return(0L)
+                if (any(!is_pos))
+                    return(NA_integer_)
+            }
+        }
+        n_possible_combn <- prod(sapply(INDEX, nlevels))
+        n_actual_combn <- nrow(unique(INDEX))
+        if (n_actual_combn < n_possible_combn)
+            stop(gettextf(paste("some combinations of the cross-classifying variables are not",
+                                "included in the data, but no value for '%s' has been supplied"),
+                          "fill"),
+                 call. = FALSE)
+        return(0L)
+    }
+    else {
+        demcheck::err_is_length_1(x = fill,
+                                  name = "fill")
+        if (is.na(fill))
+            return(NA_integer_)
+        if (is.numeric(fill)) {
+            if (fill == round(fill))
+                fill <- as.integer(fill)
+            return(fill)
+        }
+        stop(gettextf("invalid value for '%s'",
+                      "fill"))
+    }
+}
+
+
+
+## HAS_TESTS
 make_labels_age_group_month_quarter <- function(break_min,
                                                 break_max,
-                                                open_first,
                                                 open_last,
                                                 unit,
                                                 include_na) {
     l <- demcheck::err_tdy_break_min_max_integer(break_min = break_min,
                                                  break_max = break_max,
                                                  null_ok = FALSE)
-    demcheck::err_is_logical_flag(x = open_first,
-                                  name = "open_first")
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = include_na,
@@ -528,10 +571,6 @@ make_labels_age_group_month_quarter <- function(break_min,
     s <- seq.int(from = break_min,
                  to = break_max - 1L)
     ans_mid <- sprintf("%d%s", s, suffix)
-    if (open_first)
-        ans_left <- paste0("<", ans_mid[[1]])
-    else
-        ans_left <- NULL
     if (open_last)
         ans_right <- sprintf("%d%s+", break_max, suffix)
     else
@@ -540,7 +579,7 @@ make_labels_age_group_month_quarter <- function(break_min,
         ans_na <- NA_character_
     else
         ans_na <- NULL
-    ans <- c(ans_left, ans_mid, ans_right, ans_na)
+    ans <- c(ans_mid, ans_right, ans_na)
     ans
 }
 
