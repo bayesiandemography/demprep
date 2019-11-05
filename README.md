@@ -12,12 +12,12 @@ output: github_document
 [![Lifecycle status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-**demprep** contains general-purpose functions to preparing demographic data for further analysis.
+**demprep** contains general-purpose functions for preparing demographic data for further analysis.
 
 
 ## Installation
 
-You can install from GitHub with:
+**demprep** can be installed from GitHub with:
 
 ``` r
 devtools::install_github("demprep")
