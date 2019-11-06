@@ -49,9 +49,6 @@ have the same width, which is measured in years,
 and in an integer.
 }
 \details{
-\code{date} and \code{dob} are both vectors of class
-\code{\link[base]{Date}}, or vectors that can be coerced to class
-\code{Date} via function \code{\link[base]{as.Date}}.
 \code{date} and \code{dob} must have the same length,
 unless one of them has length 1, in which case the
 length-1 argument is recycled.

@@ -8,9 +8,15 @@ date_to_age_group_custom(date, dob, breaks = NULL, open_last = TRUE,
   as_factor = TRUE)
 }
 \arguments{
-\item{date}{Dates of events or measurements.}
+\item{date}{Dates of events or measurements.
+A vector of class \code{\link[base]{Date}},
+or a vector that can be coerced to class
+\code{Date} using function \code{\link[base]{as.Date}}.}
 
-\item{dob}{Dates of birth.}
+\item{dob}{Dates of birth.
+A vector of class \code{\link[base]{Date}},
+or a vector that can be coerced to class
+\code{Date} using function \code{\link[base]{as.Date}}.}
 
 \item{breaks}{A vector of strictly increasing integer values.}
 
@@ -36,10 +42,6 @@ in that the age groups can have any combination of widths,
 though the widths must be defined in whole numbers of years.
 }
 \details{
-\code{date} and \code{dob} are both vectors of class
-\code{\link[base]{Date}}, or vectors that can be coerced to class
-\code{Date} via function \code{\link[base]{as.Date}}.
-
 \code{date} and \code{dob} must have the same length,
 unless one of them has length 1, in which case the
 length-1 argument is recycled.

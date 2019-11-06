@@ -9,7 +9,10 @@ date_to_age_group_lifetab(date, dob, break_max = 100, as_factor = TRUE)
 \arguments{
 \item{date}{Date of death.}
 
-\item{dob}{Dates of birth.}
+\item{dob}{Dates of birth.
+A vector of class \code{\link[base]{Date}},
+or a vector that can be coerced to class
+\code{Date} using function \code{\link[base]{as.Date}}.}
 
 \item{break_max}{An integer or \code{NULL}.
 Defaults to 100.}
@@ -33,10 +36,6 @@ and "5-9", "10-14", "10-14", and so on up to the
 highest age group.
 }
 \details{
-\code{date} and \code{dob} are both vectors of class
-\code{\link[base]{Date}}, or vectors that can be coerced to class
-\code{Date} via function \code{\link[base]{as.Date}}.
-
 \code{date} and \code{dob} must have the same length,
 unless one of them has length 1, in which case the
 length-1 argument is recycled.
@@ -44,6 +43,8 @@ length-1 argument is recycled.
 \code{break_max} is used to specify
 the oldest age group, which is always open
 on the right.
+If \code{break_max} is \code{NULL}, the oldest
+age group is derived from the data.
 
 When \code{as_factor} is \code{TRUE} the levels of
 the factor include all intermediate age groups,

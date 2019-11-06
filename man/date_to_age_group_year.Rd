@@ -8,9 +8,15 @@ date_to_age_group_year(date, dob, break_max = 100, open_last = TRUE,
   as_factor = TRUE)
 }
 \arguments{
-\item{date}{Dates of events or measurements.}
+\item{date}{Dates of events or measurements.
+A vector of class \code{\link[base]{Date}},
+or a vector that can be coerced to class
+\code{Date} using function \code{\link[base]{as.Date}}.}
 
-\item{dob}{Dates of birth.}
+\item{dob}{Dates of birth.
+A vector of class \code{\link[base]{Date}},
+or a vector that can be coerced to class
+\code{Date} using function \code{\link[base]{as.Date}}.}
 
 \item{break_max}{An integer or \code{NULL}.
 Defaults to 100.}
@@ -42,26 +48,20 @@ who had their fifth birthday two days ago belongs to age
 group \code{"5"} and a person who was born (had their zero-th
 birthday) three months ago belongs to age group \code{"0"}.
 
-\code{date} and \code{dob} are both vectors of class
-\code{\link[base]{Date}}, or vectors that can be coerced to class
-\code{Date} via function \code{\link[base]{as.Date}}.
-
 \code{date} and \code{dob} must have the same length,
 unless one of them has length 1, in which case the
-length-1 argument is recycled.
+argument with length 1 is recycled.
 
 \code{break_max} and \code{open_last} are used to specify
 the oldest age group.
-When \code{break_max} is non-\code{NULL} and
+If \code{break_max} is non-\code{NULL} and
 \code{open_last} is \code{TRUE}, the oldest
-age group is \code{[break_max, Inf)} years. When
+age group is \code{[break_max, Inf)} years. If
 \code{break_max} is non-\code{NULL} and 
 \code{open_last} is \code{FALSE}, the oldest age
 group is \code{[break_max-1, break_max)} years.
-
 If \code{break_max} is \code{NULL}, \code{date_to_age_group_year}
-derives a value, based on the highest age in the data,
-and the value for \code{open_last}.
+the oldest age group is determined by the data.
 
 When \code{as_factor} is \code{TRUE} the levels of
 the factor include all intermediate age groups,
