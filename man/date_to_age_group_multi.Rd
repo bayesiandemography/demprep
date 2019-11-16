@@ -4,8 +4,14 @@
 \alias{date_to_age_group_multi}
 \title{Convert dates to multi-year age groups}
 \usage{
-date_to_age_group_multi(date, dob, width = 5, break_max = 100,
-  open_last = TRUE, as_factor = TRUE)
+date_to_age_group_multi(
+  date,
+  dob,
+  width = 5,
+  break_max = 100,
+  open_last = TRUE,
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates of events or measurements.

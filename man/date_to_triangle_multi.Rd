@@ -4,9 +4,16 @@
 \alias{date_to_triangle_multi}
 \title{Convert dates to multi-year Lexis triangles}
 \usage{
-date_to_triangle_multi(date, dob, width = 5, break_max = 100,
-  open_last = TRUE, origin = 2000, month_start = "Jan",
-  as_factor = TRUE)
+date_to_triangle_multi(
+  date,
+  dob,
+  width = 5,
+  break_max = 100,
+  open_last = TRUE,
+  origin = 2000,
+  month_start = "Jan",
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}

@@ -4,8 +4,13 @@
 \alias{date_to_period_multi}
 \title{Convert dates to multi-year periods}
 \usage{
-date_to_period_multi(date, width = 5, origin = 2000,
-  month_start = "Jan", as_factor = TRUE)
+date_to_period_multi(
+  date,
+  width = 5,
+  origin = 2000,
+  month_start = "Jan",
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}

@@ -4,8 +4,14 @@
 \alias{date_to_cohort_year}
 \title{Convert dates to one-year cohorts}
 \usage{
-date_to_cohort_year(date, month_start = "Jan", label_year_start = TRUE,
-  break_min = NULL, open_first = NULL, as_factor = TRUE)
+date_to_cohort_year(
+  date,
+  month_start = "Jan",
+  label_year_start = TRUE,
+  break_min = NULL,
+  open_first = NULL,
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates of events defining cohorts.

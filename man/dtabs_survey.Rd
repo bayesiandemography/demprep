@@ -15,8 +15,13 @@ in Bayesian hierarchical models for small area estimation.
 \emph{Spatial and Spatio-temporal Epidemiology}. 11: 33-43.
 }
 \usage{
-dtabs_survey(data = parent.frame(), formula, weights, na_rm = FALSE,
-  FUN = stats::median)
+dtabs_survey(
+  data = parent.frame(),
+  formula,
+  weights,
+  na_rm = FALSE,
+  FUN = stats::median
+)
 }
 \arguments{
 \item{data}{A data frame or matrix.}

@@ -4,8 +4,13 @@
 \alias{date_to_triangle_month}
 \title{Convert dates to month Lexis triangles}
 \usage{
-date_to_triangle_month(date, dob, break_max = 1200, open_last = TRUE,
-  as_factor = TRUE)
+date_to_triangle_month(
+  date,
+  dob,
+  break_max = 1200,
+  open_last = TRUE,
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}

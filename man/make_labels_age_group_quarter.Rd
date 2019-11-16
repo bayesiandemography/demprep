@@ -4,8 +4,12 @@
 \alias{make_labels_age_group_quarter}
 \title{Make labels for age groups measured in quarters}
 \usage{
-make_labels_age_group_quarter(break_min = 0, break_max = 400,
-  open_last = TRUE, include_na = FALSE)
+make_labels_age_group_quarter(
+  break_min = 0,
+  break_max = 400,
+  open_last = TRUE,
+  include_na = FALSE
+)
 }
 \arguments{
 \item{break_min}{An integer. The lower limit (in quarters) of

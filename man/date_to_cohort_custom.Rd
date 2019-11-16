@@ -4,8 +4,7 @@
 \alias{date_to_cohort_custom}
 \title{Convert dates to customized cohorts}
 \usage{
-date_to_cohort_custom(date, breaks, open_first = TRUE,
-  as_factor = TRUE)
+date_to_cohort_custom(date, breaks, open_first = TRUE, as_factor = TRUE)
 }
 \arguments{
 \item{date}{Dates of events defining cohorts.

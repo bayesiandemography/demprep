@@ -4,8 +4,7 @@
 \alias{dtabs}
 \title{Simplified cross-tabulation}
 \usage{
-dtabs(data = parent.frame(), formula = ~., na_rm = FALSE,
-  fill = NULL)
+dtabs(data = parent.frame(), formula = ~., na_rm = FALSE, fill = NULL)
 }
 \arguments{
 \item{data}{A data frame or matrix.}

@@ -4,8 +4,12 @@
 \alias{date_to_period_year}
 \title{Convert dates to one-year periods}
 \usage{
-date_to_period_year(date, month_start = "Jan", label_year_start = TRUE,
-  as_factor = TRUE)
+date_to_period_year(
+  date,
+  month_start = "Jan",
+  label_year_start = TRUE,
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}

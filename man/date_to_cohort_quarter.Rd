@@ -4,8 +4,12 @@
 \alias{date_to_cohort_quarter}
 \title{Convert dates to quarter cohorts}
 \usage{
-date_to_cohort_quarter(date, break_min = NULL, open_first = NULL,
-  as_factor = TRUE)
+date_to_cohort_quarter(
+  date,
+  break_min = NULL,
+  open_first = NULL,
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates of events defining cohorts.

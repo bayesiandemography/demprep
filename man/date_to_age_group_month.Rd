@@ -4,8 +4,13 @@
 \alias{date_to_age_group_month}
 \title{Convert dates to month age groups}
 \usage{
-date_to_age_group_month(date, dob, break_max = 1200, open_last = TRUE,
-  as_factor = TRUE)
+date_to_age_group_month(
+  date,
+  dob,
+  break_max = 1200,
+  open_last = TRUE,
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}

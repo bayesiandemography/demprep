@@ -4,9 +4,16 @@
 \alias{date_to_age_group_fert}
 \title{Convert dates to age groups when measuring fertility}
 \usage{
-date_to_age_group_fert(date, dob, break_min = 15, break_max = 50,
-  width = 5, recode_up = FALSE, recode_down = FALSE,
-  as_factor = TRUE)
+date_to_age_group_fert(
+  date,
+  dob,
+  break_min = 15,
+  break_max = 50,
+  width = 5,
+  recode_up = FALSE,
+  recode_down = FALSE,
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates when births being measured occur.}

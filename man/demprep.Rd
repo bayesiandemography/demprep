@@ -3,7 +3,6 @@
 \docType{package}
 \name{demprep}
 \alias{demprep}
-\alias{demprep-package}
 \title{demprep: Tools for preparing demographic data}
 \description{
 General-purpose tools preparing raw demographic

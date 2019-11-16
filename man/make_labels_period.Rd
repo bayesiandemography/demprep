@@ -4,8 +4,13 @@
 \alias{make_labels_period}
 \title{Make labels for periods measured in years}
 \usage{
-make_labels_period(breaks, open_first = FALSE, open_last = FALSE,
-  label_year_start = TRUE, include_na = FALSE)
+make_labels_period(
+  breaks,
+  open_first = FALSE,
+  open_last = FALSE,
+  label_year_start = TRUE,
+  include_na = FALSE
+)
 }
 \arguments{
 \item{breaks}{A vector of class \code{\link[base]{Date}},

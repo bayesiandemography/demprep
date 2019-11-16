@@ -4,8 +4,13 @@
 \alias{date_to_triangle_quarter}
 \title{Convert dates to quarter Lexis triangles}
 \usage{
-date_to_triangle_quarter(date, dob, break_max = 400, open_last = TRUE,
-  as_factor = TRUE)
+date_to_triangle_quarter(
+  date,
+  dob,
+  break_max = 400,
+  open_last = TRUE,
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}

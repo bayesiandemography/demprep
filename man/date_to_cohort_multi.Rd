@@ -4,9 +4,15 @@
 \alias{date_to_cohort_multi}
 \title{Convert dates to multi-year cohorts}
 \usage{
-date_to_cohort_multi(date, width = 5, origin = 2000,
-  month_start = "Jan", break_min = NULL, open_first = NULL,
-  as_factor = TRUE)
+date_to_cohort_multi(
+  date,
+  width = 5,
+  origin = 2000,
+  month_start = "Jan",
+  break_min = NULL,
+  open_first = NULL,
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates of events defining cohorts.

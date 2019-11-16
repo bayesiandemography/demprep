@@ -4,8 +4,13 @@
 \alias{date_to_age_group_quarter}
 \title{Convert dates to quarter age groups}
 \usage{
-date_to_age_group_quarter(date, dob, break_max = 400, open_last = TRUE,
-  as_factor = TRUE)
+date_to_age_group_quarter(
+  date,
+  dob,
+  break_max = 400,
+  open_last = TRUE,
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}

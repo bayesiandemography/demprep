@@ -17,10 +17,10 @@ output: github_document
 
 ## Installation
 
-**demprep** can be installed from GitHub with:
+To install from GitHub, use:
 
 ``` r
-devtools::install_github("demprep")
+devtools::install_github("bayesiandemography/demprep")
 ```
 
 ## Usage

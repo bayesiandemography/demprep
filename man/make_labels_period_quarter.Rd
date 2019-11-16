@@ -4,8 +4,13 @@
 \alias{make_labels_period_quarter}
 \title{Make labels for periods with lengths of one quarter}
 \usage{
-make_labels_period_quarter(break_min, break_max, open_first = FALSE,
-  open_last = FALSE, include_na = FALSE)
+make_labels_period_quarter(
+  break_min,
+  break_max,
+  open_first = FALSE,
+  open_last = FALSE,
+  include_na = FALSE
+)
 }
 \arguments{
 \item{break_min}{A value of class \code{\link[base]{Date}},

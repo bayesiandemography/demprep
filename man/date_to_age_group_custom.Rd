@@ -4,8 +4,13 @@
 \alias{date_to_age_group_custom}
 \title{Convert dates to customized age groups}
 \usage{
-date_to_age_group_custom(date, dob, breaks = NULL, open_last = TRUE,
-  as_factor = TRUE)
+date_to_age_group_custom(
+  date,
+  dob,
+  breaks = NULL,
+  open_last = TRUE,
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates of events or measurements.

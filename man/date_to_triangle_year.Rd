@@ -4,8 +4,14 @@
 \alias{date_to_triangle_year}
 \title{Convert dates to one-year Lexis triangles}
 \usage{
-date_to_triangle_year(date, dob, break_max = 100, open_last = TRUE,
-  month_start = "Jan", as_factor = TRUE)
+date_to_triangle_year(
+  date,
+  dob,
+  break_max = 100,
+  open_last = TRUE,
+  month_start = "Jan",
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}

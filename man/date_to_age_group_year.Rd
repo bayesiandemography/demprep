@@ -4,8 +4,13 @@
 \alias{date_to_age_group_year}
 \title{Convert dates to one-year age groups}
 \usage{
-date_to_age_group_year(date, dob, break_max = 100, open_last = TRUE,
-  as_factor = TRUE)
+date_to_age_group_year(
+  date,
+  dob,
+  break_max = 100,
+  open_last = TRUE,
+  as_factor = TRUE
+)
 }
 \arguments{
 \item{date}{Dates of events or measurements.
