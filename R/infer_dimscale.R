@@ -1,5 +1,5 @@
 
-infer_dimscale_period_month <- function(labels) {
+infer_dimscale_period_month <- function(labels, gaps_ok = FALSE) {
     ## regexp patterns
     p_open_first <- "^<[0-9]{4} [A-z]{3}$"
     p_mid <- "^[0-9]{4} [A-z]{3}$"
@@ -46,28 +46,29 @@ infer_dimscale_period_month <- function(labels) {
     i_invalid <- match(TRUE, is_invalid, nomatch = 0L)
     if (i_invalid > 0L)
         return(gettextf("label \"%s\" is open on the left, but label \"%s\" refers to an earlier date",
-                      labels[is_open_first][[i_invalid]],
-                      labels[[i_min]]))
+                        labels[is_open_first][[i_invalid]],
+                        labels[[i_min]]))
     is_invalid <- dates[is_open_last] != break_max
     i_invalid <- match(TRUE, is_invalid, nomatch = 0L)
     if (i_invalid > 0L)
         return(gettextf("label \"%s\" is open on the right, but label \"%s\" refers to a later date",
-                      labels[is_open_last][[i_invalid]],
-                      labels[[i_max]]))
-    labels_expected <- make_labels_period_month_quarter(break_min = break_min,
-                                                        break_max = break_max,
-                                                        open_first = open_first,
-                                                        open_last = open_last,
-                                                        unit = "month",
-                                                        include_na = include_na)
+                        labels[is_open_last][[i_invalid]],
+                        labels[[i_max]]))
+    labels_expected <- demprep::make_labels_period_month(break_min = break_min,
+                                                         break_max = break_max,
+                                                         open_first = open_first,
+                                                         open_last = open_last,
+                                                         include_na = include_na)
     is_not_included <- !(labels_expected %in% labels)
     i_not_included <- match(TRUE, is_not_included, nomatch = 0L)
-    if (i_not_included > 0L)
+    has_gap <- i_not_included > 0L
+    if (has_gap && !gaps_ok)
         return(gettextf("period labels have a gap : no label for period \"%s\"",
-                      labels_expected[[i_not_included]]))
+                        labels_expected[[i_not_included]]))
     list(break_min = break_min,
          break_max = break_max,
          open_first = open_first,
          open_last = open_last,
-         include_na = include_na)
+         include_na = include_na,
+         has_gap = has_gap)
 }
