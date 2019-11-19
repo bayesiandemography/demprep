@@ -56,14 +56,11 @@ an open period extending indefinitely into the future is
 appended to the end. By default, \code{open_first}
 and \code{open_last} are both \code{FALSE}.
 
-In accordance with standard demographic conventions,
-if a period has a width of one year, then the
-corresponding label consists of a single year, eg
-\code{"2020"} or \code{"1951"}. If a period has a width
-of two or more year, then the label consists of
-the start year and the end year,
-separated by a dash, eg \code{"2020-2025"}
-or \code{"1951-1961"}.
+If all periods have widths of one year,
+then the labels consist of a single years, eg
+\code{"2020", "2021", "2020"}. Otherwise, the
+labels consist of start years and end years
+separated by dashes, eg \code{"2020-2025", "2025-2030", "2030-2035"}.
 
 Unfortunately, the practice of using a single year to label
 one-year periods can be ambiguous.
@@ -80,7 +77,7 @@ is \code{"2021"}. (In the latter case,
 periods are often called "years to", eg "years to June".)
 
 \code{make_labels_period} by default uses the start year
-to label single-year periods. To use the end year,
+to make single-year labels. To use the end year,
 set \code{label_year_start} to \code{FALSE}.
 
 If \code{label_year_start} is \code{FALSE}, then

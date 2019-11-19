@@ -19,14 +19,11 @@
 #' appended to the end. By default, \code{open_first}
 #' and \code{open_last} are both \code{FALSE}.
 #'
-#' In accordance with standard demographic conventions,
-#' if a period has a width of one year, then the
-#' corresponding label consists of a single year, eg
-#' \code{"2020"} or \code{"1951"}. If a period has a width
-#' of two or more year, then the label consists of
-#' the start year and the end year,
-#' separated by a dash, eg \code{"2020-2025"}
-#' or \code{"1951-1961"}.
+#' If all periods have widths of one year,
+#' then the labels consist of a single years, eg
+#' \code{"2020", "2021", "2020"}. Otherwise, the
+#' labels consist of start years and end years
+#' separated by dashes, eg \code{"2020-2025", "2025-2030", "2030-2035"}.
 #'
 #' Unfortunately, the practice of using a single year to label
 #' one-year periods can be ambiguous.
@@ -43,7 +40,7 @@
 #' periods are often called "years to", eg "years to June".)
 #'
 #' \code{make_labels_period} by default uses the start year
-#' to label single-year periods. To use the end year,
+#' to make single-year labels. To use the end year,
 #' set \code{label_year_start} to \code{FALSE}.
 #'
 #' If \code{label_year_start} is \code{FALSE}, then
@@ -171,33 +168,33 @@ make_labels_period <- function(breaks,
     }
     else {
         ## 'open_first' or 'open_last' may be TRUE
-        ans_mid <- character(length = n - 1L)
-        breaks_year <- as.integer(format(breaks, "%Y"))
-        diff <- diff(breaks_year)
+        breaks_year <- format(breaks, "%Y")
+        diff <- diff(as.integer(breaks_year))
         is_single_year <- diff == 1L
-        head <- breaks_year[-n]
-        tail <- breaks_year[-1L]
-        is_1_jan <- identical(format(breaks[[1L]], "%m-%d"), "01-01")
-        use_head_for_single <- label_year_start || is_1_jan
-        if (use_head_for_single)
-            ans_mid[is_single_year] <- head[is_single_year]
-        else
-            ans_mid[is_single_year] <- tail[is_single_year]
-        if (any(!is_single_year)) {
-            lower <- head[!is_single_year]
-            upper <- tail[!is_single_year]
-            ans_mid[!is_single_year] <- paste(lower, upper, sep = "-")
+        lower <- breaks_year[-n]
+        upper <- breaks_year[-1L]
+        all_single <- all(is_single_year)
+        if (all_single) {
+            is_1_jan <- identical(format(breaks[[1L]], "%m-%d"), "01-01")
+            use_lower_for_single <- label_year_start || is_1_jan
+            if (use_lower_for_single)
+                ans_mid <- lower
+            else
+                ans_mid <- upper
+        }
+        else {
+            ans_mid <- paste(lower, upper, sep = "-")
         }
         if (open_first) {
-            if (use_head_for_single || !is_single_year[[1L]])
-                ans_left <- paste0("<", head[[1L]])
+            if (!all_single || use_lower_for_single)
+                ans_left <- paste0("<", lower[[1L]])
             else
-                ans_left <- paste0("<", tail[[1L]])
+                ans_left <- paste0("<", upper[[1L]])
         }
         else
             ans_left <- NULL
         if (open_last)
-            ans_right <- paste0(tail[[n - 1L]], "+")
+            ans_right <- paste0(upper[[n - 1L]], "+")
         else
             ans_right <- NULL
     }

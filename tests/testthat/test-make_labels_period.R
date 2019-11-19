@@ -74,14 +74,14 @@ test_that("make_labels_period gives correct answers with valid input", {
                                                            "2006-07-01")),
                                         open_first = TRUE,
                                         open_last = TRUE),
-                     c("<2001", "2001", "2002-2006", "2006+"))
+                     c("<2001", "2001-2002", "2002-2006", "2006+"))
     expect_identical(make_labels_period(breaks = as.Date(c("2001-07-01",
                                                            "2002-07-01",
                                                            "2006-07-01",
                                                            "2007-07-01")),
                                         open_first = TRUE,
                                         open_last = TRUE),
-                     c("<2001", "2001", "2002-2006", "2006", "2007+"))
+                     c("<2001", "2001-2002", "2002-2006", "2006-2007", "2007+"))
 })
 
 test_that("make_labels_period throws correct error with invalid input", {
