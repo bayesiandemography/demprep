@@ -93,9 +93,9 @@ test_that("infer_dimscale_period_quarter gives correct answer when gaps_ok is TR
 
 test_that("infer_dimscale_period_quarter gives correct message with invalid input", {
     expect_identical(infer_dimscale_period_quarter("wrong"),
-                     "\"wrong\" is not a valid label for a period of one quarter")
+                     "\"wrong\" not a valid label for period of one quarter")
     expect_identical(infer_dimscale_period_quarter("2000 q2+"),
-                     "\"2000 q2+\" is not a valid label for a period of one quarter")
+                     "\"2000 q2+\" not a valid label for period of one quarter")
     expect_identical(infer_dimscale_period_quarter(c("<2000 Q1", "1999 Q4")),
                      "label \"<2000 Q1\" is open on the left, but label \"1999 Q4\" refers to an earlier date")
     expect_identical(infer_dimscale_period_quarter(c("2000 Q4", NA, "2000 Q1+")),
@@ -203,9 +203,9 @@ test_that("infer_dimscale_period_month gives correct answer when gaps_ok is TRUE
 
 test_that("infer_dimscale_period_month gives correct message with invalid input", {
     expect_identical(infer_dimscale_period_month("wrong"),
-                     "\"wrong\" is not a valid label for a period of one month")
+                     "\"wrong\" not a valid label for period of one month")
     expect_identical(infer_dimscale_period_month("2000 Bad+"),
-                     "\"2000 Bad+\" is not a valid label for a period of one month")
+                     "\"2000 Bad+\" not a valid label for period of one month")
     expect_identical(infer_dimscale_period_month(c("<2000 Jan", "1999 Dec")),
                      "label \"<2000 Jan\" is open on the left, but label \"1999 Dec\" refers to an earlier date")
     expect_identical(infer_dimscale_period_month(c("2000 Dec", NA, "2000 Jan+")),
