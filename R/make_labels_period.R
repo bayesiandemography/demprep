@@ -43,8 +43,8 @@
 #' to make single-year labels. To use the end year,
 #' set \code{label_year_start} to \code{FALSE}.
 #'
-#' If \code{label_year_start} is \code{FALSE}, then
-#' \code{open_right} must also be \code{FALSE}.
+#' If \code{open_last} is \code{TRUE}, then
+#' \code{label_year_start} must also be \code{TRUE}.
 #'
 #' When \code{include_na} is \code{TRUE}, an \code{NA}
 #' is added to the end of the labels. This can be useful
@@ -150,21 +150,21 @@ make_labels_period <- function(breaks,
     if (n == 0L) {
         ## 'err_tdy_breaks_date' checked that 'open_first' and 'open_last' both FALSE
         ans_mid <- character()
-        ans_left <- NULL
-        ans_right <- NULL
+        ans_first <- NULL
+        ans_last <- NULL
     }
     else if (n == 1L) {
         ## 'err_tdy_breaks_date' checked that 'open_first' or 'open_last' TRUE
         ans_mid <- NULL
         head <- format(breaks, "%Y")
         if (open_first)
-            ans_left <- paste0("<", head)
+            ans_first <- paste0("<", head)
         else
-            ans_left <- NULL
+            ans_first <- NULL
         if (open_last)
-            ans_right <- paste0(head, "+")
+            ans_last <- paste0(head, "+")
         else
-            ans_right <- NULL
+            ans_last <- NULL
     }
     else {
         ## 'open_first' or 'open_last' may be TRUE
@@ -187,22 +187,22 @@ make_labels_period <- function(breaks,
         }
         if (open_first) {
             if (!all_single || use_lower_for_single)
-                ans_left <- paste0("<", lower[[1L]])
+                ans_first <- paste0("<", lower[[1L]])
             else
-                ans_left <- paste0("<", upper[[1L]])
+                ans_first <- paste0("<", upper[[1L]])
         }
         else
-            ans_left <- NULL
+            ans_first <- NULL
         if (open_last)
-            ans_right <- paste0(upper[[n - 1L]], "+")
+            ans_last <- paste0(upper[[n - 1L]], "+")
         else
-            ans_right <- NULL
+            ans_last <- NULL
     }
     if (include_na)
         ans_na <- NA_character_
     else
         ans_na <- NULL
-    c(ans_left, ans_mid, ans_right, ans_na)
+    c(ans_first, ans_mid, ans_last, ans_na)
 }
 
 ## HAS_TESTS
