@@ -49,7 +49,6 @@ date_to_period_or_cohort_custom <- function(date,
                                         break_min = breaks[1L])
     labels <- make_labels_period(breaks = breaks,
                                  open_first = open_first,
-                                 open_last = FALSE,
                                  label_year_start = TRUE)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
@@ -90,8 +89,7 @@ date_to_period_or_cohort_month <- function(date,
     break_max <- breaks[[n]]
     labels <- make_labels_period_month(break_min = break_min,
                                        break_max = break_max,
-                                       open_first = open_first,
-                                       open_last = FALSE)
+                                       open_first = open_first)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
@@ -145,7 +143,6 @@ date_to_period_or_cohort_multi <- function(date,
                                     break_min = break_min)
     labels <- make_labels_period(breaks = breaks,
                                       open_first = open_first,
-                                      open_last = FALSE,
                                       label_year_start = TRUE)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
@@ -187,8 +184,7 @@ date_to_period_or_cohort_quarter <- function(date,
     break_max <- breaks[[n]]
     labels <- make_labels_period_quarter(break_min = break_min,
                                          break_max = break_max,
-                                         open_first = open_first,
-                                         open_last = FALSE)
+                                         open_first = open_first)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
@@ -228,6 +224,9 @@ date_to_period_or_cohort_year <- function(date,
                                   name = "open_first")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
+    if (open_first && !label_year_start)
+        stop(gettextf("'%s' is %s but '%s' is %s",
+                      "open_first", "TRUE", "label_year_start", "FALSE"))
     if (!is.null(break_min) && !open_first)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
@@ -238,7 +237,6 @@ date_to_period_or_cohort_year <- function(date,
                                     break_min = break_min)
     labels <- make_labels_period(breaks = breaks,
                                  open_first = open_first,
-                                 open_last = FALSE,
                                  label_year_start = label_year_start)
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
@@ -588,7 +586,6 @@ make_labels_age_group_month_quarter <- function(break_min,
 make_labels_period_month_quarter <- function(break_min,
                                              break_max,
                                              open_first,
-                                             open_last,
                                              unit,
                                              include_na) {
     l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,
@@ -599,8 +596,6 @@ make_labels_period_month_quarter <- function(break_min,
     break_max <- l$break_max
     demcheck::err_is_logical_flag(x = open_first,
                                   name = "open_first")
-    demcheck::err_is_logical_flag(x = open_last,
-                                  name = "open_last")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")    
     s <- seq.Date(from = break_min,
@@ -617,26 +612,18 @@ make_labels_period_month_quarter <- function(break_min,
     n <- length(s)
     ans_mid <- paste(year[-n], suffix[-n])
     if (open_first)
-        ans_left <- sprintf("<%s %s", year[[1L]], suffix[[1L]])
+        ans_first <- sprintf("<%s %s", year[[1L]], suffix[[1L]])
     else
-        ans_left <- NULL
-    if (open_last)
-        ans_right <- sprintf("%s %s+", year[[n]], suffix[[n]])
-    else
-        ans_right <- NULL
+        ans_first <- NULL
     if (include_na)
         ans_na <- NA_character_
     else
         ans_na <- NULL
-    ans <- c(ans_left, ans_mid, ans_right, ans_na)
+    ans <- c(ans_first, ans_mid, ans_na)
     ans
 }
 
 
-
-
-    
-## possible ------------------------------------------------------------
 
 
 

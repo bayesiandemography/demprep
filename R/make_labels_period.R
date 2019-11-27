@@ -14,10 +14,7 @@
 #' and the other starts on 2001-01-01 and ends on 2001-12-31.
 #' However, when \code{open_first} is \code{TRUE}, an 'open' period
 #' extending indefinitely into the past is appended to the start
-#' of the series, and when \code{open_last} is \code{TRUE},
-#' an open period extending indefinitely into the future is
-#' appended to the end. By default, \code{open_first}
-#' and \code{open_last} are both \code{FALSE}.
+#' of the series. By default, \code{open_first} is \code{FALSE}.
 #'
 #' If all periods have widths of one year,
 #' then the labels consist of a single years, eg
@@ -42,27 +39,22 @@
 #' \code{make_labels_period} by default uses the start year
 #' to make single-year labels. To use the end year,
 #' set \code{label_year_start} to \code{FALSE}.
-#'
-#' If \code{open_last} is \code{TRUE}, then
-#' \code{label_year_start} must also be \code{TRUE}.
+#' If \code{open_first} is \code{TRUE}, then
+#' \code{label_year_start} must be \code{TRUE}.
 #'
 #' When \code{include_na} is \code{TRUE}, an \code{NA}
 #' is added to the end of the labels. This can be useful
 #' when dealing with dates that include \code{NA}s.
 #'
-#' \code{breaks} can only have length 0 if \code{open_first}
-#' and \code{open_last} are both \code{FALSE}. \code{breaks} can
-#' have only have length 1 if at least one of \code{open_first}
-#' and \code{open_last} is TRUE.
+#' If \code{breaks} has length 0 then \code{open_first}
+#' must be \code{FALSE}, and if \code{breaks} has
+#' length 1, then \code{open_first} must be \code{TRUE}.
 #'
 #' @param breaks A vector of class \code{\link[base]{Date}},
 #' or a vector that can be coerced to class \code{Date}
 #' via function \code{\link[base]{as.Date}}.
 #' @param open_first Whether to append an open-ended
 #' period to the start of the labels.
-#' Defaults to \code{FALSE}.
-#' @param open_last Whether to append an open-ended
-#' period to the end of the labels.
 #' Defaults to \code{FALSE}.
 #' @param label_year_start Whether to label a period
 #' by the calendar year at the beginning of the period.
@@ -102,20 +94,12 @@
 #'                               "2007-07-01"),
 #'                    label_year_start = FALSE)
 #'
-#' ## add an open period at the beginning...
+#' ## add an open period at the beginning
 #' make_labels_period(breaks = c("2005-01-01",
 #'                               "2010-01-01",
 #'                               "2015-01-01",
 #'                               "2020-01-01"),
 #'                    open_first = TRUE)
-#'
-#' ## ...and at the end
-#' make_labels_period(breaks = c("2005-01-01",
-#'                               "2010-01-01",
-#'                               "2015-01-01",
-#'                               "2020-01-01"),
-#'                    open_first = TRUE,
-#'                    open_last = TRUE)
 #'
 #' ## add an 'NA' label
 #' make_labels_period(breaks = c("2005-07-01",
@@ -125,49 +109,41 @@
 #' @export
 make_labels_period <- function(breaks,
                                open_first = FALSE,
-                               open_last = FALSE,
                                label_year_start = TRUE,
                                include_na = FALSE) {
     breaks <- demcheck::err_tdy_breaks_date(x = breaks,
                                             name = "breaks",
                                             open_first = open_first,
-                                            open_last = open_last)
+                                            open_last = FALSE)
     demcheck::err_is_first_day_unit_vector(x = breaks,
                                            name = "breaks",
                                            unit = "year")
     demcheck::err_is_logical_flag(x = open_first,
                                   name = "open_first")
-    demcheck::err_is_logical_flag(x = open_last,
-                                  name = "open_last")
     demcheck::err_is_logical_flag(x = label_year_start,
                                   name = "label_year_start")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")
-    if (open_last && !label_year_start)
+    if (open_first && !label_year_start)
         stop(gettextf("'%s' is %s but '%s' is %s",
-                      "open_last", "TRUE", "label_year_start", "FALSE"))
+                      "open_first", "TRUE", "label_year_start", "FALSE"))
     n <- length(breaks)
     if (n == 0L) {
-        ## 'err_tdy_breaks_date' checked that 'open_first' and 'open_last' both FALSE
+        ## 'err_tdy_breaks_date' checked that 'open_first' is FALSE
         ans_mid <- character()
         ans_first <- NULL
-        ans_last <- NULL
     }
     else if (n == 1L) {
-        ## 'err_tdy_breaks_date' checked that 'open_first' or 'open_last' TRUE
+        ## 'err_tdy_breaks_date' checked that 'open_first' is TRUE
         ans_mid <- NULL
         head <- format(breaks, "%Y")
         if (open_first)
             ans_first <- paste0("<", head)
         else
             ans_first <- NULL
-        if (open_last)
-            ans_last <- paste0(head, "+")
-        else
-            ans_last <- NULL
     }
     else {
-        ## 'open_first' or 'open_last' may be TRUE
+        ## 'open_first' may be TRUE
         breaks_year <- format(breaks, "%Y")
         diff <- diff(as.integer(breaks_year))
         is_single_year <- diff == 1L
@@ -193,16 +169,12 @@ make_labels_period <- function(breaks,
         }
         else
             ans_first <- NULL
-        if (open_last)
-            ans_last <- paste0(upper[[n - 1L]], "+")
-        else
-            ans_last <- NULL
     }
     if (include_na)
         ans_na <- NA_character_
     else
         ans_na <- NULL
-    c(ans_first, ans_mid, ans_last, ans_na)
+    c(ans_first, ans_mid, ans_na)
 }
 
 ## HAS_TESTS
@@ -219,16 +191,13 @@ make_labels_period <- function(breaks,
 #' }
 #'
 #' \code{break_min} and \code{break_max},
-#' together with \code{open_first} and \code{open_last},
+#' together with \code{open_first},
 #' define the lower and upper limits of the periods.
 #' \code{break_min} and \code{break_max} must both
 #' be the start dates of quarters.
 #' When \code{open_first} is \code{TRUE}, an 'open' period
 #' extending indefinitely into the past is appended to the start
-#' of the labels. When \code{open_last} is \code{TRUE},
-#' an open period extending indefintely into the future is
-#' appended to the end of the labels. By default,
-#' \code{open_first} and \code{open_last} are both \code{FALSE}.
+#' of the labels. By default, \code{open_first} is \code{FALSE}.
 #'
 #' When \code{include_na} is \code{TRUE}, an \code{NA}
 #' is added to the end of the labels. This can be useful
@@ -256,16 +225,10 @@ make_labels_period <- function(breaks,
 #' make_labels_period_quarter(break_min = "2005-01-01",
 #'                            break_max = "2006-07-01")
 #' 
-#' ## add an open period at the beginning...
+#' ## add an open period at the beginning
 #' make_labels_period_quarter(break_min = "2005-04-01",
 #'                            break_max = "2006-04-01",
 #'                            open_first = TRUE)
-#'
-#' ## ...and at the end
-#' make_labels_period_quarter(break_min = "2005-04-01",
-#'                            break_max = "2006-04-01",
-#'                            open_first = TRUE,
-#'                            open_last = TRUE)
 #'
 #' ## add an 'NA' label
 #' make_labels_period_quarter(break_min = "2005-04-01",
@@ -275,12 +238,10 @@ make_labels_period <- function(breaks,
 make_labels_period_quarter <- function(break_min,
                                        break_max,
                                        open_first = FALSE,
-                                       open_last = FALSE,
                                        include_na = FALSE) {
     make_labels_period_month_quarter(break_min = break_min,
                                      break_max = break_max,
                                      open_first = open_first,
-                                     open_last = open_last,
                                      unit = "quarter",
                                      include_na)
 }
@@ -297,10 +258,7 @@ make_labels_period_quarter <- function(break_min,
 #' be the start dates of months.
 #' When \code{open_first} is \code{TRUE}, an 'open' period
 #' extending indefinitely into the past is appended to the start
-#' of the labels. When \code{open_last} is \code{TRUE},
-#' an open period extending indefintely into the future is
-#' appended to the end of the labels. By default,
-#' \code{open_first} and \code{open_last} are both \code{FALSE}.
+#' of the labels. By default, \code{open_first} is \code{FALSE}.
 #'
 #' When \code{include_na} is \code{TRUE}, an \code{NA}
 #' is added to the end of the labels. This can be useful
@@ -329,16 +287,10 @@ make_labels_period_quarter <- function(break_min,
 #'                          break_max = "2005-08-01")
 #' 
 #'
-#' ## add an open period at the beginning...
+#' ## add an open period at the beginning
 #' make_labels_period_month(break_min = "2005-03-01",
 #'                          break_max = "2006-04-01",
 #'                          open_first = TRUE)
-#'
-#' ## ...and at the end
-#' make_labels_period_month(break_min = "2005-03-01",
-#'                          break_max = "2006-04-01",
-#'                          open_first = TRUE,
-#'                          open_last = TRUE)
 #'
 #' ## add an 'NA' label
 #' make_labels_period_month(break_min = "2005-03-01",
@@ -348,12 +300,10 @@ make_labels_period_quarter <- function(break_min,
 make_labels_period_month <- function(break_min,
                                      break_max,
                                      open_first = FALSE,
-                                     open_last = FALSE,
                                      include_na = FALSE) {
     make_labels_period_month_quarter(break_min = break_min,
                                      break_max = break_max,
                                      open_first = open_first,
-                                     open_last = open_last,
                                      unit = "month",
                                      include_na)
 }

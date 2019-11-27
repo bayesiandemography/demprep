@@ -49,6 +49,9 @@
 #' the start year. To use the end year, set
 #' \code{label_year_start} to \code{FALSE}.
 #'
+#' If \code{open_first} is \code{TRUE}, then
+#' \code{label_year_start} must also be \code{TRUE}.
+#'
 #' When \code{as_factor} is \code{TRUE} the levels of
 #' the factor include all intermediate cohorts,
 #' including cohorts that not appear in the data.
@@ -134,7 +137,7 @@ date_to_cohort_year <- function(date,
                                 open_first = NULL,
                                 as_factor = TRUE) {
     if (is.null(open_first))
-        open_first <- !is.null(break_min)
+        open_first <- isTRUE(label_year_start) && !is.null(break_min) 
     date_to_period_or_cohort_year(date = date,
                                   month_start = month_start,
                                   label_year_start = label_year_start,

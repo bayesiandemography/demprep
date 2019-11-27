@@ -17,15 +17,11 @@ setClass("DimScale",
 
 
 validity_Period <- function(object) {
-    for (name in c("open_first",
-                   "open_last")) {
-        slot <- slot(object = object,
-                     name = name)
-        val <- demcheck::chk_is_logical_flag(x = slot,
-                                             name = name)
-        if (!isTRUE(val))
-            return(val)
-    }
+    open_first <- object@open_first
+    val <- demcheck::chk_is_logical_flag(x = open_first,
+                                         name = "open_first")
+    if (!isTRUE(val))
+        return(val)
     TRUE
 }
 

@@ -387,6 +387,19 @@ test_that("'date_to_period_or_cohort_year' gives correct answer with valid input
                             levels = c("<2000", as.character(2000:2004))))
 })
 
+test_that("'date_to_period_or_cohort_year' throws correct error with invalid inputs", {
+    expect_error(date_to_period_or_cohort_year(date = c("2003-03-20",
+                                                            "2001-02-11",
+                                                            "2004-12-30"),
+                                                   label_year_start = FALSE,
+                                                   month_start = "Jan",
+                                                   break_min = as.Date("2001-01-01"),
+                                                   open_first = TRUE,
+                                                   as_factor = TRUE),
+                 "'open_first' is TRUE but 'label_year_start' is FALSE")
+})
+
+
 
 ## date_ymd_ge ----------------------------------------------------------------
 
@@ -955,31 +968,27 @@ test_that("'make_labels_period_month_quarter' gives correct answer with valid in
     expect_identical(make_labels_period_month_quarter(break_min = "2019-01-01",
                                                       break_max = "2019-04-01",
                                                       open_first = FALSE,
-                                                      open_last = FALSE,
                                                       unit = "month",
                                                       include_na = FALSE),
                      c("2019 Jan", "2019 Feb", "2019 Mar"))
     expect_identical(make_labels_period_month_quarter(break_min = "2019-01-01",
                                                       break_max = "2020-01-01",
                                                       open_first = FALSE,
-                                                      open_last = FALSE,
                                                       unit = "quarter",
                                                       include_na = FALSE),
                      c("2019 Q1", "2019 Q2", "2019 Q3", "2019 Q4"))
     expect_identical(make_labels_period_month_quarter(break_min = "2019-07-01",
                                                       break_max = "2020-07-01",
                                                       open_first = TRUE,
-                                                      open_last = TRUE,
                                                       unit = "quarter",
                                                       include_na = TRUE),
-                     c("<2019 Q3", "2019 Q3", "2019 Q4", "2020 Q1", "2020 Q2", "2020 Q3+", NA))
+                     c("<2019 Q3", "2019 Q3", "2019 Q4", "2020 Q1", "2020 Q2", NA))
 })
 
 test_that("'make_labels_period_month_quarter' gives correct error with invalid inputs", {
     expect_error(make_labels_period_month_quarter(break_min = "2001-03-01",
                                                   break_max = "2001-04-01",
                                                   open_first = FALSE,
-                                                  open_last = FALSE,
                                                   unit = "wrong",
                                                   include_na = FALSE),
                  "value for 'unit' \\[\"wrong\"\\] is not a permitted time unit")
