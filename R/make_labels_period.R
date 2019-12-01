@@ -12,9 +12,6 @@
 #' \code{c("2000-01-01", "2001-01-01", "2002-01-01")},
 #' one period begins on 2000-01-01 and ends on 2000-12-31,
 #' and the other starts on 2001-01-01 and ends on 2001-12-31.
-#' However, when \code{open_first} is \code{TRUE}, an 'open' period
-#' extending indefinitely into the past is appended to the start
-#' of the series. By default, \code{open_first} is \code{FALSE}.
 #'
 #' If all periods have widths of one year,
 #' then the labels consist of a single years, eg
@@ -39,8 +36,6 @@
 #' \code{make_labels_period} by default uses the start year
 #' to make single-year labels. To use the end year,
 #' set \code{label_year_start} to \code{FALSE}.
-#' If \code{open_first} is \code{TRUE}, then
-#' \code{label_year_start} must be \code{TRUE}.
 #'
 #' When \code{include_na} is \code{TRUE}, an \code{NA}
 #' is added to the end of the labels. This can be useful
@@ -53,9 +48,6 @@
 #' @param breaks A vector of class \code{\link[base]{Date}},
 #' or a vector that can be coerced to class \code{Date}
 #' via function \code{\link[base]{as.Date}}.
-#' @param open_first Whether to append an open-ended
-#' period to the start of the labels.
-#' Defaults to \code{FALSE}.
 #' @param label_year_start Whether to label a period
 #' by the calendar year at the beginning of the period.
 #' Not needed for multi-year periods, or for single-year
@@ -66,10 +58,9 @@
 #'
 #' @return A character vector. 
 #'
-#' @seealso To make labels for age groups, use
-#' \code{\link{make_labels_age_group}}. There is
-#' no \code{make_labels_cohort} function. To construct
-#' labels for cohorts, just use \code{make_labels_period}.
+#' @seealso To make labels for age groups measured in years, use
+#' \code{\link{make_labels_age_group}}, and to
+#' make labels for cohorts, use \code{make_labels_cohort}.
 #' To make labels for periods with widths of one quarter or one month,
 #' use functions \code{\link{make_labels_period_quarter}} or
 #' \code{\link{make_labels_period_month}}.
@@ -94,13 +85,6 @@
 #'                               "2007-07-01"),
 #'                    label_year_start = FALSE)
 #'
-#' ## add an open period at the beginning
-#' make_labels_period(breaks = c("2005-01-01",
-#'                               "2010-01-01",
-#'                               "2015-01-01",
-#'                               "2020-01-01"),
-#'                    open_first = TRUE)
-#'
 #' ## add an 'NA' label
 #' make_labels_period(breaks = c("2005-07-01",
 #'                               "2006-07-01",
@@ -108,42 +92,23 @@
 #'                    include_na = TRUE)
 #' @export
 make_labels_period <- function(breaks,
-                               open_first = FALSE,
                                label_year_start = TRUE,
                                include_na = FALSE) {
-    breaks <- demcheck::err_tdy_breaks_date(x = breaks,
-                                            name = "breaks",
-                                            open_first = open_first,
-                                            open_last = FALSE)
+    breaks <- demcheck::err_tdy_breaks_period(x = breaks,
+                                              name = "breaks")
     demcheck::err_is_first_day_unit_vector(x = breaks,
                                            name = "breaks",
                                            unit = "year")
-    demcheck::err_is_logical_flag(x = open_first,
-                                  name = "open_first")
     demcheck::err_is_logical_flag(x = label_year_start,
                                   name = "label_year_start")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")
-    if (open_first && !label_year_start)
-        stop(gettextf("'%s' is %s but '%s' is %s",
-                      "open_first", "TRUE", "label_year_start", "FALSE"))
     n <- length(breaks)
     if (n == 0L) {
-        ## 'err_tdy_breaks_date' checked that 'open_first' is FALSE
         ans_mid <- character()
         ans_first <- NULL
     }
-    else if (n == 1L) {
-        ## 'err_tdy_breaks_date' checked that 'open_first' is TRUE
-        ans_mid <- NULL
-        head <- format(breaks, "%Y")
-        if (open_first)
-            ans_first <- paste0("<", head)
-        else
-            ans_first <- NULL
-    }
     else {
-        ## 'open_first' may be TRUE
         breaks_year <- format(breaks, "%Y")
         diff <- diff(as.integer(breaks_year))
         is_single_year <- diff == 1L
@@ -161,20 +126,12 @@ make_labels_period <- function(breaks,
         else {
             ans_mid <- paste(lower, upper, sep = "-")
         }
-        if (open_first) {
-            if (!all_single || use_lower_for_single)
-                ans_first <- paste0("<", lower[[1L]])
-            else
-                ans_first <- paste0("<", upper[[1L]])
-        }
-        else
-            ans_first <- NULL
     }
     if (include_na)
         ans_na <- NA_character_
     else
         ans_na <- NULL
-    c(ans_first, ans_mid, ans_na)
+    c(ans_mid, ans_na)
 }
 
 ## HAS_TESTS
@@ -190,14 +147,10 @@ make_labels_period <- function(breaks,
 #'   Q4 \tab 1 October \tab 31 December
 #' }
 #'
-#' \code{break_min} and \code{break_max},
-#' together with \code{open_first},
+#' \code{break_min} and \code{break_max}
 #' define the lower and upper limits of the periods.
 #' \code{break_min} and \code{break_max} must both
 #' be the start dates of quarters.
-#' When \code{open_first} is \code{TRUE}, an 'open' period
-#' extending indefinitely into the past is appended to the start
-#' of the labels. By default, \code{open_first} is \code{FALSE}.
 #'
 #' When \code{include_na} is \code{TRUE}, an \code{NA}
 #' is added to the end of the labels. This can be useful
@@ -214,9 +167,8 @@ make_labels_period <- function(breaks,
 #' @return A character vector. 
 #'
 #' @seealso To make labels for quarter age groups, use
-#' \code{\link{make_labels_age_group_quarter}}. There is
-#' no \code{make_labels_cohort_quarter} function. To construct
-#' labels for cohorts, just use \code{make_labels_period_quarter}.
+#' \code{\link{make_labels_age_group_quarter}}, and to
+#' make labels for quarter periods, use \code{make_labels_period_quarter}.
 #' To make labels for periods with widths measured in years,
 #' use function \code{\link{make_labels_period}}, and to make
 #' labels for month periods, use \code{\link{make_labels_period_month}}.
@@ -225,11 +177,6 @@ make_labels_period <- function(breaks,
 #' make_labels_period_quarter(break_min = "2005-01-01",
 #'                            break_max = "2006-07-01")
 #' 
-#' ## add an open period at the beginning
-#' make_labels_period_quarter(break_min = "2005-04-01",
-#'                            break_max = "2006-04-01",
-#'                            open_first = TRUE)
-#'
 #' ## add an 'NA' label
 #' make_labels_period_quarter(break_min = "2005-04-01",
 #'                            break_max = "2006-04-01",
@@ -237,11 +184,10 @@ make_labels_period <- function(breaks,
 #' @export
 make_labels_period_quarter <- function(break_min,
                                        break_max,
-                                       open_first = FALSE,
                                        include_na = FALSE) {
     make_labels_period_month_quarter(break_min = break_min,
                                      break_max = break_max,
-                                     open_first = open_first,
+                                     open_first = FALSE,
                                      unit = "quarter",
                                      include_na)
 }
@@ -251,14 +197,10 @@ make_labels_period_quarter <- function(break_min,
 #'
 #' Make labels for periods that are all one month long.
 #'
-#' \code{break_min} and \code{break_max},
-#' together with \code{open_first} and \code{open_last},
+#' \code{break_min} and \code{break_max}
 #' define the lower and upper limits of the periods.
 #' \code{break_min} and \code{break_max} must both
 #' be the start dates of months.
-#' When \code{open_first} is \code{TRUE}, an 'open' period
-#' extending indefinitely into the past is appended to the start
-#' of the labels. By default, \code{open_first} is \code{FALSE}.
 #'
 #' When \code{include_na} is \code{TRUE}, an \code{NA}
 #' is added to the end of the labels. This can be useful
@@ -275,9 +217,9 @@ make_labels_period_quarter <- function(break_min,
 #' @return A character vector. 
 #'
 #' @seealso To make labels for month age groups, use
-#' \code{\link{make_labels_age_group_month}}. There is
-#' no \code{make_labels_cohort_month} function. To construct
-#' labels for cohorts, just use \code{make_labels_period_month}.
+#' \code{\link{make_labels_age_group_month}},
+#' and to make labels for month periods,
+#' use \code{make_labels_period_month}.
 #' To make labels for periods with widths measured in years,
 #' use function \code{\link{make_labels_period}}, and to make
 #' labels for quarter periods, use \code{\link{make_labels_period_quarter}}.
@@ -286,12 +228,6 @@ make_labels_period_quarter <- function(break_min,
 #' make_labels_period_month(break_min = "2005-01-01",
 #'                          break_max = "2005-08-01")
 #' 
-#'
-#' ## add an open period at the beginning
-#' make_labels_period_month(break_min = "2005-03-01",
-#'                          break_max = "2006-04-01",
-#'                          open_first = TRUE)
-#'
 #' ## add an 'NA' label
 #' make_labels_period_month(break_min = "2005-03-01",
 #'                          break_max = "2006-04-01",
@@ -299,11 +235,10 @@ make_labels_period_quarter <- function(break_min,
 #' @export
 make_labels_period_month <- function(break_min,
                                      break_max,
-                                     open_first = FALSE,
                                      include_na = FALSE) {
     make_labels_period_month_quarter(break_min = break_min,
                                      break_max = break_max,
-                                     open_first = open_first,
+                                     open_first = FALSE,
                                      unit = "month",
                                      include_na)
 }

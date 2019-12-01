@@ -38,8 +38,7 @@ date_to_period_or_cohort_custom <- function(date,
                                           name = "date")
     breaks <- demcheck::err_tdy_breaks_date(x = breaks,
                                             name = "breaks",
-                                            open_first = open_first,
-                                            open_last = FALSE)
+                                            open_first = open_first)
     demcheck::err_is_logical_flag(x = open_first,
                                   name = "open_first")
     demcheck::err_is_logical_flag(x = as_factor,
@@ -580,6 +579,8 @@ make_labels_age_group_month_quarter <- function(break_min,
     ans <- c(ans_mid, ans_right, ans_na)
     ans
 }
+
+
 
 
 ## HAS_TESTS
