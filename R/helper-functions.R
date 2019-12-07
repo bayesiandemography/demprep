@@ -30,39 +30,6 @@ as_ymd <- function(date) {
 }
 
 ## HAS_TESTS
-date_to_period_or_cohort_custom <- function(date,
-                                            breaks,
-                                            open_first,
-                                            as_factor) {
-    date <- demcheck::err_tdy_date_vector(x = date,
-                                          name = "date")
-    breaks <- demcheck::err_tdy_breaks_date(x = breaks,
-                                            name = "breaks",
-                                            open_first = open_first)
-    demcheck::err_is_logical_flag(x = open_first,
-                                  name = "open_first")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
-    if (!open_first)
-        demcheck::err_ge_break_min_date(date = date,
-                                        break_min = breaks[1L])
-    labels <- make_labels_period(breaks = breaks,
-                                 open_first = open_first,
-                                 label_year_start = TRUE)
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
-    if (open_first)
-        i <- i + 1L
-    ans <- labels[i]
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
-    ans
-}
-
-## HAS_TESTS
 date_to_period_or_cohort_month <- function(date,
                                            break_min,
                                            open_first,
@@ -195,59 +162,6 @@ date_to_period_or_cohort_quarter <- function(date,
         ans <- factor(x = ans,
                       levels = labels)
     ans   
-}
-
-## HAS_TESTS
-date_to_period_or_cohort_year <- function(date,
-                                          month_start,
-                                          label_year_start,
-                                          break_min,
-                                          open_first,
-                                          as_factor) {
-    date <- demcheck::err_tdy_date_vector(x = date,
-                                          name = "date")
-    if (is.null(break_min)) {
-        month_start <- demcheck::err_tdy_month_start(x = month_start,
-                                                     name = "month_start")
-    }
-    else {
-        demcheck::err_is_length_1(x = break_min,
-                                  name = "break_min")
-        break_min <- demcheck::err_tdy_date_scalar(x = break_min,
-                                                   name = "break_min")
-        month_start <- format(break_min, format = "%b")
-    }
-    demcheck::err_is_logical_flag(x = label_year_start,
-                                  name = "label_year_start")
-    demcheck::err_is_logical_flag(x = open_first,
-                                  name = "open_first")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
-    if (open_first && !label_year_start)
-        stop(gettextf("'%s' is %s but '%s' is %s",
-                      "open_first", "TRUE", "label_year_start", "FALSE"))
-    if (!is.null(break_min) && !open_first)
-        demcheck::err_ge_break_min_date(date = date,
-                                        break_min = break_min)
-    breaks <- make_breaks_date_year(date = date,
-                                    month_start = month_start,
-                                    width = 1L,
-                                    origin = NULL,
-                                    break_min = break_min)
-    labels <- make_labels_period(breaks = breaks,
-                                 open_first = open_first,
-                                 label_year_start = label_year_start)
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
-    if (open_first)
-        i <- i + 1L
-    ans <- labels[i]
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
-    ans
 }
 
 ## HAS_TESTS
@@ -581,12 +495,51 @@ make_labels_age_group_month_quarter <- function(break_min,
 }
 
 
+## NO_TESTS
+make_labels_cohort_month_quarter <- function(break_min,
+                                             break_max,
+                                             open_first,
+                                             unit,
+                                             include_na) {
+    l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,
+                                              break_max = break_max,
+                                              unit = unit,
+                                              null_ok = FALSE)
+    break_min <- l$break_min
+    break_max <- l$break_max
+    demcheck::err_is_logical_flag(x = open_first,
+                                  name = "open_first")
+    demcheck::err_is_logical_flag(x = include_na,
+                                  name = "include_na")    
+    s <- seq.Date(from = break_min,
+                  to = break_max,
+                  by = unit)
+    year <- format(s, format = "%Y")
+    if (unit == "month")
+        suffix <- months(s, abbreviate = TRUE)
+    else if (unit == "quarter")
+        suffix <- quarters(s)
+    else
+        stop(gettextf("can't handle unit '%s'",
+                      unit))
+    n <- length(s)
+    ans_mid <- paste(year[-n], suffix[-n])
+    if (open_first)
+        ans_first <- sprintf("<%s %s", year[[1L]], suffix[[1L]])
+    else
+        ans_first <- NULL
+    if (include_na)
+        ans_na <- NA_character_
+    else
+        ans_na <- NULL
+    ans <- c(ans_first, ans_mid, ans_na)
+    ans
+}
 
 
 ## HAS_TESTS
 make_labels_period_month_quarter <- function(break_min,
                                              break_max,
-                                             open_first,
                                              unit,
                                              include_na) {
     l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,

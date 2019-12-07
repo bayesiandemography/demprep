@@ -111,19 +111,16 @@ make_labels_cohort <- function(breaks,
                                open_first = FALSE,
                                label_year_start = TRUE,
                                include_na = FALSE) {
-    breaks <- demcheck::err_tdy_breaks_date(x = breaks,
-                                            name = "breaks",
-                                            open_first = open_first)
+    breaks <- demcheck::err_tdy_breaks_date_cohort(breaks = breaks,
+                                                   open_first = open_first)
     demcheck::err_is_first_day_unit_vector(x = breaks,
                                            name = "breaks",
                                            unit = "year")
     demcheck::err_is_logical_flag(x = open_first,
                                   name = "open_first")
-    demcheck::err_is_logical_flag(x = label_year_start,
-                                  name = "label_year_start")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")
-    if (open_first && !label_year_start)
+    if (open_first && isFALSE(label_year_start))
         stop(gettextf("'%s' is %s but '%s' is %s",
                       "open_first", "TRUE", "label_year_start", "FALSE"))
     n <- length(breaks)
@@ -150,6 +147,8 @@ make_labels_cohort <- function(breaks,
         upper <- breaks_year[-1L]
         all_single <- all(is_single_year)
         if (all_single) {
+            demcheck::err_is_logical_flag(x = label_year_start,
+                                          name = "label_year_start")
             is_1_jan <- identical(format(breaks[[1L]], "%m-%d"), "01-01")
             use_lower_for_single <- label_year_start || is_1_jan
             if (use_lower_for_single)

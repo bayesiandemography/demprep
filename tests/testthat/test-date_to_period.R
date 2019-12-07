@@ -29,6 +29,38 @@ test_that("date_to_period_year gives correct answers with valid inputs", {
                                          month_start = "Apr"),
                      factor(c("2000", "2010", "2005"),
                             levels = 2000:2010))
+    expect_identical(date_to_period_year(date = c("2003-03-20",
+                                                  "2001-02-11",
+                                                  "2004-12-30"),
+                                         label_year_start = TRUE,
+                                         month_start = "Jan",
+                                         as_factor = TRUE),
+                     factor(c("2003", "2001", "2004"),
+                            levels = as.character(2001:2004)))
+    expect_identical(date_to_period_year(date = c("2003-03-20",
+                                                  "2001-02-11",
+                                                  "2004-12-30"),
+                                         label_year_start = TRUE,
+                                         month_start = "Jul",
+                                         as_factor = TRUE),
+                     factor(c("2002", "2000", "2004"),
+                            levels = as.character(2000:2004)))
+    expect_identical(date_to_period_year(date = c("2003-03-20",
+                                                  "2001-02-11",
+                                                  "2004-12-30"),
+                                         label_year_start = TRUE,
+                                         month_start = "Jul",
+                                         as_factor = TRUE),
+                     factor(c("2002", "2000", "2004"),
+                            levels = as.character(2000:2004)))
+    expect_identical(date_to_period_year(date = c("2003-03-20",
+                                                  "2001-02-11",
+                                                  "2004-12-30"),
+                                         label_year_start = FALSE,
+                                         month_start = "Jul",
+                                         as_factor = TRUE),
+                     factor(c("2003", "2001", "2005"),
+                            levels = as.character(2001:2005)))
 })
 
 
@@ -76,12 +108,57 @@ test_that("date_to_period_custom gives correct answers with valid inputs", {
                                                       "2005-03-01")),
                      factor(character(),
                             levels = "2000-2005"))
+    expect_identical(date_to_period_custom(date = c("2003-03-20",
+                                                    "2001-02-11",
+                                                    "2010-12-30"),
+                                           breaks = c("2000-01-01",
+                                                      "2006-01-01",
+                                                      "2020-01-01"),
+                                           as_factor = TRUE),
+                     factor(c("2000-2006", "2000-2006", "2006-2020"),
+                            levels = c("2000-2006", "2006-2020")))
+    expect_identical(date_to_period_custom(date = c("2003-03-20",
+                                                    "2001-02-11",
+                                                    NA,
+                                                    "2010-12-30",
+                                                    "1999-03-02"),
+                                           breaks = c("1999-03-01",
+                                                      "2000-03-01",
+                                                      "2006-03-01",
+                                                      "2020-03-01"),
+                                           as_factor = TRUE),
+                     factor(c("2000-2006", "2000-2006", NA, "2006-2020", "1999-2000"),
+                            levels = c("1999-2000", "2000-2006", "2006-2020")))
 })
 
 
 ## date_to_period_quarter ---------------------------------------------------
 
 test_that("date_to_period_quarter gives correct answers with valid inputs", {
+    expect_identical(date_to_cohort_quarter(date = c("2000-01-01",
+                                                     "2010-01-01",
+                                                     "2004-12-31")),
+                     factor(c("2000 Q1", "2010 Q1", "2004 Q4"),
+                            levels = c(paste0(rep(2000:2009, each = 4),
+                                              " Q",
+                                              1:4),
+                                       "2010 Q1")))
+    expect_identical(date_to_cohort_quarter(date = c(NA, "2004-12-31")),
+                     factor(c(NA, "2004 Q4"),
+                            levels = "2004 Q4"))
+    expect_identical(date_to_cohort_quarter(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
+                                            as_factor = TRUE),
+                     factor(c("2003 Q1", "2001 Q1", "2010 Q4"),
+                            levels = paste0(rep(2001:2010, each = 4),
+                                            " Q",
+                                            1:4)))
+    expect_identical(date_to_cohort_quarter(date = c("2003-03-20", "2001-02-11", "2010-12-30"),
+                                            as_factor = FALSE),
+                     c("2003 Q1", "2001 Q1", "2010 Q4"))
+    expect_identical(date_to_cohort_quarter(date = c("2000-01-01", "2000-01-01"),
+                                            as_factor = TRUE),
+                     factor(c("2000 Q1", "2000 Q1"),
+                            levels = "2000 Q1"))
     expect_identical(date_to_period_quarter(date = c("2000-01-01",
                                                      "2000-05-11",
                                                      NA,

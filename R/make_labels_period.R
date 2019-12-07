@@ -94,13 +94,10 @@
 make_labels_period <- function(breaks,
                                label_year_start = TRUE,
                                include_na = FALSE) {
-    breaks <- demcheck::err_tdy_breaks_period(x = breaks,
-                                              name = "breaks")
+    breaks <- demcheck::err_tdy_breaks_date_period(breaks = breaks)
     demcheck::err_is_first_day_unit_vector(x = breaks,
                                            name = "breaks",
                                            unit = "year")
-    demcheck::err_is_logical_flag(x = label_year_start,
-                                  name = "label_year_start")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")
     n <- length(breaks)
@@ -116,6 +113,8 @@ make_labels_period <- function(breaks,
         upper <- breaks_year[-1L]
         all_single <- all(is_single_year)
         if (all_single) {
+            demcheck::err_is_logical_flag(x = label_year_start,
+                                          name = "label_year_start")
             is_1_jan <- identical(format(breaks[[1L]], "%m-%d"), "01-01")
             use_lower_for_single <- label_year_start || is_1_jan
             if (use_lower_for_single)
@@ -187,7 +186,6 @@ make_labels_period_quarter <- function(break_min,
                                        include_na = FALSE) {
     make_labels_period_month_quarter(break_min = break_min,
                                      break_max = break_max,
-                                     open_first = FALSE,
                                      unit = "quarter",
                                      include_na)
 }
@@ -238,7 +236,6 @@ make_labels_period_month <- function(break_min,
                                      include_na = FALSE) {
     make_labels_period_month_quarter(break_min = break_min,
                                      break_max = break_max,
-                                     open_first = FALSE,
                                      unit = "month",
                                      include_na)
 }

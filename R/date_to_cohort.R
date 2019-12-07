@@ -12,7 +12,7 @@
 #' and \code{open_first}.
 #' 
 #' Supplying a date for \code{break_min} defines
-#' the first cohort. It is similar to
+#' the first cohort, and is similar to
 #' to supplying a value for \code{break_max} in
 #' \code{\link{date_to_age_group_year}}. If
 #' \code{open_first} is \code{TRUE}, then \code{break_min}
@@ -76,10 +76,10 @@
 #' in either case, it must be the first day of
 #' a month.
 #' @param open_first Whether the first cohort
-#' has no lower limit. If \code{break_min} is \code{NULL},
-#' then \code{open_first} is ignored. If \code{break_min} is
-#' non-\code{NULL}, then \code{open_first} defaults to
-#' \code{TRUE}.
+#' has no lower limit. If \code{break_min} is non-\code{NULL}
+#' and \code{label_year_start} is \code{TRUE}, then
+#' then \code{open_first} defaults to \code{TRUE};
+#' otherwise it defaults to \code{FALSE}.
 #' @param as_factor Whether the return value is a factor.
 #' Defaults to \code{TRUE}.
 #'
@@ -136,14 +136,54 @@ date_to_cohort_year <- function(date,
                                 break_min = NULL,
                                 open_first = NULL,
                                 as_factor = TRUE) {
+    date <- demcheck::err_tdy_date_vector(x = date,
+                                          name = "date")
+    if (is.null(break_min)) {
+        month_start <- demcheck::err_tdy_month_start(x = month_start,
+                                                     name = "month_start")
+    }
+    else {
+        demcheck::err_is_length_1(x = break_min,
+                                  name = "break_min")
+        break_min <- demcheck::err_tdy_date_scalar(x = break_min,
+                                                   name = "break_min")
+        month_start <- format(break_min, format = "%b")
+    }
+    demcheck::err_is_logical_flag(x = label_year_start,
+                                  name = "label_year_start")
     if (is.null(open_first))
-        open_first <- isTRUE(label_year_start) && !is.null(break_min) 
-    date_to_period_or_cohort_year(date = date,
-                                  month_start = month_start,
-                                  label_year_start = label_year_start,
-                                  break_min = break_min,
-                                  open_first = open_first,
-                                  as_factor = as_factor)
+        open_first <- isTRUE(label_year_start) && !is.null(break_min)
+    else
+        demcheck::err_is_logical_flag(x = open_first,
+                                      name = "open_first")
+    demcheck::err_is_logical_flag(x = as_factor,
+                                  name = "as_factor")
+    if (open_first && !label_year_start)
+        stop(gettextf("'%s' is %s but '%s' is %s",
+                      "open_first", "TRUE", "label_year_start", "FALSE"))
+    if (!is.null(break_min) && !open_first)
+        demcheck::err_ge_break_min_date(date = date,
+                                        break_min = break_min)
+    breaks <- make_breaks_date_year(date = date,
+                                    month_start = month_start,
+                                    width = 1L,
+                                    origin = NULL,
+                                    break_min = break_min)
+    labels <- make_labels_cohort(breaks = breaks,
+                                 open_first = open_first,
+                                 label_year_start = label_year_start,
+                                 include_na = FALSE)
+    date_int <- as.integer(date)
+    breaks_int <- as.integer(breaks)
+    i <- findInterval(x = date_int,
+                      vec = breaks_int)
+    if (open_first)
+        i <- i + 1L
+    ans <- labels[i]
+    if (as_factor)
+        ans <- factor(x = ans,
+                      levels = labels)
+    ans
 }
 
 ## HAS_TESTS
@@ -369,10 +409,32 @@ date_to_cohort_custom <- function(date,
                                   breaks,
                                   open_first = TRUE,
                                   as_factor = TRUE) {
-    date_to_period_or_cohort_custom(date = date,
-                                    breaks = breaks,
-                                    open_first = open_first,
-                                    as_factor = as_factor)
+    date <- demcheck::err_tdy_date_vector(x = date,
+                                          name = "date")
+    demcheck::err_is_logical_flag(x = open_first,
+                                  name = "open_first")
+    breaks <- demcheck::err_tdy_breaks_date_cohort(breaks = breaks,
+                                                   open_first = open_first)
+    demcheck::err_is_logical_flag(x = as_factor,
+                                  name = "as_factor")
+    if (!open_first)
+        demcheck::err_ge_break_min_date(date = date,
+                                        break_min = breaks[1L])
+    labels <- make_labels_cohort(breaks = breaks,
+                                 open_first = open_first,
+                                 label_year_start = NULL,
+                                 include_na = FALSE)
+    date_int <- as.integer(date)
+    breaks_int <- as.integer(breaks)
+    i <- findInterval(x = date_int,
+                      vec = breaks_int)
+    if (open_first)
+        i <- i + 1L
+    ans <- labels[i]
+    if (as_factor)
+        ans <- factor(x = ans,
+                      levels = labels)
+    ans
 }
 
 ## HAS_TESTS
@@ -456,12 +518,46 @@ date_to_cohort_quarter <- function(date,
                                    break_min = NULL,
                                    open_first = NULL,
                                    as_factor = TRUE) {
-    if (is.null(open_first))
-        open_first <- !is.null(break_min)
-    date_to_period_or_cohort_quarter(date = date,
-                                     break_min = break_min,
-                                     open_first = open_first,
-                                     as_factor = as_factor)
+    break_min_supplied <- !is.null(break_min)
+    open_first_supplied <- !is.null(open_first)
+    date <- demcheck::err_tdy_date_vector(x = date,
+                                          name = "date")
+    if (open_first_supplied)
+        demcheck::err_is_logical_flag(x = open_first,
+                                      name = "open_first")
+    else
+        open_first <- break_min_supplied
+    if (break_min_supplied) {
+        demcheck::err_is_length_1(x = break_min,
+                                  name = "break_min")
+        break_min <- demcheck::err_tdy_date_scalar(x = break_min,
+                                                   name = "break_min")
+        if (!open_first) {
+            demcheck::err_ge_break_min_date(date = date,
+                                            break_min = break_min)
+        }
+    }
+    demcheck::err_is_logical_flag(x = as_factor,
+                                  name = "as_factor")
+    breaks <- make_breaks_date_quarter(date = date,
+                                       break_min = break_min)
+    n <- length(breaks)
+    break_min <- breaks[[1L]]
+    break_max <- breaks[[n]]
+    labels <- make_labels_cohort_quarter(break_min = break_min,
+                                         break_max = break_max,
+                                         open_first = open_first)
+    date_int <- as.integer(date)
+    breaks_int <- as.integer(breaks)
+    i <- findInterval(x = date_int,
+                      vec = breaks_int)
+    if (open_first)
+        i <- i + 1L
+    ans <- labels[i]
+    if (as_factor)
+        ans <- factor(x = ans,
+                      levels = labels)
+    ans   
 }
 
 ## HAS_TESTS

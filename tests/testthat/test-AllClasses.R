@@ -1,5 +1,93 @@
 
-context("infer_dimscale")
+context("AllClasses")
+
+## chk_break_min_max_date -----------------------------------------------------
+
+test_that("'chk_break_min_max_date' returns TRUE with valid input", {
+    expect_true(chk_break_min_max_date(break_min = as.Date("2000-01-01"),
+                                       break_max = as.Date("2001-01-01"),
+                                       unit = "year"))
+})
+
+test_that("'chk_break_min_max_date' returns expected error message with invalid input", {
+    expect_identical(chk_break_min_max_date(break_min = as.Date(c("2000-01-01", "2000-01-01")),
+                                            break_max = as.Date("2001-01-01"),
+                                            unit = "year"),
+                     "'break_min' does not have length 1")
+})
+
+
+## chk_x_integer --------------------------------------------------------------
+
+test_that("'chk_x_integer' returns TRUE with valid input", {
+    expect_true(chk_x_integer(x = 0:4,
+                              name = "x",
+                              open_first = FALSE,
+                              open_last = FALSE))
+    expect_true(chk_x_integer(x = c(0, 5),
+                              name = "x",
+                              open_first = FALSE,
+                              open_last = FALSE))
+    expect_true(chk_x_integer(x = c(0, 1),
+                              name = "x",
+                              open_first = FALSE,
+                              open_last = FALSE))
+    expect_true(chk_x_integer(x = c(100, 101),
+                              name = "x",
+                              open_first = FALSE,
+                              open_last = FALSE))
+    expect_true(chk_x_integer(x = integer(),
+                              name = "x",
+                              open_first = FALSE,
+                              open_last = FALSE))
+    expect_true(chk_x_integer(x = 0,
+                              name = "x",
+                              open_first = FALSE,
+                              open_last = TRUE))
+})
+    
+test_that("'chk_x_integer' returns expected message with invalid input", {
+    expect_identical(chk_x_integer(x = numeric(),
+                                   name = "x",
+                                   open_first = FALSE,
+                                   open_last = TRUE),
+                     "'x' has length 0 but 'open_last' is TRUE")
+    expect_identical(chk_x_integer(x = numeric(),
+                                   name = "x",
+                                   open_first = TRUE,
+                                   open_last = FALSE),
+                     "'x' has length 0 but 'open_first' is TRUE")
+    expect_identical(chk_x_integer(x = 10,
+                                   name = "x",
+                                   open_first = FALSE,
+                                   open_last = FALSE),
+                     "'x' has length 1 but 'open_first' and 'open_last' are both FALSE")
+    expect_identical(chk_x_integer(x = c(-5, 0, 1),
+                                   name = "x",
+                                   open_first = FALSE,
+                                   open_last = TRUE),
+                     "element 1 of 'x' [-5] is negative")
+    expect_identical(chk_x_integer(x = c(0L, NA),
+                                   name = "x",
+                                   open_first = FALSE,
+                                   open_last = FALSE),
+                     "'x' has NAs")
+    expect_identical(chk_x_integer(x = c(0L, Inf),
+                                   name = "x",
+                                   open_first = FALSE,
+                                   open_last = FALSE),
+                     "'x' has infinite values")
+    expect_identical(chk_x_integer(x = c(0L, 1.1),
+                                   name = "x",
+                                   open_first = FALSE,
+                                   open_last = FALSE),
+                     "value '1.1' in 'x' not equivalent to integer")
+    expect_identical(chk_x_integer(x = c(1L, 0L),
+                                   name = "x",
+                                   open_first = FALSE,
+                                   open_last = FALSE),
+                     "'x' is not strictly increasing : element 1 [1] is greater than or equal to element 2 [0]")
+})
 
 ## AgeGroup
 
