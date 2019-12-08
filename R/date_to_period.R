@@ -282,21 +282,55 @@ date_to_period_multi <- function(date,
 date_to_period_custom <- function(date,
                                   breaks,
                                   as_factor = TRUE) {
-    date <- demcheck::err_tdy_date_vector(x = date,
-                                          name = "date")
+    ## see if arguments supplied
+    has_date <- sum(!is.na(date)) > 0L
+    ## check arguments and/or apply defaults
+    if (has_date)
+        date <- demcheck::err_tdy_date_vector(x = date,
+                                              name = "date")
     breaks <- demcheck::err_tdy_breaks_date_period(breaks = breaks)
+    n <- length(breaks)
+    if (n > 0L) {
+        break_min <- breaks[[1L]]
+        break_max <- breaks[[n]]
+        demcheck::err_ge_break_min_date(date = date,
+                                        break_min = break_min)
+        demcheck::err_lt_break_max_date(date = date,
+                                        break_max = break_max)
+    }
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    demcheck::err_ge_break_min_date(date = date,
-                                    break_min = breaks[1L])
+    ## deal with "empty" case where 'breaks' has length 0
+    if (n == 0L) {
+        if (has_date) {
+            stop(gettextf("'%s' has length %d",
+                          "breaks", 0L))
+        }
+        else {
+            ans <- as.character(date)
+            if (as_factor)
+                ans <- factor(ans)
+            return(ans)
+        }
+    }
+    ## deal with "empty" case where 'date'
+    ## has length 0 or is all NA, and we
+    ## aren't making factor levels
+    if (!has_date && !as_factor) {
+        ans <- as.character(date)
+        return(ans)
+    }
+    ## make labels for breaks
     labels <- make_labels_period(breaks = breaks,
                                  label_year_start = NULL,
                                  include_na = FALSE)
+    ## assign labels to dates
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
                       vec = breaks_int)
     ans <- labels[i]
+    ## return result
     if (as_factor)
         ans <- factor(x = ans,
                       levels = labels)
@@ -353,24 +387,39 @@ date_to_period_custom <- function(date,
 #' @export
 date_to_period_quarter <- function(date,
                                    as_factor = TRUE) {
-    demcheck::err_is_positive_length(x = date,
-                                     name = "date")
-    date <- demcheck::err_tdy_date_vector(x = date,
-                                          name = "date")
+    ## see if arguments supplied
+    has_date <- sum(!is.na(date)) > 0L
+    ## check arguments and/or apply defaults
+    if (has_date)
+        date <- demcheck::err_tdy_date_vector(x = date,
+                                              name = "date")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
+    ## deal with "empty" case where 'date' has length 0
+    ## or is all NA
+    if (!has_date) {
+        ans <- as.character(date)
+        if (as_factor)
+            ans <- factor(ans)
+        return(ans)
+    }
+    ## create sequence of breaks
     breaks <- make_breaks_date_quarter(date = date,
                                        break_min = NULL)
+    ## make labels for these breaks
     n <- length(breaks)
     break_min <- breaks[[1L]]
     break_max <- breaks[[n]]
     labels <- make_labels_period_quarter(break_min = break_min,
-                                         break_max = break_max)
+                                         break_max = break_max,
+                                         include_na = FALSE)
+    ## assign labels to dates
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
                       vec = breaks_int)
     ans <- labels[i]
+    ## return result
     if (as_factor)
         ans <- factor(x = ans,
                       levels = labels)
@@ -420,8 +469,41 @@ date_to_period_quarter <- function(date,
 #' @export
 date_to_period_month <- function(date,
                                  as_factor = TRUE) {
-    date_to_period_or_cohort_month(date = date,
-                                   break_min = NULL,
-                                   open_first = FALSE,
-                                   as_factor = as_factor)
+    ## see if arguments supplied
+    has_date <- sum(!is.na(date)) > 0L
+    ## check arguments and/or apply defaults
+    if (has_date)
+        date <- demcheck::err_tdy_date_vector(x = date,
+                                              name = "date")
+    demcheck::err_is_logical_flag(x = as_factor,
+                                  name = "as_factor")
+    ## deal with "empty" case where 'date' has length 0
+    ## or all is NA
+    if (!has_date) {
+        ans <- as.character(date)
+        if (as_factor)
+            ans <- factor(ans)
+        return(ans)
+    }
+    ## create sequence of breaks
+    breaks <- make_breaks_date_month(date = date,
+                                     break_min = NULL)
+    ## make labels for these breaks
+    n <- length(breaks)
+    break_min <- breaks[[1L]]
+    break_max <- breaks[[n]]
+    labels <- make_labels_period_month(break_min = break_min,
+                                       break_max = break_max,
+                                       include_na = FALSE)
+    ## assign labels to dates
+    date_int <- as.integer(date)
+    breaks_int <- as.integer(breaks)
+    i <- findInterval(x = date_int,
+                      vec = breaks_int)
+    ans <- labels[i]
+    ## return result
+    if (as_factor)
+        ans <- factor(x = ans,
+                      levels = labels)
+    ans   
 }

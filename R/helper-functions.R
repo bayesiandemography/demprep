@@ -30,46 +30,6 @@ as_ymd <- function(date) {
 }
 
 ## HAS_TESTS
-date_to_period_or_cohort_month <- function(date,
-                                           break_min,
-                                           open_first,
-                                           as_factor) {
-    demcheck::err_is_positive_length(x = date,
-                                     name = "date")
-    date <- demcheck::err_tdy_date_vector(x = date,
-                                          name = "date")
-    if (!is.null(break_min)) {
-        demcheck::err_is_length_1(x = break_min,
-                                  name = "break_min")
-        break_min <- demcheck::err_tdy_date_scalar(x = break_min,
-                                                   name = "break_min")
-    }
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
-    demcheck::err_is_logical_flag(x = open_first,
-                                  name = "open_first")
-    breaks <- make_breaks_date_month(date = date,
-                                     break_min = break_min)
-    n <- length(breaks)
-    break_min <- breaks[[1L]]
-    break_max <- breaks[[n]]
-    labels <- make_labels_period_month(break_min = break_min,
-                                       break_max = break_max,
-                                       open_first = open_first)
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
-    if (open_first)
-        i <- i + 1L
-    ans <- labels[i]
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
-    ans   
-}
-
-## HAS_TESTS
 date_to_period_or_cohort_multi <- function(date,
                                            width,
                                            origin,
@@ -211,8 +171,12 @@ is_lower_within_month <- function(date_ymd, dob_ymd) {
 
 ## HAS_TESTS
 make_breaks_date_month <- function(date, break_min) {
+    has_date <- sum(!is.na(date)) > 0L
+    has_break_min <- !is.null(break_min)
     ## date_from
-    if (is.null(break_min)) {
+    if (has_break_min)
+        date_from <- break_min
+    else {
         date_first <- min(date, na.rm = TRUE)
         date_first_ymd <- as_ymd(date_first)
         year_first <- date_first_ymd$y
@@ -220,21 +184,23 @@ make_breaks_date_month <- function(date, break_min) {
         date_from <- sprintf("%d-%d-01", year_first, month_first)
         date_from <- as.Date(date_from)
     }
-    else
-        date_from <- break_min
     ## date_to
-    date_last <- max(date, na.rm = TRUE)
-    date_last_ymd <- as_ymd(date_last)
-    year_last <- date_last_ymd$y
-    month_last <- date_last_ymd$m
-    year_to <- year_last
-    month_to <- month_last + 1L
-    if (month_to > 12L) {
-        year_to <- year_to + 1L
-        month_to <- 1L
+    if (has_date) {
+        date_last <- max(date, na.rm = TRUE)
+        date_last_ymd <- as_ymd(date_last)
+        year_last <- date_last_ymd$y
+        month_last <- date_last_ymd$m
+        year_to <- year_last
+        month_to <- month_last + 1L
+        if (month_to > 12L) {
+            year_to <- year_to + 1L
+            month_to <- 1L
+        }
+        date_to <- sprintf("%d-%d-01", year_to, month_to)
+        date_to <- as.Date(date_to)
     }
-    date_to <- sprintf("%d-%d-01", year_to, month_to)
-    date_to <- as.Date(date_to)
+    else
+        date_to <- break_min
     ## sequence
     seq.Date(from = date_from,
              to = date_to,
@@ -243,8 +209,12 @@ make_breaks_date_month <- function(date, break_min) {
 
 ## HAS_TESTS
 make_breaks_date_quarter <- function(date, break_min) {
+    has_date <- sum(!is.na(date)) > 0L
+    has_break_min <- !is.null(break_min)
     ## date_from
-    if (is.null(break_min)) {
+    if (has_break_min)
+        date_from <- break_min
+    else {
         date_first <- min(date, na.rm = TRUE)
         date_first_ymd <- as_ymd(date_first)
         year_first <- date_first_ymd$y
@@ -254,21 +224,23 @@ make_breaks_date_quarter <- function(date, break_min) {
         date_from <- sprintf("%d-%d-01", year_from, month_from)
         date_from <- as.Date(date_from)
     }
-    else
-        date_from <- break_min
     ## date_to
-    date_last <- max(date, na.rm = TRUE)
-    date_last_ymd <- as_ymd(date_last)
-    year_last <- date_last_ymd$y
-    month_last <- date_last_ymd$m
-    year_to <- year_last
-    month_to <- ((month_last - 1L) %/% 3L + 1L) * 3L + 1L
-    if (month_to > 12L) {
-        year_to <- year_to + 1L
-        month_to <- 1L
+    if (has_date) {
+        date_last <- max(date, na.rm = TRUE)
+        date_last_ymd <- as_ymd(date_last)
+        year_last <- date_last_ymd$y
+        month_last <- date_last_ymd$m
+        year_to <- year_last
+        month_to <- ((month_last - 1L) %/% 3L + 1L) * 3L + 1L
+        if (month_to > 12L) {
+            year_to <- year_to + 1L
+            month_to <- 1L
+        }
+        date_to <- sprintf("%d-%d-01", year_to, month_to)
+        date_to <- as.Date(date_to)
     }
-    date_to <- sprintf("%d-%d-01", year_to, month_to)
-    date_to <- as.Date(date_to)
+    else
+        date_to <- break_min
     ## sequence
     seq.Date(from = date_from,
              to = date_to,
@@ -494,21 +466,21 @@ make_labels_age_group_month_quarter <- function(break_min,
     ans
 }
 
-
-## NO_TESTS
+## HAS_TESTS
 make_labels_cohort_month_quarter <- function(break_min,
                                              break_max,
                                              open_first,
                                              unit,
                                              include_na) {
+    demcheck::err_is_logical_flag(x = open_first,
+                                  name = "open_first")
     l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,
                                               break_max = break_max,
                                               unit = unit,
-                                              null_ok = FALSE)
+                                              null_ok = FALSE,
+                                              equal_ok = open_first)
     break_min <- l$break_min
     break_max <- l$break_max
-    demcheck::err_is_logical_flag(x = open_first,
-                                  name = "open_first")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")    
     s <- seq.Date(from = break_min,
@@ -536,7 +508,6 @@ make_labels_cohort_month_quarter <- function(break_min,
     ans
 }
 
-
 ## HAS_TESTS
 make_labels_period_month_quarter <- function(break_min,
                                              break_max,
@@ -545,11 +516,10 @@ make_labels_period_month_quarter <- function(break_min,
     l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,
                                               break_max = break_max,
                                               unit = unit,
-                                              null_ok = FALSE)
+                                              null_ok = FALSE,
+                                              equal_ok = FALSE)
     break_min <- l$break_min
     break_max <- l$break_max
-    demcheck::err_is_logical_flag(x = open_first,
-                                  name = "open_first")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")    
     s <- seq.Date(from = break_min,
@@ -565,15 +535,11 @@ make_labels_period_month_quarter <- function(break_min,
                       unit))
     n <- length(s)
     ans_mid <- paste(year[-n], suffix[-n])
-    if (open_first)
-        ans_first <- sprintf("<%s %s", year[[1L]], suffix[[1L]])
-    else
-        ans_first <- NULL
     if (include_na)
         ans_na <- NA_character_
     else
         ans_na <- NULL
-    ans <- c(ans_first, ans_mid, ans_na)
+    ans <- c(ans_mid, ans_na)
     ans
 }
 
