@@ -85,46 +85,6 @@ date_to_period_or_cohort_multi <- function(date,
 }
 
 ## HAS_TESTS
-date_to_period_or_cohort_quarter <- function(date,
-                                             break_min,
-                                             open_first,
-                                             as_factor) {
-    demcheck::err_is_positive_length(x = date,
-                                     name = "date")
-    date <- demcheck::err_tdy_date_vector(x = date,
-                                          name = "date")
-    if (!is.null(break_min)) {
-        demcheck::err_is_length_1(x = break_min,
-                                  name = "break_min")
-        break_min <- demcheck::err_tdy_date_scalar(x = break_min,
-                                                   name = "break_min")
-    }
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
-    demcheck::err_is_logical_flag(x = open_first,
-                                  name = "open_first")
-    breaks <- make_breaks_date_quarter(date = date,
-                                       break_min = break_min)
-    n <- length(breaks)
-    break_min <- breaks[[1L]]
-    break_max <- breaks[[n]]
-    labels <- make_labels_period_quarter(break_min = break_min,
-                                         break_max = break_max,
-                                         open_first = open_first)
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
-    if (open_first)
-        i <- i + 1L
-    ans <- labels[i]
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
-    ans   
-}
-
-## HAS_TESTS
 date_ymd_ge <- function(y1, m1, d1, y2, m2, d2) {
     (y1 > y2) ||
         ((y1 == y2) && (m1 > m2)) ||
@@ -253,23 +213,33 @@ make_breaks_date_year <- function(date,
                                   width,
                                   origin,
                                   break_min) {
-    ## obtain 'year_origin', 'month_origin', 'day_origin'
-    if (is.null(origin)) {
-        if (!identical(width, 1L))
-            stop(gettextf("'%s' is %s but '%s' equals %d",
-                          "origin", "NULL", "width", width))
-        origin <- 2000L
+    has_date <- sum(!is.na(date)) > 0L
+    has_break_min <- !is.null(break_min)
+    has_origin <- !is.null(origin)
+    ## get year of 'break_min'
+    if (has_break_min) {
+        year_break_min <- format(break_min, "%Y")
+        year_break_min <- as.integer(year_break_min)
     }
-    n <- length(date)
+    ## obtain 'year_origin', 'month_origin', 'day_origin'
+    if (has_break_min)
+        origin <- year_break_min
+    else {
+        if (!has_origin) {
+            if (!identical(width, 1L))
+                stop(gettextf("'%s' is %s but '%s' equals %d",
+                              "origin", "NULL", "width", width))
+            origin <- 2000L
+        }
+    }
     year_origin <- origin
     month_origin <- match(month_start, month.abb)
     day_origin <- 1L
     ## obtain 'year_from'
-    if (is.null(break_min)) {
-        if (n == 0L) {
-            year_from <- year_origin
-        }
-        else {
+    if (has_break_min)
+        year_from <- year_break_min
+    else {
+        if (has_date) {
             date_first <- min(date, na.rm = TRUE)
             date_first_ymd <- as_ymd(date_first)
             year_first <- date_first_ymd$y
@@ -294,16 +264,11 @@ make_breaks_date_year <- function(date,
                 year_from <- year_origin + ((diff_first_origin - 1L + same_day) %/% width) * width
             }
         }
-    }
-    else {
-        year_from <- format(break_min, "%Y")
-        year_from <- as.integer(year_from)
+        else
+            year_from <- year_origin
     }
     ## obtain 'year_to'
-    if (n == 0L) {
-        year_to <- year_from + width
-    }
-    else {        
+    if (has_date) {
         date_last <- max(date, na.rm = TRUE)
         date_last_ymd <- as_ymd(date_last)
         year_last <- date_last_ymd$y
@@ -323,10 +288,11 @@ make_breaks_date_year <- function(date,
                                            d2 = day_origin)
         if (date_last_ge_origin)
             year_to <- year_origin + (diff_last_origin %/% width + 1L) * width
-        else {
+        else
             year_to <- year_origin + ((diff_last_origin - 1L) %/% width + 1L) * width
-        }
     }
+    else
+        year_to <- year_from
     ## create series
     date_from <- sprintf("%d-%d-%d", year_from, month_origin, day_origin)
     date_to <- sprintf("%d-%d-%d", year_to, month_origin, day_origin)

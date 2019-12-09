@@ -87,27 +87,43 @@ date_to_period_year <- function(date,
                                 month_start = "Jan",
                                 label_year_start = TRUE,
                                 as_factor = TRUE) {
-    date <- demcheck::err_tdy_date_vector(x = date,
-                                          name = "date")
+    ## see if arguments supplied
+    has_date <- sum(!is.na(date)) > 0L
+    ## check arguments and/or apply defaults
+    if (has_date)
+        date <- demcheck::err_tdy_date_vector(x = date,
+                                              name = "date")
     month_start <- demcheck::err_tdy_month_start(x = month_start,
                                                  name = "month_start")
     demcheck::err_is_logical_flag(x = label_year_start,
                                   name = "label_year_start")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
+    ## deal with "empty" case where 'date'
+    ## has length 0 or is all NA
+    if (!has_date) {
+        ans <- as.character(date)
+        if (as_factor)
+            ans <- factor(ans)
+        return(ans)
+    }
+    ## create sequence of breaks
     breaks <- make_breaks_date_year(date = date,
                                     month_start = month_start,
                                     width = 1L,
                                     origin = NULL,
                                     break_min = NULL)
+    ## create labels
     labels <- make_labels_period(breaks = breaks,
                                  label_year_start = label_year_start,
                                  include_na = FALSE)
+    ## assign labels to dates
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
     i <- findInterval(x = date_int,
                       vec = breaks_int)
     ans <- labels[i]
+    ## return result
     if (as_factor)
         ans <- factor(x = ans,
                       levels = labels)
@@ -195,13 +211,50 @@ date_to_period_multi <- function(date,
                                  origin = 2000,
                                  month_start = "Jan",
                                  as_factor = TRUE) {
-    date_to_period_or_cohort_multi(date = date,
-                                   width = width,
-                                   origin = origin,
-                                   month_start = month_start,
-                                   break_min = NULL,
-                                   open_first = FALSE,
-                                   as_factor = as_factor)
+    ## see if arguments supplied
+    has_date <- sum(!is.na(date)) > 0L
+    ## check arguments and/or apply defaults
+    if (has_date)
+        date <- demcheck::err_tdy_date_vector(x = date,
+                                              name = "date")
+    width <- demcheck::err_tdy_positive_integer_scalar(x = width,
+                                                       name = "width")
+    origin <- demcheck::err_tdy_integer_scalar(x = origin,
+                                               name = "origin")
+    month_start <- demcheck::err_tdy_month_start(x = month_start,
+                                                 name = "month_start")
+    demcheck::err_is_logical_flag(x = as_factor,
+                                  name = "as_factor")
+    ## deal with "empty" case where 'date'
+    ## has length 0 or is all NA
+    if (!has_date) {
+        ans <- as.character(date)
+        if (as_factor)
+            ans <- factor(ans)
+        return(ans)
+    }
+    ## create sequence of breaks
+    breaks <- make_breaks_date_year(date = date,
+                                    month_start = month_start,
+                                    width = width,
+                                    origin = origin,
+                                    break_min = NULL)
+    ## make labels for these breaks
+    labels <- make_labels_cohort(breaks = breaks,
+                                 open_first = FALSE,
+                                 label_year_start = NULL,
+                                 include_na = FALSE)
+    ## assign labels to dates
+    date_int <- as.integer(date)
+    breaks_int <- as.integer(breaks)
+    i <- findInterval(x = date_int,
+                      vec = breaks_int)
+    ans <- labels[i]
+    ## return result
+    if (as_factor)
+        ans <- factor(x = ans,
+                      levels = labels)
+    ans
 }
 
 ## HAS_TESTS

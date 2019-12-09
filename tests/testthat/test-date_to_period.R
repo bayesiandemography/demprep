@@ -61,6 +61,13 @@ test_that("date_to_period_year gives correct answers with valid inputs", {
                                          as_factor = TRUE),
                      factor(c("2003", "2001", "2005"),
                             levels = as.character(2001:2005)))
+    expect_identical(date_to_period_year(date = c(NA, NA)),
+                     factor(c(NA, NA)))
+    expect_identical(date_to_period_year(date = character()),
+                     factor(character()))
+    expect_identical(date_to_period_year(date = character(),
+                                         as_factor = FALSE),
+                     character())
 })
 
 
@@ -78,8 +85,75 @@ test_that("date_to_period_multi gives correct answers with valid inputs", {
                      factor(c("2000-2005", "2010-2015", NA),
                             levels = c("2000-2005", "2005-2010", "2010-2015")))
     expect_identical(date_to_period_multi(date = character()),
-                     factor(character(),
-                            levels = "2000-2005"))
+                     factor(character(), levels = character()))
+    expect_identical(date_to_period_multi(date = c("2003-03-20",
+                                                   "2001-02-11",
+                                                   "2010-12-30"),
+                                          width = 5,
+                                          origin = 2000,
+                                          month_start = "Jan",
+                                          as_factor = TRUE),
+                     factor(c("2000-2005", "2000-2005", "2010-2015"),
+                            levels = c("2000-2005", "2005-2010", "2010-2015")))
+    expect_identical(date_to_period_multi(date = c("2003-03-20",
+                                                   "2001-02-11",
+                                                   "2010-12-30"),
+                                          width = 5,
+                                          origin = 2000,
+                                          month_start = "Jan",
+                                          as_factor = TRUE),
+                     factor(c("2000-2005", "2000-2005", "2010-2015"),
+                            levels = c("2000-2005", "2005-2010", "2010-2015")))
+    expect_identical(date_to_period_multi(date = c("2000-03-20",
+                                                   "2001-02-11",
+                                                   "2010-12-30"),
+                                          width = 5,
+                                          origin = 0,
+                                          month_start = "Jul",
+                                          as_factor = TRUE),
+                     factor(c("1995-2000", "2000-2005", "2010-2015"),
+                            levels = c("1995-2000", "2000-2005", "2005-2010", "2010-2015")))
+    expect_identical(date_to_period_multi(date = c("2000-03-20",
+                                                   "2001-02-11",
+                                                   "2010-12-30"),
+                                          width = 5,
+                                          origin = 1996,
+                                          month_start = "Jul",
+                                          as_factor = FALSE),
+                     c("1996-2001", "1996-2001", "2006-2011"))
+    expect_identical(date_to_period_multi(date = c("2003-03-20",
+                                                   "2001-02-11",
+                                                   "2010-12-30"),
+                                          width = 10,
+                                          origin = 1990,
+                                          month_start = "Jan",
+                                          as_factor = TRUE),
+                     factor(c("2000-2010", "2000-2010", "2010-2020"),
+                            levels = c("2000-2010", "2010-2020")))
+    expect_identical(date_to_period_multi(date = c("2000-01-01",
+                                                   "2010-01-01",
+                                                   "2004-12-31")),
+                     factor(c("2000-2005", "2010-2015", "2000-2005"),
+                            levels = c("2000-2005", "2005-2010", "2010-2015")))
+    expect_identical(date_to_period_multi(date = c("2000-01-01",
+                                                   "2010-01-01",
+                                                   "2004-12-31"),
+                                          month_start = "Jul",
+                                          origin = 2001),
+                     factor(c("1996-2001", "2006-2011", "2001-2006"),
+                            levels = c("1996-2001", "2001-2006", "2006-2011")))
+    expect_identical(date_to_period_multi(date = c("2000-01-01",
+                                                   "2010-01-01",
+                                                   "2004-12-31",
+                                                   NA),
+                                          month_start = "Jul",
+                                          origin = 2001),
+                     factor(c("1996-2001", "2006-2011", "2001-2006", NA),
+                            levels = c("1996-2001", "2001-2006", "2006-2011")))
+    expect_identical(date_to_period_multi(date = character()),
+                     factor(character(), levels = character()))
+    expect_identical(date_to_period_multi(date = c(NA, NA)),
+                     factor(c(NA, NA)))    
 })
 
 
