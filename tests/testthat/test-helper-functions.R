@@ -661,9 +661,27 @@ test_that("'make_labels_age_group_month_quarter' gives correct answer with valid
                                                          unit = "quarter",
                                                          include_na = TRUE),
                      c("0q", "1q", "2q", "3q", "4q", "5q+", NA))
+    expect_identical(make_labels_age_group_month_quarter(break_min = 0,
+                                                         break_max = 0,
+                                                         open_last = TRUE,
+                                                         unit = "month",
+                                                         include_na = FALSE),
+                     "0m+")
+    expect_identical(make_labels_age_group_month_quarter(break_min = 0,
+                                                         break_max = 0,
+                                                         open_last = TRUE,
+                                                         unit = "quarter",
+                                                         include_na = TRUE),
+                     c("0q+", NA))
 })
 
 test_that("'make_labels_age_group_month_quarter' gives correct error with invalid inputs", {
+    expect_error(make_labels_age_group_month_quarter(break_min = 0,
+                                                     break_max = 0,
+                                                     open_last = FALSE,
+                                                     unit = "month",
+                                                     include_na = FALSE),
+                 "'break_max' \\[0\\] is non-positive")
     expect_error(make_labels_age_group_month_quarter(break_min = 0,
                                                      break_max = 5,
                                                      open_last = FALSE,

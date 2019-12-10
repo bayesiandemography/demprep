@@ -30,61 +30,6 @@ as_ymd <- function(date) {
 }
 
 ## HAS_TESTS
-date_to_period_or_cohort_multi <- function(date,
-                                           width,
-                                           origin,
-                                           month_start,
-                                           break_min,
-                                           open_first,
-                                           as_factor) {
-    date <- demcheck::err_tdy_date_vector(x = date,
-                                          name = "date")
-    width <- demcheck::err_tdy_positive_integer_scalar(x = width,
-                                                       name = "width")
-    if (is.null(break_min)) {
-        origin <- demcheck::err_tdy_integer_scalar(x = origin,
-                                                   name = "origin")
-        month_start <- demcheck::err_tdy_month_start(x = month_start,
-                                                     name = "month_start")
-    }
-    else {
-        demcheck::err_is_length_1(x = break_min,
-                                  name = "break_min")
-        break_min <- demcheck::err_tdy_date_scalar(x = break_min,
-                                                   name = "break_min")
-        origin <- as.integer(format(break_min, "%Y"))
-        month_start <- format(break_min, "%b")
-    }
-    demcheck::err_is_logical_flag(x = open_first,
-                                  name = "open_first")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
-    if (!is.null(break_min) && !open_first)
-        demcheck::err_ge_break_min_date(date = date,
-                                        break_min = break_min)
-    breaks <- make_breaks_date_year(date = date,
-                                    month_start = month_start,
-                                    width = width,
-                                    origin = origin,
-                                    break_min = break_min)
-    labels <- make_labels_period(breaks = breaks,
-                                      open_first = open_first,
-                                      label_year_start = TRUE)
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
-    if (open_first)
-        i <- i + 1L
-    ans <- labels[i]
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
-    ans
-
-}
-
-## HAS_TESTS
 date_ymd_ge <- function(y1, m1, d1, y2, m2, d2) {
     (y1 > y2) ||
         ((y1 == y2) && (m1 > m2)) ||
@@ -304,7 +249,7 @@ make_breaks_date_year <- function(date,
              by = by)
 }
 
-
+## HAS_TESTS
 make_breaks_integer_fert <- function(age, width, break_min, break_max) {
     if (is.null(break_min)) {
         break_min <- min(age, na.rm = TRUE)
@@ -397,8 +342,6 @@ make_fill <- function(fill, X, INDEX) {
     }
 }
 
-
-
 ## HAS_TESTS
 make_labels_age_group_month_quarter <- function(break_min,
                                                 break_max,
@@ -407,7 +350,8 @@ make_labels_age_group_month_quarter <- function(break_min,
                                                 include_na) {
     l <- demcheck::err_tdy_break_min_max_integer(break_min = break_min,
                                                  break_max = break_max,
-                                                 null_ok = FALSE)
+                                                 null_ok = FALSE,
+                                                 equal_ok = open_last)
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = include_na,
@@ -417,9 +361,13 @@ make_labels_age_group_month_quarter <- function(break_min,
                      quarter = "q",
                      stop(gettextf("can't handle unit '%s'",
                                    unit)))
-    s <- seq.int(from = break_min,
-                 to = break_max - 1L)
-    ans_mid <- sprintf("%d%s", s, suffix)
+    if (break_max > break_min) {
+        s <- seq.int(from = break_min,
+                     to = break_max - 1L)
+        ans_mid <- sprintf("%d%s", s, suffix)
+    }
+    else
+        ans_mid <- NULL
     if (open_last)
         ans_right <- sprintf("%d%s+", break_max, suffix)
     else

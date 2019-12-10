@@ -309,9 +309,11 @@ test_that("date_to_age_group_month gives correct answers with valid inputs", {
                                              open_last = FALSE),
                      factor(c("0m", "2m", NA, "1m"),
                             levels = c("0m", "1m", "2m")))
+    expect_identical(date_to_age_group_month(date = c("2000-03-11",
+                                                      NA),
+                                             dob = c(NA,
+                                                     "2000-01-01"),
+                                             break_max = 3,
+                                             open_last = FALSE),
+                     factor(c(NA, NA)))
 })
-
-
-
-
-

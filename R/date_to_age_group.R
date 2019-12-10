@@ -904,39 +904,61 @@ date_to_age_group_quarter <- function(date,
 #'                         break_max = NULL,
 #'                         open_last = FALSE)
 #' @export
-date_to_age_group_month <- function(date, dob,
+date_to_age_group_month <- function(date,
+                                    dob,
                                     break_max = 1200,
                                     open_last = TRUE,
                                     as_factor = TRUE) {
+    ## Check arguments and/or apply defaults.
+    ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
     date <- l$date
     dob <- l$dob
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
-                                                         name = "break_max",
-                                                         null_ok = TRUE)
+                                                           name = "break_max",
+                                                           null_ok = TRUE)
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
+    ## deal with "empty" case where
+    ## all date-dob pairs have NA
+    n_date <- length(date)
+    all_empty <- all(is.na(date) | is.na(dob))
+    if (all_empty) {
+        ans <- rep(NA_character_, times = n_date)
+        if (as_factor)
+            ans <- factor(ans)
+        return(ans)
+    }
+    ## get age in months
     age_months <- age_completed_months(date = date,
                                        dob = dob)
-    if (!is.null(break_max) && !open_last)
+    ## if final interval not open, check that all
+    ## ages less than 'break_max'
+    if (!open_last && !is.null(break_max))
         demcheck::err_lt_break_max_age(age = age_months,
-                                 break_max = break_max,
-                                 date = date,
-                                 dob = dob,
-                                 unit = "month")    
+                                       break_max = break_max,
+                                       date = date,
+                                       dob = dob,
+                                       unit = "month")
+    ## make breaks
     breaks <- make_breaks_integer_month_quarter(age = age_months,
                                                 break_max = break_max,
                                                 open_last = open_last)
-    break_max <- breaks[length(breaks)]
+    ## make labels for these breaks
+    n_break <- length(breaks)
+    break_max <- breaks[[n_break]]
     labels <- make_labels_age_group_month(break_min = 0L,
                                           break_max = break_max,
-                                          open_last = open_last)
+                                          open_last = open_last,
+                                          include_na = FALSE)
+    ## assign labels to ages
     i <- findInterval(x = age_months,
                       vec = breaks)
     ans <- labels[i]
+    ## return result
     if (as_factor)
         ans <- factor(x = ans,
                       levels = labels)

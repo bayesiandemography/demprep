@@ -66,8 +66,7 @@
 make_labels_age_group <- function(breaks,
                                   open_last = TRUE,
                                   include_na = FALSE) {
-    breaks <- demcheck::err_tdy_breaks_integer(x = breaks,
-                                               name = "breaks",
+    breaks <- demcheck::err_tdy_breaks_integer(breaks = breaks,
                                                open_last = open_last)
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
