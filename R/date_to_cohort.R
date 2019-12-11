@@ -1,4 +1,12 @@
 
+
+## Note - all functions return empty factor when supplied with
+## empty inputs, except for 'date_to_cohort_custom', which
+## returns factor with levels implied by 'breaks' and
+## 'open_first' (reflecting the fact that the levels are
+## completely determined by these two arguments).
+
+
 ## HAS_TESTS
 #' Convert dates to one-year cohorts
 #'
@@ -501,10 +509,10 @@ date_to_cohort_custom <- function(date,
                                   name = "open_first")
     breaks <- demcheck::err_tdy_breaks_date_cohort(breaks = breaks,
                                                    open_first = open_first)
-    n <- length(breaks)
-    if (n > 0L) {
+    n_break <- length(breaks)
+    if (n_break > 0L) {
         break_min <- breaks[[1L]]
-        break_max <- breaks[[n]]
+        break_max <- breaks[[n_break]]
         if (!open_first)
             demcheck::err_ge_break_min_date(date = date,
                                             break_min = break_min)
@@ -514,7 +522,7 @@ date_to_cohort_custom <- function(date,
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
     ## deal with "empty" case where 'breaks' has length 0
-    if (n == 0L) {
+    if (n_break == 0L) {
         if (has_date) {
             stop(gettextf("'%s' has length %d",
                           "breaks", 0L))
@@ -527,7 +535,7 @@ date_to_cohort_custom <- function(date,
         }
     }
     ## deal with "empty" case where 'date'
-    ## has length 0 or is all NA
+    ## has length 0 or is all NA, and we
     ## aren't making factor levels
     if (!has_date && !as_factor) {
         ans <- as.character(date)
@@ -670,9 +678,9 @@ date_to_cohort_quarter <- function(date,
     breaks <- make_breaks_date_quarter(date = date,
                                        break_min = break_min)
     ## make labels for these breaks
-    n <- length(breaks)
+    n_break <- length(breaks)
     break_min <- breaks[[1L]]
-    break_max <- breaks[[n]]
+    break_max <- breaks[[n_break]]
     labels <- make_labels_cohort_quarter(break_min = break_min,
                                          break_max = break_max,
                                          open_first = open_first,
@@ -797,9 +805,9 @@ date_to_cohort_month <- function(date,
     breaks <- make_breaks_date_month(date = date,
                                      break_min = break_min)
     ## make labels for these breaks
-    n <- length(breaks)
+    n_break <- length(breaks)
     break_min <- breaks[[1L]]
-    break_max <- breaks[[n]]
+    break_max <- breaks[[n_break]]
     labels <- make_labels_cohort_month(break_min = break_min,
                                        break_max = break_max,
                                        open_first = open_first,

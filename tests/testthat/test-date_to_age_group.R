@@ -254,6 +254,31 @@ test_that("date_to_age_group_custom gives correct answers with valid inputs", {
                                               open_last = FALSE),
                      factor(c("5-9", "10-29", "10-29"),
                             levels = c("5-9", "10-29")))
+    expect_identical(date_to_age_group_custom(date = c("2000-03-11",
+                                                       NA),
+                                              dob = c(NA,
+                                                      "2000-01-01"),
+                                              breaks = c(0, 10, 20),
+                                              open_last = FALSE),
+                     factor(c(NA, NA),
+                            levels = c("0-9", "10-19")))
+    expect_identical(date_to_age_group_custom(date = c("2000-03-11",
+                                                       NA),
+                                              dob = c(NA,
+                                                      "2000-01-01"),
+                                              breaks = integer(),
+                                              open_last = FALSE),
+                     factor(c(NA, NA)))
+})
+
+test_that("date_to_age_group_custom gives correct error with invalid inputs", {
+    expect_error(date_to_age_group_custom(date = c("2000-03-11",
+                                                       "2000-03-12"),
+                                               dob = c(NA,
+                                                       "2000-01-01"),
+                                               breaks = integer(),
+                                               open_last = FALSE),
+                 "'breaks' has length 0")
 })
 
 
@@ -282,6 +307,13 @@ test_that("date_to_age_group_quarter gives correct answers with valid inputs", {
                                                open_last = FALSE),
                      factor(c("0q", "1q", NA, "5q"),
                             levels = c("0q", "1q", "2q", "3q", "4q", "5q")))
+    expect_identical(date_to_age_group_quarter(date = c("2000-03-11",
+                                                        NA),
+                                               dob = c(NA,
+                                                       "2000-01-01"),
+                                               break_max = 3,
+                                               open_last = FALSE),
+                     factor(c(NA, NA)))
 })
 
 ## date_to_age_group_month ---------------------------------------------------

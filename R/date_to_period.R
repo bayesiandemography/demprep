@@ -1,4 +1,12 @@
 
+## Note - all functions return empty factor when supplied with
+## empty inputs, except for 'date_to_period_custom', which
+## returns factor with levels implied by 'breaks',
+## (reflecting the fact that the levels are
+## completely determined by this argument).
+
+
+
 ## HAS_TESTS
 #' Convert dates to one-year periods
 #'
