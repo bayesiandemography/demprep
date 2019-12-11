@@ -1,11 +1,10 @@
 
 
-## Note - all functions return empty factor when supplied with
-## empty inputs, except for 'date_to_age_group_custom', which
-## returns factor with levels implied by 'breaks' and
-## 'open_last' (reflecting the fact that the levels are
-## completely determined by these two arguments).
-
+## Note - all functions return factor with NAs but with
+## meaningful levels when supplied with empty inputs,
+## except in functions having 'break_min' where value
+## for 'break_min' not supplied (and hence there is not
+## enough information to form levels).
 
 ## HAS_TESTS
 #' Convert dates to one-year age groups
@@ -108,6 +107,8 @@ date_to_age_group_year <- function(date,
                                    break_max = 100,
                                    open_last = TRUE,
                                    as_factor = TRUE) {
+    ## Check arguments and/or apply defaults.
+    ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
     date <- l$date
@@ -119,24 +120,43 @@ date_to_age_group_year <- function(date,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
+    ## deal with "empty" case where
+    ## all date-dob pairs have NA
+    ## and no 'break_max' supplied
+    n_date <- length(date)
+    all_empty <- all(is.na(date) | is.na(dob))
+    if (all_empty && is.null(break_max)) {
+        ans <- rep(NA_character_, times = n_date)
+        if (as_factor)
+            ans <- factor(ans)
+        return(ans)
+    }
+    ## get age in months and years
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
-    if (!is.null(break_max) && !open_last)
+    ## if final interval not open, check that all
+    ## ages less than 'break_max'
+    if (!open_last && !is.null(break_max))
         demcheck::err_lt_break_max_age(age = age_years,
                                        break_max = break_max,
                                        date = date,
                                        dob = dob,
                                        unit = "year")
+    ## make breaks
     breaks <- make_breaks_integer_year(age = age_years,
                                        width = 1L,
                                        break_max = break_max,
                                        open_last = open_last)
+    ## make labels for these breaks
     labels <- make_labels_age_group(breaks = breaks,
-                                    open_last = open_last)
+                                    open_last = open_last,
+                                    include_na = FALSE)
+    ## assign labels to ages
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
+    ## return result
     if (as_factor)
         ans <- factor(x = ans,
                       levels = labels)
@@ -237,6 +257,8 @@ date_to_age_group_multi <- function(date,
                                     break_max = 100,
                                     open_last = TRUE,
                                     as_factor = TRUE) {
+    ## Check arguments and/or apply defaults.
+    ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
     date <- l$date
@@ -256,24 +278,42 @@ date_to_age_group_multi <- function(date,
                                  name1 = "break_max",
                                  name2 = "width",
                                  null_ok = TRUE)
+    ## deal with "empty" case where
+    ## all date-dob pairs have NA
+    ## and no 'break_max' supplied
+    n_date <- length(date)
+    all_empty <- all(is.na(date) | is.na(dob))
+    if (all_empty && is.null(break_max)) {
+        ans <- rep(NA_character_, times = n_date)
+        if (as_factor)
+            ans <- factor(ans)
+        return(ans)
+    }
+    ## get age in months and years
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
+    ## if final interval not open, check that all
+    ## ages less than 'break_max'
     if (!open_last)
         demcheck::err_lt_break_max_age(age = age_years,
                                        break_max = break_max,
                                        date = date,
                                        dob = dob,
                                        unit = "year")    
+    ## make breaks
     breaks <- make_breaks_integer_year(age = age_years,
                                        width = width,
                                        break_max = break_max,
                                        open_last = open_last)
+    ## make labels for these breaks
     labels <- make_labels_age_group(breaks = breaks,
                                     open_last = open_last)
+    ## assign labels to ages
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
+    ## return result
     if (as_factor)
         ans <- factor(x = ans,
                       levels = labels)
@@ -346,6 +386,8 @@ date_to_age_group_multi <- function(date,
 date_to_age_group_lifetab <- function(date, dob,
                                       break_max = 100,
                                       as_factor = TRUE) {
+    ## Check arguments and/or apply defaults.
+    ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
     date <- l$date
@@ -359,15 +401,30 @@ date_to_age_group_lifetab <- function(date, dob,
                                    null_ok = FALSE)
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
+    ## deal with "empty" case where
+    ## all date-dob pairs have NA, and
+    ## we aren't making factors
+    n_date <- length(date)
+    all_empty <- all(is.na(date) | is.na(dob))
+    if (all_empty && !as_factor) {
+        ans <- rep(NA_character_, times = n_date)
+        return(ans)
+    }
+    ## get age in months and years
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
+    ## make breaks
     breaks <- make_breaks_integer_lifetab(break_max)
+    ## make labels for breaks
     labels <- make_labels_age_group(breaks = breaks,
-                                    open_last = TRUE)
+                                    open_last = TRUE,
+                                    include_na = FALSE)
+    ## assign labels to ages
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
+    ## return result
     if (as_factor)
         ans <- factor(x = ans,
                       levels = labels)
@@ -486,6 +543,8 @@ date_to_age_group_fert <- function(date, dob,
                                    recode_up = FALSE,
                                    recode_down = FALSE,
                                    as_factor = TRUE) {
+    ## Check arguments and/or apply defaults.
+    ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
     date <- l$date
@@ -511,9 +570,20 @@ date_to_age_group_fert <- function(date, dob,
                                   name = "recode_up")
     demcheck::err_is_logical_flag(x = recode_down,
                                   name = "recode_down")
+    ## deal with "empty" case where
+    ## all date-dob pairs have NA, and
+    ## we aren't making factors
+    n_date <- length(date)
+    all_empty <- all(is.na(date) | is.na(dob))
+    if (all_empty && !as_factor) {
+        ans <- rep(NA_character_, times = n_date)
+        return(ans)
+    }
+    ## get age in months and years
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
+    ## check that ages lie within limits implied by 'break_min' and 'break_max'
     if (!is.null(break_min)) {
         is_lt_min <- age_years < break_min
         i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
@@ -546,15 +616,19 @@ date_to_age_group_fert <- function(date, dob,
             }
         }
     }
+    ## make breaks
     breaks <- make_breaks_integer_fert(age = age_years,
                                        width = width,
                                        break_min = break_min,
                                        break_max = break_max)
+    ## make labels for breaks
     labels <- make_labels_age_group(breaks = breaks,
                                     open_last = FALSE)
+    ## assign labels to ages
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
+    ## return result
     if (as_factor)
         ans <- factor(x = ans,
                       levels = labels)
@@ -702,7 +776,7 @@ date_to_age_group_custom <- function(date, dob,
                           breaks[[n_break]]))
         }
     }
-    ## make labels for these breaks
+    ## make labels for breaks
     labels <- make_labels_age_group(breaks = breaks,
                                     open_last = open_last,
                                     include_na = FALSE)
@@ -828,9 +902,10 @@ date_to_age_group_quarter <- function(date,
                                   name = "as_factor")
     ## deal with "empty" case where
     ## all date-dob pairs have NA
+    ## and no 'break_max' supplied
     n_date <- length(date)
     all_empty <- all(is.na(date) | is.na(dob))
-    if (all_empty) {
+    if (all_empty && is.null(break_max)) {
         ans <- rep(NA_character_, times = n_date)
         if (as_factor)
             ans <- factor(ans)
@@ -980,9 +1055,10 @@ date_to_age_group_month <- function(date,
                                   name = "as_factor")
     ## deal with "empty" case where
     ## all date-dob pairs have NA
+    ## and no 'break_max' supplied
     n_date <- length(date)
     all_empty <- all(is.na(date) | is.na(dob))
-    if (all_empty) {
+    if (all_empty && is.null(break_max)) {
         ans <- rep(NA_character_, times = n_date)
         if (as_factor)
             ans <- factor(ans)
