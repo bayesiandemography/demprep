@@ -289,6 +289,8 @@ date_to_triangle_multi <- function(date,
                                    origin = 2000,
                                    month_start = "Jan",
                                    as_factor = TRUE) {
+    ## Check arguments and/or apply defaults.
+    ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
     date <- l$date
@@ -306,17 +308,21 @@ date_to_triangle_multi <- function(date,
                                                  name = "month_start")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
+    ## calculate age in months and years
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
+    ## if has upper limit, check that all
+    ## ages less than limit
     if (!is.null(break_max) && !open_last)
         demcheck::err_lt_break_max_age(age = age_years,
                                        break_max = break_max,
                                        date = date,
                                        dob = dob,
                                        unit = "year")
-    n <- length(date)
-    ans <- rep.int("Upper", times = n)
+    ## assign triangles
+    n_date <- length(date)
+    ans <- rep.int("Upper", times = n_date)
     ans[is.na(date) | is.na(dob)] <- NA_character_
     date_ymd <- as_ymd(date)
     dob_ymd <- as_ymd(dob)
@@ -334,6 +340,7 @@ date_to_triangle_multi <- function(date,
         | ((i_month_within_period_date == i_month_within_period_dob)
             & is_lower_within_month))
     ans[is_lower] <- "Lower"
+    ## deal with oldest open cohort, if present
     may_have_ages_above_break_max <- !is.null(break_max) && open_last
     if (may_have_ages_above_break_max) {
         age_start <- age_completed_months_start_month(date_ymd = date_ymd,
@@ -341,6 +348,7 @@ date_to_triangle_multi <- function(date,
         is_open_upper <- !is.na(age_start) & (age_start >= 12L * break_max)
         ans[is_open_upper] <- "Upper"
     }
+    ## return result
     if (as_factor) {
         ans <- factor(ans,
                       levels = c("Lower", "Upper"))
@@ -499,6 +507,8 @@ date_to_triangle_fert <- function(date,
                                   origin = 2000,
                                   month_start = "Jan",
                                   as_factor = TRUE) {
+    ## Check arguments and/or apply defaults.
+    ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
     date <- l$date
@@ -522,9 +532,11 @@ date_to_triangle_fert <- function(date,
                                   name = "recode_up")
     demcheck::err_is_logical_flag(x = recode_down,
                                   name = "recode_down")
+    ## calculate age in months and years
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
+    ## recode ages outside 'break_min', 'break_max', if requested
     date_ymd <- as_ymd(date)
     dob_ymd <- as_ymd(dob)
     is_lt_min <- age_years < break_min
@@ -566,6 +578,7 @@ date_to_triangle_fert <- function(date,
                              dob_ymd$m,
                              dob_ymd$d,
                              sep = "-"))
+    ## hand over to 'date_to_triangle_multi'
     date_to_triangle_multi(date = date,
                            dob = dob,
                            width = width,
@@ -690,6 +703,8 @@ date_to_triangle_quarter <- function(date,
                                      break_max = 400,
                                      open_last = TRUE,
                                      as_factor = TRUE) {
+    ## Check arguments and/or apply defaults.
+    ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
     date <- l$date
@@ -701,6 +716,8 @@ date_to_triangle_quarter <- function(date,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
+    ## if has upper limit, check that all
+    ## ages less than limit
     if (!is.null(break_max) && !open_last) {
         age_months <- age_completed_months(date = date,
                                            dob = dob)
@@ -711,10 +728,11 @@ date_to_triangle_quarter <- function(date,
                                        dob = dob,
                                        unit = "month")
     }
-    n <- length(date)
+    ## assign triangles
+    n_date <- length(date)
     date_ymd <- as_ymd(date)
     dob_ymd <- as_ymd(dob)
-    ans <- rep.int("Upper", times = n)
+    ans <- rep.int("Upper", times = n_date)
     ans[is.na(date) | is.na(dob)] <- NA_character_
     i_month_within_qu_date <- (date_ymd$m - 1L) %% 3L
     i_month_within_qu_dob <- (dob_ymd$m - 1L) %% 3L
@@ -724,6 +742,7 @@ date_to_triangle_quarter <- function(date,
         | ((i_month_within_qu_date == i_month_within_qu_dob)
             & is_lower_within_month))
     ans[is_lower] <- "Lower"
+    ## deal with oldest open cohort, if present
     may_have_ages_above_break_max <- !is.null(break_max) && open_last
     if (may_have_ages_above_break_max) {
         age_start <- age_completed_months_start_month(date_ymd = date_ymd,
@@ -731,6 +750,7 @@ date_to_triangle_quarter <- function(date,
         is_open_upper <- !is.na(age_start) & (age_start >= 3L * break_max)
         ans[is_open_upper] <- "Upper"
     }
+    ## return result
     if (as_factor) {
         ans <- factor(ans,
                       levels = c("Lower", "Upper"))
@@ -849,6 +869,8 @@ date_to_triangle_month <- function(date, dob,
                                    break_max = 1200,
                                    open_last = TRUE,
                                    as_factor = TRUE) {
+    ## Check arguments and/or apply defaults.
+    ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
     date <- l$date
@@ -860,6 +882,8 @@ date_to_triangle_month <- function(date, dob,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
+    ## if has upper limit, check that all
+    ## ages less than limit
     if (!is.null(break_max) && !open_last) {
         age_months <- age_completed_months(date = date,
                                            dob = dob)
@@ -868,16 +892,17 @@ date_to_triangle_month <- function(date, dob,
                                        date = date,
                                        dob = dob,
                                        unit = "month")
-        
     }
+    ## assign triangles
     date_ymd <- as_ymd(date)
     dob_ymd <- as_ymd(dob)
-    n <- length(date)
-    ans <- rep.int("Upper", times = n)
+    n_date <- length(date)
+    ans <- rep.int("Upper", times = n_date)
     ans[is.na(date) | is.na(dob)] <- NA_character_
     is_lower <- is_lower_within_month(date_ymd = date_ymd,
                                       dob_ymd = dob_ymd)
     ans[is_lower] <- "Lower"
+    ## deal with oldest open cohort, if present
     may_have_ages_above_break_max <- !is.null(break_max) && open_last
     if (may_have_ages_above_break_max) {
         age_start <- age_completed_months_start_month(date_ymd = date_ymd,
@@ -885,6 +910,7 @@ date_to_triangle_month <- function(date, dob,
         is_open_upper <- !is.na(age_start) & (age_start >= break_max)
         ans[is_open_upper] <- "Upper"
     }
+    ## return result
     if (as_factor) {
         ans <- factor(ans,
                       levels = c("Lower", "Upper"))

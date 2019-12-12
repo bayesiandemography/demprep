@@ -113,6 +113,14 @@ test_that("date_to_triangle_year gives correct answers with leap years", {
 })
 
 
+test_that("date_to_triangle_year gives correct answers with all NA", {
+    expect_identical(date_to_triangle_year(date = c("2001-01-01", NA),
+                                           dob = c(NA, "2000-01-01"),
+                                           break_max = 10),
+                     factor(rep(NA_character_, 2), levels = c("Lower", "Upper")))
+})
+
+
 ## date_to_triangle_multi --------------------------------------------------
 
 test_that("date_to_triangle_multi gives correct answers with valid inputs", {
@@ -137,6 +145,10 @@ test_that("date_to_triangle_multi gives correct answers with valid inputs", {
                                             width = 5),
                      factor(c("Lower", "Upper", NA),
                             levels = c("Lower", "Upper")))
+    expect_identical(date_to_triangle_multi(date = c("2001-01-01", NA),
+                                            dob = c(NA, "2000-01-01"),
+                                            break_max = 10),
+                     factor(rep(NA_character_, 2), levels = c("Lower", "Upper")))
 })
 
 
@@ -174,6 +186,9 @@ test_that("date_to_triangle_fert gives correct answers with valid inputs", {
                                            recode_down = TRUE),
                      factor(c("Lower", "Lower", "Lower"),
                             levels = c("Lower", "Upper")))
+    expect_identical(date_to_triangle_fert(date = c("2001-01-01", NA),
+                                           dob = c(NA, "2000-01-01")),
+                     factor(rep(NA_character_, 2), levels = c("Lower", "Upper")))
 })
 
 test_that("date_to_triangle_fert throws correct errors with invalid inputs", {
@@ -235,6 +250,10 @@ test_that("date_to_triangle_quarter gives correct answers with valid inputs", {
                                               dob = "1960-02-29",
                                               break_max = 10),
                      factor("Upper", levels = c("Lower", "Upper")))
+    expect_identical(date_to_triangle_quarter(date = c("2001-01-01", NA),
+                                              dob = c(NA, "2000-01-01"),
+                                              break_max = 10),
+                     factor(rep(NA_character_, 2), levels = c("Lower", "Upper")))
 })
 
 
@@ -266,6 +285,10 @@ test_that("date_to_triangle_month gives correct answers with valid inputs", {
                                             dob = "1960-02-29",
                                             break_max = 10),
                      factor("Upper", levels = c("Lower", "Upper")))
+    expect_identical(date_to_triangle_month(date = c("2001-01-01", NA),
+                                            dob = c(NA, "2000-01-01"),
+                                            break_max = 10),
+                     factor(rep(NA_character_, 2), levels = c("Lower", "Upper")))
 })
 
 
