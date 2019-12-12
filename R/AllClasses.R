@@ -37,9 +37,12 @@ setClass("LabCategories",
 
 validity_LabTriangles <- function(object) {
     labels <- object@labels
-    if (!identical(labels, c("Lower", "Upper")))
-        return(gettextf("'%s' not identical to \"%s\", \"%s\"",
-                        "Lower", "Upper"))
+    if (!identical(labels, c("Lower", "Upper"))) {
+        labels <- sprintf("\"%s\"", labels)
+        labels <- paste(labels, collapse = ", ")
+        return(gettextf("'%s' [%s] not identical to \"%s\", \"%s\"",
+                        "labels", labels, "Lower", "Upper"))
+    }
     TRUE
 }
 
@@ -54,9 +57,12 @@ setClass("LabTriangles",
 
 validity_LabPool <- function(object) {
     labels <- object@labels
-    if (!identical(labels, c("Ins", "Outs")))
-        return(gettextf("'%s' not identical to \"%s\", \"%s\"",
-                        "Ins", "Outs"))
+    if (!identical(labels, c("Ins", "Outs"))) {
+        labels <- sprintf("\"%s\"", labels)
+        labels <- paste(labels, collapse = ", ")
+        return(gettextf("'%s' [%s] not identical to \"%s\", \"%s\"",
+                        "labels", labels, "Ins", "Outs"))
+    }
     TRUE
 }
 
@@ -110,7 +116,7 @@ validity_LabIntegers <- function(object) {
     TRUE
 }
 
-setClass("LabInt",
+setClass("LabIntegers",
          contains = "Labels",
          slots = c(int_min = "integer",
                    int_max = "integer"),
@@ -120,8 +126,7 @@ setClass("LabInt",
 
 ## GroupsIntegers ------------------------------------------------------------
 
-
-validity_Groups_integers <- function(object) {
+validity_GroupedInt <- function(object) {
     breaks <- object@breaks
     open_first <- object@open_first
     open_last <- object@open_last
@@ -150,7 +155,7 @@ validity_Groups_integers <- function(object) {
     TRUE
 }
 
-setClass("LabIntGroups",
+setClass("LabGroupedInt",
          contains = c("Labels",
                       "VIRTUAL"),
          slots = c(breaks = "integer",
@@ -158,19 +163,20 @@ setClass("LabIntGroups",
                    open_last = "logical"))
 
 
-setClass("LabIntGroupsEnumerations",
-         contains = "LabIntGroups")
+setClass("LabGroupedIntEnumerations",
+         contains = "LabGroupedInt")
 
 
-setClass("LabIntGroupsEndpoints",
-         contains = "LabIntGroups")
+setClass("LabGroupedIntEndpoints",
+         contains = "LabGroupedInt")
 
 
-## Calendar -------------------------------------------------------------------
+## Dates ----------------------------------------------------------------------
 
 validity_LabCalendar <- function(object) {
     break_min <- object@break_min
     break_max <- object@break_max
+    open_first <- object@open_first
     for (name in c("break_min", "break_max")) {
         x <- slot(object, name)
         val <- demcheck::chk_is_length_1(x = x,
@@ -182,9 +188,13 @@ validity_LabCalendar <- function(object) {
         if (!isTRUE(val))
             return(val)
     }
+    val <- demcheck::chk_is_logical_flag(x = open_first,
+                                         name = "open_first")
+    if (!isTRUE(val))
+        return(val)
     if (break_max < break_min)
-        return(gettextf("'%s' is less than '%s'",
-                        "int_max", "int_min"))
+        return(gettextf("'%s' [\"%s\"] is less than '%s' [\"%s\"]",
+                        "break_max", "break_min"))
     TRUE
 }
 
@@ -192,7 +202,10 @@ setClass("LabCalendar",
          contains = c("Labels",
                       "VIRTUAL"),
          slots = c(break_min = "Date",
-                   break_max = "Date"))
+                   break_max = "Date",
+                   open_first = "logical"),
+         validity = validity_LabCalendar)
+
 
 validity_LabCalendarQuarters <- function(object) {
     for (name in c("break_min", "break_max")) {
@@ -227,598 +240,40 @@ setClass("LabCalendarMonths",
          validity = validity_LabCalendarMonths)
 
 
-## Duration -------------------------------------------------------------------
+## Durations ------------------------------------------------------------------
 
-setClass("LabDuration",
+
+validity_LabDurations <- function(object) {
+    break_min <- object@break_min
+    break_max <- object@break_max
+    open_last <- object@open_last
+    for (name in c("break_min", "break_max")) {
+        x <- slot(object, name)
+        val <- demcheck::chk_is_non_negative_scalar(x = x,
+                                                    name = name)
+        if (!isTRUE(val))
+            return(val)
+    }
+    val <- demcheck::chk_is_logical_flag(x = open_last,
+                                         name = "open_last")
+    if (!isTRUE(val))
+        return(val)
+    if (break_max < break_min)
+        return(gettextf("'%s' [\"%d\"] is less than '%s' [\"%d\"]",
+                        "break_max", "break_min"))
+    TRUE
+}
+
+setClass("LabDurations",
          contains = c("Labels",
                       "VIRTUAL"),
          slots = c(break_min = "integer",
-                   break_max = "integer"))
-
-setClass("LabDurationQuarters",
-         contains = "LabDuration")
-
-setClass("LabDurationMonths",
-         contains = "LabDuration")
-
-
-
-## DimScale -------------------------------------------------------------------
-
-## validity_DimScale <- function(object) {
-##     include_na <- object@include_na
-##     val <- demcheck::chk_is_logical_flag(x = include_na,
-##                                          name = "include_na")
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## setClass("DimScale",
-##          contains = "VIRTUAL",
-##          slots = c(include_na = "logical"),
-##          validity = validity_DimScale)
-
-
-## ## Intervals ------------------------------------------------------------------
-
-
-## setClass("Intervals",
-##          contains = c("DimScale",
-##                       "VIRTUAL"))
-
-
-## ## AgeGroup
-
-## validity_AgeGroup <- function(object) {
-##     open_last <- object@open_last
-##     val <- demcheck::chk_is_logical_flag(x = open_last,
-##                                          name = "open_last")
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## setClass("AgeGroup",
-##          contains = c("Intervals",
-##                       "VIRTUAL"),
-##          slots = c(open_last = "logical"),
-##          validity = validity_AgeGroup)
-
-## validity_AgeGroupSingleQuarterMonth <- function(object) {
-##     break_min <- object@break_min
-##     break_max <- object@break_max
-##     val <- demcheck::chk_x_min_max_integer(x_min = break_min,
-##                                            x_max = break_max,
-##                                            name_min = "break_min",
-##                                            name_max = "break_max")
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## ## HAS_TESTS
-## setClass("AgeGroupSingle",
-##          contains = "AgeGroup",
-##          slots = c(break_min = "integer",
-##                    break_max = "integer",
-##                    open_last = "logical"),
-##          validity = validity_AgeGroupSingleQuarterMonth)
-
-
-## validity_AgeGroupMulti <- function(object) {
-##     break_min <- object@break_min
-##     break_max <- object@break_max
-##     width <- object@width
-##     val <- demcheck::chk_x_min_max_integer(x_min = break_min,
-##                                            x_max = break_max,
-##                                            name_min = "break_min",
-##                                            name_max = "break_max")
-##     if (!isTRUE(val))
-##         return(val)
-##     val <- demcheck::chk_is_positive_scalar(x = width,
-##                                             name = "width")
-##     if ((break_max - break_min) %% width != 0L)
-##         return(gettextf("difference between '%s' [%d] and '%s' [%d] not a multiple of '%s' [%d]",
-##                         "break_max", break_max, "break_min", break_min, "width", width))
-##     TRUE
-## }
-
-## ## HAS_TESTS
-## setClass("AgeGroupMulti",
-##          contains = "AgeGroup",
-##          slots = c(break_min = "integer",
-##                    break_max = "integer",
-##                    width = "integer",
-##                    open_last = "logical"),
-##          validity = validity_AgeGroupMulti)
-
-
-## validity_AgeGroupCustom <- function(object) {
-##     breaks <- object@breaks
-##     open_last  <- object@open_last
-##     val <- demcheck::chk_x_integer(x = breaks,
-##                                    name = "breaks",
-##                                    open_first = FALSE,
-##                                    open_last = open_last)
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## ## HAS_TESTS
-## setClass("AgeGroupCustom",
-##          contains = "AgeGroup",
-##          slots = c(breaks = "integer",
-##                    open_last = "logical"),
-##          validity = validity_AgeGroupCustom)
-
-## ## HAS_TESTS
-## setClass("AgeGroupQuarter",
-##          contains = "AgeGroup",
-##          slots = c(break_min = "integer",
-##                    break_max = "integer",
-##                    open_last = "logical"),
-##          validity = validity_AgeGroupSingleQuarterMonth)
-
-## ## HAS_TESTS
-## setClass("AgeGroupMonth",
-##          contains = "AgeGroup",
-##          slots = c(break_min = "integer",
-##                    break_max = "integer",
-##                    open_last = "logical"),
-##          validity = validity_AgeGroupSingleQuarterMonth)
-
-
-## ## Period
-
-## ## We refer to 'year_min' and 'year_max', rather than
-## ## 'break_min' and 'break_max' for periods
-## ## and cohorts measured in years, because the labels
-## ## for these periods and cohorts omit information
-## ## on month, which is contained in the breaks
-
-## setClass("Period",
-##          contains = c("Intervals",
-##                       "VIRTUAL"))
-
-
-## validity_PeriodCohortSingle <- function(object) {
-##     year_min <- object@year_min
-##     year_max <- object@year_max
-##     val <- demcheck::chk_x_min_max_integer(x_min = year_min,
-##                                            x_max = year_max,
-##                                            name_min = "year_min",
-##                                            name_max = "year_max")
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## setClass("PeriodSingle",
-##          contains = "Period",
-##          slots = c(year_min = "integer",
-##                    year_max = "integer"),
-##          validity = validity_PeriodCohortSingle)
-
-
-## validity_PeriodCohortMulti <- function(object) {
-##     year_min <- object@year_min
-##     year_max <- object@year_max
-##     width <- object@width
-##     val <- demcheck::chk_x_min_max_integer(x_min = year_min,
-##                                            x_max = year_max,
-##                                            name_min = "year_min",
-##                                            name_max = "year_max")
-##     if (!isTRUE(val))
-##         return(val)
-##     val <- demcheck::chk_is_positive_scalar(x = width,
-##                                             name = "width")
-##     if ((year_max - year_min) %% width != 0L)
-##         return(gettextf("difference between '%s' [%d] and '%s' [%d] not a multiple of '%s' [%d]",
-##                         "year_max", year_max, "year_min", year_min, "width", width))
-##     TRUE
-## }
-
-## setClass("PeriodMulti",
-##          contains = "Period",
-##          slots = c(year_min = "integer",
-##                    year_max = "integer",
-##                    width = "integer"),
-##          validity = validity_PeriodCohortMulti)
-
-## validity_PeriodCustom <- function(object) {
-##     years <- object@years
-##     val <- demcheck::chk_x_integer(x = years,
-##                                    name = "years",
-##                                    open_first = FALSE,
-##                                    open_last = FALSE)
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## ## HAS_TESTS
-## setClass("PeriodCustom",
-##          contains = "Period",
-##          slots = c(years = "integer"),
-##          validity = validity_PeriodCustom)
-
-
-## validity_PeriodCohortQuarter <- function(object) {
-##     break_min <- object@break_min
-##     break_max <- object@break_max
-##     val <- demcheck::chk_break_min_max_date(break_min = break_min,
-##                                             break_max = break_max,
-##                                             unit = "quarter")
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## ## HAS_TESTS
-## setClass("PeriodQuarter",
-##          contains = "Period",
-##          slots = c(break_min = "Date",
-##                    break_max = "Date"),
-##          validity = validity_PeriodCohortQuarter)
-
-
-## validity_PeriodCohortMonth <- function(object) {
-##     break_min <- object@break_min
-##     break_max <- object@break_max
-##     val <- demcheck::chk_break_min_max_date(break_min = break_min,
-##                                             break_max = break_max,
-##                                             unit = "month")
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## ## HAS_TESTS
-## setClass("PeriodMonth",
-##          contains = "Period",
-##          slots = c(break_min = "Date",
-##                    break_max = "Date"),
-##          validity = validity_PeriodCohortMonth)
-
-
-## ## Cohort
-
-## validity_Cohort <- function(object) {
-##     open_first <- object@open_first
-##     val <- demcheck::chk_is_logical_flag(x = open_first,
-##                                          name = "open_first")
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## setClass("Cohort",
-##          contains = c("Intervals",
-##                       "VIRTUAL"),
-##          slots = c(open_first = "logical"),
-##          validity = validity_Cohort)
-
-## ## HAS_TESTS
-## setClass("CohortSingle",
-##          contains = "Cohort",
-##          slots = c(year_min = "integer",
-##                    year_max = "integer"),
-##          validity = validity_PeriodCohortSingle)
-
-## setClass("CohortMulti",
-##          contains = "Cohort",
-##          slots = c(year_min = "integer",
-##                    year_max = "integer",
-##                    width = "integer"),
-##          validity = validity_PeriodCohortMulti)
-
-## validity_CohortCustom <- function(object) {
-##     open_first <- object@open_first
-##     years <- object@years
-##     val <- demcheck::chk_x_integer(x = years,
-##                                    name = "years",
-##                                    open_first = open_first,
-##                                    open_last = FALSE)
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## setClass("CohortCustom",
-##          contains = "Cohort",
-##          slots = c(years = "integer"),
-##          validity = validity_CohortCustom)
-
-
-## setClass("CohortQuarter",
-##          contains = "Cohort",
-##          slots = c(break_min = "Date",
-##                    break_max = "Date"),
-##          validity = validity_PeriodCohortQuarter)
-
-
-## setClass("CohortMonth",
-##          contains = "Cohort",
-##          slots = c(break_min = "Date",
-##                    break_max = "Date"),
-##          validity = validity_PeriodCohortMonth)
-
-
-
-
-## ## Points ---------------------------------------------------------------------
-
-## setClass("Points",
-##          contains = c("DimScale",
-##                       "VIRTUAL"))
-
-## ## ExactAge
-
-
-## setClass("ExactAge",
-##          contains = c("Intervals",
-##                       "VIRTUAL"),
-##          slots = c(open_last = "logical"),
-##          validity = validity_AgeGroup)
-
-## validity_AgeGroupSingleQuarterMonth <- function(object) {
-##     break_min <- object@break_min
-##     break_max <- object@break_max
-##     val <- demcheck::chk_x_min_max_integer(x_min = break_min,
-##                                            x_max = break_max,
-##                                            name_min = "break_min",
-##                                            name_max = "break_max")
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## ## HAS_TESTS
-## setClass("AgeGroupSingle",
-##          contains = "AgeGroup",
-##          slots = c(break_min = "integer",
-##                    break_max = "integer",
-##                    open_last = "logical"),
-##          validity = validity_AgeGroupSingleQuarterMonth)
-
-
-## validity_AgeGroupMulti <- function(object) {
-##     break_min <- object@break_min
-##     break_max <- object@break_max
-##     width <- object@width
-##     val <- demcheck::chk_x_min_max_integer(x_min = break_min,
-##                                            x_max = break_max,
-##                                            name_min = "break_min",
-##                                            name_max = "break_max")
-##     if (!isTRUE(val))
-##         return(val)
-##     val <- demcheck::chk_is_positive_scalar(x = width,
-##                                             name = "width")
-##     if ((break_max - break_min) %% width != 0L)
-##         return(gettextf("difference between '%s' [%d] and '%s' [%d] not a multiple of '%s' [%d]",
-##                         "break_max", break_max, "break_min", break_min, "width", width))
-##     TRUE
-## }
-
-## ## HAS_TESTS
-## setClass("AgeGroupMulti",
-##          contains = "AgeGroup",
-##          slots = c(break_min = "integer",
-##                    break_max = "integer",
-##                    width = "integer",
-##                    open_last = "logical"),
-##          validity = validity_AgeGroupMulti)
-
-
-## validity_AgeGroupCustom <- function(object) {
-##     breaks <- object@breaks
-##     open_last  <- object@open_last
-##     val <- demcheck::chk_x_integer(x = breaks,
-##                                    name = "breaks",
-##                                    open_first = FALSE,
-##                                    open_last = open_last)
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## ## HAS_TESTS
-## setClass("AgeGroupCustom",
-##          contains = "AgeGroup",
-##          slots = c(breaks = "integer",
-##                    open_last = "logical"),
-##          validity = validity_AgeGroupCustom)
-
-## ## HAS_TESTS
-## setClass("AgeGroupQuarter",
-##          contains = "AgeGroup",
-##          slots = c(break_min = "integer",
-##                    break_max = "integer",
-##                    open_last = "logical"),
-##          validity = validity_AgeGroupSingleQuarterMonth)
-
-## ## HAS_TESTS
-## setClass("AgeGroupMonth",
-##          contains = "AgeGroup",
-##          slots = c(break_min = "integer",
-##                    break_max = "integer",
-##                    open_last = "logical"),
-##          validity = validity_AgeGroupSingleQuarterMonth)
-
-
-## ## Period
-
-## ## We refer to 'year_min' and 'year_max', rather than
-## ## 'break_min' and 'break_max' for periods
-## ## and cohorts measured in years, because the labels
-## ## for these periods and cohorts omit information
-## ## on month, which is contained in the breaks
-
-## setClass("Period",
-##          contains = c("Intervals",
-##                       "VIRTUAL"))
-
-
-## validity_PeriodCohortSingle <- function(object) {
-##     year_min <- object@year_min
-##     year_max <- object@year_max
-##     val <- demcheck::chk_x_min_max_integer(x_min = year_min,
-##                                            x_max = year_max,
-##                                            name_min = "year_min",
-##                                            name_max = "year_max")
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## setClass("PeriodSingle",
-##          contains = "Period",
-##          slots = c(year_min = "integer",
-##                    year_max = "integer"),
-##          validity = validity_PeriodCohortSingle)
-
-
-## validity_PeriodCohortMulti <- function(object) {
-##     year_min <- object@year_min
-##     year_max <- object@year_max
-##     width <- object@width
-##     val <- demcheck::chk_x_min_max_integer(x_min = year_min,
-##                                            x_max = year_max,
-##                                            name_min = "year_min",
-##                                            name_max = "year_max")
-##     if (!isTRUE(val))
-##         return(val)
-##     val <- demcheck::chk_is_positive_scalar(x = width,
-##                                             name = "width")
-##     if ((year_max - year_min) %% width != 0L)
-##         return(gettextf("difference between '%s' [%d] and '%s' [%d] not a multiple of '%s' [%d]",
-##                         "year_max", year_max, "year_min", year_min, "width", width))
-##     TRUE
-## }
-
-## setClass("PeriodMulti",
-##          contains = "Period",
-##          slots = c(year_min = "integer",
-##                    year_max = "integer",
-##                    width = "integer"),
-##          validity = validity_PeriodCohortMulti)
-
-## validity_PeriodCustom <- function(object) {
-##     years <- object@years
-##     val <- demcheck::chk_x_integer(x = years,
-##                                    name = "years",
-##                                    open_first = FALSE,
-##                                    open_last = FALSE)
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## ## HAS_TESTS
-## setClass("PeriodCustom",
-##          contains = "Period",
-##          slots = c(years = "integer"),
-##          validity = validity_PeriodCustom)
-
-
-## validity_PeriodCohortQuarter <- function(object) {
-##     break_min <- object@break_min
-##     break_max <- object@break_max
-##     val <- demcheck::chk_break_min_max_date(break_min = break_min,
-##                                             break_max = break_max,
-##                                             unit = "quarter")
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## ## HAS_TESTS
-## setClass("PeriodQuarter",
-##          contains = "Period",
-##          slots = c(break_min = "Date",
-##                    break_max = "Date"),
-##          validity = validity_PeriodCohortQuarter)
-
-
-## validity_PeriodCohortMonth <- function(object) {
-##     break_min <- object@break_min
-##     break_max <- object@break_max
-##     val <- demcheck::chk_break_min_max_date(break_min = break_min,
-##                                             break_max = break_max,
-##                                             unit = "month")
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## ## HAS_TESTS
-## setClass("PeriodMonth",
-##          contains = "Period",
-##          slots = c(break_min = "Date",
-##                    break_max = "Date"),
-##          validity = validity_PeriodCohortMonth)
-
-
-## ## Cohort
-
-## validity_Cohort <- function(object) {
-##     open_first <- object@open_first
-##     val <- demcheck::chk_is_logical_flag(x = open_first,
-##                                          name = "open_first")
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## setClass("Cohort",
-##          contains = c("Intervals",
-##                       "VIRTUAL"),
-##          slots = c(open_first = "logical"),
-##          validity = validity_Cohort)
-
-## ## HAS_TESTS
-## setClass("CohortSingle",
-##          contains = "Cohort",
-##          slots = c(year_min = "integer",
-##                    year_max = "integer"),
-##          validity = validity_PeriodCohortSingle)
-
-## setClass("CohortMulti",
-##          contains = "Cohort",
-##          slots = c(year_min = "integer",
-##                    year_max = "integer",
-##                    width = "integer"),
-##          validity = validity_PeriodCohortMulti)
-
-## validity_CohortCustom <- function(object) {
-##     open_first <- object@open_first
-##     years <- object@years
-##     val <- demcheck::chk_x_integer(x = years,
-##                                    name = "years",
-##                                    open_first = open_first,
-##                                    open_last = FALSE)
-##     if (!isTRUE(val))
-##         return(val)
-##     TRUE
-## }
-
-## setClass("CohortCustom",
-##          contains = "Cohort",
-##          slots = c(years = "integer"),
-##          validity = validity_CohortCustom)
-
-
-## setClass("CohortQuarter",
-##          contains = "Cohort",
-##          slots = c(break_min = "Date",
-##                    break_max = "Date"),
-##          validity = validity_PeriodCohortQuarter)
-
-
-## setClass("CohortMonth",
-##          contains = "Cohort",
-##          slots = c(break_min = "Date",
-##                    break_max = "Date"),
-##          validity = validity_PeriodCohortMonth)
+                   break_max = "integer",
+                   open_last = "logical"),
+         validity = validity_LabDurations)
+
+setClass("LabDurationsQuarters",
+         contains = "LabDurations")
+
+setClass("LabDurationsMonths",
+         contains = "LabDurations")
