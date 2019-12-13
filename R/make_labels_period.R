@@ -94,43 +94,40 @@
 make_labels_period <- function(breaks,
                                label_year_start = TRUE,
                                include_na = FALSE) {
-    breaks <- demcheck::err_tdy_breaks_date_period(breaks = breaks)
+    breaks <- demcheck::err_tdy_breaks_date_period(breaks = breaks) # checks length not equal to 1
     demcheck::err_is_first_day_unit_vector(x = breaks,
                                            name = "breaks",
                                            unit = "year")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")
-    n <- length(breaks)
-    if (n == 0L) {
-        ans_mid <- character()
-        ans_first <- NULL
-    }
-    else {
-        breaks_year <- format(breaks, "%Y")
-        diff <- diff(as.integer(breaks_year))
-        is_single_year <- diff == 1L
-        lower <- breaks_year[-n]
-        upper <- breaks_year[-1L]
-        all_single <- all(is_single_year)
-        if (all_single) {
-            demcheck::err_is_logical_flag(x = label_year_start,
-                                          name = "label_year_start")
-            is_1_jan <- identical(format(breaks[[1L]], "%m-%d"), "01-01")
-            use_lower_for_single <- label_year_start || is_1_jan
-            if (use_lower_for_single)
-                ans_mid <- lower
-            else
-                ans_mid <- upper
+    breaks_year <- as.integer(format(breaks, "%Y"))
+    all_single <- (n > 0L) && all(diff(breaks_year) == 1L)
+    if (all_single) {
+        demcheck::err_is_logical_flag(x = label_year_start,
+                                      name = "label_year_start")
+        n <- length(breaks)
+        breaks_year <- as.integer(format(breaks, "%Y"))
+        break_min <- breaks[[1L]]
+        break_max <- breaks[[n]]
+        is_1_jan <- identical(format(break_min, "%m-%d"), "01-01")
+        use_lower_for_single <- label_year_start || is_1_jan
+        if (use_lower_for_single) {
+            int_min <- breaks_year[[1L]]
+            int_max <- breaks_year[[n - 1L]]
         }
         else {
-            ans_mid <- paste(lower, upper, sep = "-")
+            int_min <- breaks_year[[2L]]
+            int_max <- breaks_year[[n]]
         }
+        make_labels_integers(int_min = int_min,
+                             int_max = int_max,
+                             include_na = include_na)
     }
-    if (include_na)
-        ans_na <- NA_character_
     else
-        ans_na <- NULL
-    c(ans_mid, ans_na)
+        make_labels_grouped_int_endpoints(breaks = breaks_year,
+                                          open_first = FALSE,
+                                          open_last = FALSE,
+                                          include_na = include_na)
 }
 
 ## HAS_TESTS

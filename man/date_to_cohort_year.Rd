@@ -38,10 +38,10 @@ in either case, it must be the first day of
 a month.}
 
 \item{open_first}{Whether the first cohort
-has no lower limit. If \code{break_min} is \code{NULL},
-then \code{open_first} is ignored. If \code{break_min} is
-non-\code{NULL}, then \code{open_first} defaults to
-\code{TRUE}.}
+has no lower limit. If \code{break_min} is non-\code{NULL}
+and \code{label_year_start} is \code{TRUE}, then
+then \code{open_first} defaults to \code{TRUE};
+otherwise it defaults to \code{FALSE}.}
 
 \item{as_factor}{Whether the return value is a factor.
 Defaults to \code{TRUE}.}
@@ -63,7 +63,7 @@ to that of \code{\link{date_to_period_year}}, except that
 and \code{open_first}.
 
 Supplying a date for \code{break_min} defines
-the first cohort. It is similar to
+the first cohort, and is similar to
 to supplying a value for \code{break_max} in
 \code{\link{date_to_age_group_year}}. If
 \code{open_first} is \code{TRUE}, then \code{break_min}
@@ -99,6 +99,9 @@ others label it \code{"2001"}. Function
 \code{date_to_cohort_year} by default uses
 the start year. To use the end year, set
 \code{label_year_start} to \code{FALSE}.
+
+If \code{open_first} is \code{TRUE}, then
+\code{label_year_start} must also be \code{TRUE}.
 
 When \code{as_factor} is \code{TRUE} the levels of
 the factor include all intermediate cohorts,

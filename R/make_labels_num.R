@@ -1,0 +1,84 @@
+
+#' Make labels for general numeric quantities
+#'
+#' NEED TO FINISH DOCUMENATION
+#'
+#' Make labels for age groups with lengths measured in
+#' whole years. The labels follow standard
+#' demographic conventions.
+#' 
+#' Age groups are defined via the \code{breaks} argument.
+#' The elements of \code{breaks} must be non-negative integers,
+#' and must be strictly increasing.  
+#' Labels for single-year age groups, eg from birth to exact age 1, from
+#' exact age 1 to exact age 2, and so on, take the form
+#' \code{"0", "1", "2", ...}. Labels for multi-year age groups,
+#' eg from birth to exact age 5, from exact age 5 to
+#' exact age 10, and so on, take the form \code{"0-4", "5-9", ...}.
+#'
+#' When \code{open_last} is \code{TRUE}, an 'open' age
+#' group with no upper limit is appended to the end of the labels.
+#' By default, \code{open_last} is \code{TRUE}.
+#' 
+#' When \code{include_na} is \code{TRUE}, an \code{NA}
+#' is added to the end of the labels. This can be useful
+#' when dealing with dates that include \code{NA}s.
+#'
+#' \code{breaks} can only have length 0 if \code{open_last}
+#' is \code{FALSE}. \code{breaks} can
+#' have only have length 1 if \code{open_last}
+#'  is TRUE.
+#'
+#' @param breaks A integer vector, or a vector that can
+#' be coerced to integer via function \code{\link[base]{as.integer}}.
+#' @param open_last Whether to append an open-ended
+#' age group to the end of the labels.
+#' Defaults to \code{TRUE}.
+#' @param include_na  Whether to append an \code{NA} to
+#' the end of the labels. Defaults to \code{FALSE}.
+#'
+#' @return A character vector. 
+#'
+#' @seealso To make labels for periods measured in years, use
+#' \code{\link{make_labels_period}}. There is
+#' no \code{make_labels_cohort} function. To construct
+#' labels for cohorts, just use \code{make_labels_period}.
+#' To make labels for age groups with widths of one quarter or one month,
+#' use functions \code{\link{make_labels_age_group_quarter}} or
+#' \code{\link{make_labels_age_group_month}}.
+#'
+#' @examples
+#' ## single-year
+#' make_labels_age_group(breaks = 0:100)
+#'
+#' ## 5-year
+#' make_labels_age_group(breaks = seq(0, 80, 5))
+#'
+#' ## mixed
+#' make_labels_age_group(breaks = c(0, 1, 4, seq(5, 80, 5)))
+#'
+#' ## no open age group
+#' make_labels_age_group(breaks = seq(15, 65, 5))
+#' 
+#' ## allow for missing
+#' make_labels_age_group(breaks = seq(15, 65, 5),
+#'                       include_na = TRUE)
+#' @export
+make_labels_num <- function(breaks,
+                            open_first = FALSE,
+                            open_last = FALSE,
+                            include_na = FALSE) {
+    breaks <- demcheck::err_tdy_breaks_integer_num(breaks = breaks,
+                                                   open_first = open_first,
+                                                   open_last = open_last)
+    demcheck::err_is_logical_flag(x = open_first,
+                                  name = "open_first")
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
+    demcheck::err_is_logical_flag(x = include_na,
+                                  name = "include_na")
+    make_labels_grouped_int_enumerations(breaks = breaks,
+                                         open_first = open_first,
+                                         open_last = open_last,
+                                         include_na = include_na)
+}

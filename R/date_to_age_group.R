@@ -720,7 +720,7 @@ date_to_age_group_custom <- function(date, dob,
                                     dob = dob)
     date <- l$date
     dob <- l$dob
-    breaks <- demcheck::err_tdy_breaks_integer(breaks = breaks,
+    breaks <- demcheck::err_tdy_breaks_integer_age(breaks = breaks,
                                                open_last = open_last)
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")

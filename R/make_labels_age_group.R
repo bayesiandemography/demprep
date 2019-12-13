@@ -66,48 +66,16 @@
 make_labels_age_group <- function(breaks,
                                   open_last = TRUE,
                                   include_na = FALSE) {
-    breaks <- demcheck::err_tdy_breaks_integer(breaks = breaks,
-                                               open_last = open_last)
+    breaks <- demcheck::err_tdy_breaks_integer_age(breaks = breaks,
+                                                   open_last = open_last)
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")
-    n <- length(breaks)
-    if (n == 0L) {
-        ## 'err_tdy_breaks_integer' checked that 'open_last' FALSE
-        ans_mid <- character()
-        ans_left <- NULL
-        ans_right <- NULL
-    }
-    else if (n == 1L) {
-        ## 'err_tdy_breaks_integer' checked that 'open_last' TRUE
-        ans_mid <- as.character(breaks)
-        if (open_last)
-            ans_right <- paste0(ans_mid, "+")
-        else
-            ans_right <- NULL
-    }
-    else {
-        ## 'open_last' may be TRUE
-        ans_mid <- character(length = n - 1L)
-        diff <- diff(breaks)
-        is_single_year <- diff == 1L
-        ans_mid[is_single_year] <- breaks[-n][is_single_year]
-        if (any(!is_single_year)) {
-            lower <- breaks[-n][!is_single_year]
-            upper <- breaks[-1L][!is_single_year] - 1L
-            ans_mid[!is_single_year] <- paste(lower, upper, sep = "-")
-        }
-    }
-    if (open_last)
-        ans_right <- paste0(breaks[[n]], "+")
-    else
-        ans_right <- NULL
-    if (include_na)
-        ans_na <- NA_character_
-    else
-        ans_na <- NULL
-    c(ans_mid, ans_right, ans_na)
+    make_labels_grouped_int_enumerations(breaks - breaks,
+                                         open_first = FALSE,
+                                         open_last = open_last,
+                                         include_na = include_na)
 }
 
 ## HAS_TESTS
@@ -178,11 +146,22 @@ make_labels_age_group_quarter <- function(break_min = 0,
                                           break_max = 400,
                                           open_last = TRUE,
                                           include_na = FALSE) {
-    make_labels_age_group_month_quarter(break_min = break_min,
-                                        break_max = break_max,
-                                        open_last = open_last,
-                                        unit = "quarter",
-                                        include_na = include_na)
+    l <- demcheck::err_tdy_break_min_max_integer(break_min = break_min,
+                                                 break_max = break_max,
+                                                 null_ok = FALSE,
+                                                 equal_ok = open_last)
+    break_min <- l$break_min
+    break_max <- l$break_max
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
+    demcheck::err_is_logical_flag(x = include_na,
+                                  name = "include_na")
+    make_labels_duration_quarters_months(break_min = break_min,
+                                         break_max = break_max,
+                                         open_first = FALSE,
+                                         open_last = open_last,
+                                         include_na = include_na,
+                                         unit = "quarter")
 }
 
 ## HAS_TESTS
@@ -253,9 +232,20 @@ make_labels_age_group_month <- function(break_min = 0,
                                         break_max = 1200,
                                         open_last = TRUE,
                                         include_na = FALSE) {
-    make_labels_age_group_month_quarter(break_min = break_min,
-                                        break_max = break_max,
-                                        open_last = open_last,
-                                        unit = "month",
-                                        include_na = include_na)
+    l <- demcheck::err_tdy_break_min_max_integer(break_min = break_min,
+                                                 break_max = break_max,
+                                                 null_ok = FALSE,
+                                                 equal_ok = open_last)
+    break_min <- l$break_min
+    break_max <- l$break_max
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
+    demcheck::err_is_logical_flag(x = include_na,
+                                  name = "include_na")
+    make_labels_duration_quarters_months(break_min = break_min,
+                                         break_max = break_max,
+                                         open_first = FALSE,
+                                         open_last = open_last,
+                                         include_na = include_na,
+                                         unit = "month")
 }

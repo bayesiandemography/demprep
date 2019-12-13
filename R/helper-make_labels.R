@@ -1,0 +1,268 @@
+
+make_labels_default <- function(labels, include_na) {
+    ans <- as.character(labels)
+    if (include_na)
+        ans <- c(ans, NA_character_)
+    ans
+}
+
+make_labels_integers <- function(int_min, int_max, open_first, open_last, include_na) {
+    if (int_max > int_min) {
+        s <- seq.int(from = int_min,
+                     to = int_max)
+        ans_mid <- as.character(s)
+    }
+    else
+        ans_mid <- NULL
+    if (open_first)
+        ans_first <- paste0("<", int_min)
+    else
+        ans_first <- NULL
+    if (open_last)
+        ans_last <- paste0(int_min + 1L, "+")
+    else
+        ans_last <- NULL
+    if (include_na)
+        ans_na <- NA_character_
+    else
+        ans_na <- NULL
+    ans <- c(ans_first, ans_mid, ans_last, ans_na)
+    ans
+}
+
+make_labels_grouped_int_enumerations <- function(breaks, open_first, open_last, include_na) {
+    n <- length(breaks)
+    if (n == 0L) {
+        ans_mid <- character()
+        ans_first <- NULL
+        ans_last <- NULL
+    }
+    else if (n == 1L) {
+        ans_mid <- NULL
+        if (open_first)
+            ans_first <- paste0("<", breaks)
+        else
+            ans_first <- NULL
+        if (open_last)
+            ans_last <- paste0(breaks, "+")
+        else
+            ans_last <- NULL
+    }
+    else {
+        ans_mid <- character(length = n - 1L)
+        diff <- diff(breaks)
+        is_single <- diff == 1L
+        ans_mid[is_single] <- breaks[-n][is_single]
+        if (any(!is_single)) {
+            lower <- breaks[-n][!is_single]
+            upper <- breaks[-1L][!is_single] - 1L
+            ans_mid[!is_single] <- paste(lower, upper, sep = "-")
+        }
+        if (open_first)
+            ans_first <- paste0("<", breaks[[1L]])
+        else
+            ans_first <- NULL
+        if (open_last)
+            ans_last <- paste0(breaks[[n]], "+")
+        else
+            ans_last <- NULL
+    }
+    if (include_na)
+        ans_na <- NA_character_
+    else
+        ans_na <- NULL
+    ans <- c(ans_first, ans_mid, ans_last, ans_na)
+    ans
+}
+
+make_labels_grouped_int_endpoints <- function(breaks, open_first, open_last, include_na) {
+    n <- length(breaks)
+    if (n == 0L) {
+        ans_mid <- character()
+        ans_first <- NULL
+        ans_last <- NULL
+    }
+    else if (n == 1L) {
+        ans_mid <- NULL
+        if (open_first)
+            ans_first <- paste0("<", breaks)
+        else
+            ans_first <- NULL
+        if (open_last)
+            ans_last <- paste0(breaks, "+")
+        else
+            ans_last <- NULL
+    }
+    else {
+        ans_mid <- character(length = n - 1L)
+        lower <- breaks[-n]
+        upper <- breaks[-1L]
+        ans_mid <- paste(lower, upper, sep = "-")
+        if (open_first)
+            ans_first <- paste0("<", breaks[[1L]])
+        else
+            ans_first <- NULL
+        if (open_last)
+            ans_last <- paste0(breaks[[n]], "+")
+        else
+            ans_last <- NULL
+    }
+    if (include_na)
+        ans_na <- NA_character_
+    else
+        ans_na <- NULL
+    c(ans_first, ans_mid, ans_last, ans_na)
+}
+
+
+make_labels_calendar_quarters_months <- function(break_min,
+                                                 break_max,
+                                                 open_first,
+                                                 include_na,
+                                                 unit) {
+    s <- seq.Date(from = break_min,
+                  to = break_max,
+                  by = unit)
+    year <- format(s, format = "%Y")
+    if (unit == "month")
+        suffix <- months(s, abbreviate = TRUE)
+    else if (unit == "quarter")
+        suffix <- quarters(s)
+    else
+        stop(gettextf("can't handle unit '%s'",
+                      unit))
+    n <- length(s)
+    if (n == 1L)
+        ans_mid <- NULL
+    else
+        ans_mid <- paste(year[-n], suffix[-n])
+    if (open_first)
+        ans_first <- sprintf("<%s %s", year[[1L]], suffix[[1L]])
+    else
+        ans_first <- NULL
+    if (open_last)
+        ans_last <- sprintf("%s %s+", year[[n]], suffix[[n]])
+    else
+        ans_last <- NULL
+    if (include_na)
+        ans_na <- NA_character_
+    else
+        ans_na <- NULL
+    ans <- c(ans_first, ans_mid, ans_last, ans_na)
+    ans
+}
+
+
+make_labels_duration_quarters_months <- function(break_min,
+                                                 break_max,
+                                                 open_first,
+                                                 open_last,
+                                                 include_na,
+                                                 unit) {
+    suffix <- switch(unit,
+                     month = "m",
+                     quarter = "q",
+                     stop(gettextf("can't handle unit '%s'",
+                                   unit)))
+    if (break_max > break_min) {
+        s <- seq.int(from = break_min,
+                     to = break_max - 1L)
+        ans_mid <- sprintf("%d%s", s, suffix)
+    }
+    else
+        ans_mid <- NULL
+    if (open_first)
+        ans_first <- sprintf("<%d%s", break_min, suffix)
+    else
+        ans_first <- NULL
+    if (open_last)
+        ans_last <- sprintf("%d%s+", break_max, suffix)
+    else
+        ans_last <- NULL
+    if (include_na)
+        ans_na <- NA_character_
+    else
+        ans_na <- NULL
+    ans <- c(ans_first, ans_mid, ans_last, ans_na)
+    ans
+}
+
+
+## HAS_TESTS
+make_labels_cohort_month_quarter <- function(break_min,
+                                             break_max,
+                                             open_first,
+                                             unit,
+                                             include_na) {
+    demcheck::err_is_logical_flag(x = open_first,
+                                  name = "open_first")
+    l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,
+                                              break_max = break_max,
+                                              unit = unit,
+                                              null_ok = FALSE,
+                                              equal_ok = open_first)
+    break_min <- l$break_min
+    break_max <- l$break_max
+    demcheck::err_is_logical_flag(x = include_na,
+                                  name = "include_na")    
+    s <- seq.Date(from = break_min,
+                  to = break_max,
+                  by = unit)
+    year <- format(s, format = "%Y")
+    if (unit == "month")
+        suffix <- months(s, abbreviate = TRUE)
+    else if (unit == "quarter")
+        suffix <- quarters(s)
+    else
+        stop(gettextf("can't handle unit '%s'",
+                      unit))
+    n <- length(s)
+    ans_mid <- paste(year[-n], suffix[-n])
+    if (open_first)
+        ans_first <- sprintf("<%s %s", year[[1L]], suffix[[1L]])
+    else
+        ans_first <- NULL
+    if (include_na)
+        ans_na <- NA_character_
+    else
+        ans_na <- NULL
+    ans <- c(ans_first, ans_mid, ans_na)
+    ans
+}
+
+## HAS_TESTS
+make_labels_period_month_quarter <- function(break_min,
+                                             break_max,
+                                             unit,
+                                             include_na) {
+    l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,
+                                              break_max = break_max,
+                                              unit = unit,
+                                              null_ok = FALSE,
+                                              equal_ok = FALSE)
+    break_min <- l$break_min
+    break_max <- l$break_max
+    demcheck::err_is_logical_flag(x = include_na,
+                                  name = "include_na")    
+    s <- seq.Date(from = break_min,
+                  to = break_max,
+                  by = unit)
+    year <- format(s, format = "%Y")
+    if (unit == "month")
+        suffix <- months(s, abbreviate = TRUE)
+    else if (unit == "quarter")
+        suffix <- quarters(s)
+    else
+        stop(gettextf("can't handle unit '%s'",
+                      unit))
+    n <- length(s)
+    ans_mid <- paste(year[-n], suffix[-n])
+    if (include_na)
+        ans_na <- NA_character_
+    else
+        ans_na <- NULL
+    ans <- c(ans_mid, ans_na)
+    ans
+}
+
+

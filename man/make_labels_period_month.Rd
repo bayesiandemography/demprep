@@ -4,13 +4,7 @@
 \alias{make_labels_period_month}
 \title{Make labels for periods lengths of one month}
 \usage{
-make_labels_period_month(
-  break_min,
-  break_max,
-  open_first = FALSE,
-  open_last = FALSE,
-  include_na = FALSE
-)
+make_labels_period_month(break_min, break_max, include_na = FALSE)
 }
 \arguments{
 \item{break_min}{A value of class \code{\link[base]{Date}},
@@ -20,14 +14,6 @@ via function \code{\link[base]{as.Date}}.}
 \item{break_max}{A value of class \code{\link[base]{Date}},
 or a value that can be coerced to class \code{Date}
 via function \code{\link[base]{as.Date}}.}
-
-\item{open_first}{Whether to append an open-ended
-period to the start of the labels.
-Defaults to \code{FALSE}.}
-
-\item{open_last}{Whether to append an open-ended
-period to the end of the labels.
-Defaults to \code{FALSE}.}
 
 \item{include_na}{Whether to append an \code{NA} to
 the end of the labels. Defaults to \code{FALSE}.}
@@ -39,17 +25,10 @@ A character vector.
 Make labels for periods that are all one month long.
 }
 \details{
-\code{break_min} and \code{break_max},
-together with \code{open_first} and \code{open_last},
+\code{break_min} and \code{break_max}
 define the lower and upper limits of the periods.
 \code{break_min} and \code{break_max} must both
 be the start dates of months.
-When \code{open_first} is \code{TRUE}, an 'open' period
-extending indefinitely into the past is appended to the start
-of the labels. When \code{open_last} is \code{TRUE},
-an open period extending indefintely into the future is
-appended to the end of the labels. By default,
-\code{open_first} and \code{open_last} are both \code{FALSE}.
 
 When \code{include_na} is \code{TRUE}, an \code{NA}
 is added to the end of the labels. This can be useful
@@ -59,18 +38,6 @@ when dealing with data that include \code{NA}s.
 make_labels_period_month(break_min = "2005-01-01",
                          break_max = "2005-08-01")
 
-
-## add an open period at the beginning...
-make_labels_period_month(break_min = "2005-03-01",
-                         break_max = "2006-04-01",
-                         open_first = TRUE)
-
-## ...and at the end
-make_labels_period_month(break_min = "2005-03-01",
-                         break_max = "2006-04-01",
-                         open_first = TRUE,
-                         open_last = TRUE)
-
 ## add an 'NA' label
 make_labels_period_month(break_min = "2005-03-01",
                          break_max = "2006-04-01",
@@ -78,9 +45,9 @@ make_labels_period_month(break_min = "2005-03-01",
 }
 \seealso{
 To make labels for month age groups, use
-\code{\link{make_labels_age_group_month}}. There is
-no \code{make_labels_cohort_month} function. To construct
-labels for cohorts, just use \code{make_labels_period_month}.
+\code{\link{make_labels_age_group_month}},
+and to make labels for month periods,
+use \code{make_labels_period_month}.
 To make labels for periods with widths measured in years,
 use function \code{\link{make_labels_period}}, and to make
 labels for quarter periods, use \code{\link{make_labels_period_quarter}}.

@@ -27,6 +27,7 @@ validity_LabCategories <- function(object) {
     TRUE
 }
 
+## HAS_TESTS
 setClass("LabCategories",
          contains = "Labels",
          slots = c(labels = "character"),
@@ -46,6 +47,7 @@ validity_LabTriangles <- function(object) {
     TRUE
 }
 
+## HAS_TESTS
 setClass("LabTriangles",
          contains = "Labels",
          prototype = prototype(labels = c("Lower", "Upper")),
@@ -66,6 +68,7 @@ validity_LabPool <- function(object) {
     TRUE
 }
 
+## HAS_TESTS
 setClass("LabPool",
          contains = "Labels",
          prototype = prototype(labels = c("Ins", "Outs")),
@@ -88,6 +91,7 @@ validity_LabQuantiles <- function(object) {
     TRUE
 }
 
+## HAS_TESTS
 setClass("LabQuantiles",
          contains = "Labels",
          slots = c(labels = "character"),
@@ -96,11 +100,15 @@ setClass("LabQuantiles",
 
 ## Integers -------------------------------------------------------------------
 
+## contains the labels themselves, rather than the breaks defining them
+
 validity_LabIntegers <- function(object) {
     int_min <- object@int_min
     int_max <- object@int_max
+    open_first <- object@open_first
+    open_last <- object@open_last
     for (name in c("int_min", "int_max")) {
-        x <- slot(object, name)
+        x <- methods::slot(object, name)
         val <- demcheck::chk_is_length_1(x = x,
                                          name = name)
         if (!isTRUE(val))
@@ -110,48 +118,77 @@ validity_LabIntegers <- function(object) {
         if (!isTRUE(val))
             return(val)
     }
+    for (name in c("open_first", "open_last")) {
+        x <- methods::slot(object, name)
+        val <- demcheck::chk_is_logical_flag(x = x,
+                                             name = name)
+        if (!isTRUE(val))
+            return(val)
+    }        
     if (int_max < int_min)
-        return(gettextf("'%s' is less than '%s'",
-                        "int_max", "int_min"))
+        return(gettextf("'%s' [%d] less than '%s' [%d]",
+                        "int_max", int_max, "int_min", int_min))
+    if (int_min == int_max) {
+        if (!open_first && !open_last)
+            return(gettextf("'%s' [%d] equals '%s' but '%s' and '%s' are both %s",
+                            "int_min",
+                            int_min,
+                            "int_max",
+                            "open_first",
+                            "open_last",
+                            "FALSE"))
+    }
     TRUE
 }
 
+## HAS_TESTS
 setClass("LabIntegers",
          contains = "Labels",
          slots = c(int_min = "integer",
-                   int_max = "integer"),
+                   int_max = "integer",
+                   open_first = "logical",
+                   open_last = "logical"),
          validity = validity_LabIntegers)
 
 
 
-## GroupsIntegers ------------------------------------------------------------
+## GroupedInt -----------------------------------------------------------------
+
+## contains the breaks between intervals
 
 validity_GroupedInt <- function(object) {
     breaks <- object@breaks
     open_first <- object@open_first
     open_last <- object@open_last
+    val <- demcheck::chk_is_not_na_vector(x = breaks,
+                                          name = "breaks")
+    if (!isTRUE(val))
+        return(val)
+    val <- demcheck::chk_is_strictly_increasing(x = breaks,
+                                                name = "breaks")
+    if (!isTRUE(val))
+        return(val)
+    for (name in c("open_first", "open_last")) {
+        x <- methods::slot(object, name)
+        val <- demcheck::chk_is_logical_flag(x = x,
+                                             name = name)
+        if (!isTRUE(val))
+            return(val)
+    }
     n <- length(breaks)
     if (n == 0L) {
         if (open_first)
             return(gettextf("'%s' has length %d but '%s' is %s",
-                            name, 0L, "open_first", "TRUE"))
+                            "breaks", 0L, "open_first", "TRUE"))
         if (open_last)
             return(gettextf("'%s' has length %d but '%s' is %s",
-                            name, 0L, "open_last", "TRUE"))
+                            "breaks", 0L, "open_last", "TRUE"))
     }
     if (n == 1L) {
         if (!open_first && !open_last)
             return(gettextf("'%s' has length %d but '%s' and '%s' are both %s",
-                            name, 1L, "open_first", "open_last", "FALSE"))
+                            "breaks", 1L, "open_first", "open_last", "FALSE"))
     }
-    val <- chk_is_not_na_vector(x = breaks,
-                                name = name)
-    if (!isTRUE(val))
-        return(val)
-    val <- chk_is_strictly_increasing(x = breaks,
-                                      name = name)
-    if (!isTRUE(val))
-        return(val)
     TRUE
 }
 
@@ -160,25 +197,28 @@ setClass("LabGroupedInt",
                       "VIRTUAL"),
          slots = c(breaks = "integer",
                    open_first = "logical",
-                   open_last = "logical"))
+                   open_last = "logical"),
+         validity = validity_GroupedInt)
 
-
+## HAS_TESTS
 setClass("LabGroupedIntEnumerations",
          contains = "LabGroupedInt")
 
-
+## HAS_TESTS
 setClass("LabGroupedIntEndpoints",
          contains = "LabGroupedInt")
 
 
 ## Dates ----------------------------------------------------------------------
 
+## contains the breaks between intervals
+
 validity_LabCalendar <- function(object) {
     break_min <- object@break_min
     break_max <- object@break_max
     open_first <- object@open_first
     for (name in c("break_min", "break_max")) {
-        x <- slot(object, name)
+        x <- methods::slot(object, name)
         val <- demcheck::chk_is_length_1(x = x,
                                          name = name)
         if (!isTRUE(val))
@@ -193,8 +233,8 @@ validity_LabCalendar <- function(object) {
     if (!isTRUE(val))
         return(val)
     if (break_max < break_min)
-        return(gettextf("'%s' [\"%s\"] is less than '%s' [\"%s\"]",
-                        "break_max", "break_min"))
+        return(gettextf("'%s' [\"%s\"] less than '%s' [\"%s\"]",
+                        "break_max", break_max, "break_min", break_min))
     TRUE
 }
 
@@ -209,32 +249,34 @@ setClass("LabCalendar",
 
 validity_LabCalendarQuarters <- function(object) {
     for (name in c("break_min", "break_max")) {
-        x <- slot(object, name)
-        val <- chk_is_first_day_unit_scalar(x = x,
-                                            name = name,
-                                            unit = "quarter")
+        x <- methods::slot(object, name)
+        val <- demcheck::chk_is_first_day_unit_scalar(x = x,
+                                                      name = name,
+                                                      unit = "quarter")
         if (!isTRUE(val))
             return(val)
     }
     TRUE
 }
 
+## HAS_TESTS
 setClass("LabCalendarQuarters",
          contains = "LabCalendar",
          validity = validity_LabCalendarQuarters)
 
 validity_LabCalendarMonths <- function(object) {
     for (name in c("break_min", "break_max")) {
-        x <- slot(object, name)
-        val <- chk_is_first_day_unit_scalar(x = x,
-                                            name = name,
-                                            unit = "month")
+        x <- methods::slot(object, name)
+        val <- demcheck::chk_is_first_day_unit_scalar(x = x,
+                                                      name = name,
+                                                      unit = "month")
         if (!isTRUE(val))
             return(val)
     }
     TRUE
 }
 
+## HAS_TESTS
 setClass("LabCalendarMonths",
          contains = "LabCalendar",
          validity = validity_LabCalendarMonths)
@@ -242,13 +284,14 @@ setClass("LabCalendarMonths",
 
 ## Durations ------------------------------------------------------------------
 
+## contains the breaks between intervals
 
 validity_LabDurations <- function(object) {
     break_min <- object@break_min
     break_max <- object@break_max
     open_last <- object@open_last
     for (name in c("break_min", "break_max")) {
-        x <- slot(object, name)
+        x <- methods::slot(object, name)
         val <- demcheck::chk_is_non_negative_scalar(x = x,
                                                     name = name)
         if (!isTRUE(val))
@@ -259,8 +302,8 @@ validity_LabDurations <- function(object) {
     if (!isTRUE(val))
         return(val)
     if (break_max < break_min)
-        return(gettextf("'%s' [\"%d\"] is less than '%s' [\"%d\"]",
-                        "break_max", "break_min"))
+        return(gettextf("'%s' [%d] less than '%s' [%d]",
+                        "break_max", break_max, "break_min", break_min))
     TRUE
 }
 
@@ -272,8 +315,10 @@ setClass("LabDurations",
                    open_last = "logical"),
          validity = validity_LabDurations)
 
+## HAS_TESTS
 setClass("LabDurationsQuarters",
          contains = "LabDurations")
 
+## HAS_TESTS
 setClass("LabDurationsMonths",
          contains = "LabDurations")

@@ -23,7 +23,8 @@ via function \code{\link[base]{as.Date}}.}
 \item{width}{The length, in whole years, of the cohorts.
 Defaults to 5.}
 
-\item{origin}{An integer. Defaults to 2000.}
+\item{origin}{An integer. Defaults to 2000.
+Ignored if value supplied for \code{break_min}.}
 
 \item{month_start}{An element of \code{\link[base]{month.name}},
 or \code{\link[base]{month.abb}}. Cohorts start on
@@ -39,10 +40,10 @@ in either case, it must be the first day of
 a month.}
 
 \item{open_first}{Whether the first cohort
-has no lower limit. If \code{break_min} is \code{NULL},
-then \code{open_first} is ignored. If \code{break_min} is
-non-\code{NULL}, then \code{open_first} defaults to
-\code{TRUE}.}
+has no lower limit. If \code{break_min} is non-\code{NULL}
+and \code{label_year_start} is \code{TRUE}, then
+then \code{open_first} defaults to \code{TRUE};
+otherwise it defaults to \code{FALSE}.}
 
 \item{as_factor}{Whether the return value is a factor.
 Defaults to \code{TRUE}.}
@@ -84,7 +85,10 @@ end on 31 December. \code{month_start} can be a
 full month name or an abbreviation.
 
 The location of the periods can be shifted
-by using different values for \code{origin}.
+by using different values for \code{origin},
+unless a value for \code{break_min} has been
+supplied, in which case \code{origin} is ignored.
+
 When \code{as_factor} is \code{TRUE} the levels of
 the factor include all intermediate cohorts,
 including cohorts that not appear in the data.
