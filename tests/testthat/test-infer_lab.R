@@ -1,5 +1,5 @@
 
-## context("infer_dimscale")
+## context("infer_lab")
 
 
 ## ## infer_dimscale_period_quarter ----------------------------------------------

@@ -29,14 +29,14 @@ test_that("LabQuantiles creates correct object", {
 test_that("LabIntegers creates correct object", {
     x <- LabIntegers(int_min = 0L,
                      int_max = 100L,
-                     open_first = TRUE,
-                     open_last = TRUE,
                      include_na = FALSE)
     expect_is(x, "LabIntegers")
     x <- LabIntegers(int_min = 10L,
                      int_max = 10L,
-                     open_first = FALSE,
-                     open_last = TRUE,
+                     include_na = TRUE)
+    expect_is(x, "LabIntegers")
+    x <- LabIntegers(int_min = 10L,
+                     int_max = 10L,
                      include_na = TRUE)
     expect_is(x, "LabIntegers")
 })
@@ -57,12 +57,10 @@ test_that("LabGroupedIntEnumerations creates correct object", {
 test_that("LabGroupedIntEndpoints creates correct object", {
     x <- LabGroupedIntEndpoints(breaks = c(-10L, 0L, 5L, 100L),
                                 open_first = TRUE,
-                                open_last = TRUE,
                                 include_na = FALSE)
     expect_is(x, "LabGroupedIntEndpoints")
     x <- LabGroupedIntEndpoints(breaks = integer(),
                                 open_first = FALSE,
-                                open_last = FALSE,
                                 include_na = TRUE)
     expect_is(x, "LabGroupedIntEndpoints")
 })

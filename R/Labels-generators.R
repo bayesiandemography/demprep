@@ -34,6 +34,7 @@ NULL
 #' @rdname Label-generators
 LabCategories <- function(labels,
                           include_na) {
+    labels <- as.character(labels)
     methods::new("LabCategories",
                  labels = labels,
                  include_na = include_na)
@@ -74,14 +75,10 @@ LabQuantiles <- function(labels,
 #' @rdname Label-generators
 LabIntegers <- function(int_min,
                         int_max,
-                        open_first,
-                        open_last,
                         include_na) {
     methods::new("LabIntegers",
                  int_min = int_min,
                  int_max = int_max,
-                 open_first = open_first,
-                 open_last = open_last,
                  include_na = include_na)
 }
 
@@ -104,12 +101,10 @@ LabGroupedIntEnumerations <- function(breaks,
 #' @rdname Label-generators
 LabGroupedIntEndpoints <- function(breaks,
                                    open_first,
-                                   open_last,
                                    include_na) {
     methods::new("LabGroupedIntEndpoints",
                  breaks = breaks,
                  open_first = open_first,
-                 open_last = open_last,
                  include_na = include_na)
 }
 

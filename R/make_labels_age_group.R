@@ -72,7 +72,7 @@ make_labels_age_group <- function(breaks,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")
-    make_labels_grouped_int_enumerations(breaks - breaks,
+    make_labels_grouped_int_enumerations(breaks = breaks,
                                          open_first = FALSE,
                                          open_last = open_last,
                                          include_na = include_na)
@@ -158,7 +158,6 @@ make_labels_age_group_quarter <- function(break_min = 0,
                                   name = "include_na")
     make_labels_duration_quarters_months(break_min = break_min,
                                          break_max = break_max,
-                                         open_first = FALSE,
                                          open_last = open_last,
                                          include_na = include_na,
                                          unit = "quarter")
@@ -244,7 +243,6 @@ make_labels_age_group_month <- function(break_min = 0,
                                   name = "include_na")
     make_labels_duration_quarters_months(break_min = break_min,
                                          break_max = break_max,
-                                         open_first = FALSE,
                                          open_last = open_last,
                                          include_na = include_na,
                                          unit = "month")

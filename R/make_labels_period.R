@@ -101,14 +101,12 @@ make_labels_period <- function(breaks,
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")
     breaks_year <- as.integer(format(breaks, "%Y"))
+    n <- length(breaks)
     all_single <- (n > 0L) && all(diff(breaks_year) == 1L)
     if (all_single) {
         demcheck::err_is_logical_flag(x = label_year_start,
                                       name = "label_year_start")
-        n <- length(breaks)
-        breaks_year <- as.integer(format(breaks, "%Y"))
         break_min <- breaks[[1L]]
-        break_max <- breaks[[n]]
         is_1_jan <- identical(format(break_min, "%m-%d"), "01-01")
         use_lower_for_single <- label_year_start || is_1_jan
         if (use_lower_for_single) {
@@ -126,7 +124,6 @@ make_labels_period <- function(breaks,
     else
         make_labels_grouped_int_endpoints(breaks = breaks_year,
                                           open_first = FALSE,
-                                          open_last = FALSE,
                                           include_na = include_na)
 }
 
@@ -181,10 +178,20 @@ make_labels_period <- function(breaks,
 make_labels_period_quarter <- function(break_min,
                                        break_max,
                                        include_na = FALSE) {
-    make_labels_period_month_quarter(break_min = break_min,
-                                     break_max = break_max,
-                                     unit = "quarter",
-                                     include_na)
+    l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,
+                                              break_max = break_max,
+                                              unit = "quarter",
+                                              null_ok = FALSE,
+                                              equal_ok = FALSE)
+    break_min <- l$break_min
+    break_max <- l$break_max
+    demcheck::err_is_logical_flag(x = include_na,
+                                  name = "include_na")
+    make_labels_calendar_quarters_months(break_min = break_min,
+                                         break_max = break_max,
+                                         open_first = FALSE,
+                                         include_na = include_na,
+                                         unit = "quarter")
 }
 
 ## HAS_TESTS
@@ -231,10 +238,20 @@ make_labels_period_quarter <- function(break_min,
 make_labels_period_month <- function(break_min,
                                      break_max,
                                      include_na = FALSE) {
-    make_labels_period_month_quarter(break_min = break_min,
-                                     break_max = break_max,
-                                     unit = "month",
-                                     include_na)
+    l <- demcheck::err_tdy_break_min_max_date(break_min = break_min,
+                                              break_max = break_max,
+                                              unit = "month",
+                                              null_ok = FALSE,
+                                              equal_ok = FALSE)
+    break_min <- l$break_min
+    break_max <- l$break_max
+    demcheck::err_is_logical_flag(x = include_na,
+                                  name = "include_na")
+    make_labels_calendar_quarters_months(break_min = break_min,
+                                         break_max = break_max,
+                                         open_first = FALSE,
+                                         include_na = include_na,
+                                         unit = "month")
 }
 
 

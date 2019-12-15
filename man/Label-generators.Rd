@@ -23,11 +23,11 @@ LabPool(include_na)
 
 LabQuantiles(labels, include_na)
 
-LabIntegers(int_min, int_max, open_first, open_last, include_na)
+LabIntegers(int_min, int_max, include_na)
 
 LabGroupedIntEnumerations(breaks, open_first, open_last, include_na)
 
-LabGroupedIntEndpoints(breaks, open_first, open_last, include_na)
+LabGroupedIntEndpoints(breaks, open_first, include_na)
 
 LabCalendarQuarters(break_min, break_max, open_first, include_na)
 
@@ -51,14 +51,14 @@ bottom of the range of values.}
 \item{int_max}{An integer, specifying the
 top of the range of values.}
 
+\item{breaks}{Integers or dates, defining
+intervals.}
+
 \item{open_first}{Logical. Whether the
 first interval has a lower limit.}
 
 \item{open_last}{Logical. Whether the
 last interval has an upper limit.}
-
-\item{breaks}{Integers or dates, defining
-intervals.}
 
 \item{break_min}{An integer or date, defining
 interval limits.}

@@ -112,7 +112,7 @@ make_labels_cohort <- function(breaks,
                                label_year_start = TRUE,
                                include_na = FALSE) {
     breaks <- demcheck::err_tdy_breaks_date_cohort(breaks = breaks,
-                                                   open_first = open_first)
+                                                   open_first = open_first) 
     demcheck::err_is_first_day_unit_vector(x = breaks,
                                            name = "breaks",
                                            unit = "year")
@@ -123,10 +123,40 @@ make_labels_cohort <- function(breaks,
     if (open_first && isFALSE(label_year_start))
         stop(gettextf("'%s' is %s but '%s' is %s",
                       "open_first", "TRUE", "label_year_start", "FALSE"))
-    make_labels_grouped_int_endpoints(breaks = breaks,
-                                      open_first = open_first,
-                                      open_last = FALSE,
-                                      include_na = include_na)
+    breaks_year <- as.integer(format(breaks, "%Y"))
+    n <- length(breaks)
+    all_single <- (n > 1L) && all(diff(breaks_year) == 1L)
+    if (all_single) {
+        demcheck::err_is_logical_flag(x = label_year_start,
+                                      name = "label_year_start")
+        break_min <- breaks[[1L]]
+        is_1_jan <- identical(format(break_min, "%m-%d"), "01-01")
+        use_lower_for_single <- label_year_start || is_1_jan
+        if (use_lower_for_single) {
+            int_min <- breaks_year[[1L]]
+            int_max <- breaks_year[[n - 1L]]
+        }
+        else {
+            int_min <- breaks_year[[2L]]
+            int_max <- breaks_year[[n]]
+        }
+        if (open_first) {
+            breaks_int <- seq.int(from = int_min,
+                                  to = int_max + 1L)
+            make_labels_grouped_int_enumerations(breaks = breaks_int,
+                                                 open_first = TRUE,
+                                                 open_last = FALSE,
+                                                 include_na = include_na)
+        }
+        else            
+            make_labels_integers(int_min = int_min,
+                                 int_max = int_max,
+                                 include_na = include_na)
+    }
+    else
+        make_labels_grouped_int_endpoints(breaks = breaks_year,
+                                          open_first = open_first,
+                                          include_na = include_na)
 }
 
 ## HAS_TESTS

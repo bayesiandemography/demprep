@@ -105,8 +105,6 @@ setClass("LabQuantiles",
 validity_LabIntegers <- function(object) {
     int_min <- object@int_min
     int_max <- object@int_max
-    open_first <- object@open_first
-    open_last <- object@open_last
     for (name in c("int_min", "int_max")) {
         x <- methods::slot(object, name)
         val <- demcheck::chk_is_length_1(x = x,
@@ -118,26 +116,9 @@ validity_LabIntegers <- function(object) {
         if (!isTRUE(val))
             return(val)
     }
-    for (name in c("open_first", "open_last")) {
-        x <- methods::slot(object, name)
-        val <- demcheck::chk_is_logical_flag(x = x,
-                                             name = name)
-        if (!isTRUE(val))
-            return(val)
-    }        
     if (int_max < int_min)
         return(gettextf("'%s' [%d] less than '%s' [%d]",
                         "int_max", int_max, "int_min", int_min))
-    if (int_min == int_max) {
-        if (!open_first && !open_last)
-            return(gettextf("'%s' [%d] equals '%s' but '%s' and '%s' are both %s",
-                            "int_min",
-                            int_min,
-                            "int_max",
-                            "open_first",
-                            "open_last",
-                            "FALSE"))
-    }
     TRUE
 }
 
@@ -145,9 +126,7 @@ validity_LabIntegers <- function(object) {
 setClass("LabIntegers",
          contains = "Labels",
          slots = c(int_min = "integer",
-                   int_max = "integer",
-                   open_first = "logical",
-                   open_last = "logical"),
+                   int_max = "integer"),
          validity = validity_LabIntegers)
 
 
@@ -156,10 +135,9 @@ setClass("LabIntegers",
 
 ## contains the breaks between intervals
 
-validity_GroupedInt <- function(object) {
+validity_LabGroupedInt <- function(object) {
     breaks <- object@breaks
     open_first <- object@open_first
-    open_last <- object@open_last
     val <- demcheck::chk_is_not_na_vector(x = breaks,
                                           name = "breaks")
     if (!isTRUE(val))
@@ -168,18 +146,37 @@ validity_GroupedInt <- function(object) {
                                                 name = "breaks")
     if (!isTRUE(val))
         return(val)
-    for (name in c("open_first", "open_last")) {
-        x <- methods::slot(object, name)
-        val <- demcheck::chk_is_logical_flag(x = x,
-                                             name = name)
-        if (!isTRUE(val))
-            return(val)
-    }
+    val <- demcheck::chk_is_logical_flag(x = open_first,
+                                         name = "open_first")
+    if (!isTRUE(val))
+        return(val)
     n <- length(breaks)
     if (n == 0L) {
         if (open_first)
             return(gettextf("'%s' has length %d but '%s' is %s",
                             "breaks", 0L, "open_first", "TRUE"))
+    }
+    TRUE
+}
+
+setClass("LabGroupedInt",
+         contains = c("Labels",
+                      "VIRTUAL"),
+         slots = c(breaks = "integer",
+                   open_first = "logical"),
+         validity = validity_LabGroupedInt)
+
+
+validity_LabGroupedIntEnumerations <- function(object) {
+    breaks <- object@breaks
+    open_first <- object@open_first
+    open_last <- object@open_last
+    val <- demcheck::chk_is_logical_flag(x = open_last,
+                                         name = "open_last")
+    if (!isTRUE(val))
+        return(val)
+    n <- length(breaks)
+    if (n == 0L) {
         if (open_last)
             return(gettextf("'%s' has length %d but '%s' is %s",
                             "breaks", 0L, "open_last", "TRUE"))
@@ -192,21 +189,29 @@ validity_GroupedInt <- function(object) {
     TRUE
 }
 
-setClass("LabGroupedInt",
-         contains = c("Labels",
-                      "VIRTUAL"),
-         slots = c(breaks = "integer",
-                   open_first = "logical",
-                   open_last = "logical"),
-         validity = validity_GroupedInt)
-
 ## HAS_TESTS
 setClass("LabGroupedIntEnumerations",
-         contains = "LabGroupedInt")
+         contains = "LabGroupedInt",
+         slots = c(open_last = "logical"),
+         validity = validity_LabGroupedIntEnumerations)
+
+
+validity_LabGroupedIntEndpoints <- function(object) {
+    breaks <- object@breaks
+    open_first <- object@open_first
+    n <- length(breaks)
+    if (n == 1L) {
+        if (!open_first)
+            return(gettextf("'%s' has length %d but '%s' is %s",
+                            "breaks", 1L, "open_first", "FALSE"))
+    }
+    TRUE
+}
 
 ## HAS_TESTS
 setClass("LabGroupedIntEndpoints",
-         contains = "LabGroupedInt")
+         contains = "LabGroupedInt",
+         validity = validity_LabGroupedIntEndpoints)
 
 
 ## Dates ----------------------------------------------------------------------

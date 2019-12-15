@@ -15,9 +15,13 @@ make_labels_num(
 \item{breaks}{A integer vector, or a vector that can
 be coerced to integer via function \code{\link[base]{as.integer}}.}
 
+\item{open_first}{Whether to append an open-ended
+interval to the start of the labels.
+Defaults to \code{FALSE}.}
+
 \item{open_last}{Whether to append an open-ended
-age group to the end of the labels.
-Defaults to \code{TRUE}.}
+interval to the end of the labels.
+Defaults to \code{FALSE}.}
 
 \item{include_na}{Whether to append an \code{NA} to
 the end of the labels. Defaults to \code{FALSE}.}
@@ -26,58 +30,51 @@ the end of the labels. Defaults to \code{FALSE}.}
 A character vector.
 }
 \description{
-NEED TO FINISH DOCUMENATION
+Make labels for numeric quantities, broadly defined.
+The quantities can be grouped into intervals,
+including intervals that have now lower limit or
+no upper limit. The quantities can also be negative.
+However, fractions are not allows.
 }
 \details{
-Make labels for age groups with lengths measured in
-whole years. The labels follow standard
-demographic conventions.
+The labels for intervals follow the same conventions
+as age groups. Single-value intervals are represented
+by single integers. Multiple-value intervals are
+represented by intervals that start with the
+lower value and end with the upper value, minus one.
+See below for examples.
 
-Age groups are defined via the \code{breaks} argument.
-The elements of \code{breaks} must be non-negative integers,
-and must be strictly increasing.  
-Labels for single-year age groups, eg from birth to exact age 1, from
-exact age 1 to exact age 2, and so on, take the form
-\code{"0", "1", "2", ...}. Labels for multi-year age groups,
-eg from birth to exact age 5, from exact age 5 to
-exact age 10, and so on, take the form \code{"0-4", "5-9", ...}.
-
-When \code{open_last} is \code{TRUE}, an 'open' age
-group with no upper limit is appended to the end of the labels.
-By default, \code{open_last} is \code{TRUE}.
+When \code{open_first} is \code{TRUE}, an 'open' interval
+with no lower limit is appended to the start of the
+labels. When \code{open_last} is \code{TRUE}, an open interval
+with no upper limit is appended to the end of the
+labels.
 
 When \code{include_na} is \code{TRUE}, an \code{NA}
 is added to the end of the labels. This can be useful
-when dealing with dates that include \code{NA}s.
+when dealing with data that include \code{NA}s.
 
-\code{breaks} can only have length 0 if \code{open_last}
-is \code{FALSE}. \code{breaks} can
-have only have length 1 if \code{open_last}
- is TRUE.
+\code{breaks} can only have length 0 if
+\code{open_first} and \code{open_last} are both
+\code{FALSE}. \code{breaks} can have only have
+length 1 if one or both of \code{open_first} and
+\code{open_last} is \code{TRUE}.
 }
 \examples{
-## single-year
-make_labels_age_group(breaks = 0:100)
-
-## 5-year
-make_labels_age_group(breaks = seq(0, 80, 5))
-
-## mixed
-make_labels_age_group(breaks = c(0, 1, 4, seq(5, 80, 5)))
-
-## no open age group
-make_labels_age_group(breaks = seq(15, 65, 5))
-
-## allow for missing
-make_labels_age_group(breaks = seq(15, 65, 5),
-                      include_na = TRUE)
+make_labels_num(breaks = c(10, 100, 1000))
+make_labels_num(breaks = c(10, 100, 1000),
+                open_last = TRUE)
+make_labels_num(breaks = seq(50, 100, 10))
+make_labels_num(breaks = 0:10,
+                open_last = TRUE)
+make_labels_num(breaks = c(-1000, 0, 1000),
+                open_first = TRUE,
+                open_last = TRUE,
+                include_na = TRUE)
 }
 \seealso{
-To make labels for periods measured in years, use
-\code{\link{make_labels_period}}. There is
-no \code{make_labels_cohort} function. To construct
-labels for cohorts, just use \code{make_labels_period}.
-To make labels for age groups with widths of one quarter or one month,
-use functions \code{\link{make_labels_age_group_quarter}} or
-\code{\link{make_labels_age_group_month}}.
+To make labels for age groups, periods,
+or cohorts, it is generally better to use
+use specialist functions such as \code{\link{make_labels_age_group}}
+or \code{\link{make_labels_period}}.
 }

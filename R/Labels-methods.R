@@ -8,13 +8,9 @@ setMethod("make_labels",
           function(object) {
               int_min <- object@int_min
               int_max <- object@int_max
-              open_first <- object@open_first
-              open_last <- object@open_last
               include_na <- object@include_na
               make_labels_integers(int_min = int_min,
                                    int_max = int_max,
-                                   open_first = open_first,
-                                   open_last = open_last,
                                    include_na = include_na)
           })
 
@@ -37,11 +33,9 @@ setMethod("make_labels",
           function(object) {
               breaks = object@breaks
               open_first <- object@open_first
-              open_last <- object@open_last
               include_na <- object@include_na
               make_labels_grouped_int_endpoints(breaks = breaks,
                                                 open_first = open_first,
-                                                open_last = open_last,
                                                 include_na = include_na)
           })
 
