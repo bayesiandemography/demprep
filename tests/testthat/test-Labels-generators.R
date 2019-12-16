@@ -57,10 +57,16 @@ test_that("LabGroupedIntEnumerations creates correct object", {
 test_that("LabGroupedIntEndpoints creates correct object", {
     x <- LabGroupedIntEndpoints(breaks = c(-10L, 0L, 5L, 100L),
                                 open_first = TRUE,
+                                open_last = TRUE,
                                 include_na = FALSE)
     expect_is(x, "LabGroupedIntEndpoints")
     x <- LabGroupedIntEndpoints(breaks = integer(),
                                 open_first = FALSE,
+                                open_last = FALSE,
+                                include_na = TRUE)
+    x <- LabGroupedIntEndpoints(breaks = 20L,
+                                open_first = FALSE,
+                                open_last = TRUE,
                                 include_na = TRUE)
     expect_is(x, "LabGroupedIntEndpoints")
 })
@@ -69,11 +75,13 @@ test_that("LabCalendarQuarters creates correct object", {
     x <- LabCalendarQuarters(break_min = as.Date("2000-04-01"),
                              break_max = as.Date("2002-01-01"),
                              open_first = TRUE,
+                             open_last = TRUE,
                              include_na = FALSE)
     expect_is(x, "LabCalendarQuarters")
     x <- LabCalendarQuarters(break_min = as.Date("2000-04-01"),
                              break_max = as.Date("2000-04-01"),
                              open_first = FALSE,
+                             open_last = TRUE,
                              include_na = TRUE)
     expect_is(x, "LabCalendarQuarters")
 })
@@ -82,11 +90,13 @@ test_that("LabCalendarMonths creates correct object", {
     x <- LabCalendarMonths(break_min = as.Date("2000-05-01"),
                            break_max = as.Date("2002-01-01"),
                            open_first = TRUE,
+                           open_last = FALSE,
                            include_na = FALSE)
     expect_is(x, "LabCalendarMonths")
     x <- LabCalendarMonths(break_min = as.Date("2000-05-01"),
                            break_max = as.Date("2000-05-01"),
                            open_first = FALSE,
+                           open_last = TRUE,
                            include_na = TRUE)
     expect_is(x, "LabCalendarMonths")
 })
@@ -94,12 +104,14 @@ test_that("LabCalendarMonths creates correct object", {
 test_that("LabDurationsQuarters creates correct object", {
     x <- LabDurationsQuarters(break_min = 0L,
                               break_max = 120L,
+                              open_first = FALSE,
                               open_last = TRUE,
                               include_na = FALSE)
     expect_is(x, "LabDurationsQuarters")
     x <- LabDurationsQuarters(break_min = 10L,
                               break_max = 10L,
-                              open_last = FALSE,
+                              open_first = FALSE,
+                              open_last = TRUE,
                               include_na = TRUE)
     expect_is(x, "LabDurationsQuarters")
 })
@@ -107,11 +119,13 @@ test_that("LabDurationsQuarters creates correct object", {
 test_that("LabDurationsMonths creates correct object", {
     x <- LabDurationsMonths(break_min = 0L,
                             break_max = 120L,
+                            open_first = FALSE,
                             open_last = TRUE,
                             include_na = FALSE)
     expect_is(x, "LabDurationsMonths")
     x <- LabDurationsMonths(break_min = 10L,
                             break_max = 10L,
+                            open_first = TRUE,
                             open_last = FALSE,
                             include_na = TRUE)
     expect_is(x, "LabDurationsMonths")

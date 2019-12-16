@@ -80,6 +80,7 @@ test_that("validity function for LabGroupedIntEnumerations throws correct error"
 test_that("validity function for LabGroupedIntEndpoints throws correct error", {
     x <- LabGroupedIntEndpoints(breaks = integer(),
                                 open_first = FALSE,
+                                open_last = FALSE,
                                 include_na = FALSE)
     expect_is(x, "LabGroupedIntEndpoints")
     x_wrong <- x
@@ -87,34 +88,48 @@ test_that("validity function for LabGroupedIntEndpoints throws correct error", {
     expect_error(validObject(x_wrong),
                  "'breaks' has length 0 but 'open_first' is TRUE")
     x_wrong <- x
+    x_wrong@open_last <- TRUE
+    expect_error(validObject(x_wrong),
+                 "'breaks' has length 0 but 'open_last' is TRUE")
+    x_wrong <- x
     x_wrong@breaks <- 1L
     expect_error(validObject(x_wrong),
-                 "'breaks' has length 1 but 'open_first' is FALSE")
+                 "'breaks' has length 1 but 'open_first' and 'open_last' are both FALSE")
 })
 
 
 test_that("validity function for LabCalendarQuarters throws correct error", {
     x <- LabCalendarQuarters(break_min = as.Date("2000-04-01"),
                              break_max = as.Date("2002-01-01"),
-                             open_first = TRUE,
+                             open_first = FALSE,
+                             open_last = FALSE,
                              include_na = FALSE)
     expect_is(x, "LabCalendarQuarters")
     x_wrong <- x
     x_wrong@break_max <- as.Date("1999-10-01")
     expect_error(validObject(x_wrong),
-                 "'break_max' \\[\"1999-10-01\"\\] less than 'break_min' \\[\"2000-04-01\"\\]")
+                 "'break_max' \\[1999-10-01\\] less than 'break_min' \\[2000-04-01\\]")
+    x_wrong <- x
+    x_wrong@break_max <- as.Date("2000-04-01")
+    expect_error(validObject(x_wrong),
+                 "'break_min' \\[2000-04-01\\] equals 'break_max' but 'open_first' and 'open_last' are both FALSE")
 })
 
 test_that("validity function for LabDurationsQuarters throws correct error", {
     x <- LabDurationsQuarters(break_min = 100L,
                               break_max = 120L,
-                              open_last = TRUE,
+                              open_first = FALSE,
+                              open_last = FALSE,
                               include_na = FALSE)
     expect_is(x, "LabDurationsQuarters")
     x_wrong <- x
     x_wrong@break_max <- 80L
     expect_error(validObject(x_wrong),
                  "'break_max' \\[80\\] less than 'break_min' \\[100\\]")
+    x_wrong <- x
+    x_wrong@break_max <- 100L
+    expect_error(validObject(x_wrong),
+                 "'break_min' \\[100\\] equals 'break_max' but 'open_first' and 'open_last' are both FALSE")
 })
 
 

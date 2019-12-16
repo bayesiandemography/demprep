@@ -27,15 +27,15 @@ LabIntegers(int_min, int_max, include_na)
 
 LabGroupedIntEnumerations(breaks, open_first, open_last, include_na)
 
-LabGroupedIntEndpoints(breaks, open_first, include_na)
+LabGroupedIntEndpoints(breaks, open_first, open_last, include_na)
 
-LabCalendarQuarters(break_min, break_max, open_first, include_na)
+LabCalendarQuarters(break_min, break_max, open_first, open_last, include_na)
 
-LabCalendarMonths(break_min, break_max, open_first, include_na)
+LabCalendarMonths(break_min, break_max, open_first, open_last, include_na)
 
-LabDurationsQuarters(break_min, break_max, open_last, include_na)
+LabDurationsQuarters(break_min, break_max, open_first, open_last, include_na)
 
-LabDurationsMonths(break_min, break_max, open_last, include_na)
+LabDurationsMonths(break_min, break_max, open_first, open_last, include_na)
 }
 \arguments{
 \item{labels}{A chararacter vector with no
