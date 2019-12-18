@@ -224,7 +224,7 @@ infer_lab_grouped_int_enumerations <- function(labels) {
     is_invalid <- !(is_open_first | is_mid | is_open_last | is_na)
     i_invalid <- match(TRUE, is_invalid, nomatch = 0L)
     if (i_invalid > 0L)
-        return(gettextf("\"%s\" not a valid label for period measured in years",
+        return(gettextf("\"%s\" not a valid label for an enumeration",
                         labels[[i_invalid]]))
     ## summarise
     has_open_first <- any(is_open_first)
@@ -236,10 +236,10 @@ infer_lab_grouped_int_enumerations <- function(labels) {
     n_mid <- sum(is_mid)
     ## check that at most one 'open_first', and at most one 'open_last'
     if (sum(is_open_first) > 1L)
-        return(gettextf("two different labels for period open on left : \"%s\" and \"%s\"",
+        return(gettextf("two different labels for interval open on left : \"%s\" and \"%s\"",
                         labels[is_open_first][[1L]], labels[is_open_first][[2L]]))
     if (sum(is_open_last) > 1L)
-        return(gettextf("two different labels for period open on right : \"%s\" and \"%s\"",
+        return(gettextf("two different labels for interval open on right : \"%s\" and \"%s\"",
                         labels[is_open_last][[1L]], labels[is_open_last][[2L]]))
     ## process middle years
     years_single <- as.integer(labels[is_single])
@@ -261,37 +261,39 @@ infer_lab_grouped_int_enumerations <- function(labels) {
                             labels[is_open_first][[1L]], labels[is_open_last][[1L]]))
     }
     ## obtain breaks for mid, and check for overlap
-    if (has_mid) {
-        breaks_mid_low <- integer(length = n_mid)
-        breaks_mid_up <- integer(length = n_mid)
-        breaks_mid_low[is_single] <- years_single
-        breaks_mid_up[is_single] <- years_single + 1L
-        breaks_mid_low[is_low_up] <- years_low
-        breaks_mid_up[is_low_up] <- years_up + 1L
-        ## check mid for overlap
-        is_overlap <- breaks_mid_up[-n_mid] > breaks_mid_low[-1L]
-        i_overlap <- match(TRUE, is_overlap, nomatch = 0L)
-        if (i_overlap > 0L) {
-            gettextf("intervals defined by labels \"%s\" and \"%s\" overlap",
-                     labels[is_mid][[i_overlap]],
-                     labels[is_mid][[i_overlap + 1L]])
-        }
+    breaks_mid_low <- integer(length = n_mid)
+    breaks_mid_up <- integer(length = n_mid)
+    is_single_mid <- is_single[is_mid]
+    is_low_up_mid <- is_low_up[is_mid]
+    breaks_mid_low[is_single_mid] <- years_single
+    breaks_mid_up[is_single_mid] <- years_single + 1L
+    breaks_mid_low[is_low_up_mid] <- years_low
+    breaks_mid_up[is_low_up_mid] <- years_up + 1L
+    ## check mid for overlap
+    is_overlap <- breaks_mid_up[-n_mid] > breaks_mid_low[-1L]
+    i_overlap <- match(TRUE, is_overlap, nomatch = 0L)
+    if (i_overlap > 0L) {
+        return(gettextf("intervals defined by labels \"%s\" and \"%s\" overlap",
+                        labels[is_mid][[i_overlap]],
+                        labels[is_mid][[i_overlap + 1L]]))
     }
     ## check for overlap between mid and open_first, open_last
     if (has_mid) {
         if (has_open_first) {
             if(year_open_first > breaks_mid_low[[1L]])
-                return(gettextf("intervals implied by labels \"%s\" and \"%s\" overlap",
+                return(gettextf("intervals defined by labels \"%s\" and \"%s\" overlap",
                                 labels[is_open_first], labels[is_mid][[1L]]))
         }
         if (has_open_last) {
             if(breaks_mid_up[[n_mid]] > year_open_last)
-                return(gettextf("intervals implied by labels \"%s\" and \"%s\" overlap",
+                return(gettextf("intervals defined by labels \"%s\" and \"%s\" overlap",
                                 labels[is_mid][[n_mid]], labels[is_open_last]))
         }
     }
     ## assemble breaks
-    breaks <- c(breaks_mid_low, breaks_mid_up)
+    breaks <- integer()
+    if (has_mid)
+        breaks <- c(breaks, breaks_mid_low, breaks_mid_up)
     if (has_open_first)
         breaks <- c(breaks, year_open_first)
     if (has_open_last)

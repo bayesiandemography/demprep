@@ -636,9 +636,9 @@ test_that("'make_fill gives correct error with invalid inputs", {
 
 test_that("'sort_intervals' works", {
     sort_intervals <- demprep:::sort_intervals
-    x <- c("5-9", NA, "50", "-5", "1", "<-20", "100+")
+    x <- c("20-30", NA, "50", "-5", "<-5", "1", "20-30", "100+")
     expect_identical(sort_intervals(x),
-                     c("<-20", "-5", "1", "5-9", "50", "100+", NA))
+                     c("<-5", "-5", "1", "20-30", "20-30", "50", "100+", NA))
     expect_identical(sort_intervals(character()),
                      character())
 })

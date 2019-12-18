@@ -137,7 +137,67 @@ test_that("infer_lab_grouped_int_enumeration gives correct answer with valid inp
                                                open_first = TRUE,
                                                open_last = TRUE,
                                                include_na = TRUE))
+    labels <- "<10"
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     LabGroupedIntEnumerations(breaks = 10L,
+                                               open_first = TRUE,
+                                               open_last = FALSE,
+                                               include_na = FALSE))
+    labels <- c(NA, "10+")
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     LabGroupedIntEnumerations(breaks = 10L,
+                                               open_first = FALSE,
+                                               open_last = TRUE,
+                                               include_na = TRUE))
+    labels <- c("10", "11", "8-9", NA, "12+")
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     LabGroupedIntEnumerations(breaks = c(8L, 10L, 11L, 12L),
+                                               open_first = FALSE,
+                                               open_last = TRUE,
+                                               include_na = TRUE))
 })
+
+test_that("infer_lab_grouped_int_enumeration gives correct errors/messages with invalid inputs", {
+    infer_lab_grouped_int_enumerations <- demprep:::infer_lab_grouped_int_enumerations
+    labels <- c(NA, NA)
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     "'labels' has no non-NA elements")
+    labels <- c("wrong", NA)
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     "\"wrong\" not a valid label for an enumeration")
+    labels <- c("<10", "<5", "20-29")
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     "two different labels for interval open on left : \"<5\" and \"<10\"")
+    labels <- c("100+", "50+", "20-29")
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     "two different labels for interval open on right : \"50+\" and \"100+\"")
+    labels <- "10-10"
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     "\"10-10\" not a valid label for an enumeration")
+    labels <- "10-9"
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     "\"10-9\" not a valid label for an enumeration")
+    labels <- c("<10", "5+")
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     "intervals defined by labels \"<10\" and \"5+\" overlap")
+    labels <- c("<10", "10-14", "15-19", "20-25", "25-29")
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     "intervals defined by labels \"20-25\" and \"25-29\" overlap")
+    labels <- c("0-4", "0", "1-4")
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     "intervals defined by labels \"0-4\" and \"0\" overlap")
+    labels <- c("20+", "<25")
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     "intervals defined by labels \"<25\" and \"20+\" overlap")
+    labels <- c("20-30", "<25")
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     "intervals defined by labels \"<25\" and \"20-30\" overlap")
+    labels <- c("20-30", "25+")
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     "intervals defined by labels \"20-30\" and \"25+\" overlap")
+})
+    
+    
 
 
 
