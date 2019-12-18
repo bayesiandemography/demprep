@@ -1,5 +1,146 @@
 
-## context("infer_lab")
+context("infer_lab")
+
+
+## Functions for individual "Label" classes -----------------------------------
+
+test_that("infer_lab_categories gives correct answer with valid inputs", {
+    infer_lab_categories <- demprep:::infer_lab_categories
+    labels <- c("A", "B", "C")
+    expect_identical(infer_lab_categories(labels),
+                     LabCategories(labels = labels,
+                                   include_na = FALSE))
+    labels <- c("A", "B", NA, "C")
+    expect_identical(infer_lab_categories(labels),
+                     LabCategories(labels = labels[-3],
+                                   include_na = TRUE))
+    labels <- NA_character_
+    expect_identical(infer_lab_categories(labels),
+                     LabCategories(labels = character(),
+                                   include_na = TRUE))
+})
+
+test_that("infer_lab_categories throws correct error with invalid inputs", {
+    infer_lab_categories <- demprep:::infer_lab_categories
+    labels <- c("A", "B", "")
+    expect_error(infer_lab_categories(labels),
+                 "'labels' has blanks")
+})
+
+test_that("infer_lab_triangles gives correct answer with valid inputs", {
+    infer_lab_triangles <- demprep:::infer_lab_triangles
+    labels <- c("Upper", "Lower", "Upper")
+    expect_identical(infer_lab_triangles(labels),
+                     LabTriangles(include_na = FALSE))
+    labels <- c("Lower", "Upper", NA)
+    expect_identical(infer_lab_triangles(labels),
+                     LabTriangles(include_na = TRUE))
+    labels <- NA_character_
+    expect_identical(infer_lab_triangles(labels),
+                     LabTriangles(include_na = TRUE))
+})
+
+test_that("infer_lab_triangles throws correct error or message with invalid inputs", {
+    infer_lab_triangles <- demprep:::infer_lab_triangles
+    labels <- ""
+    expect_error(infer_lab_triangles(labels),
+                 "'labels' has blanks")
+    labels <- "wrong"
+    expect_identical(infer_lab_triangles(labels),
+                     "\"wrong\" not a valid label for triangles")
+})
+
+test_that("infer_lab_pool gives correct answer with valid inputs", {
+    infer_lab_pool <- demprep:::infer_lab_pool
+    labels <- c("Ins", "Outs", "Ins")
+    expect_identical(infer_lab_pool(labels),
+                     LabPool(include_na = FALSE))
+    labels <- c("Outs", "Ins", NA)
+    expect_identical(infer_lab_pool(labels),
+                     LabPool(include_na = TRUE))
+    labels <- NA_character_
+    expect_identical(infer_lab_pool(labels),
+                     LabPool(include_na = TRUE))
+})
+
+test_that("infer_lab_pool throws correct error or message with invalid inputs", {
+    infer_lab_pool <- demprep:::infer_lab_pool
+    labels <- ""
+    expect_error(infer_lab_pool(labels),
+                 "'labels' has blanks")
+    labels <- "wrong"
+    expect_identical(infer_lab_pool(labels),
+                     "\"wrong\" not a valid label for pool")
+})
+
+test_that("infer_lab_quantiles gives correct answer with valid inputs", {
+    infer_lab_quantiles <- demprep:::infer_lab_quantiles
+    labels <- c("50.0001%", "50%", "1.254%")
+    expect_identical(infer_lab_quantiles(labels),
+                     LabQuantiles(labels = labels[c(3, 2, 1)],
+                                  include_na = FALSE))
+    labels <- c("0.001%", "100%", NA)
+    expect_identical(infer_lab_quantiles(labels),
+                     LabQuantiles(labels = labels[1:2],
+                                  include_na = TRUE))
+    labels <- NA_character_
+    expect_identical(infer_lab_quantiles(labels),
+                     LabQuantiles(labels = character(),
+                                  include_na = TRUE))
+})
+
+test_that("infer_lab_quantiles throws correct error or message with invalid inputs", {
+    infer_lab_quantiles <- demprep:::infer_lab_quantiles
+    labels <- ""
+    expect_error(infer_lab_quantiles(labels),
+                 "'labels' has blanks")
+    labels <- "wrong"
+    expect_identical(infer_lab_quantiles(labels),
+                     "\"wrong\" is not a valid quantile")
+})
+
+test_that("infer_lab_integers gives correct answer with valid inputs", {
+    infer_lab_integers <- demprep:::infer_lab_integers
+    labels <- c("1", "12", "4", "-1")
+    expect_identical(infer_lab_integers(labels),
+                     LabIntegers(int_min = -1L,
+                                 int_max = 12L,
+                                 include_na = FALSE))
+    labels <- c("0", "0", NA)
+    expect_identical(infer_lab_integers(labels),
+                     LabIntegers(int_min = 0L,
+                                 int_max = 0L,
+                                 include_na = TRUE))
+})
+
+test_that("infer_lab_integers throws correct error or message with invalid inputs", {
+    infer_lab_integers <- demprep:::infer_lab_integers
+    labels <- ""
+    expect_error(infer_lab_integers(labels),
+                 "'labels' has blanks")
+    labels <- c(NA_character_, NA_character_)
+    expect_identical(infer_lab_integers(labels),
+                     "'labels' has no non-NA elements")
+})
+
+test_that("infer_lab_grouped_int_enumeration gives correct answer with valid inputs", {
+    infer_lab_grouped_int_enumerations <- demprep:::infer_lab_grouped_int_enumerations
+    labels <- c("0", "1-4", "5-9", "10+")
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     LabGroupedIntEnumerations(breaks = c(0L, 1L, 5L, 10L),
+                                               open_first = FALSE,
+                                               open_last = TRUE,
+                                               include_na = FALSE))
+    labels <- c("10+", "0", "1-4", "5-9", "-5--1", NA, "<-5")
+    expect_identical(infer_lab_grouped_int_enumerations(labels),
+                     LabGroupedIntEnumerations(breaks = c(-5L, 0L, 1L, 5L, 10L),
+                                               open_first = TRUE,
+                                               open_last = TRUE,
+                                               include_na = TRUE))
+})
+
+
+
 
 
 ## ## infer_dimscale_period_quarter ----------------------------------------------

@@ -82,41 +82,36 @@ infer_lab_cohort <- function(labels) {
 
 ## Functions for individual "Label" classes -----------------------------------
 
+## HAS_TESTS
 infer_lab_categories <- function(labels) {
     ## check for blanks
-    val <- demcheck::chk_is_not_blank_vector(x = labels,
-                                             name = "labels")
-    if (!isTRUE(val))
-        return(val)
+    demcheck::err_is_not_blank_vector(x = labels,
+                                      name = "labels")
     ## only need to process one instance of each label
     labels <- unique(labels)
-    ## see if has NA
-    has_na <- any(is.na(labels))
+    ## see if has NA, and remove if present
+    is_na <- is.na(labels)
+    labels <- labels[!is_na]
+    has_na <- any(is_na)
     ## return result
     LabCategories(labels = labels,
                   include_na = has_na)
 }
 
-
+## HAS_TESTS
 infer_lab_triangles <- function(labels) {
     valid_labels <- c("Lower", "Upper")
     ## check for blanks
-    val <- demcheck::chk_is_not_blank_vector(x = labels,
-                                             name = "labels")
-    if (!isTRUE(val))
-        return(val)
+    demcheck::err_is_not_blank_vector(x = labels,
+                                      name = "labels")
     ## only need to process one instance of each label
     labels <- unique(labels)
-    ## check for blanks
-    is_blank <- !nzchar(labels)
-    if (any(is_blank))
-        return(gettextf("'%s' has blanks",
-                        "labels"))
-    ## identify NAs
+    ## see if has NA, and remove if present
     is_na <- is.na(labels)
-    has_na <- any(is.na(labels))
+    labels <- labels[!is_na]
+    has_na <- any(is_na)
     ## check for invalid values
-    is_invalid <- !is_na & !(labels %in% valid_labels)
+    is_invalid <- !(labels %in% valid_labels)
     i_invalid <- match(TRUE, is_invalid, nomatch = 0L)
     if (i_invalid > 0L) {
         return(gettextf("\"%s\" not a valid label for triangles",
@@ -126,13 +121,57 @@ infer_lab_triangles <- function(labels) {
     LabTriangles(include_na = has_na)
 }
 
-
-infer_lab_integers <- function(labels) {
+## HAS_TESTS
+infer_lab_pool <- function(labels) {
+    valid_labels <- c("Ins", "Outs")
     ## check for blanks
-    val <- demcheck::chk_is_not_blank_vector(x = labels,
-                                             name = "labels")
+    demcheck::err_is_not_blank_vector(x = labels,
+                                      name = "labels")
+    ## only need to process one instance of each label
+    labels <- unique(labels)
+    ## see if has NA, and remove if present
+    is_na <- is.na(labels)
+    labels <- labels[!is_na]
+    has_na <- any(is_na)
+    ## check for invalid values
+    is_invalid <- !(labels %in% valid_labels)
+    i_invalid <- match(TRUE, is_invalid, nomatch = 0L)
+    if (i_invalid > 0L) {
+        return(gettextf("\"%s\" not a valid label for pool",
+                        labels[[i_invalid]]))
+    }
+    ## return result
+    LabPool(include_na = has_na)
+}
+
+## HAS_TESTS
+infer_lab_quantiles <- function(labels) {
+    ## check for blanks
+    demcheck::err_is_not_blank_vector(x = labels,
+                                      name = "labels")
+    ## only need to process one instance of each label
+    labels <- unique(labels)
+    ## see if has NA, and remove if present
+    is_na <- is.na(labels)
+    labels <- labels[!is_na]
+    has_na <- any(is_na)
+    ## check for invalid values
+    val <- demcheck::chk_is_valid_quantile(x = labels,
+                                           name = "labels")
     if (!isTRUE(val))
         return(val)
+    ## sort labels
+    labels <- sort_quantiles(labels)
+    ## return result
+    LabQuantiles(labels = labels,
+                 include_na = has_na)
+}
+
+## HAS_TESTS
+infer_lab_integers <- function(labels) {
+    ## check for blanks
+    demcheck::err_is_not_blank_vector(x = labels,
+                                      name = "labels")
     ## only need to process one instance of each label
     labels <- unique(labels)
     ## must have at least one non-NA label
@@ -142,6 +181,8 @@ infer_lab_integers <- function(labels) {
         return(gettextf("'%s' has no non-NA elements",
                         "labels"))
     has_na <- any(is_na)
+    ## remove NAs
+    labels <- labels[!is_na]
     ## check for integer
     labels_int <- tryCatch(error = function(e) e,
                            demcheck::err_tdy_integer_vector(x = labels,
@@ -158,18 +199,16 @@ infer_lab_integers <- function(labels) {
 infer_lab_grouped_int_enumerations <- function(labels) {
     ## regexp patterns
     p_open_first <- "^<(-?[0-9]+)$"
-    p_single <- "^-?[0-9]+$"
-    p_low_up <- "^(-?[0-9]+)-([0-9]+)$"
+    p_single <- "^(-?[0-9]+)$"
+    p_low_up <- "^(-?[0-9]+)-(-?[0-9]+)$"
     p_open_last <- "^(-?[0-9]+)\\+$"
     ## check for blanks
-    val <- demcheck::chk_is_not_blank_vector(x = labels,
-                                             name = "labels")
-    if (!isTRUE(val))
-        return(val)
+    demcheck::err_is_not_blank_vector(x = labels,
+                                      name = "labels")
     ## only need to process one instance of each label
     labels <- unique(labels)
-    ## sorting should work if labels have correct format
-    labels <- sort(labels, na.last = TRUE)
+    ## sort labels (works in labels in valid format)
+    labels <- sort_intervals(labels)
     ## must have at least one non-NA label
     ## (otherwise use different Label class)
     is_na <- is.na(labels)
@@ -204,8 +243,8 @@ infer_lab_grouped_int_enumerations <- function(labels) {
                         labels[is_open_last][[1L]], labels[is_open_last][[2L]]))
     ## process middle years
     years_single <- as.integer(labels[is_single])
-    years_low <- as.integer(sub(p_years_mid, "\\1", labels[is_low_up]))
-    years_up <- as.integer(sub(p_years_mid, "\\2", labels[is_low_up]))
+    years_low <- as.integer(sub(p_low_up, "\\1", labels[is_low_up]))
+    years_up <- as.integer(sub(p_low_up, "\\2", labels[is_low_up]))
     ## if has lower and upper, calculate widths, and check that valid
     widths <- years_up - years_low
     is_invalid <- widths <= 0L
@@ -218,7 +257,7 @@ infer_lab_grouped_int_enumerations <- function(labels) {
     year_open_last <- as.integer(sub("\\+$", "", labels[is_open_last]))
     if (has_open_first && has_open_last) {
         if(year_open_first > year_open_last)
-            return(gettextf("intervals implied by labels \"%s\" and \"%s\" overlap",
+            return(gettextf("intervals defined by labels \"%s\" and \"%s\" overlap",
                             labels[is_open_first][[1L]], labels[is_open_last][[1L]]))
     }
     ## obtain breaks for mid, and check for overlap
@@ -233,7 +272,7 @@ infer_lab_grouped_int_enumerations <- function(labels) {
         is_overlap <- breaks_mid_up[-n_mid] > breaks_mid_low[-1L]
         i_overlap <- match(TRUE, is_overlap, nomatch = 0L)
         if (i_overlap > 0L) {
-            gettextf("intervals implied by labels \"%s\" and \"%s\" overlap",
+            gettextf("intervals defined by labels \"%s\" and \"%s\" overlap",
                      labels[is_mid][[i_overlap]],
                      labels[is_mid][[i_overlap + 1L]])
         }
@@ -246,7 +285,7 @@ infer_lab_grouped_int_enumerations <- function(labels) {
                                 labels[is_open_first], labels[is_mid][[1L]]))
         }
         if (has_open_last) {
-            if(breaks_mid_up[[n]] > year_open_last)
+            if(breaks_mid_up[[n_mid]] > year_open_last)
                 return(gettextf("intervals implied by labels \"%s\" and \"%s\" overlap",
                                 labels[is_mid][[n_mid]], labels[is_open_last]))
         }
@@ -256,13 +295,13 @@ infer_lab_grouped_int_enumerations <- function(labels) {
     if (has_open_first)
         breaks <- c(breaks, year_open_first)
     if (has_open_last)
-        breaks <- c(breaks_year_open_last)
+        breaks <- c(breaks, year_open_last)
     breaks <- sort(unique(breaks))
     ## return "Label" object
-    LabGroupedIntEnumeration(breaks = breaks,
-                             open_first = has_open_first,
-                             open_last = has_open_last,
-                             include_na = has_na)
+    LabGroupedIntEnumerations(breaks = breaks,
+                              open_first = has_open_first,
+                              open_last = has_open_last,
+                              include_na = has_na)
 }
 
 
@@ -274,11 +313,7 @@ infer_lab_grouped_int_endpoints <- function(labels) {
     p_open_first <- "^<(-?[0-9]+)$"
     p_mid <- "^(-?[0-9]+)-([0-9]+)$"
     ## check for blanks
-    val <- demcheck::chk_is_not_blank_vector(x = labels,
-                                             name = "labels")
-    if (!isTRUE(val))
-        return(val)
-    ## only need to process one instance of each label
+demcheck::err_is_not_blank_vector(x = labels, name = "labels")    ## only need to process one instance of each label
     labels <- unique(labels)
     ## sorting should work if labels have correct format
     labels <- sort(labels, na.last = TRUE)
@@ -354,11 +389,7 @@ infer_lab_calendar_quarters <- function(labels) {
     p_open_first <- "^<([0-9]{4}) Q([1-4])$"
     p_mid <- "^([0-9]{4}) Q([1-4])$"
     ## check for blanks
-    val <- demcheck::chk_is_not_blank_vector(x = labels,
-                                             name = "labels")
-    if (!isTRUE(val))
-        return(val)
-    ## only need to process one instance of each label
+demcheck::err_is_not_blank_vector(x = labels, name = "labels")    ## only need to process one instance of each label
     labels <- unique(labels)
     ## sorting should work if labels have correct format
     labels <- sort(labels, na.last = TRUE)
@@ -425,11 +456,7 @@ infer_lab_calendar_months <- function(labels, gaps_ok = FALSE) {
     p_open_first <- "^<([0-9]{4}) ([A-z]{3})$"
     p_mid <- "^([0-9]{4}) ([A-z]{3})$"
     ## check for blanks
-    val <- demcheck::chk_is_not_blank_vector(x = labels,
-                                             name = "labels")
-    if (!isTRUE(val))
-        return(val)
-    ## only need to process one instance of each label
+demcheck::err_is_not_blank_vector(x = labels, name = "labels")    ## only need to process one instance of each label
     labels <- unique(labels)
     ## sorting should work if labels have correct format
     labels <- sort(labels, na.last = TRUE)
@@ -497,11 +524,7 @@ infer_lab_duration_quarters <- function(labels) {
     p_mid <- "^([0-9]+)q$"
     p_open_last <- "^([0-9]+)q\\+$"
     ## check for blanks
-    val <- demcheck::chk_is_not_blank_vector(x = labels,
-                                             name = "labels")
-    if (!isTRUE(val))
-        return(val)
-    ## only need to process one instance of each label
+demcheck::err_is_not_blank_vector(x = labels, name = "labels")    ## only need to process one instance of each label
     labels <- unique(labels)
     ## sorting should work if labels have correct format
     labels <- sort(labels, na.last = TRUE)
@@ -559,10 +582,7 @@ infer_lab_duration_months <- function(labels) {
     p_mid <- "^([0-9]+)m$"
     p_open_last <- "^([0-9]+)m\\+$"
     ## check for blanks
-    val <- demcheck::chk_is_not_blank_vector(x = labels,
-                                             name = "labels")
-    if (!isTRUE(val))
-        return(val)
+    demcheck::err_is_not_blank_vector(x = labels, name = "labels")
     ## only need to process one instance of each label
     labels <- unique(labels)
     ## sorting should work if labels have correct format

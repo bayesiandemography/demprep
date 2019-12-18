@@ -342,6 +342,29 @@ make_fill <- function(fill, X, INDEX) {
     }
 }
 
+## HAS_TESTS
+sort_intervals <- function(intervals) {
+    p_first <- "<?(-?[0-9]+).*"
+    p_ordinary <- "(-?[0-9]+).*"
+    is_first <- grepl(p_first, intervals)
+    is_ordinary  <- grepl(p_ordinary, intervals)
+    intervals_first <- intervals[is_first]
+    intervals_ordinary <- intervals[is_ordinary]
+    intervals_other <- intervals[!is_first & !is_ordinary]
+    num_first <- as.numeric(sub(p_first, "\\1", intervals_first))    
+    num_ordinary <- as.numeric(sub(p_ordinary, "\\1", intervals_ordinary))
+    i_first <- order(intervals_first)
+    i_ordinary <- order(intervals_ordinary)
+    c(intervals_first[i_first],
+      intervals_ordinary[i_ordinary],
+      intervals_other)
+}
 
 
-
+## HAS_TESTS
+## assume quantiles valid
+sort_quantiles <- function(quantiles) {
+    quantiles_numeric <- as.numeric(sub("%", "", quantiles))
+    i <- order(quantiles_numeric, na.last = TRUE)
+    quantiles[i]
+}
