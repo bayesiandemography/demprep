@@ -634,6 +634,18 @@ test_that("'make_fill gives correct error with invalid inputs", {
                  "invalid value for 'fill'")
 })
 
+test_that("'sort_durations' works", {
+    sort_durations <- demprep:::sort_durations
+    x <- c("10q", "50q+", "0q", NA, "5q")
+    expect_identical(sort_durations(x),
+                     x[c(3, 5, 1, 2, 4)])
+    x <- c(NA, "15m+", "0m", "7m")
+    expect_identical(sort_durations(x),
+                     x[c(3, 4, 2, 1)])
+    expect_identical(sort_durations(character()),
+                     character())
+})
+
 test_that("'sort_intervals' works", {
     sort_intervals <- demprep:::sort_intervals
     x <- c("20-30", NA, "50", "-5", "<-5", "1", "20-30", "100+")

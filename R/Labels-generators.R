@@ -147,13 +147,11 @@ LabCalendarMonths <- function(break_min,
 #' @rdname Label-generators
 LabDurationsQuarters <- function(break_min,
                                  break_max,
-                                 open_first,
                                  open_last,
                                  include_na) {
     methods::new("LabDurationsQuarters",
                  break_min = break_min,
                  break_max = break_max,
-                 open_first = open_first,
                  open_last = open_last,
                  include_na = include_na)
 }
@@ -163,13 +161,11 @@ LabDurationsQuarters <- function(break_min,
 #' @rdname Label-generators
 LabDurationsMonths <- function(break_min,
                                break_max,
-                               open_first,
                                open_last,
                                include_na) {
     methods::new("LabDurationsMonths",
                  break_min = break_min,
                  break_max = break_max,
-                 open_first = open_first,
                  open_last = open_last,
                  include_na = include_na)
 }

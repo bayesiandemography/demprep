@@ -521,7 +521,7 @@ infer_lab_calendar_quarters <- function(labels) {
                         include_na = has_na)
 }
 
-
+## HAS_TESTS
 infer_lab_calendar_months <- function(labels, gaps_ok = FALSE) {
     ## regexp patterns
     p_open_first <- "^<([0-9]{4}) ([A-z]{3})$"
@@ -637,7 +637,7 @@ infer_lab_calendar_months <- function(labels, gaps_ok = FALSE) {
 
 
 
-infer_lab_duration_quarters <- function(labels) {
+infer_lab_durations_quarters <- function(labels) {
     ## regexp patterns
     p_mid <- "^([0-9]+)q$"
     p_open_last <- "^([0-9]+)q\\+$"
@@ -647,7 +647,7 @@ infer_lab_duration_quarters <- function(labels) {
     ## only need to process one instance of each label
     labels <- unique(labels)
     ## sorting should work if labels have correct format
-    labels <- sort(labels, na.last = TRUE)
+    labels <- sort_durations(labels)
     ## must have at least one non-NA label
     ## (otherwise use different Label class)
     is_na <- is.na(labels)
@@ -656,48 +656,59 @@ infer_lab_duration_quarters <- function(labels) {
                         "labels"))
     ## initial, non-definitive check that labels have expected format
     is_mid <- grepl(p_mid, labels)
-    is_open_last <- grepl(p_open_first, labels)
+    is_open_last <- grepl(p_open_last, labels)
     is_invalid <- !(is_mid | is_open_last | is_na)
     i_invalid <- match(TRUE, is_invalid, nomatch = 0L)
     if (i_invalid > 0L)
-        return(gettextf("\"%s\" not a valid label for an age group of one quarter",
+        return(gettextf("\"%s\" not a valid label for interval of one quarter",
                         labels[[i_invalid]]))
     ## summarise
     has_mid <- any(is_mid)
     has_open_last <- any(is_open_last)
     has_na <- any(is_na)
-    n_mid <- sum(has_mid)
-    ## check that at most one 'open_last'
+    n_mid <- sum(is_mid)
+    ## check that at most one  'open_last'
     if (sum(is_open_last) > 1L)
-        return(gettextf("two different labels for age group open on right : \"%s\" and \"%s\"",
-                        labels[is_open_last][[1L]], labels[is_open_last][[2L]]))
+        return(gettextf("two different labels for interval open on right : \"%s\" and \"%s\"",
+                        labels[is_open_last][[1L]],
+                        labels[is_open_last][[2L]]))
     ## extract 'quarters_mid', if present
-    quarters_mid <- sub(p_mid, "\\1", labels[is_mid])
-    quarters_mid <- as.integer(quarters_mid)
-    quarters_mid_min <- quarters_mid[[1L]]
-    quarters_mid_max <- quarters_mid[[n_mid]]
-    ## extract 'quarter_open_last', if present
+    if (has_mid) {
+        quarters_mid <- sub(p_mid, "\\1", labels[is_mid])
+        quarters_mid <- as.integer(quarters_mid)
+        quarters_mid_min <- quarters_mid[[1L]]
+        quarters_mid_max <- quarters_mid[[n_mid]]
+    }
+    ## extract 'quarter_open_last'
     if (has_open_last) {
         quarter_open_last <- sub(p_open_last, "\\1", labels[is_open_last])
         quarter_open_last <- as.integer(quarter_open_last)
     }
     ## make sure 'open_last' does not overlap with mid   
     if (has_mid && has_open_last) {
-        if (quarters_mid_max > quarter_open_last)
-            return(gettextf("age_groups \"%s\" and \"%s\" overlap",
+        if (quarters_mid_max >= quarter_open_last)
+            return(gettextf("intervals \"%s\" and \"%s\" overlap",
                             labels[is_mid][[n_mid]],
                             labels[is_open_last]))
     }
+    ## get 'break_min' and 'break_max'
+    if (has_mid)
+        break_min <- quarters_mid_min
+    else
+        break_min <- quarter_open_last
+    if (has_open_last)
+        break_max <- quarter_open_last
+    else
+        break_max <- quarters_mid_max + 1L
     ## return "LabDurationsQuarters" object
-    break_max <- if (has_open_last) quarter_open_last else quarters_mid_max
-    LabCalendarQuarters(break_min = quarters_mid_min,
-                        break_max = break_max,
-                        open_last = has_open_last,
-                        include_na = has_na)
+    LabDurationsQuarters(break_min = break_min,
+                         break_max = break_max,
+                         open_last = has_open_last,
+                         include_na = has_na)
 }
 
-
-infer_lab_duration_months <- function(labels) {
+## HAS_TESTS
+infer_lab_durations_months <- function(labels) {
     ## regexp patterns
     p_mid <- "^([0-9]+)m$"
     p_open_last <- "^([0-9]+)m\\+$"
@@ -706,7 +717,7 @@ infer_lab_duration_months <- function(labels) {
     ## only need to process one instance of each label
     labels <- unique(labels)
     ## sorting should work if labels have correct format
-    labels <- sort(labels, na.last = TRUE)
+    labels <- sort_durations(labels)
     ## must have at least one non-NA label
     ## (otherwise use different Label class)
     is_na <- is.na(labels)
@@ -715,42 +726,53 @@ infer_lab_duration_months <- function(labels) {
                         "labels"))
     ## initial, non-definitive check that labels have expected format
     is_mid <- grepl(p_mid, labels)
-    is_open_last <- grepl(p_open_first, labels)
+    is_open_last <- grepl(p_open_last, labels)
     is_invalid <- !(is_mid | is_open_last | is_na)
     i_invalid <- match(TRUE, is_invalid, nomatch = 0L)
     if (i_invalid > 0L)
-        return(gettextf("\"%s\" not a valid label for an age group of one month",
+        return(gettextf("\"%s\" not a valid label for interval of one month",
                         labels[[i_invalid]]))
     ## summarise
     has_mid <- any(is_mid)
     has_open_last <- any(is_open_last)
     has_na <- any(is_na)
-    n_mid <- sum(has_mid)
+    n_mid <- sum(is_mid)
     ## check that at most one 'open_last'
     if (sum(is_open_last) > 1L)
-        return(gettextf("two different labels for age group open on right : \"%s\" and \"%s\"",
-                        labels[is_open_last][[1L]], labels[is_open_last][[2L]]))
+        return(gettextf("two different labels for interval open on right : \"%s\" and \"%s\"",
+                        labels[is_open_last][[1L]],
+                        labels[is_open_last][[2L]]))
     ## extract 'months_mid', if present
-    months_mid <- sub(p_mid, "\\1", labels[is_mid])
-    months_mid <- as.integer(months_mid)
-    months_mid_min <- months_mid[[1L]]
-    months_mid_max <- months_mid[[n_mid]]
-    ## extract 'month_open_last', if present
+    if (has_mid) {
+        months_mid <- sub(p_mid, "\\1", labels[is_mid])
+        months_mid <- as.integer(months_mid)
+        months_mid_min <- months_mid[[1L]]
+        months_mid_max <- months_mid[[n_mid]]
+    }
+    ## extract 'month_open_last'
     if (has_open_last) {
         month_open_last <- sub(p_open_last, "\\1", labels[is_open_last])
         month_open_last <- as.integer(month_open_last)
     }
     ## make sure 'open_last' does not overlap with mid   
     if (has_mid && has_open_last) {
-        if (months_mid_max > month_open_last)
-            return(gettextf("age_groups \"%s\" and \"%s\" overlap",
+        if (months_mid_max >= month_open_last)
+            return(gettextf("intervals \"%s\" and \"%s\" overlap",
                             labels[is_mid][[n_mid]],
                             labels[is_open_last]))
     }
+    ## get 'break_min' and 'break_max'
+    if (has_mid)
+        break_min <- months_mid_min
+    else
+        break_min <- month_open_last
+    if (has_open_last)
+        break_max <- month_open_last
+    else
+        break_max <- months_mid_max + 1L
     ## return "LabDurationsMonths" object
-    break_max <- if (has_open_last) month_open_last else months_mid_max
-    LabCalendarMonths(break_min = months_mid_min,
-                      break_max = break_max,
-                      open_last = has_open_last,
-                      include_na = has_na)
+    LabDurationsMonths(break_min = break_min,
+                       break_max = break_max,
+                       open_last = has_open_last,
+                       include_na = has_na)
 }

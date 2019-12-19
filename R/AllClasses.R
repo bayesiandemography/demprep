@@ -194,7 +194,7 @@ setClass("LabGroupedIntEndpoints",
 
 ## contains the breaks between intervals
 
-validity_LabCalendarDurations <- function(object) {
+validity_LabCalendar <- function(object) {
     break_min <- object@break_min
     break_max <- object@break_max
     open_first <- object@open_first
@@ -240,7 +240,7 @@ setClass("LabCalendar",
                    break_max = "Date",
                    open_first = "logical",
                    open_last = "logical"),
-         validity = validity_LabCalendarDurations)
+         validity = validity_LabCalendar)
 
 
 validity_LabCalendarQuarters <- function(object) {
@@ -282,14 +282,49 @@ setClass("LabCalendarMonths",
 
 ## contains the breaks between intervals
 
+validity_LabDurations <- function(object) {
+    break_min <- object@break_min
+    break_max <- object@break_max
+    open_last <- object@open_last
+    for (name in c("break_min", "break_max")) {
+        x <- methods::slot(object, name)
+        val <- demcheck::chk_is_length_1(x = x,
+                                         name = name)
+        if (!isTRUE(val))
+            return(val)
+        val <- demcheck::chk_is_not_na_scalar(x = x,
+                                              name = name)
+        if (!isTRUE(val))
+            return(val)
+    }
+    val <- demcheck::chk_is_logical_flag(x = open_last,
+                                         name = "open_last")
+    if (!isTRUE(val))
+        return(val)
+    if (break_max < break_min)
+        return(gettextf("'%s' [%s] less than '%s' [%s]",
+                        "break_max", break_max, "break_min", break_min))
+    if (break_min == break_max) {
+        if (!open_last)
+            return(gettextf("'%s' [%s] equals '%s' but '%s' is %s",
+                            "break_min",
+                            break_min,
+                            "break_max",
+                            "open_last",
+                            "FALSE"))
+    }
+    TRUE
+}
+
+
+
 setClass("LabDurations",
          contains = c("Labels",
                       "VIRTUAL"),
          slots = c(break_min = "integer",
                    break_max = "integer",
-                   open_first = "logical",
                    open_last = "logical"),
-         validity = validity_LabCalendarDurations)
+         validity = validity_LabDurations)
 
 ## HAS_TESTS
 setClass("LabDurationsQuarters",

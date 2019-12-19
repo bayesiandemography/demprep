@@ -343,6 +343,15 @@ make_fill <- function(fill, X, INDEX) {
 }
 
 ## HAS_TESTS
+sort_durations <- function(durations) {
+    p <- "^([0-9]+).*$"
+    durations_int <- sub(p, "\\1", durations)
+    durations_int <- suppressWarnings(as.integer(durations_int))
+    i <- order(durations_int, na.last = TRUE)
+    durations[i]
+}
+
+## HAS_TESTS
 sort_intervals <- function(intervals) {
     p_first <- "^<(-?[0-9]+).*"
     p_ordinary <- "^(-?[0-9]+).*"

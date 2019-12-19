@@ -118,7 +118,6 @@ test_that("validity function for LabCalendarQuarters throws correct error", {
 test_that("validity function for LabDurationsQuarters throws correct error", {
     x <- LabDurationsQuarters(break_min = 100L,
                               break_max = 120L,
-                              open_first = FALSE,
                               open_last = FALSE,
                               include_na = FALSE)
     expect_is(x, "LabDurationsQuarters")
@@ -129,7 +128,7 @@ test_that("validity function for LabDurationsQuarters throws correct error", {
     x_wrong <- x
     x_wrong@break_max <- 100L
     expect_error(validObject(x_wrong),
-                 "'break_min' \\[100\\] equals 'break_max' but 'open_first' and 'open_last' are both FALSE")
+                 "'break_min' \\[100\\] equals 'break_max' but 'open_last' is FALSE")
 })
 
 

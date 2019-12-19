@@ -104,13 +104,11 @@ test_that("LabCalendarMonths creates correct object", {
 test_that("LabDurationsQuarters creates correct object", {
     x <- LabDurationsQuarters(break_min = 0L,
                               break_max = 120L,
-                              open_first = FALSE,
                               open_last = TRUE,
                               include_na = FALSE)
     expect_is(x, "LabDurationsQuarters")
     x <- LabDurationsQuarters(break_min = 10L,
                               break_max = 10L,
-                              open_first = FALSE,
                               open_last = TRUE,
                               include_na = TRUE)
     expect_is(x, "LabDurationsQuarters")
@@ -119,14 +117,12 @@ test_that("LabDurationsQuarters creates correct object", {
 test_that("LabDurationsMonths creates correct object", {
     x <- LabDurationsMonths(break_min = 0L,
                             break_max = 120L,
-                            open_first = FALSE,
                             open_last = TRUE,
                             include_na = FALSE)
     expect_is(x, "LabDurationsMonths")
     x <- LabDurationsMonths(break_min = 10L,
                             break_max = 10L,
-                            open_first = TRUE,
-                            open_last = FALSE,
+                            open_last = TRUE,
                             include_na = TRUE)
     expect_is(x, "LabDurationsMonths")
 })
