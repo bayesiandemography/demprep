@@ -196,6 +196,7 @@ infer_lab_integers <- function(labels) {
                 include_na = has_na)
 }
 
+## HAS_TESTS
 infer_lab_grouped_int_enumerations <- function(labels) {
     ## regexp patterns
     p_open_first <- "^<(-?[0-9]+)$"
@@ -205,9 +206,7 @@ infer_lab_grouped_int_enumerations <- function(labels) {
     ## check for blanks
     demcheck::err_is_not_blank_vector(x = labels,
                                       name = "labels")
-    ## only need to process one instance of each label
-    labels <- unique(labels)
-    ## sort labels (works in labels in valid format)
+    ## sort labels
     labels <- sort_intervals(labels)
     ## must have at least one non-NA label
     ## (otherwise use different Label class)
@@ -224,7 +223,7 @@ infer_lab_grouped_int_enumerations <- function(labels) {
     is_invalid <- !(is_open_first | is_mid | is_open_last | is_na)
     i_invalid <- match(TRUE, is_invalid, nomatch = 0L)
     if (i_invalid > 0L)
-        return(gettextf("\"%s\" not a valid label for an enumeration",
+        return(gettextf("\"%s\" not a valid enumeration label",
                         labels[[i_invalid]]))
     ## summarise
     has_open_first <- any(is_open_first)
@@ -245,12 +244,12 @@ infer_lab_grouped_int_enumerations <- function(labels) {
     years_single <- as.integer(labels[is_single])
     years_low <- as.integer(sub(p_low_up, "\\1", labels[is_low_up]))
     years_up <- as.integer(sub(p_low_up, "\\2", labels[is_low_up]))
-    ## if has lower and upper, calculate widths, and check that valid
+    ## calculate widths, and check that valid
     widths <- years_up - years_low
     is_invalid <- widths <= 0L
     i_invalid <- match(TRUE, is_invalid, nomatch = 0L)
     if (i_invalid > 0L)
-        return(gettextf("\"%s\" not a valid label for an enumeration",
+        return(gettextf("\"%s\" not a valid enumeration label",
                         labels[is_low_up][[i_invalid]]))
     ## extract 'year_open_first' and 'year_open_last' if present, and check for overlap
     year_open_first <- as.integer(sub("^<", "", labels[is_open_first]))
@@ -307,18 +306,18 @@ infer_lab_grouped_int_enumerations <- function(labels) {
 }
 
 
-
-
-
 infer_lab_grouped_int_endpoints <- function(labels) {
     ## regexp patterns
     p_open_first <- "^<(-?[0-9]+)$"
-    p_mid <- "^(-?[0-9]+)-([0-9]+)$"
+    p_mid <- "^(-?[0-9]+)-(-?[0-9]+)$"
+    p_open_last <- "^(-?[0-9]+)\\+$"
     ## check for blanks
-demcheck::err_is_not_blank_vector(x = labels, name = "labels")    ## only need to process one instance of each label
+    demcheck::err_is_not_blank_vector(x = labels,
+                                      name = "labels")
+    ## only need to process one instance of each label
     labels <- unique(labels)
-    ## sorting should work if labels have correct format
-    labels <- sort(labels, na.last = TRUE)
+    ## sort labels
+    labels <- sort_intervals(labels)
     ## must have at least one non-NA label
     ## (otherwise use different Label class)
     is_na <- is.na(labels)
@@ -327,71 +326,96 @@ demcheck::err_is_not_blank_vector(x = labels, name = "labels")    ## only need t
                         "labels"))
     ## initial, non-definitive check that labels have correct format
     is_open_first <- grepl(p_open_first, labels)
+    is_open_last <- grepl(p_open_last, labels)
     is_mid <- grepl(p_mid, labels)
     is_na <- is.na(labels)
-    is_invalid <- !(is_open_first | is_mid | is_na)
+    is_invalid <- !(is_open_first | is_mid | is_open_last | is_na)
     i_invalid <- match(TRUE, is_invalid, nomatch = 0L)
     if (i_invalid > 0L)
-        return(gettextf("\"%s\" not a valid label for period measured in years",
+        return(gettextf("\"%s\" not a valid endpoints label",
                         labels[[i_invalid]]))
     ## summarise
     has_open_first <- any(is_open_first)
+    has_open_last <- any(is_open_last)
     has_mid <- any(is_mid)
     has_na <- any(is_na)
     n_mid <- sum(is_mid)
-    ## check that at most one 'open_first'
+    ## check that at most one 'open_first', and at most one 'open_last'
     if (sum(is_open_first) > 1L)
-        return(gettextf("two different labels for period open on left : \"%s\" and \"%s\"",
+        return(gettextf("two different labels for interval open on left : \"%s\" and \"%s\"",
                         labels[is_open_first][[1L]], labels[is_open_first][[2L]]))
+    if (sum(is_open_last) > 1L)
+        return(gettextf("two different labels for interval open on right : \"%s\" and \"%s\"",
+                        labels[is_open_last][[1L]], labels[is_open_last][[2L]]))
     ## process middle years
-    years_single <- as.integer(labels[is_single])
-    years_low <- as.integer(sub(p_years_mid, "\\1", labels[is_low_up]))
-    years_up <- as.integer(sub(p_years_mid, "\\2", labels[is_low_up]))
+    years_low <- as.integer(sub(p_mid, "\\1", labels[is_mid]))
+    years_up <- as.integer(sub(p_mid, "\\2", labels[is_mid]))
     ## calculate widths, and check that valid
     widths <- years_up - years_low
     is_invalid <- widths <= 0L
     i_invalid <- match(TRUE, is_invalid, nomatch = 0L)
     if (i_invalid > 0L)
-        return(gettextf("\"%s\" not a valid label for an enumeration",
-                        labels[is_low_up][[i_invalid]]))
-    ## extract 'year_open_first' if present
-    if (has_open_first)
-        year_open_first <- as.integer(sub("^<", "", labels[is_open_first]))
+        return(gettextf("\"%s\" not a valid endpoints label",
+                        labels[is_mid][[i_invalid]]))
+    ## extract 'year_open_first' and 'year_open_last' if present, and check for overlap
+    year_open_first <- as.integer(sub("^<", "", labels[is_open_first]))
+    year_open_last <- as.integer(sub("\\+$", "", labels[is_open_last]))
+    if (has_open_first && has_open_last) {
+        if(year_open_first > year_open_last)
+            return(gettextf("intervals defined by labels \"%s\" and \"%s\" overlap",
+                            labels[is_open_first][[1L]], labels[is_open_last][[1L]]))
+    }
     ## check for overlap in mid
     if (has_mid) {
         is_overlap <- years_up[-n_mid] > years_low[-1L]
         i_overlap <- match(TRUE, is_overlap, nomatch = 0L)
         if (i_overlap > 0L) {
-            gettextf("intervals implied by labels \"%s\" and \"%s\" overlap",
-                     labels[is_mid][[i_overlap]],
-                     labels[is_mid][[i_overlap + 1L]])
+            return(gettextf("intervals defined by labels \"%s\" and \"%s\" overlap",
+                            labels[is_mid][[i_overlap]],
+                            labels[is_mid][[i_overlap + 1L]]))
         }
     }
-    ## check for overlap between mid and open_first
-    if (has_mid && has_open_first) {
-        if(year_open_first > years_low[[1L]])
-            return(gettextf("intervals implied by labels \"%s\" and \"%s\" overlap",
-                            labels[is_open_first], labels[is_mid][[1L]]))
+    ## check for overlap between mid and open_first, open_last
+    if (has_mid) {
+        if (has_open_first) {
+            if(year_open_first > years_low[[1L]])
+                return(gettextf("intervals defined by labels \"%s\" and \"%s\" overlap",
+                                labels[is_open_first],
+                                labels[is_mid][[1L]]))
+        }
+        if (has_open_last) {
+            if(years_up[[n_mid]] > year_open_last)
+                return(gettextf("intervals defined by labels \"%s\" and \"%s\" overlap",
+                                labels[is_mid][[n_mid]],
+                                labels[is_open_last]))
+        }
     }
     ## assemble breaks
-    breaks <- c(years_low, years_up)
+    breaks <- integer()
+    if (has_mid)
+        breaks <- c(breaks, years_low, years_up)
     if (has_open_first)
         breaks <- c(breaks, year_open_first)
+    if (has_open_last)
+        breaks <- c(breaks, year_open_last)
     breaks <- sort(unique(breaks))
     ## return "Label" object
     LabGroupedIntEndpoints(breaks = breaks,
                            open_first = has_open_first,
+                           open_last = has_open_last,
                            include_na = has_na)
 }
 
-
-
+## HAS_TESTS
 infer_lab_calendar_quarters <- function(labels) {
     ## regexp patterns
     p_open_first <- "^<([0-9]{4}) Q([1-4])$"
     p_mid <- "^([0-9]{4}) Q([1-4])$"
+    p_open_last <- "^([0-9]{4}) Q([1-4])\\+$"
     ## check for blanks
-demcheck::err_is_not_blank_vector(x = labels, name = "labels")    ## only need to process one instance of each label
+    demcheck::err_is_not_blank_vector(x = labels,
+                                      name = "labels")
+    ## only need to process one instance of each label
     labels <- unique(labels)
     ## sorting should work if labels have correct format
     labels <- sort(labels, na.last = TRUE)
@@ -403,52 +427,97 @@ demcheck::err_is_not_blank_vector(x = labels, name = "labels")    ## only need t
                         "labels"))
     ## initial, non-definitive check that labels have expected format
     is_open_first <- grepl(p_open_first, labels)
+    is_open_last <- grepl(p_open_last, labels)
     is_mid <- grepl(p_mid, labels)
-    is_invalid <- !(is_open_first | is_mid | is_na)
+    is_invalid <- !(is_open_first | is_mid | is_open_last | is_na)
     i_invalid <- match(TRUE, is_invalid, nomatch = 0L)
     if (i_invalid > 0L)
         return(gettextf("\"%s\" not a valid label for period of one quarter",
                         labels[[i_invalid]]))
     ## summarise
     has_open_first <- any(is_open_first)
+    has_open_last <- any(is_open_last)
     has_mid <- any(is_mid)
     has_na <- any(is_na)
-    n_mid <- sum(has_mid)
-    ## check that at most one 'open_first'
+    n_mid <- sum(is_mid)
+    ## check that at most one 'open_first', 'open_last'
     if (sum(is_open_first) > 1L)
         return(gettextf("two different labels for period open on left : \"%s\" and \"%s\"",
-                        labels[is_open_first][[1L]], labels[is_open_first][[2L]]))
-    ## extract 'dates_mid', if present
-    years_mid <- sub(p_mid, "\\1", labels[is_mid])
-    quarters_mid <- sub(p_mid, "\\2", labels[is_mid])
-    months_mid <- (as.integer(quarters_mid) - 1L) * 3L + 1L
-    dates_mid <- paste(years_mid, months_mid, 1, sep = "-")
-    dates_mid <- as.Date(dates_mid)
-    ## extract 'date_open_first', if present
+                        labels[is_open_first][[1L]],
+                        labels[is_open_first][[2L]]))
+    if (sum(is_open_last) > 1L)
+        return(gettextf("two different labels for period open on right : \"%s\" and \"%s\"",
+                        labels[is_open_last][[1L]],
+                        labels[is_open_last][[2L]]))
+    ## extract 'dates_mid'
+    if (has_mid) {
+        years_mid <- sub(p_mid, "\\1", labels[is_mid])
+        quarters_mid <- sub(p_mid, "\\2", labels[is_mid])
+        months_mid <- (as.integer(quarters_mid) - 1L) * 3L + 1L
+        dates_mid <- paste(years_mid, months_mid, 1, sep = "-")
+        dates_mid <- as.Date(dates_mid)
+    }
+    ## extract 'date_open_first', 'date_open_last'
     if (has_open_first) {
         year_open_first <- sub(p_open_first, "\\1", labels[is_open_first])
         quarter_open_first <- sub(p_open_first, "\\2", labels[is_open_first])
-        month_open_first <- (as.integer(quarter) - 1L) * 3L + 1L
+        month_open_first <- (as.integer(quarter_open_first) - 1L) * 3L + 1L
         date_open_first <- paste(year_open_first, month_open_first, 1, sep = "-")
         date_open_first <- as.Date(date_open_first)
+    }
+    if (has_open_last) {
+        year_open_last <- sub(p_open_last, "\\1", labels[is_open_last])
+        quarter_open_last <- sub(p_open_last, "\\2", labels[is_open_last])
+        month_open_last <- (as.integer(quarter_open_last) - 1L) * 3L + 1L
+        date_open_last <- paste(year_open_last, month_open_last, 1, sep = "-")
+        date_open_last <- as.Date(date_open_last)
     }
     ## extract 'date_mid_min' and 'date_min_max', if present
     if (has_mid) {
         date_mid_min <- min(dates_mid)
         date_mid_max <- max(dates_mid)
     }
-    ## make sure 'open_first' does not overlap with mid   
-    if (has_open_first && has_mid) {
-        if (date_open_first > date_mid_min)
+    ## make sure 'open_first', 'open_last' do not overlap with each other
+    if (has_open_first && has_open_last)
+        if (date_open_first > date_open_last)
             return(gettextf("periods \"%s\" and \"%s\" overlap",
-                            labels[is_mid][[1L]],
-                            labels[is_open_first]))
+                            labels[is_open_first],
+                            labels[is_open_last]))
+    ## make sure 'open_first', 'open_last' do not overlap with mid
+    if (has_mid) {
+        if (has_open_first) {
+            if (date_open_first > date_mid_min)
+                return(gettextf("periods \"%s\" and \"%s\" overlap",
+                                labels[is_open_first],
+                                labels[is_mid][[1L]]))
+        }
+        if (has_open_last) {
+            if (date_mid_max > date_open_last)
+                return(gettextf("periods \"%s\" and \"%s\" overlap",
+                                labels[is_mid][[n_mid]],
+                                labels[is_open_last]))
+        }
     }
+    ## get 'break_min' and 'break_max'
+    if (has_open_first)
+        break_min <- date_open_first
+    else if (has_mid)
+        break_min <- date_mid_min
+    else
+        break_min <- date_open_last
+    if (has_open_last)
+        break_max <- date_open_last
+    else if (has_mid)
+        break_max <- seq.Date(from = date_mid_max,
+                              by = "quarter",
+                              length.out = 2L)[[2L]]
+    else
+        break_max <- date_open_first
     ## return "LabCalendarQuarters" object
-    break_min <- if (has_open_first) date_open_first else date_mid_min
     LabCalendarQuarters(break_min = break_min,
-                        break_max = date_mid_max,
+                        break_max = break_max,
                         open_first = has_open_first,
+                        open_last = has_open_last,
                         include_na = has_na)
 }
 
@@ -457,11 +526,14 @@ infer_lab_calendar_months <- function(labels, gaps_ok = FALSE) {
     ## regexp patterns
     p_open_first <- "^<([0-9]{4}) ([A-z]{3})$"
     p_mid <- "^([0-9]{4}) ([A-z]{3})$"
+    p_open_last <- "^([0-9]{4}) ([A-z]{3})\\+$"
     ## check for blanks
-demcheck::err_is_not_blank_vector(x = labels, name = "labels")    ## only need to process one instance of each label
+    demcheck::err_is_not_blank_vector(x = labels,
+                                      name = "labels")
+    ## only need to process one instance of each label
     labels <- unique(labels)
     ## sorting should work if labels have correct format
-    labels <- sort(labels, na.last = TRUE)
+    labels <- sort_months(labels)
     ## must have at least one non-NA label
     ## (otherwise use different Label class)
     is_na <- is.na(labels)
@@ -470,51 +542,95 @@ demcheck::err_is_not_blank_vector(x = labels, name = "labels")    ## only need t
                         "labels"))
     ## initial, non-definitive check that labels have expected format
     is_open_first <- grepl(p_open_first, labels)
+    is_open_last <- grepl(p_open_last, labels)
     is_mid <- grepl(p_mid, labels)
     is_na <- is.na(labels)
-    is_invalid <- !(is_open_first | is_mid | is_na)
+    is_invalid <- !(is_open_first | is_mid | is_open_last | is_na)
     i_invalid <- match(TRUE, is_invalid, nomatch = 0L)
     if (i_invalid > 0L)
         return(gettextf("\"%s\" not a valid label for period of one month",
                         labels[[i_invalid]]))
     ## summarise
     has_open_first <- any(is_open_first)
+    has_open_last <- any(is_open_last)
     has_mid <- any(is_mid)
     has_na <- any(is_na)
     n_mid <- sum(is_mid)
-    ## check that at most one 'open_first'
+    ## check that at most one 'open_first', 'open_last'
     if (sum(is_open_first) > 1L)
         return(gettextf("two different labels for period open on left : \"%s\" and \"%s\"",
-                        labels[is_open_first][[1L]], labels[is_open_first][[2L]]))
+                        labels[is_open_first][[1L]],
+                        labels[is_open_first][[2L]]))
+    if (sum(is_open_last) > 1L)
+        return(gettextf("two different labels for period open on right : \"%s\" and \"%s\"",
+                        labels[is_open_last][[1L]],
+                        labels[is_open_last][[2L]]))
     ## extract 'dates_mid', if present
-    years_mid <- sub(p_mid, "\\1", labels[is_mid])
-    months_mid <- sub(p_mid, "\\1", labels[is_mid])
-    dates_mid <- paste(years_mid, months_mid, 1, sep = "-")
-    dates_mid <- as.Date(dates_mid, format = "%Y %b %d")
-    ## extract 'date_open_first', if present
+    if (has_mid) {
+        years_mid <- sub(p_mid, "\\1", labels[is_mid])
+        months_mid <- sub(p_mid, "\\2", labels[is_mid])
+        dates_mid <- paste(years_mid, months_mid, 1)
+        dates_mid <- as.Date(dates_mid, format = "%Y %b %d")
+    }
+    ## extract 'date_open_first', 'date_open_last'
     if (has_open_first) {
         year_open_first <- sub(p_open_first, "\\1", labels[is_open_first])
         month_open_first <- sub(p_open_first, "\\2", labels[is_open_first])
-        date_open_first <- paste(year_open_first, month_open_first, 1, sep = "-")
+        date_open_first <- paste(year_open_first, month_open_first, 1)
         date_open_first <- as.Date(date_open_first, format = "%Y %b %d")
+    }
+    if (has_open_last) {
+        year_open_last <- sub(p_open_last, "\\1", labels[is_open_last])
+        month_open_last <- sub(p_open_last, "\\2", labels[is_open_last])
+        date_open_last <- paste(year_open_last, month_open_last, 1)
+        date_open_last <- as.Date(date_open_last, format = "%Y %b %d")
     }
     ## extract 'date_mid_min' and 'date_min_max', if present
     if (has_mid) {
         date_mid_min <- min(dates_mid)
         date_mid_max <- max(dates_mid)
     }
-    ## make sure 'open_first' does not overlap with mid   
-    if (has_open_first && has_mid) {
-        if (date_open_first > date_mid_min)
+    ## make sure 'open_first', 'open_last' do not overlap with each other
+    if (has_open_first && has_open_last)
+        if (date_open_first > date_open_last)
             return(gettextf("periods \"%s\" and \"%s\" overlap",
-                            labels[is_mid][[1L]],
-                            labels[is_open_first]))
+                            labels[is_open_first],
+                            labels[is_open_last]))
+    ## make sure 'open_first', 'open_last' do not overlap with each other
+    if (has_mid) {
+        if (has_open_first) {
+            if (date_open_first > date_mid_min)
+                return(gettextf("periods \"%s\" and \"%s\" overlap",
+                                labels[is_open_first],
+                                labels[is_mid][[1L]]))
+        }
+        if (has_open_last) {
+            if (date_mid_max > date_open_last)
+                return(gettextf("periods \"%s\" and \"%s\" overlap",
+                                labels[is_mid][[n_mid]],
+                                labels[is_open_last]))
+        }
     }
-    ## return "PeriodMonth" object
-    break_min <- if (has_open_first) date_open_first else date_mid_min
+    ## get 'break_min' and 'break_max'
+    if (has_open_first)
+        break_min <- date_open_first
+    else if (has_mid)
+        break_min <- date_mid_min
+    else
+        break_min <- date_open_last
+    if (has_open_last)
+        break_max <- date_open_last
+    else if (has_mid)
+        break_max <- seq.Date(from = date_mid_max,
+                              by = "month",
+                              length.out = 2L)[[2L]]
+    else
+        break_max <- date_open_first
+    ## return "LabCalendarMonth" object
     LabCalendarMonths(break_min = break_min,
-                      break_max = date_mid_max,
+                      break_max = break_max,
                       open_first = has_open_first,
+                      open_last = has_open_last,
                       include_na = has_na)
 }
 
@@ -526,7 +642,9 @@ infer_lab_duration_quarters <- function(labels) {
     p_mid <- "^([0-9]+)q$"
     p_open_last <- "^([0-9]+)q\\+$"
     ## check for blanks
-demcheck::err_is_not_blank_vector(x = labels, name = "labels")    ## only need to process one instance of each label
+    demcheck::err_is_not_blank_vector(x = labels,
+                                      name = "labels")
+    ## only need to process one instance of each label
     labels <- unique(labels)
     ## sorting should work if labels have correct format
     labels <- sort(labels, na.last = TRUE)

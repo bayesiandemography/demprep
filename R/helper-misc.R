@@ -360,6 +360,17 @@ sort_intervals <- function(intervals) {
       intervals_other)
 }
 
+## assumes months valid
+sort_months <- function(months) {
+    if (identical(length(months), 0L))
+        return(months)
+    months_date <- sub("<|\\+", "", months)
+    months_date <- paste(months_date, 1)
+    months_date <- as.Date(months_date, format = "%Y %b %d")
+    i <- order(months_date, na.last = TRUE)
+    months[i]
+}
+
 
 ## HAS_TESTS
 ## assume quantiles valid

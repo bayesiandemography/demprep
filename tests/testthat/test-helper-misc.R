@@ -644,6 +644,15 @@ test_that("'sort_intervals' works", {
 })
 
 test_that("'sort_quantiles' works", {
+    sort_months <- demprep:::sort_months
+    x <- c("2000 Jan", "1999 Oct", NA, "2010 Feb+", "<1900 Dec")
+    expect_identical(sort_months(x),
+                     x[c(5, 2, 1, 4, 3)])
+    expect_identical(sort_months(character()),
+                     character())
+})
+
+test_that("'sort_quantiles' works", {
     sort_quantiles <- demprep:::sort_quantiles
     x <- c("50%", NA, "0.001%", "5%", "99.03%")
     expect_identical(sort_quantiles(x),
