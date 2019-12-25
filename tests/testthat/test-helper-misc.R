@@ -415,25 +415,25 @@ test_that("'make_breaks_date_year' gives correct answer with valid input", {
 })
 
 
-## make_breaks_integer_fert ---------------------------------------------------
+## make_breaks_integer_births ---------------------------------------------------
 
-test_that("'make_breaks_integer_fert' gives correct answer when break_max is finite", {
-    expect_identical(make_breaks_integer_fert(age = c(17L, 22L, 37L),
+test_that("'make_breaks_integer_births' gives correct answer when break_max is finite", {
+    expect_identical(make_breaks_integer_births(age = c(17L, 22L, 37L),
                                               width = 5L,
                                               break_min = 15L,
                                               break_max = 50L),
                      seq.int(from = 15L, by = 5L, to = 50L))
-    expect_identical(make_breaks_integer_fert(age = c(17L, 22L, 37L, NA),
+    expect_identical(make_breaks_integer_births(age = c(17L, 22L, 37L, NA),
                                               width = 5L,
                                               break_min = 15L,
                                               break_max = 50L),
                      seq.int(from = 15L, by = 5L, to = 50L))
-    expect_identical(make_breaks_integer_fert(age = c(17L, 22L, 37L, NA),
+    expect_identical(make_breaks_integer_births(age = c(17L, 22L, 37L, NA),
                                               width = 5L,
                                               break_min = NULL,
                                               break_max = NULL),
                      seq.int(from = 15L, by = 5L, to = 40L))
-    expect_identical(make_breaks_integer_fert(age = c(17L, 22L, 37L, NA),
+    expect_identical(make_breaks_integer_births(age = c(17L, 22L, 37L, NA),
                                               width = 5L,
                                               break_min = NULL,
                                               break_max = 45L),
@@ -634,41 +634,4 @@ test_that("'make_fill gives correct error with invalid inputs", {
                  "invalid value for 'fill'")
 })
 
-test_that("'sort_durations' works", {
-    sort_durations <- demprep:::sort_durations
-    x <- c("10q", "50q+", "0q", NA, "5q")
-    expect_identical(sort_durations(x),
-                     x[c(3, 5, 1, 2, 4)])
-    x <- c(NA, "15m+", "0m", "7m")
-    expect_identical(sort_durations(x),
-                     x[c(3, 4, 2, 1)])
-    expect_identical(sort_durations(character()),
-                     character())
-})
 
-test_that("'sort_intervals' works", {
-    sort_intervals <- demprep:::sort_intervals
-    x <- c("20-30", NA, "50", "-5", "<-5", "1", "20-30", "100+")
-    expect_identical(sort_intervals(x),
-                     c("<-5", "-5", "1", "20-30", "20-30", "50", "100+", NA))
-    expect_identical(sort_intervals(character()),
-                     character())
-})
-
-test_that("'sort_quantiles' works", {
-    sort_months <- demprep:::sort_months
-    x <- c("2000 Jan", "1999 Oct", NA, "2010 Feb+", "<1900 Dec")
-    expect_identical(sort_months(x),
-                     x[c(5, 2, 1, 4, 3)])
-    expect_identical(sort_months(character()),
-                     character())
-})
-
-test_that("'sort_quantiles' works", {
-    sort_quantiles <- demprep:::sort_quantiles
-    x <- c("50%", NA, "0.001%", "5%", "99.03%")
-    expect_identical(sort_quantiles(x),
-                     x[c(3, 4, 1, 5, 2)])
-    expect_identical(sort_quantiles(character()),
-                     character())
-})

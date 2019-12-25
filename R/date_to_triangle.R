@@ -86,7 +86,7 @@
 #'
 #' @seealso Other functions for creating Lexis triangles are
 #' \code{\link{date_to_triangle_multi}},
-#' \code{\link{date_to_triangle_fert}},
+#' \code{\link{date_to_triangle_births}},
 #' \code{\link{date_to_triangle_quarter}},
 #' and \code{\link{date_to_triangle_month}}.
 #' \code{date_to_triangle_year} is typically used in combination with
@@ -230,7 +230,7 @@ date_to_triangle_year <- function(date,
 #'
 #' @seealso Other functions for creating Lexis triangles are
 #' \code{\link{date_to_triangle_year}},
-#' \code{\link{date_to_triangle_fert}},
+#' \code{\link{date_to_triangle_births}},
 #' \code{\link{date_to_triangle_quarter}},
 #' and \code{\link{date_to_triangle_month}}.
 #' \code{date_to_triangle_multi} is typically used in combination with
@@ -460,27 +460,27 @@ date_to_triangle_multi <- function(date,
 #' \code{\link{date_to_triangle_multi}},
 #' \code{\link{date_to_triangle_quarter}},
 #' and \code{\link{date_to_triangle_month}}.
-#' \code{date_to_triangle_fert} is typically used in combination with
+#' \code{date_to_triangle_births} is typically used in combination with
 #' \code{\link{date_to_age_group_year}}
 #' and \code{\link{date_to_period_year}}.
 #'
 #' @examples
-#' date_to_triangle_fert(date = c("2024-03-27", "2022-11-09"),
+#' date_to_triangle_births(date = c("2024-03-27", "2022-11-09"),
 #'                       dob = c("2001-03-21", "2000-07-13"))
 #'
 #' ## alternative values for 'width'
-#' date_to_triangle_fert(date = c("2024-03-27", "2022-11-09"),
+#' date_to_triangle_births(date = c("2024-03-27", "2022-11-09"),
 #'                       dob = c("2001-03-21", "2000-07-13"),
 #'                       width = 10,
 #'                       break_min = 20)
-#' date_to_triangle_fert(date = c("2024-03-27", "2022-11-09"),
+#' date_to_triangle_births(date = c("2024-03-27", "2022-11-09"),
 #'                       dob = c("2001-03-21", "2000-07-13"),
 #'                       width = 1)
 #'
 #' ## births of children and mothers occur on
 #' ## same month and day of month, and dates
 #' ## are 4 * 5 years apart
-#' date_to_triangle_fert(date = c("2020-03-01",
+#' date_to_triangle_births(date = c("2020-03-01",
 #'                                "2020-03-02",
 #'                                "2020-03-03",
 #'                                "2020-03-04",
@@ -497,7 +497,7 @@ date_to_triangle_multi <- function(date,
 #'                       dob = "1996-03-01",
 #'                       as_factor = FALSE)
 #' @export
-date_to_triangle_fert <- function(date,
+date_to_triangle_births <- function(date,
                                   dob,
                                   width = 5,
                                   break_min = 15,
@@ -590,7 +590,7 @@ date_to_triangle_fert <- function(date,
 }
 
 ## HAS_TESTS
-#' Convert dates to quarter Lexis triangles
+#' Convert dates to one-quarter Lexis triangles
 #'
 #' Given dates when events occurred, together with dates of birth,
 #' allocate the events to Lexis triangles.
@@ -661,7 +661,7 @@ date_to_triangle_fert <- function(date,
 #' @seealso Other functions for creating Lexis triangles are
 #' \code{\link{date_to_triangle_year}},
 #' \code{\link{date_to_triangle_multi}},
-#' \code{\link{date_to_triangle_fert}},
+#' \code{\link{date_to_triangle_births}},
 #' and \code{\link{date_to_triangle_month}}.
 #' \code{date_to_triangle_quarter} is typically used in combination with
 #' \code{\link{date_to_age_group_quarter}}
@@ -759,7 +759,7 @@ date_to_triangle_quarter <- function(date,
 }
 
 ## HAS_TESTS
-#' Convert dates to month Lexis triangles
+#' Convert dates to one-month Lexis triangles
 #'
 #' Given dates when events occurred, together with dates of birth,
 #' allocate the events to Lexis triangles.
@@ -829,7 +829,7 @@ date_to_triangle_quarter <- function(date,
 #' @seealso Other functions for creating Lexis triangles are
 #' \code{\link{date_to_triangle_year}},
 #' \code{\link{date_to_triangle_multi}},
-#' \code{\link{date_to_triangle_fert}},
+#' \code{\link{date_to_triangle_births}},
 #' and \code{\link{date_to_triangle_quarter}}.
 #' \code{date_to_triangle_month} is typically used in combination with
 #' \code{\link{date_to_age_group_month}}

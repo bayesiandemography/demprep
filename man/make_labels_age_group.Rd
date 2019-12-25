@@ -67,9 +67,8 @@ make_labels_age_group(breaks = seq(15, 65, 5),
 }
 \seealso{
 To make labels for periods measured in years, use
-\code{\link{make_labels_period}}. There is
-no \code{make_labels_cohort} function. To construct
-labels for cohorts, just use \code{make_labels_period}.
+\code{\link{make_labels_period}}, and to
+make labels for cohorts, use \code{\link{make_labels_cohort}}.
 To make labels for age groups with widths of one quarter or one month,
 use functions \code{\link{make_labels_age_group_quarter}} or
 \code{\link{make_labels_age_group_month}}.

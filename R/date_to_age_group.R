@@ -64,7 +64,7 @@
 #' @seealso Other functions for creating age groups are
 #' \code{\link{date_to_age_group_multi}},
 #' \code{\link{date_to_age_group_lifetab}},
-#' \code{\link{date_to_age_group_fert}},
+#' \code{\link{date_to_age_group_births}},
 #' \code{\link{date_to_age_group_custom}},
 #' \code{\link{date_to_age_group_quarter}},
 #' and \code{\link{date_to_age_group_month}}.
@@ -205,7 +205,7 @@ date_to_age_group_year <- function(date,
 #' @seealso Other functions for creating age groups are
 #' \code{\link{date_to_age_group_year}},
 #' \code{\link{date_to_age_group_lifetab}},
-#' \code{\link{date_to_age_group_fert}},
+#' \code{\link{date_to_age_group_births}},
 #' \code{\link{date_to_age_group_custom}},
 #' \code{\link{date_to_age_group_quarter}},
 #' and \code{\link{date_to_age_group_month}}.
@@ -356,7 +356,7 @@ date_to_age_group_multi <- function(date,
 #' @seealso Other functions for creating age groups are
 #' \code{\link{date_to_age_group_year}},
 #' \code{\link{date_to_age_group_multi}},
-#' \code{\link{date_to_age_group_fert}},
+#' \code{\link{date_to_age_group_births}},
 #' \code{\link{date_to_age_group_custom}},
 #' \code{\link{date_to_age_group_quarter}},
 #' and \code{\link{date_to_age_group_month}}.
@@ -502,41 +502,41 @@ date_to_age_group_lifetab <- function(date, dob,
 #' on constructing labels for age groups.
 #'
 #' @examples
-#' date_to_age_group_fert(date = c("2024-03-27", "2022-11-09"),
+#' date_to_age_group_births(date = c("2024-03-27", "2022-11-09"),
 #'                        dob = c("2001-03-21", "2000-07-13"))
 #'
 #' ## alternative values for 'width'
-#' date_to_age_group_fert(date = c("2024-03-27", "2022-11-09"),
+#' date_to_age_group_births(date = c("2024-03-27", "2022-11-09"),
 #'                        dob = c("2001-03-21", "2000-07-13"),
 #'                        width = 10,
 #'                        break_min = 20)
-#' date_to_age_group_fert(date = c("2024-03-27", "2022-11-09"),
+#' date_to_age_group_births(date = c("2024-03-27", "2022-11-09"),
 #'                        dob = c("2001-03-21", "2000-07-13"),
 #'                        width = 1)
 #'
 #' ## replicate date of birth
-#' date_to_age_group_fert(date = c("2024-03-27", "2022-11-09"),
+#' date_to_age_group_births(date = c("2024-03-27", "2022-11-09"),
 #'                        dob = "2001-05-18")
 #'
 #' ## return non-factor
-#' date_to_age_group_fert(date = c("2024-03-27", "2022-11-09"),
+#' date_to_age_group_births(date = c("2024-03-27", "2022-11-09"),
 #'                        dob = "2001-05-18",
 #'                        as_factor = FALSE)
 #'
 #' ## allow youngest and oldest age groups to be
 #' ## set by the data
-#' date_to_age_group_fert(date = c("2052-01-02", "2019-09-22", "2022-10-08"),
+#' date_to_age_group_births(date = c("2052-01-02", "2019-09-22", "2022-10-08"),
 #'                        dob = c("2000-01-01", "2001-03-17", "2010-07-05"),
 #'                        break_min = NULL,
 #'                        break_max = NULL)
 #'
 #' ## recode ages outside the expected range
-#' date_to_age_group_fert(date = c("2052-01-02", "2019-09-22", "2022-10-08"),
+#' date_to_age_group_births(date = c("2052-01-02", "2019-09-22", "2022-10-08"),
 #'                        dob = c("2000-01-01", "2001-03-17", "2010-07-05"),
 #'                        recode_up = TRUE,
 #'                        recode_down = TRUE)
 #' @export
-date_to_age_group_fert <- function(date, dob,
+date_to_age_group_births <- function(date, dob,
                                    break_min = 15,
                                    break_max = 50,
                                    width = 5,
@@ -617,7 +617,7 @@ date_to_age_group_fert <- function(date, dob,
         }
     }
     ## make breaks
-    breaks <- make_breaks_integer_fert(age = age_years,
+    breaks <- make_breaks_integer_births(age = age_years,
                                        width = width,
                                        break_min = break_min,
                                        break_max = break_max)
@@ -676,7 +676,7 @@ date_to_age_group_fert <- function(date, dob,
 #' \code{\link{date_to_age_group_year}},
 #' \code{\link{date_to_age_group_multi}},
 #' \code{\link{date_to_age_group_lifetab}},
-#' \code{\link{date_to_age_group_fert}},
+#' \code{\link{date_to_age_group_births}},
 #' \code{\link{date_to_age_group_quarter}},
 #' and \code{\link{date_to_age_group_month}}.
 #' See \code{\link{make_labels_age_group}} for the rules
@@ -792,7 +792,7 @@ date_to_age_group_custom <- function(date, dob,
 }
 
 ## HAS_TESTS
-#' Convert dates to quarter age groups
+#' Convert dates to one-quarter age groups
 #'
 #' Given dates when events occurred or measurements were made,
 #' and dates of birth, allocate the events or measurements
@@ -845,7 +845,7 @@ date_to_age_group_custom <- function(date, dob,
 #' \code{\link{date_to_age_group_year}},
 #' \code{\link{date_to_age_group_multi}},
 #' \code{\link{date_to_age_group_lifetab}},
-#' \code{\link{date_to_age_group_fert}},
+#' \code{\link{date_to_age_group_births}},
 #' \code{\link{date_to_age_group_custom}},
 #' and \code{\link{date_to_age_group_month}}.
 #' Other functions for working with one-quarter intervals are
@@ -945,7 +945,7 @@ date_to_age_group_quarter <- function(date,
 }
 
 ## HAS_TESTS
-#' Convert dates to month age groups
+#' Convert dates to one-month age groups
 #'
 #' Given dates when events occurred or measurements were made,
 #' and dates of birth, allocate the events or
@@ -998,7 +998,7 @@ date_to_age_group_quarter <- function(date,
 #' \code{\link{date_to_age_group_year}},
 #' \code{\link{date_to_age_group_multi}},
 #' \code{\link{date_to_age_group_lifetab}},
-#' \code{\link{date_to_age_group_fert}},
+#' \code{\link{date_to_age_group_births}},
 #' \code{\link{date_to_age_group_custom}},
 #' \code{\link{date_to_age_group_quarter}}.
 #' Other functions for working with one-month intervals are

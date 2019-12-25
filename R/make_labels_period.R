@@ -60,7 +60,7 @@
 #'
 #' @seealso To make labels for age groups measured in years, use
 #' \code{\link{make_labels_age_group}}, and to
-#' make labels for cohorts, use \code{make_labels_cohort}.
+#' make labels for cohorts, use \code{\link{make_labels_cohort}}.
 #' To make labels for periods with widths of one quarter or one month,
 #' use functions \code{\link{make_labels_period_quarter}} or
 #' \code{\link{make_labels_period_month}}.

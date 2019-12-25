@@ -399,7 +399,7 @@ date_to_period_custom <- function(date,
 }
 
 ## HAS_TESTS
-#' Convert dates to quarter periods
+#' Convert dates to one-quarter periods
 #'
 #' Allocate dates to periods with periods one quarter long.
 #' Quarters are defined as follows:
@@ -488,7 +488,7 @@ date_to_period_quarter <- function(date,
 }
 
 ## HAS_TESTS
-#' Convert dates to month periods
+#' Convert dates to one-month periods
 #'
 #' Allocate dates to periods with month-long
 #' periods.

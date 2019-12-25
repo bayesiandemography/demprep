@@ -2,7 +2,7 @@
 % Please edit documentation in R/date_to_age_group.R
 \name{date_to_age_group_month}
 \alias{date_to_age_group_month}
-\title{Convert dates to month age groups}
+\title{Convert dates to one-month age groups}
 \usage{
 date_to_age_group_month(
   date,
@@ -99,7 +99,7 @@ Other functions for creating age groups are
 \code{\link{date_to_age_group_year}},
 \code{\link{date_to_age_group_multi}},
 \code{\link{date_to_age_group_lifetab}},
-\code{\link{date_to_age_group_fert}},
+\code{\link{date_to_age_group_births}},
 \code{\link{date_to_age_group_custom}},
 \code{\link{date_to_age_group_quarter}}.
 Other functions for working with one-month intervals are

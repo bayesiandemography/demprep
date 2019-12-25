@@ -2,7 +2,7 @@
 % Please edit documentation in R/date_to_period.R
 \name{date_to_period_quarter}
 \alias{date_to_period_quarter}
-\title{Convert dates to quarter periods}
+\title{Convert dates to one-quarter periods}
 \usage{
 date_to_period_quarter(date, as_factor = TRUE)
 }

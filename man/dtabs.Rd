@@ -2,7 +2,7 @@
 % Please edit documentation in R/dtabs.R
 \name{dtabs}
 \alias{dtabs}
-\title{Simplified cross-tabulation}
+\title{Cross-tabulation}
 \usage{
 dtabs(data = parent.frame(), formula = ~., na_rm = FALSE, fill = NULL)
 }

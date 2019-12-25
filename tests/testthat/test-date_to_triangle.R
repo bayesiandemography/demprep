@@ -152,22 +152,22 @@ test_that("date_to_triangle_multi gives correct answers with valid inputs", {
 })
 
 
-## ## date_to_triangle_fert --------------------------------------------------
+## ## date_to_triangle_births --------------------------------------------------
 
-test_that("date_to_triangle_fert gives correct answers with valid inputs", {
-    expect_identical(date_to_triangle_fert(date = c("2015-01-01",
+test_that("date_to_triangle_births gives correct answers with valid inputs", {
+    expect_identical(date_to_triangle_births(date = c("2015-01-01",
                                                     "2025-01-01",
                                                     "2029-12-31"),
                                            dob = "2000-01-01"),
                      factor(c("Lower", "Lower", "Lower"),
                             levels = c("Lower", "Upper")))
-    expect_identical(date_to_triangle_fert(date = c("2020-01-01",
+    expect_identical(date_to_triangle_births(date = c("2020-01-01",
                                                     "2025-01-01",
                                                     "2029-12-31"),
                                            dob = "2000-02-01"),
                      factor(c("Upper", "Upper", "Lower"),
                             levels = c("Lower", "Upper")))
-    expect_identical(date_to_triangle_fert(date = c("2015-01-01",
+    expect_identical(date_to_triangle_births(date = c("2015-01-01",
                                                     "2025-01-01",
                                                     "2029-12-31",
                                                     NA),
@@ -176,7 +176,7 @@ test_that("date_to_triangle_fert gives correct answers with valid inputs", {
                                            break_max = 55),
                      factor(c("Lower", "Lower", "Lower", NA),
                             levels = c("Lower", "Upper")))
-    expect_identical(date_to_triangle_fert(date = c("2015-01-01",
+    expect_identical(date_to_triangle_births(date = c("2015-01-01",
                                                     "2025-01-01",
                                                     "2049-12-31"),
                                            dob = "2000-01-01",
@@ -186,26 +186,26 @@ test_that("date_to_triangle_fert gives correct answers with valid inputs", {
                                            recode_down = TRUE),
                      factor(c("Lower", "Lower", "Lower"),
                             levels = c("Lower", "Upper")))
-    expect_identical(date_to_triangle_fert(date = c("2001-01-01", NA),
+    expect_identical(date_to_triangle_births(date = c("2001-01-01", NA),
                                            dob = c(NA, "2000-01-01")),
                      factor(rep(NA_character_, 2), levels = c("Lower", "Upper")))
 })
 
-test_that("date_to_triangle_fert throws correct errors with invalid inputs", {
-    expect_error(date_to_triangle_fert(date = c("2015-01-01",
+test_that("date_to_triangle_births throws correct errors with invalid inputs", {
+    expect_error(date_to_triangle_births(date = c("2015-01-01",
                                                  "2025-01-01",
                                                  "2029-12-31"),
                                         dob = "2000-01-01",
                                         width = 3),
                  "difference between 'break_max' \\[50\\] and 'break_min' \\[15\\] not divisible by 'width' \\[3\\]")
-    expect_error(date_to_triangle_fert(date = c("2015-01-01",
+    expect_error(date_to_triangle_births(date = c("2015-01-01",
                                                  "2025-01-01",
                                                  "2029-12-31"),
                                         dob = "2000-01-01",
                                         break_min = 20),
                  paste("'date' of \"2015-01-01\" and 'dob' of \"2000-01-01\" imply age of 15,",
                        "but 'break_min' is 20 and 'recode_up' is FALSE"))
-    expect_error(date_to_triangle_fert(date = c("2045-01-01",
+    expect_error(date_to_triangle_births(date = c("2045-01-01",
                                                  "2025-01-01",
                                                  "2029-12-31"),
                                         dob = "2000-01-01",

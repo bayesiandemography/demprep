@@ -562,7 +562,7 @@ date_to_cohort_custom <- function(date,
 }
 
 ## HAS_TESTS
-#' Convert dates to quarter cohorts
+#' Convert dates to one-quarter cohorts
 #'
 #' Allocate dates of events
 #' to cohorts of length one quarter, ie three months.
@@ -701,7 +701,7 @@ date_to_cohort_quarter <- function(date,
 }
 
 ## HAS_TESTS
-#' Convert dates to month cohorts
+#' Convert dates to one-month cohorts
 #'
 #' Allocate dates of events (typically, but not always, births)
 #' to cohorts of length one month.

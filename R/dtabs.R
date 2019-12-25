@@ -1,5 +1,5 @@
 
-#' Simplified cross-tabulation
+#' Cross-tabulation
 #'
 #' A simplified version of function
 #' \code{\link[stats]{xtabs}}, designed specifically for

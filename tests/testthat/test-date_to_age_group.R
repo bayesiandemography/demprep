@@ -210,16 +210,16 @@ test_that("date_to_age_group_lifetab gives correct answers with valid inputs", {
                      rep(NA_character_, 3))
 })
 
-## date_to_age_group_fert --------------------------------------------------
+## date_to_age_group_births --------------------------------------------------
 
-test_that("date_to_age_group_fert gives correct answers with valid inputs", {
-    expect_identical(date_to_age_group_fert(date = c("2015-01-01",
+test_that("date_to_age_group_births gives correct answers with valid inputs", {
+    expect_identical(date_to_age_group_births(date = c("2015-01-01",
                                                      "2025-01-01",
                                                      "2029-12-31"),
                                             dob = "2000-01-01"),
                      factor(c("15-19", "25-29", "25-29"),
                             levels = c("15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49")))
-    expect_identical(date_to_age_group_fert(date = c("2015-01-01",
+    expect_identical(date_to_age_group_births(date = c("2015-01-01",
                                                      "2025-01-01",
                                                      "2029-12-31"),
                                             dob = "2000-01-01",
@@ -227,7 +227,7 @@ test_that("date_to_age_group_fert gives correct answers with valid inputs", {
                                             break_max = 55),
                      factor(c("15-19", "25-29", "25-29"),
                             levels = c("10-14", "15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54")))
-    expect_identical(date_to_age_group_fert(date = c("2015-01-01",
+    expect_identical(date_to_age_group_births(date = c("2015-01-01",
                                                      "2025-01-01",
                                                      "2029-12-31"),
                                             dob = "2000-01-01",
@@ -236,7 +236,7 @@ test_that("date_to_age_group_fert gives correct answers with valid inputs", {
                                             width = 1),
                      factor(c("15", "25", "29"),
                             levels = 15:49))
-    expect_identical(date_to_age_group_fert(date = c("2015-01-01",
+    expect_identical(date_to_age_group_births(date = c("2015-01-01",
                                                      "2025-01-01",
                                                      "2049-12-31"),
                                             dob = "2000-01-01",
@@ -246,7 +246,7 @@ test_that("date_to_age_group_fert gives correct answers with valid inputs", {
                                             recode_down = TRUE),
                      factor(c("20-24", "25-29", "35-39"),
                             levels = c("20-24", "25-29", "30-34", "35-39")))
-    expect_identical(date_to_age_group_fert(date = c(NA,
+    expect_identical(date_to_age_group_births(date = c(NA,
                                                      NA,
                                                      "2049-12-31"),
                                             dob = NA_character_,
@@ -256,7 +256,7 @@ test_that("date_to_age_group_fert gives correct answers with valid inputs", {
                                             recode_down = TRUE),
                      factor(rep(NA_character_, 3),
                             levels = c("20-24", "25-29", "30-34", "35-39")))
-    expect_identical(date_to_age_group_fert(date = c(NA,
+    expect_identical(date_to_age_group_births(date = c(NA,
                                                      NA,
                                                      "2049-12-31"),
                                             dob = NA_character_,
@@ -268,21 +268,21 @@ test_that("date_to_age_group_fert gives correct answers with valid inputs", {
                      rep(NA_character_, 3))
 })
 
-test_that("date_to_age_group_fert throws correct errors with invalid inputs", {
-    expect_error(date_to_age_group_fert(date = c("2015-01-01",
+test_that("date_to_age_group_births throws correct errors with invalid inputs", {
+    expect_error(date_to_age_group_births(date = c("2015-01-01",
                                                  "2025-01-01",
                                                  "2029-12-31"),
                                         dob = "2000-01-01",
                                         width = 3),
                  "difference between 'break_max' \\[50\\] and 'break_min' \\[15\\] not divisible by 'width' \\[3\\]")
-    expect_error(date_to_age_group_fert(date = c("2015-01-01",
+    expect_error(date_to_age_group_births(date = c("2015-01-01",
                                                  "2025-01-01",
                                                  "2029-12-31"),
                                         dob = "2000-01-01",
                                         break_min = 20),
                  paste("'date' of \"2015-01-01\" and 'dob' of \"2000-01-01\" imply age of 15,",
                        "but 'break_min' is 20 and 'recode_up' is FALSE"))
-    expect_error(date_to_age_group_fert(date = c("2045-01-01",
+    expect_error(date_to_age_group_births(date = c("2045-01-01",
                                                  "2025-01-01",
                                                  "2029-12-31"),
                                         dob = "2000-01-01",
@@ -291,7 +291,7 @@ test_that("date_to_age_group_fert throws correct errors with invalid inputs", {
                        "but 'break_max' is 45 and 'recode_down' is FALSE"))
 })
 
-test_that("date_to_age_group_fert throws correct errors with invalid inputs", {
+test_that("date_to_age_group_births throws correct errors with invalid inputs", {
     expect_error(date_to_age_group_custom(date = c("2001-06-01",
                                                        "2015-01-01",
                                                        "2016-12-31"),

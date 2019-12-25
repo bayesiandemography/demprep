@@ -2,7 +2,7 @@
 % Please edit documentation in R/date_to_triangle.R
 \name{date_to_triangle_quarter}
 \alias{date_to_triangle_quarter}
-\title{Convert dates to quarter Lexis triangles}
+\title{Convert dates to one-quarter Lexis triangles}
 \usage{
 date_to_triangle_quarter(
   date,
@@ -126,7 +126,7 @@ date_to_triangle_quarter(date = c("2024-03-27",
 Other functions for creating Lexis triangles are
 \code{\link{date_to_triangle_year}},
 \code{\link{date_to_triangle_multi}},
-\code{\link{date_to_triangle_fert}},
+\code{\link{date_to_triangle_births}},
 and \code{\link{date_to_triangle_month}}.
 \code{date_to_triangle_quarter} is typically used in combination with
 \code{\link{date_to_age_group_quarter}}

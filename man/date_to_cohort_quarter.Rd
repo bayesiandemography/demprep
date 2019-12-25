@@ -2,7 +2,7 @@
 % Please edit documentation in R/date_to_cohort.R
 \name{date_to_cohort_quarter}
 \alias{date_to_cohort_quarter}
-\title{Convert dates to quarter cohorts}
+\title{Convert dates to one-quarter cohorts}
 \usage{
 date_to_cohort_quarter(
   date,

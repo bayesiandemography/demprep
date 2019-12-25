@@ -2,7 +2,7 @@
 % Please edit documentation in R/dtabs_survey.R
 \name{dtabs_survey}
 \alias{dtabs_survey}
-\title{Tabulate individual-level survey data}
+\title{Cross-tabulation with weighted survey data}
 \source{
 Ghitza Y and Gelman A. 2013. Deep interactions with MRP:
 Election turnout and voting patterns among small electoral subgroups.

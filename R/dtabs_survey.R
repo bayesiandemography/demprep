@@ -1,5 +1,5 @@
 
-#' Tabulate individual-level survey data
+#' Cross-tabulation with weighted survey data
 #'
 #' Tabulate binary outcomes, for combinations of
 #' cross-classifying variables, from individual-level

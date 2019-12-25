@@ -74,7 +74,7 @@ date_to_age_group_lifetab(date = "2019-09-22",
 Other functions for creating age groups are
 \code{\link{date_to_age_group_year}},
 \code{\link{date_to_age_group_multi}},
-\code{\link{date_to_age_group_fert}},
+\code{\link{date_to_age_group_births}},
 \code{\link{date_to_age_group_custom}},
 \code{\link{date_to_age_group_quarter}},
 and \code{\link{date_to_age_group_month}}.

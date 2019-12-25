@@ -2,7 +2,7 @@
 % Please edit documentation in R/date_to_age_group.R
 \name{date_to_age_group_quarter}
 \alias{date_to_age_group_quarter}
-\title{Convert dates to quarter age groups}
+\title{Convert dates to one-quarter age groups}
 \usage{
 date_to_age_group_quarter(
   date,
@@ -99,7 +99,7 @@ Other functions for creating age groups are
 \code{\link{date_to_age_group_year}},
 \code{\link{date_to_age_group_multi}},
 \code{\link{date_to_age_group_lifetab}},
-\code{\link{date_to_age_group_fert}},
+\code{\link{date_to_age_group_births}},
 \code{\link{date_to_age_group_custom}},
 and \code{\link{date_to_age_group_month}}.
 Other functions for working with one-quarter intervals are

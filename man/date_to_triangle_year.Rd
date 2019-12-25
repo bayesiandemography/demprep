@@ -143,7 +143,7 @@ date_to_triangle_year(date = c("2024-03-27",
 \seealso{
 Other functions for creating Lexis triangles are
 \code{\link{date_to_triangle_multi}},
-\code{\link{date_to_triangle_fert}},
+\code{\link{date_to_triangle_births}},
 \code{\link{date_to_triangle_quarter}},
 and \code{\link{date_to_triangle_month}}.
 \code{date_to_triangle_year} is typically used in combination with

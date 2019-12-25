@@ -2,7 +2,7 @@
 % Please edit documentation in R/date_to_cohort.R
 \name{date_to_cohort_month}
 \alias{date_to_cohort_month}
-\title{Convert dates to month cohorts}
+\title{Convert dates to one-month cohorts}
 \usage{
 date_to_cohort_month(
   date,

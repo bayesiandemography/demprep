@@ -2,7 +2,7 @@
 % Please edit documentation in R/date_to_period.R
 \name{date_to_period_month}
 \alias{date_to_period_month}
-\title{Convert dates to month periods}
+\title{Convert dates to one-month periods}
 \usage{
 date_to_period_month(date, as_factor = TRUE)
 }
