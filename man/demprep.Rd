@@ -44,8 +44,8 @@ exact dates to intervals:
 }
 
 When doing demographic accounting, or when working with cohorts,
-it may also be necessary to assign events with exact dates
-to Lexis triangles, using the functions below:
+it may also be necessary to convert dates to Lexis triangles.
+This can be done using the functions below.
 
 \tabular{ll}{
   Single year \tab \code{\link{date_to_triangle_year}} \cr
@@ -59,11 +59,12 @@ to Lexis triangles, using the functions below:
 \section{Reformating Labels}{
 
 
-If the raw data already uses intervals rather than dates
-for events, it may be necessary to reformat the labels for
-these intervals so that they match the conventions
-used by packages such as \code{demarray}. Labels that match
-these conventions can be generated using the following functions.
+Often the raw data already uses intervals rather than dates
+for events. In such cases, it may be necessary to reformat
+the labels for these intervals so that the labels conform
+to the conventions used by packages such as \code{demarray}.
+Labels conforming to these conventions can be generated
+using the following functions.
 
 \tabular{llll}{
   \tab \strong{age} \tab \strong{time} \tab \strong{cohort} \cr
@@ -72,13 +73,14 @@ these conventions can be generated using the following functions.
   Months \tab \code{\link{make_labels_age_group_month}} \tab \code{\link{make_labels_period_month}} \tab \code{\link{make_labels_cohort_month}}
 }
 
-Some cross-classifying variables record quantitative variables other
-than age, time, and cohort. For instance,
-a population might be classified by current
-income or number of children. Packages such as \code{demarray}
-expect the labels for these sorts of variables to
-follow conventions similar to those for age. Labels conforming
-to these conventions can be generated using function
+Some cross-classifying variables measure quantities other
+than age, time, and cohort. A population might, for instance,
+be classified by current income or by
+number of children. Packages such as \code{demarray}
+work best if the labels for quantitative cross-classifying
+variables conform to conventions similar to those for age.
+Labels conforming to these conventions
+can be generated using function
 \code{\link{make_labels_enum}}.
 
 \emph{Describe the cleaning functions here when they are ready.}
@@ -88,12 +90,15 @@ to these conventions can be generated using function
 
 
 Once the cross-classifying variables are all in the required format,
-the data can be tabulated into a multi-way
-\code{\link[base]{array}}. When the data have already been aggregated
-or when the data do not contain survey weights, the cross-tabulation
-can be carried out using function \code{\link{dtabs}}. When
-the data are at the individual level and come from a survey
-that has a complex design, it may be better
-to use function \code{\link{dtabs_survey}}.
+the data can be cross-tabulated into a multi-way
+\code{\link[base]{array}}.
+
+If (i) the data is at the individual level, but does not have
+survey weights, or (ii) the data has already been aggregated,
+then cross-tabulation can be carried out using
+function \code{\link{dtabs}}.
+
+If the data is at the individual level and does have survey weights,
+then it may be better to use function \code{\link{dtabs_survey}}.
 }
 
