@@ -26,7 +26,7 @@
 #' \code{breaks} can only have length 0 if \code{open_last}
 #' is \code{FALSE}. \code{breaks} can
 #' have only have length 1 if \code{open_last}
-#'  is TRUE.
+#' is \code{TRUE}.
 #'
 #' @param breaks A integer vector, or a vector that can
 #' be coerced to integer via function \code{\link[base]{as.integer}}.

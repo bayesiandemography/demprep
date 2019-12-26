@@ -1,5 +1,5 @@
 
-context("helper-make_labels")
+context("make_labels-internal")
 
 ## make_labels_default --------------------------------------------------------
 

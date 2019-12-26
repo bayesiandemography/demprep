@@ -46,7 +46,7 @@ when dealing with dates that include \code{NA}s.
 \code{breaks} can only have length 0 if \code{open_last}
 is \code{FALSE}. \code{breaks} can
 have only have length 1 if \code{open_last}
- is TRUE.
+is \code{TRUE}.
 }
 \examples{
 ## single-year

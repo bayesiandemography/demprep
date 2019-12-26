@@ -5,8 +5,7 @@
 #' variables. These functions would not normally
 #' be called directly by end users.
 #'
-#' The argument \code{breaks}, or the arguments
-#' \code{break_min} and \code{break_max},
+#' The argument \code{breaks}, \code{break_min}, and \code{break_max}
 #' are used to specify intervals via their boundaries.
 #' The arguments \code{int_min} and \code{int_max}
 #' are used to specify integer-based intervals directly.
@@ -144,11 +143,7 @@ make_labels_grouped_int_endpoints <- function(breaks, open_first, include_na) {
 ## HAS_TESTS
 #' @rdname make_labels-internal
 #' @export
-make_labels_calendar_quarters_months <- function(break_min,
-                                                 break_max,
-                                                 open_first,
-                                                 include_na,
-                                                 unit) {
+make_labels_calendar_quarters_months <- function(break_min, break_max, open_first, include_na, unit) {
     s <- seq.Date(from = break_min,
                   to = break_max,
                   by = unit)
@@ -180,11 +175,7 @@ make_labels_calendar_quarters_months <- function(break_min,
 ## HAS_TESTS
 #' @rdname make_labels-internal
 #' @export
-make_labels_duration_quarters_months <- function(break_min,
-                                                 break_max,
-                                                 open_last,
-                                                 include_na,
-                                                 unit) {
+make_labels_duration_quarters_months <- function(break_min, break_max, open_last, include_na, unit) {
     suffix <- switch(unit,
                      month = "m",
                      quarter = "q",
