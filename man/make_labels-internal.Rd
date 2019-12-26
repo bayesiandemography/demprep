@@ -16,12 +16,13 @@ make_labels_integers(int_min, int_max, include_na)
 
 make_labels_grouped_int_enumerations(breaks, open_first, open_last, include_na)
 
-make_labels_grouped_int_endpoints(breaks, open_first, include_na)
+make_labels_grouped_int_endpoints(breaks, open_first, open_last, include_na)
 
 make_labels_calendar_quarters_months(
   break_min,
   break_max,
   open_first,
+  open_last,
   include_na,
   unit
 )

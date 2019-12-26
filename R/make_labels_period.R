@@ -124,6 +124,7 @@ make_labels_period <- function(breaks,
     else
         make_labels_grouped_int_endpoints(breaks = breaks_year,
                                           open_first = FALSE,
+                                          open_last = FALSE,
                                           include_na = include_na)
 }
 
@@ -190,6 +191,7 @@ make_labels_period_quarter <- function(break_min,
     make_labels_calendar_quarters_months(break_min = break_min,
                                          break_max = break_max,
                                          open_first = FALSE,
+                                         open_last = FALSE,
                                          include_na = include_na,
                                          unit = "quarter")
 }
@@ -250,6 +252,7 @@ make_labels_period_month <- function(break_min,
     make_labels_calendar_quarters_months(break_min = break_min,
                                          break_max = break_max,
                                          open_first = FALSE,
+                                         open_last = FALSE,
                                          include_na = include_na,
                                          unit = "month")
 }

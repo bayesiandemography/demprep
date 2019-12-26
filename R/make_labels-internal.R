@@ -109,7 +109,7 @@ make_labels_grouped_int_enumerations <- function(breaks, open_first, open_last, 
 ## HAS_TESTS
 #' @rdname make_labels-internal
 #' @export
-make_labels_grouped_int_endpoints <- function(breaks, open_first, include_na) {
+make_labels_grouped_int_endpoints <- function(breaks, open_first, open_last, include_na) {
     n <- length(breaks)
     if (n == 0L) {
         ans_mid <- character()
@@ -122,6 +122,10 @@ make_labels_grouped_int_endpoints <- function(breaks, open_first, include_na) {
             ans_first <- paste0("<", breaks)
         else
             ans_first <- NULL
+        if (open_last)
+            ans_last <- paste0(breaks, "+")
+        else
+            ans_last <- NULL
     }
     else {
         ans_mid <- character(length = n - 1L)
@@ -132,18 +136,22 @@ make_labels_grouped_int_endpoints <- function(breaks, open_first, include_na) {
             ans_first <- paste0("<", breaks[[1L]])
         else
             ans_first <- NULL
+        if (open_last)
+            ans_last <- paste0(breaks[[n]], "+")
+        else
+            ans_last <- NULL
     }
     if (include_na)
         ans_na <- NA_character_
     else
         ans_na <- NULL
-    c(ans_first, ans_mid, ans_na)
+    c(ans_first, ans_mid, ans_last, ans_na)
 }
 
 ## HAS_TESTS
 #' @rdname make_labels-internal
 #' @export
-make_labels_calendar_quarters_months <- function(break_min, break_max, open_first, include_na, unit) {
+make_labels_calendar_quarters_months <- function(break_min, break_max, open_first, open_last, include_na, unit) {
     s <- seq.Date(from = break_min,
                   to = break_max,
                   by = unit)
@@ -164,11 +172,15 @@ make_labels_calendar_quarters_months <- function(break_min, break_max, open_firs
         ans_first <- sprintf("<%s %s", year[[1L]], suffix[[1L]])
     else
         ans_first <- NULL
+    if (open_last)
+        ans_last <- sprintf("%s %s+", year[[n]], suffix[[n]])
+    else
+        ans_last <- NULL
     if (include_na)
         ans_na <- NA_character_
     else
         ans_na <- NULL
-    ans <- c(ans_first, ans_mid, ans_na)
+    ans <- c(ans_first, ans_mid, ans_last, ans_na)
     ans
 }
 
