@@ -1,5 +1,42 @@
 
+#' Internal functions for making labels
+#'
+#' Functions to create labels for cross-classifying
+#' variables. These functions would not normally
+#' be called directly by end users.
+#'
+#' The argument \code{breaks}, or the arguments
+#' \code{break_min} and \code{break_max},
+#' are used to specify intervals via their boundaries.
+#' The arguments \code{int_min} and \code{int_max}
+#' are used to specify integer-based intervals directly.
+#'
+#' @param labels A character vector.
+#' @param breaks A vector of integers or dates.
+#' @param break_min An integer or date.
+#' @param break_max An integer or date.
+#' @param int_min An integer.
+#' @param int_max An integer.
+#' @param unit Time unit. Currently \code{"quarter"}
+#' or \code{"month"}.
+#' @param open_first Logical. Whether to
+#' include interval open on left.
+#' @param open_last Logical. Whether to
+#' include interval open on right.
+#' @param include_na Logical. Whether to
+#' append \code{NA} to end of labels.
+#'
+#' @return A character vector.
+#'
+#' @keywords internal
+#'
+#' @name make_labels-internal
+NULL
+
+
 ## HAS_TESTS
+#' @rdname make_labels-internal
+#' @export
 make_labels_default <- function(labels, include_na) {
     ans <- as.character(labels)
     if (include_na)
@@ -8,6 +45,8 @@ make_labels_default <- function(labels, include_na) {
 }
 
 ## HAS_TESTS
+#' @rdname make_labels-internal
+#' @export
 make_labels_integers <- function(int_min, int_max, include_na) {
     s <- seq.int(from = int_min,
                  to = int_max)
@@ -21,6 +60,8 @@ make_labels_integers <- function(int_min, int_max, include_na) {
 }
 
 ## HAS_TESTS
+#' @rdname make_labels-internal
+#' @export
 make_labels_grouped_int_enumerations <- function(breaks, open_first, open_last, include_na) {
     n <- length(breaks)
     if (n == 0L) {
@@ -67,6 +108,8 @@ make_labels_grouped_int_enumerations <- function(breaks, open_first, open_last, 
 }
 
 ## HAS_TESTS
+#' @rdname make_labels-internal
+#' @export
 make_labels_grouped_int_endpoints <- function(breaks, open_first, include_na) {
     n <- length(breaks)
     if (n == 0L) {
@@ -99,6 +142,8 @@ make_labels_grouped_int_endpoints <- function(breaks, open_first, include_na) {
 }
 
 ## HAS_TESTS
+#' @rdname make_labels-internal
+#' @export
 make_labels_calendar_quarters_months <- function(break_min,
                                                  break_max,
                                                  open_first,
@@ -133,6 +178,8 @@ make_labels_calendar_quarters_months <- function(break_min,
 }
 
 ## HAS_TESTS
+#' @rdname make_labels-internal
+#' @export
 make_labels_duration_quarters_months <- function(break_min,
                                                  break_max,
                                                  open_last,
