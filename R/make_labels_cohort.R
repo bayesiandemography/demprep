@@ -113,7 +113,7 @@ make_labels_cohort <- function(breaks,
                                include_na = FALSE) {
     breaks <- demcheck::err_tdy_breaks_date_cohort(breaks = breaks,
                                                    open_first = open_first) 
-    demcheck::err_is_first_day_unit_vector(x = breaks,
+    demcheck::err_first_day_unit_vector(x = breaks,
                                            name = "breaks",
                                            unit = "year")
     demcheck::err_is_logical_flag(x = open_first,

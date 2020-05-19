@@ -175,9 +175,9 @@ dtabs_survey <- function (data = parent.frame(),
     ## check weights
     i_wt <- match("(weights)", names(model_frame))
     wt <- model_frame[[i_wt]]
-    demcheck::err_is_not_na_vector(x = wt,
-                                   name = "weights")
-    demcheck::err_is_non_negative_vector(x = wt,
+    demcheck::err_not_na_vector(x = wt,
+                                name = "weights")
+    demcheck::err_non_negative_vector(x = wt,
                                          name = "weights")
     if (all(wt == 0L))
         stop(gettextf("'%s' all zero",

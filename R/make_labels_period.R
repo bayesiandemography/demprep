@@ -95,7 +95,7 @@ make_labels_period <- function(breaks,
                                label_year_start = TRUE,
                                include_na = FALSE) {
     breaks <- demcheck::err_tdy_breaks_date_period(breaks = breaks) # checks length not equal to 1
-    demcheck::err_is_first_day_unit_vector(x = breaks,
+    demcheck::err_first_day_unit_vector(x = breaks,
                                            name = "breaks",
                                            unit = "year")
     demcheck::err_is_logical_flag(x = include_na,

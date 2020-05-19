@@ -498,15 +498,15 @@ date_to_triangle_multi <- function(date,
 #'                       as_factor = FALSE)
 #' @export
 date_to_triangle_births <- function(date,
-                                  dob,
-                                  width = 5,
-                                  break_min = 15,
-                                  break_max = 50,
-                                  recode_up = FALSE,
-                                  recode_down = FALSE,
-                                  origin = 2000,
-                                  month_start = "Jan",
-                                  as_factor = TRUE) {
+                                    dob,
+                                    width = 5,
+                                    break_min = 15,
+                                    break_max = 50,
+                                    recode_up = FALSE,
+                                    recode_down = FALSE,
+                                    origin = 2000,
+                                    month_start = "Jan",
+                                    as_factor = TRUE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -521,10 +521,10 @@ date_to_triangle_births <- function(date,
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = FALSE)
-    demcheck::err_is_gt_scalar(x1 = break_max,
-                               x2 = break_min,
-                               name1 = "break_max",
-                               name2 = "break_min")
+    demcheck::err_gt_scalar(x1 = break_max,
+                            x2 = break_min,
+                            name1 = "break_max",
+                            name2 = "break_min")
     if ((break_max - break_min) %% width != 0L)
         stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
                       "break_max", break_max, "break_min", break_min, "width", width))

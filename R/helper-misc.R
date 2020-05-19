@@ -328,8 +328,8 @@ make_fill <- function(fill, X, INDEX) {
         return(0L)
     }
     else {
-        demcheck::err_is_length_1(x = fill,
-                                  name = "fill")
+        demcheck::err_length_1(x = fill,
+                               name = "fill")
         if (is.na(fill))
             return(NA_integer_)
         if (is.numeric(fill)) {

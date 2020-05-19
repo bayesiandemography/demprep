@@ -273,11 +273,11 @@ date_to_age_group_multi <- function(date,
                                       name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    demcheck::err_is_multiple_of(x1 = break_max,
-                                 x2 = width,
-                                 name1 = "break_max",
-                                 name2 = "width",
-                                 null_ok = TRUE)
+    demcheck::err_multiple_of(x1 = break_max,
+                              x2 = width,
+                              name1 = "break_max",
+                              name2 = "width",
+                              null_ok = TRUE)
     ## deal with "empty" case where
     ## all date-dob pairs have NA
     ## and no 'break_max' supplied
@@ -395,10 +395,10 @@ date_to_age_group_lifetab <- function(date, dob,
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = FALSE)
-    demcheck::err_is_multiple_of_n(x = break_max,
-                                   name = "break_max",
-                                   n = 5L,
-                                   null_ok = FALSE)
+    demcheck::err_multiple_of_n(x = break_max,
+                                name = "break_max",
+                                n = 5L,
+                                null_ok = FALSE)
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
     ## deal with "empty" case where
@@ -558,7 +558,7 @@ date_to_age_group_births <- function(date, dob,
     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
                                                        name = "width")
     if (!is.null(break_min) && !is.null(break_max)) {
-        demcheck::err_is_gt_scalar(x1 = break_max,
+        demcheck::err_gt_scalar(x1 = break_max,
                                    x2 = break_min,
                                    name1 = "break_max",
                                    name2 = "break_min")

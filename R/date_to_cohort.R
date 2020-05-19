@@ -153,7 +153,7 @@ date_to_cohort_year <- function(date,
         date <- demcheck::err_tdy_date_vector(x = date,
                                               name = "date")
     if (has_break_min) {
-        demcheck::err_is_length_1(x = break_min,
+        demcheck::err_length_1(x = break_min,
                                   name = "break_min")
         break_min <- demcheck::err_tdy_date_scalar(x = break_min,
                                                    name = "break_min")
@@ -337,7 +337,7 @@ date_to_cohort_multi <- function(date,
     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
                                                        name = "width")
     if (has_break_min) {
-        demcheck::err_is_length_1(x = break_min,
+        demcheck::err_length_1(x = break_min,
                                   name = "break_min")
         break_min <- demcheck::err_tdy_date_scalar(x = break_min,
                                                    name = "break_min")
@@ -651,7 +651,7 @@ date_to_cohort_quarter <- function(date,
         date <- demcheck::err_tdy_date_vector(x = date,
                                               name = "date")
     if (has_break_min) {
-        demcheck::err_is_length_1(x = break_min,
+        demcheck::err_length_1(x = break_min,
                                   name = "break_min")
         break_min <- demcheck::err_tdy_date_scalar(x = break_min,
                                                    name = "break_min")
@@ -778,7 +778,7 @@ date_to_cohort_month <- function(date,
         date <- demcheck::err_tdy_date_vector(x = date,
                                               name = "date")
     if (has_break_min) {
-        demcheck::err_is_length_1(x = break_min,
+        demcheck::err_length_1(x = break_min,
                                   name = "break_min")
         break_min <- demcheck::err_tdy_date_scalar(x = break_min,
                                                    name = "break_min")
