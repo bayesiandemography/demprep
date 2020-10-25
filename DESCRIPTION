@@ -17,7 +17,10 @@ Imports:
     stats,
     methods
 Suggests: 
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
 Remotes:
     bayesiandemography/demcheck
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
+VignetteBuilder: knitr
