@@ -155,6 +155,51 @@ plot_date_to_period_multi(date = deaths_multi$date,
 ```
 
 
+### Multi-year periods, with varying lengths
+
+
+```{r}
+deaths_custom <- deaths
+deaths_custom$jan_4_5 <- date_to_period_custom(date = deaths_custom$date,
+                                              breaks = c("2016-01-01", "2020-01-01", "2025-01-01"))
+deaths_custom
+```
+
+```{r, echo = FALSE, fig.width = 4, fig.height = 1.75}
+plot_date_to_period_custom(date = deaths_custom$date,
+                           breaks = c("2016-01-01", "2020-01-01", "2025-01-01"))
+```
+
+
+```{r}
+deaths_custom <- deaths
+deaths_custom$jan_1_5 <- date_to_period_custom(date = deaths_custom$date,
+                                              breaks = c("2019-01-01", "2020-01-01", "2025-01-01"))
+deaths_custom
+```
+
+```{r, echo = FALSE, fig.width = 4, fig.height = 1.75}
+plot_date_to_period_custom(date = deaths_custom$date,
+                           breaks = c("2019-01-01", "2020-01-01", "2025-01-01"))
+```
+
+
+
+
+```{r}
+deaths_custom <- deaths
+deaths_custom$jul_1_5 <- date_to_period_custom(date = deaths_custom$date,
+                                               breaks = c("2019-07-01", "2020-07-01", "2025-07-01"))
+deaths_custom
+```
+
+```{r, echo = FALSE, fig.width = 4, fig.height = 1.75}
+plot_date_to_period_custom(date = deaths_custom$date,
+                           breaks = c("2019-07-01", "2020-07-01", "2025-07-01"))
+```
+
+## Age groups
+
 
 
 # Aggregating individual records

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_date_to_period.R
 \name{plot_date_to_period_multi}
 \alias{plot_date_to_period_multi}
-\title{Plot to illustate the intervals created by
+\title{Depict the intervals created by
 function 'date_to_period_multi'}
 \usage{
 plot_date_to_period_multi(date, width = 5, origin = 2000, month_start = "Jan")
@@ -21,7 +21,7 @@ or \code{\link[base]{month.abb}}. The period starts on
 the first day of this month.}
 }
 \description{
-Plot to illustate the intervals created by
+Depict the intervals created by
 function 'date_to_period_multi'
 }
 \examples{

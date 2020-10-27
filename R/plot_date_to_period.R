@@ -8,36 +8,41 @@ plot_date_to_period <- function(date, breaks, labels) {
     x_plot <- c(breaks[[1L]] - 0.5 * diff_br[[1L]],
                 breaks[[n_br]] + 0.5 * diff_br[[n_br - 1L]])
     y_plot <- rep(0, 2L)
+    ## empty plotting frame
     plot(x = x_plot,
          y = y_plot,
          pch = NA,
          axes = FALSE,
          ylab = "",
          xlab = "")
+    ## x-axis and ticks
     graphics::lines(x = breaks,
                     y = rep(0, times = n_br))
     graphics::segments(x0 = breaks,
                        y0 = -0.1,
                        x1 = breaks,
                        y1 = 0.1)
+    ## values for breaks
     graphics::text(x = breaks,
                    y = -0.2,
                    labels = breaks,
                    cex = 0.8)
+    ## labels for periods
     graphics::text(x = breaks[-n_br] + 0.5 * diff_br,
                    y = 0.25,
                    labels = sprintf('"%s"', labels))
-    graphics::par(old_par)
+    ## dates
     graphics::points(x = date,
                      y = rep(0, times = n_date),
                      pch = 19, 
                      cex = 0.7)
+    graphics::par(old_par)
     invisible(NULL)
 }
 
 
 ## NO_TESTS
-#' Plot to illustate the intervals created by
+#' Depict the intervals created by
 #' function 'date_to_period_year'
 #'
 #' @param date Dates of events or measurements.
@@ -68,6 +73,8 @@ plot_date_to_period_year <- function(date,
                                      month_start = "Jan",
                                      label_year_start = TRUE) {
     ## check arguments and/or apply defaults
+    demcheck::err_positive_length(x = date,
+                                  name = "date")
     demcheck::err_has_non_na(x = date,
                              name = "date")
     date <- demcheck::err_tdy_date_vector(x = date,
@@ -93,10 +100,10 @@ plot_date_to_period_year <- function(date,
 }
 
 ## NO_TESTS
-#' Plot to illustate the intervals created by
+#' Depict the intervals created by
 #' function 'date_to_period_multi'
 #'
-#' @inheritParams date_to_period_year
+#' @inheritParams plot_date_to_period_year
 #' @param width The length, in whole years, of the periods.
 #' Defaults to 5.
 #' @param origin An integer. Defaults to 2000.
@@ -132,6 +139,8 @@ plot_date_to_period_multi <- function(date,
                                       origin = 2000,
                                       month_start = "Jan") {
     ## check arguments and/or apply defaults
+    demcheck::err_positive_length(x = date,
+                                  name = "date")
     demcheck::err_has_non_na(x = date,
                              name = "date")
     date <- demcheck::err_tdy_date_vector(x = date,
@@ -159,306 +168,130 @@ plot_date_to_period_multi <- function(date,
                         labels = labels)
 }
 
-#' ## HAS_TESTS
-#' #' Convert dates to customized periods
-#' #'
-#' #' Allocate dates to periods with varying widths,
-#' #' though all widths are measured in whole years.
-#' #'
-#' #' \code{date} is a vector of class \code{\link[base]{Date}},
-#' #' or can be coerced to class \code{Date}
-#' #' via function \code{\link[base]{as.Date}}.
-#' #'
-#' #' \code{breaks} is also vector of class \code{\link[base]{Date}},
-#' #' or can be coerced to to one. \code{breaks} is
-#' #' used to define the points where each period starts and finishes.
-#' #' The dates in \code{breaks} must all be the first day of
-#' #' the same month of the year. For instance,
-#' #' \code{breaks} could consist of
-#' #' the values \code{"2010-01-01"} and \code{"2017-01-01"},
-#' #' but not \code{"2010-01-01"} and \code{"2017-01-02"},
-#' #' or \code{"2010-01-01"} and \code{"2017-02-01"}.
-#' #' The final period finishes
-#' #' one day before the final break.
-#' #' If, for instance, \code{breaks} has values \code{"2010-01-01"},
-#' #' \code{"2017-01-01"}, and \code{"2021-01-01"}, then the first period
-#' #' starts on 1 January 2010 and ends on 31 December 2016,
-#' #' and the second period starts on 1 January 2017 and ends
-#' #' on 31 December 2020.
-#' #'
-#' #' When \code{as_factor} is \code{TRUE} the levels of
-#' #' the factor include all intermediate periods,
-#' #' including periods that not appear in the data.
-#' #'
-#' #' @inheritParams date_to_period_year
-#' #' @param breaks Dates defining starts and ends of periods.
-#' #' 
-#' #' @return If \code{as_factor} is \code{TRUE}, then the return
-#' #' value is a factor; otherwise it is a character vector.
-#' #' The return value has the same length as \code{date}.
-#' #'
-#' #' @seealso Other functions for creating periods are
-#' #' \code{\link{date_to_period_year}},
-#' #' \code{\link{date_to_period_multi}},
-#' #' \code{\link{date_to_period_quarter}},
-#' #' and \code{\link{date_to_period_month}}.
-#' #' Other functions for working with customized intervals are
-#' #' \code{\link{date_to_age_group_custom}},
-#' #' and \code{\link{date_to_cohort_custom}}.
-#' #' See \code{\link{make_labels_period}} for the rules
-#' #' on constructing labels for periods.
-#' #'
-#' #' @examples
-#' #' ## periods start on 1 January
-#' #' date_to_period_custom(date = c("2024-03-27",
-#' #'                               "2018-11-09",
-#' #'                               "2021-03-02"),
-#' #'                       breaks = c("2000-01-01",
-#' #'                                  "2019-01-01",
-#' #'                                  "2026-01-01"))
-#' #'
-#' #' ## periods start on 1 March
-#' #' date_to_period_custom(date = c("2024-03-27",
-#' #'                               "2018-11-09",
-#' #'                               "2021-03-02"),
-#' #'                       breaks = c("2000-03-01",
-#' #'                                  "2019-03-01",
-#' #'                                  "2026-03-01"))
-#' #'
-#' #' ## return non-factor
-#' #' date_to_period_custom(date = c("2024-03-27",
-#' #'                                "2018-11-09",
-#' #'                                "2021-03-02"),
-#' #'                       breaks = c("2000-01-01",
-#' #'                                  "2019-01-01",
-#' #'                                  "2026-01-01"),
-#' #'                       as_factor = FALSE)
-#' #' @export
-#' date_to_period_custom <- function(date,
-#'                                   breaks,
-#'                                   as_factor = TRUE) {
-#'     ## see if arguments supplied
-#'     has_date <- sum(!is.na(date)) > 0L
-#'     ## check arguments and/or apply defaults
-#'     if (has_date)
-#'         date <- demcheck::err_tdy_date_vector(x = date,
-#'                                               name = "date")
-#'     breaks <- demcheck::err_tdy_breaks_date_period(breaks = breaks)
-#'     n <- length(breaks)
-#'     if (n > 0L) {
-#'         break_min <- breaks[[1L]]
-#'         break_max <- breaks[[n]]
-#'         demcheck::err_ge_break_min_date(date = date,
-#'                                         break_min = break_min)
-#'         demcheck::err_lt_break_max_date(date = date,
-#'                                         break_max = break_max)
-#'     }
-#'     demcheck::err_is_logical_flag(x = as_factor,
-#'                                   name = "as_factor")
-#'     ## deal with "empty" case where 'breaks' has length 0
-#'     if (n == 0L) {
-#'         if (has_date) {
-#'             stop(gettextf("'%s' has length %d",
-#'                           "breaks", 0L))
-#'         }
-#'         else {
-#'             ans <- as.character(date)
-#'             if (as_factor)
-#'                 ans <- factor(ans)
-#'             return(ans)
-#'         }
-#'     }
-#'     ## deal with "empty" case where 'date'
-#'     ## has length 0 or is all NA, and we
-#'     ## aren't making factor levels
-#'     if (!has_date && !as_factor) {
-#'         ans <- as.character(date)
-#'         return(ans)
-#'     }
-#'     ## make labels for breaks
-#'     labels <- make_labels_period(breaks = breaks,
-#'                                  label_year_start = NULL,
-#'                                  include_na = FALSE)
-#'     ## assign labels to dates
-#'     date_int <- as.integer(date)
-#'     breaks_int <- as.integer(breaks)
-#'     i <- findInterval(x = date_int,
-#'                       vec = breaks_int)
-#'     ans <- labels[i]
-#'     ## return result
-#'     if (as_factor)
-#'         ans <- factor(x = ans,
-#'                       levels = labels)
-#'     ans
-#' }
+## NO_TESTS
+#' Depict the intervals created by
+#' function 'date_to_period_custom'
+#'
+#' @inheritParams plot_date_to_period_year
+#' @param breaks Dates defining starts and ends of periods.
+#'
+#' @seealso \code{\link{date_to_period_custom}}
+#'
+#' @examples
+#' ## periods start on 1 January
+#' plot_date_to_period_custom(date = c("2024-03-27",
+#'                                     "2018-11-09",
+#'                                     "2021-03-02"),
+#'                            breaks = c("2000-01-01",
+#'                                       "2019-01-01",
+#'                                       "2026-01-01"))
+#'
+#' ## periods start on 1 March
+#' plot_date_to_period_custom(date = c("2024-03-27",
+#'                                     "2018-11-09",
+#'                                     "2021-03-02"),
+#'                            breaks = c("2000-03-01",
+#'                                       "2019-03-01",
+#'                                       "2026-03-01"))
+#' @export
+plot_date_to_period_custom <- function(date, breaks) {
+    ## check arguments and/or apply defaults
+    demcheck::err_positive_length(x = date,
+                                  name = "date")
+    demcheck::err_has_non_na(x = date,
+                             name = "date")
+    date <- demcheck::err_tdy_date_vector(x = date,
+                                          name = "date")
+    demcheck::err_positive_length(x = breaks,
+                                  name = "breaks")
+    breaks <- demcheck::err_tdy_breaks_date_period(breaks = breaks)
+    n <- length(breaks)
+    break_min <- breaks[[1L]]
+    break_max <- breaks[[n]]
+    demcheck::err_ge_break_min_date(date = date,
+                                    break_min = break_min)
+    demcheck::err_lt_break_max_date(date = date,
+                                    break_max = break_max)
+    ## make labels for breaks
+    labels <- make_labels_period(breaks = breaks,
+                                 label_year_start = NULL,
+                                 include_na = FALSE)
+    ## make plot
+    plot_date_to_period(date = date,
+                        breaks = breaks,
+                        labels = labels)
+}
+
+## NO_TESTS
+#' Depict the intervals created by
+#' function 'date_to_period_quarter'
+#'
+#' @inheritParams plot_date_to_period_year
+#'
+#' @seealso \code{\link{date_to_period_quarter}}
 #' 
-#' ## HAS_TESTS
-#' #' Convert dates to one-quarter periods
-#' #'
-#' #' Allocate dates to periods with periods one quarter long.
-#' #' Quarters are defined as follows:
-#' #' \tabular{lll}{
-#' #'   \strong{Quarter} \tab \strong{Start} \tab \strong{End} \cr
-#' #'   Q1 \tab 1 January \tab 31 March \cr
-#' #'   Q2 \tab 1 April \tab 30 June \cr
-#' #'   Q3 \tab 1 July \tab 30 September \cr
-#' #'   Q4 \tab 1 October \tab 31 December
-#' #' }
-#' #'
-#' #' \code{date} is a vector of class \code{\link[base]{Date}},
-#' #' or can be coerced to class \code{Date}
-#' #' via function \code{\link[base]{as.Date}}.
-#' #'
-#' #' When \code{as_factor} is \code{TRUE} the levels of
-#' #' the factor include all intermediate periods,
-#' #' including periods that not appear in the data.
-#' #'
-#' #' @inheritParams date_to_period_year
-#' #'
-#' #' @return If \code{as_factor} is \code{TRUE}, then the return
-#' #' value is a factor; otherwise it is a character vector.
-#' #' The return value has the same length as \code{date}.
-#' #'
-#' #' @seealso Other functions for creating periods are
-#' #' \code{\link{date_to_period_year}},
-#' #' \code{\link{date_to_period_multi}},
-#' #' \code{\link{date_to_period_custom}},
-#' #' and \code{\link{date_to_period_month}}.
-#' #' Other functions for working with quarter intervals are
-#' #' \code{\link{date_to_age_group_quarter}},
-#' #' and \code{\link{date_to_cohort_quarter}},
-#' #' and \code{\link{date_to_triangle_quarter}}.
-#' #' See \code{\link{make_labels_period_quarter}} on the rules
-#' #' for constructing labels for quarter periods.
-#' #' @examples
-#' #' date_to_period_quarter(date = c("2024-03-27",
-#' #'                                 "2020-01-03",
-#' #'                                 "2022-11-09"))
-#' #' ## return non-factor
-#' #' date_to_period_quarter(date = c("2024-03-27",
-#' #'                                 "2020-01-03",
-#' #'                                 "2022-11-09"),
-#' #'                        as_factor = FALSE)
-#' #' @export
-#' date_to_period_quarter <- function(date,
-#'                                    as_factor = TRUE) {
-#'     ## see if arguments supplied
-#'     has_date <- sum(!is.na(date)) > 0L
-#'     ## check arguments and/or apply defaults
-#'     if (has_date)
-#'         date <- demcheck::err_tdy_date_vector(x = date,
-#'                                               name = "date")
-#'     demcheck::err_is_logical_flag(x = as_factor,
-#'                                   name = "as_factor")
-#'     ## deal with "empty" case where 'date' has length 0
-#'     ## or is all NA
-#'     if (!has_date) {
-#'         ans <- as.character(date)
-#'         if (as_factor)
-#'             ans <- factor(ans)
-#'         return(ans)
-#'     }
-#'     ## create sequence of breaks
-#'     breaks <- make_breaks_date_quarter(date = date,
-#'                                        break_min = NULL)
-#'     ## make labels for these breaks
-#'     n <- length(breaks)
-#'     break_min <- breaks[[1L]]
-#'     break_max <- breaks[[n]]
-#'     labels <- make_labels_period_quarter(break_min = break_min,
-#'                                          break_max = break_max,
-#'                                          include_na = FALSE)
-#'     ## assign labels to dates
-#'     date_int <- as.integer(date)
-#'     breaks_int <- as.integer(breaks)
-#'     i <- findInterval(x = date_int,
-#'                       vec = breaks_int)
-#'     ans <- labels[i]
-#'     ## return result
-#'     if (as_factor)
-#'         ans <- factor(x = ans,
-#'                       levels = labels)
-#'     ans   
-#' }
+#' @examples
+#' plot_date_to_period_quarter(date = c("2024-03-27",
+#'                                      "2020-01-03",
+#'                                      "2022-11-09"))
+#' @export
+plot_date_to_period_quarter <- function(date) {
+    ## check arguments and/or apply defaults
+    demcheck::err_positive_length(x = date,
+                                  name = "date")
+    demcheck::err_has_non_na(x = date,
+                             name = "date")
+    date <- demcheck::err_tdy_date_vector(x = date,
+                                          name = "date")
+    ## create sequence of breaks
+    breaks <- make_breaks_date_quarter(date = date,
+                                       break_min = NULL)
+    ## make labels for these breaks
+    n <- length(breaks)
+    break_min <- breaks[[1L]]
+    break_max <- breaks[[n]]
+    labels <- make_labels_period_quarter(break_min = break_min,
+                                         break_max = break_max,
+                                         include_na = FALSE)
+    ## make plot
+    plot_date_to_period(date = date,
+                        breaks = breaks,
+                        labels = labels)
+}
+
+## NO_TESTS
+#' Depict the intervals created by
+#' function 'date_to_period_month'
+#'
+#' @inheritParams plot_date_to_period_year
+#'
+#' @seealso \code{\link{date_to_period_month}}
 #' 
-#' ## HAS_TESTS
-#' #' Convert dates to one-month periods
-#' #'
-#' #' Allocate dates to periods with month-long
-#' #' periods.
-#' #'
-#' #' \code{date} is a vector of class \code{\link[base]{Date}},
-#' #' or can be coerced to class \code{Date}
-#' #' via function \code{\link[base]{as.Date}}.
-#' #'
-#' #' When \code{as_factor} is \code{TRUE} the levels of
-#' #' the factor include all intermediate periods,
-#' #' including periods that not appear in the data.
-#' #'
-#' #' @inheritParams date_to_period_year
-#' #'
-#' #' @return If \code{as_factor} is \code{TRUE}, then the return
-#' #' value is a factor; otherwise it is a character vector.
-#' #' The return value has the same length as \code{date}.
-#' #'
-#' #' @seealso Other functions for creating periods are
-#' #' \code{\link{date_to_period_year}},
-#' #' \code{\link{date_to_period_multi}},
-#' #' \code{\link{date_to_period_custom}},
-#' #' and \code{\link{date_to_period_quarter}}.
-#' #' Other functions for working with month intervals are
-#' #' \code{\link{date_to_age_group_month}},
-#' #' and \code{\link{date_to_cohort_month}},
-#' #' and \code{\link{date_to_triangle_month}}.
-#' #' See \code{\link{make_labels_period_month}} on the rules
-#' #' for constructing labels for month periods.
-#' #' @examples
-#' #' date_to_period_month(date = c("2024-03-27",
-#' #'                               "2020-01-03",
-#' #'                               "2022-11-09"))
-#' #' ## return non-factor
-#' #' date_to_period_month(date = c("2024-03-27",
-#' #'                               "2020-01-03",
-#' #'                               "2022-11-09"),
-#' #'                      as_factor = FALSE)
-#' #' @export
-#' date_to_period_month <- function(date,
-#'                                  as_factor = TRUE) {
-#'     ## see if arguments supplied
-#'     has_date <- sum(!is.na(date)) > 0L
-#'     ## check arguments and/or apply defaults
-#'     if (has_date)
-#'         date <- demcheck::err_tdy_date_vector(x = date,
-#'                                               name = "date")
-#'     demcheck::err_is_logical_flag(x = as_factor,
-#'                                   name = "as_factor")
-#'     ## deal with "empty" case where 'date' has length 0
-#'     ## or all is NA
-#'     if (!has_date) {
-#'         ans <- as.character(date)
-#'         if (as_factor)
-#'             ans <- factor(ans)
-#'         return(ans)
-#'     }
-#'     ## create sequence of breaks
-#'     breaks <- make_breaks_date_month(date = date,
-#'                                      break_min = NULL)
-#'     ## make labels for these breaks
-#'     n <- length(breaks)
-#'     break_min <- breaks[[1L]]
-#'     break_max <- breaks[[n]]
-#'     labels <- make_labels_period_month(break_min = break_min,
-#'                                        break_max = break_max,
-#'                                        include_na = FALSE)
-#'     ## assign labels to dates
-#'     date_int <- as.integer(date)
-#'     breaks_int <- as.integer(breaks)
-#'     i <- findInterval(x = date_int,
-#'                       vec = breaks_int)
-#'     ans <- labels[i]
-#'     ## return result
-#'     if (as_factor)
-#'         ans <- factor(x = ans,
-#'                       levels = labels)
-#'     ans   
-#' }
+#' @examples
+#' plot_date_to_period_month(date = c("2024-03-27",
+#'                                    "2020-01-03",
+#'                                    "2022-11-09"))
+#' @export
+plot_date_to_period_month <- function(date) {
+    ## check arguments and/or apply defaults
+    demcheck::err_positive_length(x = date,
+                                  name = "date")
+    demcheck::err_has_non_na(x = date,
+                             name = "date")
+    date <- demcheck::err_tdy_date_vector(x = date,
+                                          name = "date")
+    ## create sequence of breaks
+    breaks <- make_breaks_date_month(date = date,
+                                     break_min = NULL)
+    ## make labels for these breaks
+    n <- length(breaks)
+    break_min <- breaks[[1L]]
+    break_max <- breaks[[n]]
+    labels <- make_labels_period_month(break_min = break_min,
+                                       break_max = break_max,
+                                       include_na = FALSE)
+    ## make plot
+    plot_date_to_period(date = date,
+                        breaks = breaks,
+                        labels = labels)
+}

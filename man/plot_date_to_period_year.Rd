@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_date_to_period.R
 \name{plot_date_to_period_year}
 \alias{plot_date_to_period_year}
-\title{Plot to illustate the intervals created by
+\title{Depict the intervals created by
 function 'date_to_period_year'}
 \usage{
 plot_date_to_period_year(date, month_start = "Jan", label_year_start = TRUE)
@@ -20,7 +20,7 @@ or the calendar year at the end. Not needed for periods
 that start on 1 January. Defaults to \code{FALSE}.}
 }
 \description{
-Plot to illustate the intervals created by
+Depict the intervals created by
 function 'date_to_period_year'
 }
 \examples{
