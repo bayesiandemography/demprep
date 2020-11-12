@@ -1,12 +1,15 @@
 
 ## NO_TESTS
-plot_date_to_period <- function(date, breaks, labels) {
-    old_par <- graphics::par(mar = rep(0, 4))
+plot_date_to_period <- function(date, breaks, labels, cex = 0.8) {
+    old_par <- graphics::par(mar = c(1, 0, 0, 0),
+                             mgp = c(0, 0, 0),
+                             cex = cex)
     n_date <- length(date)
     n_br <- length(breaks)
     diff_br <- diff(breaks)
-    x_plot <- c(breaks[[1L]] - 0.5 * diff_br[[1L]],
-                breaks[[n_br]] + 0.5 * diff_br[[n_br - 1L]])
+    diff_br_all <- breaks[[n_br]] - breaks[[1L]]
+    x_plot <- c(breaks[[1L]] - 0.03 * diff_br_all,
+                breaks[[n_br]] + 0.03 * diff_br_all)
     y_plot <- rep(0, 2L)
     ## empty plotting frame
     plot(x = x_plot,
@@ -22,19 +25,25 @@ plot_date_to_period <- function(date, breaks, labels) {
                        y0 = -0.1,
                        x1 = breaks,
                        y1 = 0.1)
-    ## values for breaks
+    ## labels for breaks
     graphics::text(x = breaks,
                    y = -0.2,
                    labels = breaks,
-                   cex = 0.8)
+                   cex = 0.6,
+                   adj = 1,
+                   srt = 90)
     ## labels for periods
     graphics::text(x = breaks[-n_br] + 0.5 * diff_br,
-                   y = 0.25,
+                   y = 0.4,
                    labels = sprintf('"%s"', labels))
     ## dates
     graphics::points(x = date,
                      y = rep(0, times = n_date),
-                     pch = 19, 
+                     pch = 19)
+    ## xlab
+    graphics::mtext(text = "Time",
+                     side = 1,
+                     line = 0,
                      cex = 0.7)
     graphics::par(old_par)
     invisible(NULL)

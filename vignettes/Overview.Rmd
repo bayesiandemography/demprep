@@ -11,7 +11,8 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  echo = TRUE
+  echo = TRUE,
+  fig.width = 6.5
 )
 deaths <- data.frame(person = c("Anwar", "Baptiste", "Candice"),
                      date = c("2019-10-11", "2020-02-27", "2020-08-01"))
@@ -53,7 +54,7 @@ deaths_yr$jan_true <- date_to_period_year(date = deaths_yr$date)
 deaths_yr
 ```
 
-```{r, echo = FALSE, fig.width = 4, fig.height = 1.75}
+```{r, echo = FALSE, fig.height = 1.75}
 plot_date_to_period_year(date = deaths_yr$date)
 ```
 
@@ -64,7 +65,7 @@ deaths_yr$jul_true <- date_to_period_year(date = deaths_yr$date,
 deaths_yr
 ```
 
-```{r, echo = FALSE, fig.width = 4, fig.height = 1.75}
+```{r, echo = FALSE, fig.height = 1.75}
 plot_date_to_period_year(date = deaths_yr$date,
                          month_start = "Jul")
 ```
@@ -79,7 +80,7 @@ deaths_yr$jul_false <- date_to_period_year(date = deaths_yr$date,
 deaths_yr
 ```
 
-```{r, echo = FALSE, fig.width = 4, fig.height = 1.75}
+```{r, echo = FALSE, fig.height = 1.75}
 plot_date_to_period_year(date = deaths_yr$date,
                          month_start = "Jul",
                          label_year_start = FALSE)
@@ -94,7 +95,7 @@ deaths_yr$jan_false <- date_to_period_year(date = deaths_yr$date,
 deaths_yr
 ```
 
-```{r, echo = FALSE, fig.width = 4, fig.height = 1.75}
+```{r, echo = FALSE, fig.height = 1.75}
 plot_date_to_period_year(date = deaths_yr$date,
                          month_start = "Jan",
                          label_year_start = FALSE)
@@ -110,7 +111,7 @@ deaths_multi$jan_5_00 <- date_to_period_multi(date = deaths_multi$date)
 deaths_multi
 ```
 
-```{r, echo = FALSE, fig.width = 4, fig.height = 1.75}
+```{r, echo = FALSE, fig.height = 1.75}
 plot_date_to_period_multi(date = deaths_multi$date)
 ```
 
@@ -121,7 +122,7 @@ deaths_multi$jul_5_00 <- date_to_period_multi(date = deaths_multi$date,
 deaths_multi
 ```
 
-```{r, echo = FALSE, fig.width = 4, fig.height = 1.75}
+```{r, echo = FALSE, fig.height = 1.75}
 plot_date_to_period_multi(date = deaths_multi$date,
                           month_start = "Jul")
 ```
@@ -134,7 +135,7 @@ deaths_multi$jan_10_00 <- date_to_period_multi(date = deaths_multi$date,
 deaths_multi
 ```
 
-```{r, echo = FALSE, fig.width = 4, fig.height = 1.75}
+```{r, echo = FALSE, fig.height = 1.75}
 plot_date_to_period_multi(date = deaths_multi$date,
                           width = 10)
 ```
@@ -149,7 +150,7 @@ deaths_multi$jan_5_01 <- date_to_period_multi(date = deaths_multi$date,
 deaths_multi
 ```
 
-```{r, echo = FALSE, fig.width = 4, fig.height = 1.75}
+```{r, echo = FALSE, fig.height = 1.75}
 plot_date_to_period_multi(date = deaths_multi$date,
                           origin = 2001)
 ```
@@ -165,7 +166,7 @@ deaths_custom$jan_4_5 <- date_to_period_custom(date = deaths_custom$date,
 deaths_custom
 ```
 
-```{r, echo = FALSE, fig.width = 4, fig.height = 1.75}
+```{r, echo = FALSE, fig.height = 1.75}
 plot_date_to_period_custom(date = deaths_custom$date,
                            breaks = c("2016-01-01", "2020-01-01", "2025-01-01"))
 ```
@@ -178,7 +179,7 @@ deaths_custom$jan_1_5 <- date_to_period_custom(date = deaths_custom$date,
 deaths_custom
 ```
 
-```{r, echo = FALSE, fig.width = 4, fig.height = 1.75}
+```{r, echo = FALSE, fig.height = 1.75}
 plot_date_to_period_custom(date = deaths_custom$date,
                            breaks = c("2019-01-01", "2020-01-01", "2025-01-01"))
 ```
@@ -193,7 +194,7 @@ deaths_custom$jul_1_5 <- date_to_period_custom(date = deaths_custom$date,
 deaths_custom
 ```
 
-```{r, echo = FALSE, fig.width = 4, fig.height = 1.75}
+```{r, echo = FALSE, fig.height = 1.5}
 plot_date_to_period_custom(date = deaths_custom$date,
                            breaks = c("2019-07-01", "2020-07-01", "2025-07-01"))
 ```

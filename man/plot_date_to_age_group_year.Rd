@@ -36,17 +36,18 @@ Depict the intervals created by
 function 'date_to_age_group_year'
 }
 \examples{
-plot_date_to_age_group_year(date = c("2004-03-27", "2002-11-09"),
-                            dob = c("2001-03-21", "2000-07-13"),
-                            break_max = 5)
-plot_date_to_age_group_year(date = c("2004-03-27", "2002-11-09"),
-                            dob = c("2001-03-21", "2000-07-13"),
-                            break_max = 5,
+plot_date_to_age_group_year(date = c("2002-11-09", "2004-04-27"),
+                            dob = c("2000-07-13", "2001-03-21"),
+                            break_max = 2)
+plot_date_to_age_group_year(date = c("2002-11-09", "2004-04-27"),
+                            dob = c("2000-07-13", "2001-03-21"),
+                            break_max = 4,
                             open_last = FALSE)
 
 ## replicate date of birth
-plot_date_to_age_group_year(date = c("2024-03-27", "2022-11-09"),
-                       dob = "2011-05-18")
+plot_date_to_age_group_year(date = c("2022-11-09", "2024-03-27"),
+                            dob = "2011-05-18",
+                            break_max = 15)
 
 ## return non-factor
 plot_date_to_age_group_year(date = c("2024-03-27", "2022-11-09"),

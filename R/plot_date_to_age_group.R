@@ -1,18 +1,21 @@
 
 ## NO_TESTS
-plot_date_to_age_group <- function(date, dob, breaks, open_last, labels) {
-    old_par <- graphics::par(mar = rep(0, 4))
+plot_date_to_age_group <- function(date, dob, breaks, open_last, labels, cex = 0.8) {
+    old_par <- graphics::par(mar = c(6, 0, 0, 0),
+                             mgp = c(0, 0, 0),
+                             cex = cex)
     n_date <- length(date)
     n_br <- length(breaks)
     diff_br <- diff(breaks)
     date_min <- min(dob, na.rm = TRUE)
     date_max <- max(date, na.rm = TRUE)
     width_date <- date_max - date_min
-    age_min <- min(breaks)
-    age_max <- max(breaks)
+    age <- (date - dob) / 365.25
+    age_min <- min(breaks, age)
+    age_max <- max(breaks, age)
     if (open_last)
         age_max <- age_max + diff_br[[n_br - 1L]]
-    x_plot <- c(date_min - 0.1 * width_date, date_max)
+    x_plot <- c(date_min - 0.15 * width_date, date_max)
     y_plot <- c(age_min, age_max)
     ## empty plotting frame
     plot(x = x_plot,
@@ -25,42 +28,70 @@ plot_date_to_age_group <- function(date, dob, breaks, open_last, labels) {
     graphics::segments(x0 = rep(date_min, times = n_br),
                        y0 = breaks,
                        x1 = rep(date_max, times = n_br),
-                       y1 = breaks)
-    ## values for boundaries between age groups
-    graphics::text(x = date_min - 0.02 * (date_max - date_min),
+                       y1 = breaks,
+                       lty = "solid")
+    ## labels for boundaries between age groups
+    graphics::text(x = date_min - 0.02 * width_date,
                    y = breaks,
                    labels = breaks,
-                   cex = 0.8)
+                   cex = 0.7)
     ## labels for age groups
-    graphics::text(x = date_min - 0.03 * (date_max - date_min),
+    graphics::text(x = date_min - 0.04 * width_date,
                    y = breaks[-n_br] + 0.5 * diff_br,
                    labels = sprintf('"%s"', labels[seq_len(n_br - 1L)]),
-                   pos = 2)
+                   pos = 2,
+                   cex = 0.9)
     if (open_last)
-        graphics::text(x = date_min - 0.03 * (date_max - date_min),
+        graphics::text(x = date_min - 0.04 * width_date,
                        y = breaks[[n_br]] + 0.5 * diff_br[[n_br - 1L]],
                        labels = sprintf('"%s"', labels[[n_br]]),
-                       pos = 2)
+                       pos = 2,
+                       cex = 0.9)
     ## points for 'dob'
     graphics::points(x = dob,
                      y = rep(0, times = n_date),
-                     pch = 19, 
-                     cex = 0.7)
+                     pch = 19)    
+    ## labels for 'dob'
+    graphics::mtext(text = dob,
+                    side = 1,
+                    line = -0.5,
+                    at = dob,
+                    cex = 0.6,
+                    las = 3)
     ## points for 'date'
-    age <- (date - dob) / 365.25
     graphics::points(x = date,
                      y = age,
-                     pch = 19, 
-                     cex = 0.7) 
-    ## life_lines
+                     pch = 19)
+    ## labels for 'date'
+    graphics::mtext(text = date,
+                    side = 1,
+                    line = -0.5,
+                    at = date,
+                    cex = 0.6,
+                    las = 3)
+    ## life lines
     graphics::segments(x0 = dob,
                        y0 = rep(0, times = n_date),
                        x1 = date,
                        y1 = age,
-                       lty = "dotted")
+                       lty = "dashed")
+    ## xlab
+    graphics::mtext(text = "Time",
+                    side = 1,
+                    line = 4,
+                    cex = 0.7)
+    graphics::par(old_par)
+    invisible(NULL)
+    ## ylab
+    graphics::mtext(text = "Age",
+                    side = 2,
+                    line = 2,
+                    las = 3,
+                    cex = 0.7)
     graphics::par(old_par)
     invisible(NULL)
 }
+
 
 ## NO_TESTS
 #' Depict the intervals created by
@@ -88,17 +119,18 @@ plot_date_to_age_group <- function(date, dob, breaks, open_last, labels) {
 #' @seealso \code{\link{date_to_age_group_year}}
 #'
 #' @examples
-#' plot_date_to_age_group_year(date = c("2004-03-27", "2002-11-09"),
-#'                             dob = c("2001-03-21", "2000-07-13"),
-#'                             break_max = 5)
-#' plot_date_to_age_group_year(date = c("2004-03-27", "2002-11-09"),
-#'                             dob = c("2001-03-21", "2000-07-13"),
-#'                             break_max = 5,
+#' plot_date_to_age_group_year(date = c("2002-11-09", "2004-04-27"),
+#'                             dob = c("2000-07-13", "2001-03-21"),
+#'                             break_max = 2)
+#' plot_date_to_age_group_year(date = c("2002-11-09", "2004-04-27"),
+#'                             dob = c("2000-07-13", "2001-03-21"),
+#'                             break_max = 4,
 #'                             open_last = FALSE)
 #'
 #' ## replicate date of birth
-#' plot_date_to_age_group_year(date = c("2024-03-27", "2022-11-09"),
-#'                        dob = "2011-05-18")
+#' plot_date_to_age_group_year(date = c("2022-11-09", "2024-03-27"),
+#'                             dob = "2011-05-18",
+#'                             break_max = 15)
 #'
 #' ## return non-factor
 #' plot_date_to_age_group_year(date = c("2024-03-27", "2022-11-09"),
