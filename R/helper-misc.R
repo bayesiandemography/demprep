@@ -1,5 +1,6 @@
 
 ## HAS_TESTS
+## Assume that 'date' and 'dob' are valid.
 age_completed_months <- function(date, dob) {
     date_ymd <- as_ymd(date)
     dob_ymd <- as_ymd(dob)
@@ -9,11 +10,43 @@ age_completed_months <- function(date, dob) {
 }
 
 ## HAS_TESTS
+## Assume that 'date_ymd' and 'dob_ymd' are valid.
 age_completed_months_start_month <- function(date_ymd, dob_ymd) {
     (12L * (date_ymd$y - dob_ymd$y)
         + (date_ymd$m - dob_ymd$m)
         - (dob_ymd$d != 1L))
 }
+
+## Calculate age in years, in a way that accounts for leap years,
+## ie each day counts for 1/365 in a normal year, and 1/366
+## in a leap year. Assume that 'date' and 'dob' are valid,
+## including having same length.
+age_frac_years <- function(date, dob) {
+  date_ymd <- as_ymd(date, zap_feb29 = FALSE)
+  dob_ymd <- as_ymd(dob, zap_feb29 = FALSE)
+  passed_month <- date_ymd$m > dob_ymd$m
+  reached_month <- date_ymd$m == dob_ymd$m
+  reached_day <- date_ymd$d >= dob_ymd$d
+  reached_birthday <- passed_month | (reached_month & reached_day)
+  year_birthday_prev <- date_ymd$y - 1L + reached_birthday
+  year_birthday_next <- year_birthday_next + 1L
+  date_birthday_prev <- sprintf("%d-%d-%d", 
+                                year_birthday_prev, 
+                                dob_ymd$m,
+                                dob_ymd$d)
+  date_birthday_next <- sprintf("%d-%d-%d", 
+                                year_birthday_next, 
+                                dob_ymd$m,
+                                dob_ymd$d)
+  date_birthday_prev <- as.Date(date_birthday_prev)
+  date_birthday_next <- as.Date(date_birthday_next)
+  completed_years <- year_birthday_prev - dob_ymd$y
+  numerator <- date - date_birthday_prev
+  denominator <- date_birthday_next - date_birthday_prev
+  frac_years <- numerator / denominator
+  completed_years + frac_years
+}
+
 
 ## HAS_TESTS
 as_ymd <- function(date) {
