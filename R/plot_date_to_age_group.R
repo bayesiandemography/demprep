@@ -110,12 +110,6 @@ plot_date_to_age_group <- function(date, dob, breaks, open_last, labels, cex = 0
 #' @param open_last Whether the final age group
 #' has no upper limit. Defaults to \code{TRUE}.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The length of the return value equals the length
-#' of \code{date} or the length of \code{dob}, whichever
-#' is greater.
-#'
 #' @seealso \code{\link{date_to_age_group_year}}
 #'
 #' @examples
@@ -173,165 +167,91 @@ plot_date_to_age_group_year <- function(date,
                            labels = labels)
 }
 
+## HAS_TESTS
+#' Depict the intervals created by
+#' function 'date_to_age_group_multi'
+#'
+#' @inheritParams date_to_age_group_year
+#' @param width The width in years of the age intervals.
+#' A positive integer. Defaults to 5.
+#'
+#' @seealso \code{\link{date_to_age_group_multi}}
+#'
+#' @examples
+#' plot_date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
+#'                              dob = c("2001-03-21", "2000-07-13"))
+#'
+#' ## alternative values for 'width'
+#' plot_date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
+#'                              dob = c("2001-03-21", "2000-07-13"),
+#'                              width = 10)
+#'
+#' ## alternative specifications for oldest age group
+#' plot_date_to_age_group_multi(date = "2019-09-22",
+#'                              dob = "1910-01-01",
+#'                               width = 20)
+#' plot_date_to_age_group_multi(date = "2019-09-22",
+#'                              dob = "1910-01-01",
+#'                              width = 20,
+#'                              break_max = 80)
+#' @export
+plot_date_to_age_group_multi <- function(date,
+                                         dob,
+                                         width = 5,
+                                         break_max = 100,
+                                         open_last = TRUE) {
+    ## Check arguments and/or apply defaults.
+    ## Note that 'err_tdy_date_dob' enforces length >= 1
+    l <- demcheck::err_tdy_date_dob(date = date,
+                                    dob = dob)
+    date <- l$date
+    dob <- l$dob
+    demcheck::err_has_non_na(x = date,
+                             name = "date")
+    width <- demcheck::err_tdy_positive_integer_scalar(x = width,
+                                                       name = "width")
+    break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
+                                                           name = "break_max",
+                                                           null_ok = TRUE)
+    if (!is.null(break_max))
+        demcheck::err_is_logical_flag(x = open_last,
+                                      name = "open_last")
+    demcheck::err_multiple_of(x1 = break_max,
+                              x2 = width,
+                              name1 = "break_max",
+                              name2 = "width",
+                              null_ok = TRUE)
+    ## get age in months and years
+    age_months <- age_completed_months(date = date,
+                                       dob = dob)
+    age_years <- age_months %/% 12L
+    ## if final interval not open, check that all
+    ## ages less than 'break_max'
+    if (!open_last)
+        demcheck::err_lt_break_max_age(age = age_years,
+                                       break_max = break_max,
+                                       date = date,
+                                       dob = dob,
+                                       unit = "year")    
+    ## make breaks
+    breaks <- make_breaks_integer_year(age = age_years,
+                                       width = width,
+                                       break_max = break_max,
+                                       open_last = open_last)
+    ## make labels for these breaks
+    labels <- make_labels_age_group(breaks = breaks,
+                                    open_last = open_last)
+
+    ## make plot
+    plot_date_to_age_group(date = date,
+                           dob = dob,
+                           breaks = breaks,
+                           open_last = open_last,
+                           labels = labels)
+}
+
 #' ## HAS_TESTS
-#' #' Convert dates to multi-year age groups
-#' #'
-#' #' Given dates when events occurred or measurements were made,
-#' #' together with dates of birth, allocate the events or
-#' #' measurements to age groups. These
-#' #' age groups all have the same width, except possibly
-#' #' the final age group. The width is measured in years
-#' #' and must be an integer.
-#' #'
-#' #' \code{date} and \code{dob} must have the same length,
-#' #' unless one of them has length 1, in which case the
-#' #' length-1 argument is recycled.
-#' #'
-#' #' \code{break_max} and \code{open_last} are used to specify
-#' #' the oldest age group.
-#' #' If \code{break_max} is non-\code{NULL} and
-#' #' \code{open_last} is \code{TRUE}, the oldest
-#' #' age group is \code{[break_max, Inf)} years. If
-#' #' \code{break_max} is non-\code{NULL} and 
-#' #' \code{open_last} is \code{FALSE}, the oldest age
-#' #' group is \code{[break_max-width, break_max)} years.
-#' #' If \code{break_max} is \code{NULL}, the oldest
-#' #' age group is derived from the data.
-#' #'
-#' #' When \code{as_factor} is \code{TRUE} the levels of
-#' #' the factor include all intermediate age groups,
-#' #' including age groups that not appear in the data.
-#' #'
-#' #' @inheritParams date_to_age_group_year
-#' #' @param width The width in years of the age intervals.
-#' #' A positive integer. Defaults to 5.
-#' #'
-#' #' @return If \code{as_factor} is \code{TRUE}, then the
-#' #' return value is a factor; otherwise it is a character vector.
-#' #' The length of the return value equals the length
-#' #' of \code{date} or the length of \code{dob}, whichever
-#' #' is greater.
-#' #'
-#' #' @seealso Other functions for creating age groups are
-#' #' \code{\link{date_to_age_group_year}},
-#' #' \code{\link{date_to_age_group_lifetab}},
-#' #' \code{\link{date_to_age_group_births}},
-#' #' \code{\link{date_to_age_group_custom}},
-#' #' \code{\link{date_to_age_group_quarter}},
-#' #' and \code{\link{date_to_age_group_month}}.
-#' #' Other functions for working with multi-year intervals are
-#' #' \code{\link{date_to_period_multi}},
-#' #' \code{\link{date_to_cohort_multi}},
-#' #' and \code{\link{date_to_triangle_multi}}.
-#' #' See \code{\link{make_labels_age_group}} for the rules
-#' #' on constructing labels for age groups.
-#' #'
-#' #' @examples
-#' #' date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
-#' #'                         dob = c("2001-03-21", "2000-07-13"))
-#' #'
-#' #' ## alternative values for 'width'
-#' #' date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
-#' #'                         dob = c("2001-03-21", "2000-07-13"),
-#' #'                         width = 10)
-#' #' date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
-#' #'                         dob = c("2001-03-21", "2000-07-13"),
-#' #'                         width = 1)
-#' #'
-#' #' ## replicate date of birth
-#' #' date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
-#' #'                         dob = "2011-05-18")
-#' #'
-#' #' ## return non-factor
-#' #' date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
-#' #'                         dob = "2011-05-18",
-#' #'                         as_factor = FALSE)
-#' #'
-#' #' ## alternative specifications for oldest age group
-#' #' date_to_age_group_multi(date = "2019-09-22",
-#' #'                         dob = "1910-01-01")
-#' #' date_to_age_group_multi(date = "2019-09-22",
-#' #'                         dob = "1910-01-01",
-#' #'                         break_max = 80)
-#' #' date_to_age_group_multi(date = "2019-09-22",
-#' #'                         dob = "1910-01-01",
-#' #'                         break_max = NULL)
-#' #' date_to_age_group_multi(date = "2019-09-22",
-#' #'                         dob = "1910-01-01",
-#' #'                         break_max = NULL,
-#' #'                         open_last = FALSE)
-#' #' @export
-#' date_to_age_group_multi <- function(date,
-#'                                     dob,
-#'                                     width = 5,
-#'                                     break_max = 100,
-#'                                     open_last = TRUE,
-#'                                     as_factor = TRUE) {
-#'     ## Check arguments and/or apply defaults.
-#'     ## Note that 'err_tdy_date_dob' enforces length >= 1
-#'     l <- demcheck::err_tdy_date_dob(date = date,
-#'                                     dob = dob)
-#'     date <- l$date
-#'     dob <- l$dob
-#'     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
-#'                                                        name = "width")
-#'     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
-#'                                                            name = "break_max",
-#'                                                            null_ok = TRUE)
-#'     if (!is.null(break_max))
-#'         demcheck::err_is_logical_flag(x = open_last,
-#'                                       name = "open_last")
-#'     demcheck::err_is_logical_flag(x = as_factor,
-#'                                   name = "as_factor")
-#'     demcheck::err_multiple_of(x1 = break_max,
-#'                               x2 = width,
-#'                               name1 = "break_max",
-#'                               name2 = "width",
-#'                               null_ok = TRUE)
-#'     ## deal with "empty" case where
-#'     ## all date-dob pairs have NA
-#'     ## and no 'break_max' supplied
-#'     n_date <- length(date)
-#'     all_empty <- all(is.na(date) | is.na(dob))
-#'     if (all_empty && is.null(break_max)) {
-#'         ans <- rep(NA_character_, times = n_date)
-#'         if (as_factor)
-#'             ans <- factor(ans)
-#'         return(ans)
-#'     }
-#'     ## get age in months and years
-#'     age_months <- age_completed_months(date = date,
-#'                                        dob = dob)
-#'     age_years <- age_months %/% 12L
-#'     ## if final interval not open, check that all
-#'     ## ages less than 'break_max'
-#'     if (!open_last)
-#'         demcheck::err_lt_break_max_age(age = age_years,
-#'                                        break_max = break_max,
-#'                                        date = date,
-#'                                        dob = dob,
-#'                                        unit = "year")    
-#'     ## make breaks
-#'     breaks <- make_breaks_integer_year(age = age_years,
-#'                                        width = width,
-#'                                        break_max = break_max,
-#'                                        open_last = open_last)
-#'     ## make labels for these breaks
-#'     labels <- make_labels_age_group(breaks = breaks,
-#'                                     open_last = open_last)
-#'     ## assign labels to ages
-#'     i <- findInterval(x = age_years,
-#'                       vec = breaks)
-#'     ans <- labels[i]
-#'     ## return result
-#'     if (as_factor)
-#'         ans <- factor(x = ans,
-#'                       levels = labels)
-#'     ans
-#' }
-#' 
-#' ## HAS_TESTS
-#' #' Convert dates to age groups used in abridged life table
+#' Convert dates to age groups used in abridged life table
 #' #'
 #' #' Given dates of death and dates of birth,
 #' #' allocate the deaths to age groups. These

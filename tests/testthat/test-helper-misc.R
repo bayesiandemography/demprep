@@ -65,18 +65,24 @@ test_that("'age_completed_months' gives correct answer with valid inputs", {
 ## age_completed_months_start_month -------------------------------------------
 
 test_that("'age_completed_months_start_month' gives correct answer with valid inputs", {
-    date <- demprep:::as_ymd(as.Date("2001-01-01"))
-    dob <- demprep:::as_ymd(as.Date("2000-01-01"))
+    date <- demprep:::as_ymd(as.Date("2001-01-01"),
+                             zap_feb29 = TRUE)
+    dob <- demprep:::as_ymd(as.Date("2000-01-01"),
+                            zap_feb29 = TRUE)
     expect_identical(age_completed_months_start_month(date = date,
                                                       dob = dob),
                      12L)
-    date <- demprep:::as_ymd(as.Date("2001-01-01"))
-    dob <- demprep:::as_ymd(as.Date("2000-01-15"))
+    date <- demprep:::as_ymd(as.Date("2001-01-01"),
+                             zap_feb29 = TRUE)
+    dob <- demprep:::as_ymd(as.Date("2000-01-15"),
+                            zap_feb29 = TRUE)
     expect_identical(age_completed_months_start_month(date = date,
                                                       dob = dob),
                      11L)
-    date <- demprep:::as_ymd(as.Date("2001-01-31"))
-    dob <- demprep:::as_ymd(as.Date("2000-01-15"))
+    date <- demprep:::as_ymd(as.Date("2001-01-31"),
+                             zap_feb29 = TRUE)
+    dob <- demprep:::as_ymd(as.Date("2000-01-15"),
+                            zap_feb29 = TRUE)
     expect_identical(age_completed_months_start_month(date = date,
                                                       dob = dob),
                      11L)
@@ -85,24 +91,47 @@ test_that("'age_completed_months_start_month' gives correct answer with valid in
 
 ## as_ymd ---------------------------------------------------------------------
 
-test_that("'as_ymd' gives correct answer with valid inputs", {
+test_that("'as_ymd' gives correct answer with valid inputs - zap_feb29 is TRUE", {
+    as_ymd <- demprep:::as_ymd
     x <- as.Date(c("2001-03-02", "2000-02-29", NA))
-    ans_obtained <- as_ymd(x)
+    ans_obtained <- as_ymd(x, zap_feb29 = TRUE)
     ans_expected <- list(y = c(2001L, 2000L, NA),
                          m = c(3L, 2L, NA),
                          d = c(2L, 28L, NA))
     expect_identical(ans_obtained, ans_expected)
     x <- as.Date(character())
-    ans_obtained <- as_ymd(x)
+    ans_obtained <- as_ymd(x, zap_feb29 = TRUE)
     ans_expected <- list(y = integer(),
                          m = integer(),
                          d = integer())
     expect_identical(ans_obtained, ans_expected)
-    expect_identical(as_ymd(c("2000-01-01", NA)),
+    expect_identical(as_ymd(c("2000-01-01", NA), zap_feb29 = TRUE),
                      list(y = c(2000L, NA),
                           m = c(1L, NA),
                           d = c(1L, NA)))
 })
+
+
+test_that("'as_ymd' gives correct answer with valid inputs - zap_feb29 is FALSE", {
+    as_ymd <- demprep:::as_ymd
+    x <- as.Date(c("2001-03-02", "2000-02-29", NA))
+    ans_obtained <- as_ymd(x, zap_feb29 = FALSE)
+    ans_expected <- list(y = c(2001L, 2000L, NA),
+                         m = c(3L, 2L, NA),
+                         d = c(2L, 29L, NA))
+    expect_identical(ans_obtained, ans_expected)
+    x <- as.Date(character())
+    ans_obtained <- as_ymd(x, zap_feb29 = FALSE)
+    ans_expected <- list(y = integer(),
+                         m = integer(),
+                         d = integer())
+    expect_identical(ans_obtained, ans_expected)
+    expect_identical(as_ymd(c("2000-01-01", NA), zap_feb29 = FALSE),
+                     list(y = c(2000L, NA),
+                          m = c(1L, NA),
+                          d = c(1L, NA)))
+})
+
 
 
 ## date_ymd_ge ----------------------------------------------------------------
@@ -173,42 +202,50 @@ test_that("'diff_completed_year' gives correct answer with valid inputs", {
 ## i_month_within_period ------------------------------------------------------
 
 test_that("'i_month_within_period' gives correct answer with valid inputs", {
-    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-01-01"),
+    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-01-01",
+                                                             zap_feb29 = TRUE),
                                            width = 1L,
                                            origin = 2000L,
                                            month_start = "Jan"),
                      1L)
-    expect_identical(i_month_within_period(date_ymd = as_ymd("1999-12-31"),
+    expect_identical(i_month_within_period(date_ymd = as_ymd("1999-12-31",
+                                                             zap_feb29 = TRUE),
                                            width = 1L,
                                            origin = 2000L,
                                            month_start = "Jan"),
                      12L)
-    expect_identical(i_month_within_period(date_ymd = as_ymd("1999-12-31"),
+    expect_identical(i_month_within_period(date_ymd = as_ymd("1999-12-31",
+                                                             zap_feb29 = TRUE),
                                            width = 5L,
                                            origin = 2000L,
                                            month_start = "Jan"),
                      60L)
-    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-01-01"),
+    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-01-01",
+                                                             zap_feb29 = TRUE),
                                            width = 1L,
                                            origin = 1998L,
                                            month_start = "Jan"),
                      1L)
-    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-01-01"),
+    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-01-01",
+                                                             zap_feb29 = TRUE),
                                            width = 2L,
                                            origin = 1998L,
                                            month_start = "Jul"),
                      19L)
-    expect_identical(i_month_within_period(date_ymd = as_ymd(NA),
+    expect_identical(i_month_within_period(date_ymd = as_ymd(NA,
+                                                             zap_feb29 = TRUE),
                                            width = 2L,
                                            origin = 1998L,
                                            month_start = "Jul"),
                      NA_integer_)
-    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-06-30"),
+    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-06-30",
+                                                             zap_feb29 = TRUE),
                                            width = 5L,
                                            origin = 2000L,
                                            month_start = "Jul"),
                      60L)
-    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-07-01"),
+    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-07-01",
+                                                             zap_feb29 = TRUE),
                                            width = 5L,
                                            origin = 2000L,
                                            month_start = "Jul"),
@@ -219,17 +256,27 @@ test_that("'i_month_within_period' gives correct answer with valid inputs", {
 ## is_lower_within_month ------------------------------------------------------
 
 test_that("'is_lower_within_month' gives correct answer with valid input", {
-    date_ymd <- demprep:::as_ymd(seq.Date(from = as.Date("2001-01-01"), by = "day", length.out = 10))
-    dob_ymd <- demprep:::as_ymd(seq.Date(from = as.Date("2000-02-01"), by = "day", length.out = 10))
+    date_ymd <- demprep:::as_ymd(seq.Date(from = as.Date("2001-01-01"),
+                                          by = "day",
+                                          length.out = 10),
+                                 zap_feb29 = TRUE)
+    dob_ymd <- demprep:::as_ymd(seq.Date(from = as.Date("2000-02-01"),
+                                         by = "day",
+                                         length.out = 10),
+                                zap_feb29 = TRUE)
     expect_identical(is_lower_within_month(date_ymd = date_ymd,
                                            dob_ymd = dob_ymd),
                      rep(c(TRUE, FALSE), times = 5))
-    date_ymd <- demprep:::as_ymd(as.Date("2000-01-02"))
-    dob_ymd <- demprep:::as_ymd(as.Date("2019-12-01"))
+    date_ymd <- demprep:::as_ymd(as.Date("2000-01-02"),
+                                 zap_feb29 = TRUE)
+    dob_ymd <- demprep:::as_ymd(as.Date("2019-12-01"),
+                                zap_feb29 = TRUE)
     expect_true(is_lower_within_month(date_ymd = date_ymd,
                                       dob_ymd = dob_ymd))
-    date_ymd <- demprep:::as_ymd(as.Date("2019-12-01"))
-    dob_ymd <- demprep:::as_ymd(as.Date("2000-01-02"))
+    date_ymd <- demprep:::as_ymd(as.Date("2019-12-01"),
+                                 zap_feb29 = TRUE)
+    dob_ymd <- demprep:::as_ymd(as.Date("2000-01-02"),
+                                zap_feb29 = TRUE)
     expect_false(is_lower_within_month(date_ymd = date_ymd,
                                        dob_ymd = dob_ymd))
 })

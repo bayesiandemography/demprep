@@ -24,13 +24,6 @@ Defaults to 100.}
 \item{open_last}{Whether the final age group
 has no upper limit. Defaults to \code{TRUE}.}
 }
-\value{
-If \code{as_factor} is \code{TRUE}, then the return
-value is a factor; otherwise it is a character vector.
-The length of the return value equals the length
-of \code{date} or the length of \code{dob}, whichever
-is greater.
-}
 \description{
 Depict the intervals created by
 function 'date_to_age_group_year'
@@ -43,29 +36,6 @@ plot_date_to_age_group_year(date = c("2002-11-09", "2004-04-27"),
                             dob = c("2000-07-13", "2001-03-21"),
                             break_max = 4,
                             open_last = FALSE)
-
-## replicate date of birth
-plot_date_to_age_group_year(date = c("2022-11-09", "2024-03-27"),
-                            dob = "2011-05-18",
-                            break_max = 15)
-
-## return non-factor
-plot_date_to_age_group_year(date = c("2024-03-27", "2022-11-09"),
-                       dob = "2011-05-18")
-
-## alternative specifications for oldest age group
-plot_date_to_age_group_year(date = "2019-09-22",
-                       dob = "1910-01-01")
-plot_date_to_age_group_year(date = "2019-09-22",
-                       dob = "1910-01-01",
-                       break_max = 80)
-plot_date_to_age_group_year(date = "2019-09-22",
-                       dob = "1910-01-01",
-                       break_max = NULL)
-plot_date_to_age_group_year(date = "2019-09-22",
-                       dob = "1910-01-01",
-                       break_max = NULL,
-                       open_last = FALSE)
 }
 \seealso{
 \code{\link{date_to_age_group_year}}
