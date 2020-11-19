@@ -52,4 +52,6 @@ and \code{\link{date_to_cohort_month}},
 and \code{\link{date_to_triangle_month}}.
 See \code{\link{make_labels_period_month}} on the rules
 for constructing labels for month periods.
+Function \code{\link{plot_date_to_period_month}} depicts
+the intervals created by \code{date_to_period_month}.
 }

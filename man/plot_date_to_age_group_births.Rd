@@ -39,8 +39,15 @@ occurring to women in the highest reproductive
 age group.}
 }
 \description{
-Depict the intervals created by
-function 'date_to_age_group_births'
+Create plot illustrating the inputs and outputs
+of function \code{\link{date_to_age_group_births}}.
+}
+\details{
+This function is for learning about the
+labelling conventions used in the \strong{dem} packages,
+and about their implementation in package
+\strong{demprep}. It would not normally be used
+during actual data analysis.
 }
 \examples{
 plot_date_to_age_group_births(date = c("2024-03-27", "2022-11-09"),
@@ -62,7 +69,4 @@ plot_date_to_age_group_births(date = c("2052-01-02", "2019-09-22", "2022-10-08")
                               dob = c("2000-01-01", "2001-03-17", "2010-07-05"),
                               recode_up = TRUE,
                               recode_down = TRUE)
-}
-\seealso{
-\code{\link{plot_date_to_age_group_births}}
 }

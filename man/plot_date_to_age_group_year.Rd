@@ -25,8 +25,15 @@ Defaults to 100.}
 has no upper limit. Defaults to \code{TRUE}.}
 }
 \description{
-Depict the intervals created by
-function 'date_to_age_group_year'
+Create plot illustrating the inputs and outputs
+of function \code{\link{date_to_age_group_year}}.
+}
+\details{
+This function is for learning about the
+labelling conventions used in the \strong{dem} packages,
+and about their implementation in package
+\strong{demprep}. It would not normally be used
+during actual data analysis.
 }
 \examples{
 plot_date_to_age_group_year(date = c("2002-11-09", "2004-04-27"),
@@ -36,7 +43,4 @@ plot_date_to_age_group_year(date = c("2002-11-09", "2004-04-27"),
                             dob = c("2000-07-13", "2001-03-21"),
                             break_max = 4,
                             open_last = FALSE)
-}
-\seealso{
-\code{\link{date_to_age_group_year}}
 }

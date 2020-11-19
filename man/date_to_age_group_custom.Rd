@@ -103,4 +103,6 @@ Other functions for creating age groups are
 and \code{\link{date_to_age_group_month}}.
 See \code{\link{make_labels_age_group}} for the rules
 on constructing labels for age groups.
+Function \code{\link{plot_date_to_age_group_custom}} depicts
+the intervals created by \code{date_to_age_group_custom}.
 }

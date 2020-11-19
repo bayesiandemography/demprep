@@ -72,7 +72,9 @@
 #' \code{\link{date_to_cohort_year}},
 #' and \code{\link{date_to_triangle_year}}.
 #' See \code{\link{make_labels_period}} for the rules
-#' on constructing labels for periods.
+#' on constructing labels for periods. Function
+#' \code{\link{plot_date_to_period_year}} depicts
+#' the intervals created by \code{date_to_period_year}.
 #'
 #' @examples
 #' date_to_period_year(date = c("2024-03-27", "2022-11-09"))
@@ -182,7 +184,9 @@ date_to_period_year <- function(date,
 #' \code{\link{date_to_cohort_multi}},
 #' and \code{\link{date_to_triangle_multi}}.
 #' See \code{\link{make_labels_period}} for the rules
-#' on constructing labels for periods.
+#' on constructing labels for periods. Function
+#' \code{\link{plot_date_to_period_multi}} depicts
+#' the intervals created by \code{date_to_period_multi}.
 #'
 #' @examples
 #' date_to_period_multi(date = c("2024-03-27",
@@ -312,7 +316,9 @@ date_to_period_multi <- function(date,
 #' \code{\link{date_to_age_group_custom}},
 #' and \code{\link{date_to_cohort_custom}}.
 #' See \code{\link{make_labels_period}} for the rules
-#' on constructing labels for periods.
+#' on constructing labels for periods. Function
+#' \code{\link{plot_date_to_period_custom}} depicts
+#' the intervals created by \code{date_to_period_custom}.
 #'
 #' @examples
 #' ## periods start on 1 January
@@ -436,6 +442,9 @@ date_to_period_custom <- function(date,
 #' and \code{\link{date_to_triangle_quarter}}.
 #' See \code{\link{make_labels_period_quarter}} on the rules
 #' for constructing labels for quarter periods.
+#' Function \code{\link{plot_date_to_period_quarter}} depicts
+#' the intervals created by \code{date_to_period_quarter}.
+#' 
 #' @examples
 #' date_to_period_quarter(date = c("2024-03-27",
 #'                                 "2020-01-03",
@@ -518,6 +527,9 @@ date_to_period_quarter <- function(date,
 #' and \code{\link{date_to_triangle_month}}.
 #' See \code{\link{make_labels_period_month}} on the rules
 #' for constructing labels for month periods.
+#' Function \code{\link{plot_date_to_period_month}} depicts
+#' the intervals created by \code{date_to_period_month}.
+#'
 #' @examples
 #' date_to_period_month(date = c("2024-03-27",
 #'                               "2020-01-03",
