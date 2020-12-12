@@ -1,5 +1,9 @@
 
 ## HAS_TESTS
+## Calculate the number of completed months since birth.
+## The count ticks up by one each time a new month starts
+## or the day-of-month (eg 17 or 30) for 'date' reaches the
+## the day-of-month of 'dob'. In 
 ## Assume that 'date' and 'dob' are valid.
 age_completed_months <- function(date, dob) {
     date_ymd <- as_ymd(date = date,

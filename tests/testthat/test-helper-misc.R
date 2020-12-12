@@ -59,6 +59,13 @@ test_that("'age_completed_months' gives correct answer with valid inputs", {
                                                           "2000-02-29",
                                                           "2000-03-01"))),
                      c(1L, 1L, 0L))
+    expect_identical(age_completed_months(date = as.Date(c("2000-02-28",
+                                                           "2000-02-29",
+                                                           "2000-03-01")),
+                                          dob = as.Date(c("2000-01-31",
+                                                          "2000-01-31",
+                                                          "2000-01-31"))),
+                     c(0L, 0L, 1L))
 })
 
 
