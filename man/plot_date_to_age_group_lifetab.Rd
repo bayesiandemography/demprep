@@ -19,14 +19,18 @@ or a vector that can be coerced to class
 Defaults to 100.}
 }
 \description{
-Depict the intervals created by
-function 'date_to_age_group_lifetab'
+Create plot illustrating the inputs and outputs
+of function \code{\link{date_to_age_group_lifetab}}.
+}
+\details{
+This function is for learning about the
+labelling conventions used in the \strong{dem} packages,
+and about their implementation in package
+\strong{demprep}. It would not normally be used
+during actual data analysis.
 }
 \examples{
 plot_date_to_age_group_lifetab(date = c("2024-03-27", "2022-11-09"),
                                dob = c("2001-03-21", "2000-07-13"),
                                break_max = 30)
-}
-\seealso{
-\code{\link{date_to_age_group_lifetab}}
 }

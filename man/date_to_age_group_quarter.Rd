@@ -108,4 +108,6 @@ Other functions for working with one-quarter intervals are
 and \code{\link{date_to_triangle_quarter}}.
 See \code{\link{make_labels_age_group_quarter}} for the rules
 on constructing labels for age groups.
+Function \code{\link{plot_date_to_age_group_quarter}} depicts
+the intervals created by \code{date_to_age_group_quarter}.
 }

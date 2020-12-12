@@ -74,6 +74,8 @@
 #' and \code{\link{date_to_triangle_year}}.
 #' See \code{\link{make_labels_age_group}} for the rules
 #' on constructing labels for age groups.
+#' Function \code{\link{plot_date_to_age_group_year}} depicts
+#' the intervals created by \code{date_to_age_group_year}.
 #'
 #' @examples
 #' date_to_age_group_year(date = c("2024-03-27", "2022-11-09"),
@@ -215,6 +217,8 @@ date_to_age_group_year <- function(date,
 #' and \code{\link{date_to_triangle_multi}}.
 #' See \code{\link{make_labels_age_group}} for the rules
 #' on constructing labels for age groups.
+#' Function \code{\link{plot_date_to_age_group_multi}} depicts
+#' the intervals created by \code{date_to_age_group_multi}.
 #'
 #' @examples
 #' date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
@@ -362,6 +366,8 @@ date_to_age_group_multi <- function(date,
 #' and \code{\link{date_to_age_group_month}}.
 #' See \code{\link{make_labels_age_group}} for the rules
 #' on constructing labels for age groups.
+#' Function \code{\link{plot_date_to_age_group_lifetab}} depicts
+#' the intervals created by \code{date_to_age_group_lifetab}.
 #'
 #' @examples
 #' date_to_age_group_lifetab(date = c("2024-03-27", "2022-11-09"),
@@ -500,6 +506,8 @@ date_to_age_group_lifetab <- function(date, dob,
 #' and \code{\link{date_to_age_group_month}}.
 #' See \code{\link{make_labels_age_group}} for the rules
 #' on constructing labels for age groups.
+#' Function \code{\link{plot_date_to_age_group_births}} depicts
+#' the intervals created by \code{date_to_age_group_births}.
 #'
 #' @examples
 #' date_to_age_group_births(date = c("2024-03-27", "2022-11-09"),
@@ -681,6 +689,8 @@ date_to_age_group_births <- function(date, dob,
 #' and \code{\link{date_to_age_group_month}}.
 #' See \code{\link{make_labels_age_group}} for the rules
 #' on constructing labels for age groups.
+#' Function \code{\link{plot_date_to_age_group_custom}} depicts
+#' the intervals created by \code{date_to_age_group_custom}.
 #'
 #' @examples
 #' date_to_age_group_custom(date = c("2024-03-27", "2022-11-09"),
@@ -854,6 +864,8 @@ date_to_age_group_custom <- function(date, dob,
 #' and \code{\link{date_to_triangle_quarter}}.
 #' See \code{\link{make_labels_age_group_quarter}} for the rules
 #' on constructing labels for age groups.
+#' Function \code{\link{plot_date_to_age_group_quarter}} depicts
+#' the intervals created by \code{date_to_age_group_quarter}.
 #'
 #' @examples
 #' date_to_age_group_quarter(date = c("2024-03-27", "2022-11-09"),
@@ -1007,6 +1019,8 @@ date_to_age_group_quarter <- function(date,
 #' and \code{\link{date_to_triangle_month}}.
 #' See \code{\link{make_labels_age_group_month}} for the rules
 #' on constructing labels for age groups.
+#' Function \code{\link{plot_date_to_age_group_month}} depicts
+#' the intervals created by \code{date_to_age_group_month}.
 #'
 #' @examples
 #' date_to_age_group_month(date = c("2024-03-27", "2022-11-09"),

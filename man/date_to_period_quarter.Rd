@@ -59,4 +59,6 @@ and \code{\link{date_to_cohort_quarter}},
 and \code{\link{date_to_triangle_quarter}}.
 See \code{\link{make_labels_period_quarter}} on the rules
 for constructing labels for quarter periods.
+Function \code{\link{plot_date_to_period_quarter}} depicts
+the intervals created by \code{date_to_period_quarter}.
 }

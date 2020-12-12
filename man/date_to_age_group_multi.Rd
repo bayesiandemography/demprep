@@ -120,4 +120,6 @@ Other functions for working with multi-year intervals are
 and \code{\link{date_to_triangle_multi}}.
 See \code{\link{make_labels_age_group}} for the rules
 on constructing labels for age groups.
+Function \code{\link{plot_date_to_age_group_multi}} depicts
+the intervals created by \code{date_to_age_group_multi}.
 }

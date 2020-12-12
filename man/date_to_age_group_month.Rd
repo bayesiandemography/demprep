@@ -108,4 +108,6 @@ Other functions for working with one-month intervals are
 and \code{\link{date_to_triangle_month}}.
 See \code{\link{make_labels_age_group_month}} for the rules
 on constructing labels for age groups.
+Function \code{\link{plot_date_to_age_group_month}} depicts
+the intervals created by \code{date_to_age_group_month}.
 }

@@ -98,5 +98,7 @@ Other functions for working with one-year intervals are
 \code{\link{date_to_cohort_year}},
 and \code{\link{date_to_triangle_year}}.
 See \code{\link{make_labels_period}} for the rules
-on constructing labels for periods.
+on constructing labels for periods. Function
+\code{\link{plot_date_to_period_year}} depicts
+the intervals created by \code{date_to_period_year}.
 }

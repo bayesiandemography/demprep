@@ -97,5 +97,7 @@ Other functions for working with multi-year intervals are
 \code{\link{date_to_cohort_multi}},
 and \code{\link{date_to_triangle_multi}}.
 See \code{\link{make_labels_period}} for the rules
-on constructing labels for periods.
+on constructing labels for periods. Function
+\code{\link{plot_date_to_period_multi}} depicts
+the intervals created by \code{date_to_period_multi}.
 }
