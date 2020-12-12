@@ -24,12 +24,19 @@ deaths <- data.frame(person = c("Anwar", "Baptiste", "Candice"),
 - individual-level data at level of event/measurement
    - fit into age-time plan
    - conventions about labels: used by Counts etc
-- creating    
 
 
 ```{r setup}
 library(demprep)
 ```
+
+# The problem we are solving
+
+- Individual-level demographic events
+- Convert to periods, age groups, cohorts, Lexis triangles
+
+
+
 
 
 # Locating events or measurements within an age-time plan
@@ -203,7 +210,13 @@ plot_date_to_period_custom(date = deaths_custom$date,
 
 
 
-# Aggregating individual records
+## Cohorts
+
+
+## Lexis triangles
+
+
+
 
 
 
