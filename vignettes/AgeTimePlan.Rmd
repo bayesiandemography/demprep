@@ -1,8 +1,8 @@
 ---
-title: "Locating events in an age-time plan using package 'demprep'"
+title: "Locating events in an age-time plan"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Overview}
+  %\VignetteIndexEntry{Locating events in an age-time}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

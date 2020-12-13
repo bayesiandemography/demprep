@@ -2,7 +2,7 @@
 title: "Overview of package 'demprep'"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Overview}
+  %\VignetteIndexEntry{Overview of package 'demprep'}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
