@@ -3,13 +3,11 @@
 ## Calculate the number of completed months since birth.
 ## The count ticks up by one each time a new month starts
 ## or the day-of-month (eg 17 or 30) for 'date' reaches the
-## the day-of-month of 'dob'. In 
+## the day-of-month of 'dob'.
 ## Assume that 'date' and 'dob' are valid.
 age_completed_months <- function(date, dob) {
-    date_ymd <- as_ymd(date = date,
-                       zap_feb29 = TRUE)
-    dob_ymd <- as_ymd(date = dob,
-                      zap_feb29 = TRUE)
+    date_ymd <- as_ymd(date)
+    dob_ymd <- as_ymd(dob)
     (12L * (date_ymd$y - dob_ymd$y)
         + (date_ymd$m - dob_ymd$m)
         - (date_ymd$d < dob_ymd$d))
@@ -28,45 +26,39 @@ age_completed_months_start_month <- function(date_ymd, dob_ymd) {
 ## in a leap year. Assume that 'date' and 'dob' are valid,
 ## including having same length.
 age_frac_years <- function(date, dob) {
-    date_ymd <- as_ymd(date = date,
-                       zap_feb29 = FALSE)
-    dob_ymd <- as_ymd(date = dob,
-                      zap_feb29 = FALSE)
-  passed_month <- date_ymd$m > dob_ymd$m
-  reached_month <- date_ymd$m == dob_ymd$m
-  reached_day <- date_ymd$d >= dob_ymd$d
-  reached_birthday <- passed_month | (reached_month & reached_day)
-  year_birthday_prev <- date_ymd$y - 1L + reached_birthday
-  year_birthday_next <- year_birthday_next + 1L
-  date_birthday_prev <- sprintf("%d-%d-%d", 
-                                year_birthday_prev, 
-                                dob_ymd$m,
-                                dob_ymd$d)
-  date_birthday_next <- sprintf("%d-%d-%d", 
-                                year_birthday_next, 
-                                dob_ymd$m,
-                                dob_ymd$d)
-  date_birthday_prev <- as.Date(date_birthday_prev)
-  date_birthday_next <- as.Date(date_birthday_next)
-  completed_years <- year_birthday_prev - dob_ymd$y
-  numerator <- date - date_birthday_prev
-  denominator <- date_birthday_next - date_birthday_prev
-  frac_years <- numerator / denominator
-  completed_years + frac_years
+    date_ymd <- as_ymd(date)
+    dob_ymd <- as_ymd(dob)
+    passed_month <- date_ymd$m > dob_ymd$m
+    reached_month <- date_ymd$m == dob_ymd$m
+    reached_day <- date_ymd$d >= dob_ymd$d
+    reached_birthday <- passed_month | (reached_month & reached_day)
+    year_birthday_prev <- date_ymd$y - 1L + reached_birthday
+    year_birthday_next <- year_birthday_next + 1L
+    date_birthday_prev <- sprintf("%d-%d-%d", 
+                                  year_birthday_prev, 
+                                  dob_ymd$m,
+                                  dob_ymd$d)
+    date_birthday_next <- sprintf("%d-%d-%d", 
+                                  year_birthday_next, 
+                                  dob_ymd$m,
+                                  dob_ymd$d)
+    date_birthday_prev <- as.Date(date_birthday_prev)
+    date_birthday_next <- as.Date(date_birthday_next)
+    completed_years <- year_birthday_prev - dob_ymd$y
+    numerator <- date - date_birthday_prev
+    denominator <- date_birthday_next - date_birthday_prev
+    frac_years <- numerator / denominator
+    completed_years + frac_years
 }
 
 
 ## HAS_TESTS
-as_ymd <- function(date, zap_feb29) {
+as_ymd <- function(date) {
     if (!inherits(date, "POSIXlt"))
         date <- as.POSIXlt(date)
     y <- date$year + 1900L
     m <- date$mon + 1L
     d <- date$mday
-    if (zap_feb29) {
-      is_29_feb <- !is.na(m) & (m == 2L) & (d == 29L)
-      d[is_29_feb] <- 28L
-    }
     list(y = y,
          m = m,
          d = d)
@@ -126,8 +118,7 @@ make_breaks_date_month <- function(date, break_min) {
         date_from <- break_min
     else {
         date_first <- min(date, na.rm = TRUE)
-        date_first_ymd <- as_ymd(date = date_first,
-                                 zap_feb29 = TRUE)
+        date_first_ymd <- as_ymd(date_first)
         year_first <- date_first_ymd$y
         month_first <- date_first_ymd$m
         date_from <- sprintf("%d-%d-01", year_first, month_first)
@@ -136,8 +127,7 @@ make_breaks_date_month <- function(date, break_min) {
     ## date_to
     if (has_date) {
         date_last <- max(date, na.rm = TRUE)
-        date_last_ymd <- as_ymd(date = date_last,
-                                zap_feb29 = TRUE)
+        date_last_ymd <- as_ymd(date_last)
         year_last <- date_last_ymd$y
         month_last <- date_last_ymd$m
         year_to <- year_last
@@ -166,8 +156,7 @@ make_breaks_date_quarter <- function(date, break_min) {
         date_from <- break_min
     else {
         date_first <- min(date, na.rm = TRUE)
-        date_first_ymd <- as_ymd(date = date_first,
-                                 zap_feb29 = TRUE)
+        date_first_ymd <- as_ymd(date_first)
         year_first <- date_first_ymd$y
         month_first <- date_first_ymd$m
         year_from <- year_first
@@ -178,8 +167,7 @@ make_breaks_date_quarter <- function(date, break_min) {
     ## date_to
     if (has_date) {
         date_last <- max(date, na.rm = TRUE)
-        date_last_ymd <- as_ymd(date_last,
-                                zap_feb29 = TRUE)
+        date_last_ymd <- as_ymd(date_last)
         year_last <- date_last_ymd$y
         month_last <- date_last_ymd$m
         year_to <- year_last
@@ -233,8 +221,7 @@ make_breaks_date_year <- function(date,
     else {
         if (has_date) {
             date_first <- min(date, na.rm = TRUE)
-            date_first_ymd <- as_ymd(date = date_first,
-                                     zap_feb29 = TRUE)
+            date_first_ymd <- as_ymd(date_first)
             year_first <- date_first_ymd$y
             month_first <- date_first_ymd$m
             day_first <- date_first_ymd$d
@@ -263,8 +250,7 @@ make_breaks_date_year <- function(date,
     ## obtain 'year_to'
     if (has_date) {
         date_last <- max(date, na.rm = TRUE)
-        date_last_ymd <- as_ymd(date = date_last,
-                                zap_feb29 = TRUE)
+        date_last_ymd <- as_ymd(date_last)
         year_last <- date_last_ymd$y
         month_last <- date_last_ymd$m
         day_last <- date_last_ymd$d

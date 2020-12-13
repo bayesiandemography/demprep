@@ -1,0 +1,206 @@
+---
+title: "Locating events in an age-time plan using package 'demprep'"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Overview}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  fig.width = 6.5
+)
+deaths <- data.frame(person = c("Anwar", "Baptiste", "Candice"),
+                     date = c("2019-10-11", "2020-02-27", "2020-08-01"))
+```
+
+# Introduction
+
+- Raw individual-level data uses dates - birth, occurrence, measurement
+- Demographic analyses use intervals - periods, age, cohort, triangle
+- functions for converting
+- lots of subtle details
+
+
+# Age-time plans in demography
+
+
+# Design of functions in 'demprep'
+
+
+# Periods
+
+## Single-year periods
+
+```{r}
+deaths_yr <- deaths
+deaths_yr$jan_true <- date_to_period_year(date = deaths_yr$date)
+deaths_yr
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_year(date = deaths_yr$date)
+```
+
+
+```{r}
+deaths_yr$jul_true <- date_to_period_year(date = deaths_yr$date,
+                                          month_start = "Jul")
+deaths_yr
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_year(date = deaths_yr$date,
+                         month_start = "Jul")
+```
+
+
+```{r}
+deaths_yr$jul_false <- date_to_period_year(date = deaths_yr$date,
+                                           month_start = "Jul",
+                                           label_year_start = FALSE)
+deaths_yr
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_year(date = deaths_yr$date,
+                         month_start = "Jul",
+                         label_year_start = FALSE)
+```
+
+
+
+```{r}
+deaths_yr$jan_false <- date_to_period_year(date = deaths_yr$date,
+                                           month_start = "Jan",
+                                           label_year_start = FALSE)
+deaths_yr
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_year(date = deaths_yr$date,
+                         month_start = "Jan",
+                         label_year_start = FALSE)
+```
+
+
+## Multi-year periods, with equal lengths
+
+
+```{r}
+deaths_multi <- deaths
+deaths_multi$jan_5_00 <- date_to_period_multi(date = deaths_multi$date)
+deaths_multi
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_multi(date = deaths_multi$date)
+```
+
+
+```{r}
+deaths_multi$jul_5_00 <- date_to_period_multi(date = deaths_multi$date,
+                                              month_start = "Jul")
+deaths_multi
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_multi(date = deaths_multi$date,
+                          month_start = "Jul")
+```
+
+
+
+```{r}
+deaths_multi$jan_10_00 <- date_to_period_multi(date = deaths_multi$date,
+                                               width = 10)
+deaths_multi
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_multi(date = deaths_multi$date,
+                          width = 10)
+```
+
+
+
+
+
+```{r}
+deaths_multi$jan_5_01 <- date_to_period_multi(date = deaths_multi$date,
+                                              origin = 2001)
+deaths_multi
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_multi(date = deaths_multi$date,
+                          origin = 2001)
+```
+
+
+## Multi-year periods, with varying lengths
+
+
+```{r}
+deaths_custom <- deaths
+deaths_custom$jan_4_5 <- date_to_period_custom(date = deaths_custom$date,
+                                              breaks = c("2016-01-01", "2020-01-01", "2025-01-01"))
+deaths_custom
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_custom(date = deaths_custom$date,
+                           breaks = c("2016-01-01", "2020-01-01", "2025-01-01"))
+```
+
+
+```{r}
+deaths_custom <- deaths
+deaths_custom$jan_1_5 <- date_to_period_custom(date = deaths_custom$date,
+                                              breaks = c("2019-01-01", "2020-01-01", "2025-01-01"))
+deaths_custom
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_custom(date = deaths_custom$date,
+                           breaks = c("2019-01-01", "2020-01-01", "2025-01-01"))
+```
+
+
+```{r}
+deaths_custom <- deaths
+deaths_custom$jul_1_5 <- date_to_period_custom(date = deaths_custom$date,
+                                               breaks = c("2019-07-01", "2020-07-01", "2025-07-01"))
+deaths_custom
+```
+
+```{r, echo = FALSE, fig.height = 1.5}
+plot_date_to_period_custom(date = deaths_custom$date,
+                           breaks = c("2019-07-01", "2020-07-01", "2025-07-01"))
+```
+
+# Age groups
+
+- age in completed years
+- age in completed quarters
+- age in completed months
+  - 12 * (yearnow - yearbirth) + (monthnow - monthbirth) + (if daynow >= daybirth 1 else 0)
+  - months with different lengths
+  - leap years
+
+
+# Cohorts
+
+
+# Lexis triangles
+
+
+
+
+
+
+

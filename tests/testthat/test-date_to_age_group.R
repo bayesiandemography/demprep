@@ -98,11 +98,13 @@ test_that("date_to_age_group_year gives correct answers when 'date' and 'dob' bo
 test_that("date_to_age_group_year gives correct answers with leap years", {
     expect_identical(date_to_age_group_year(date = c("2001-02-27",
                                                      "2001-02-28",
+                                                     "2001-03-01",
                                                      "2004-02-27",
                                                      "2004-02-28",
-                                                     "2004-02-29"),
+                                                     "2004-02-29",
+                                                     "2004-03-01"),
                                             dob = "2000-02-29"),
-                     factor(c(0, 1, 3, 4, 4), levels = c(0:99, "100+")))
+                     factor(c(0, 0, 1, 3, 3, 4, 4), levels = c(0:99, "100+")))
 })
 
 

@@ -108,7 +108,7 @@ test_that("date_to_triangle_year gives correct answers with leap years", {
                                                     "2004-02-28",
                                                     "2004-02-29"),
                                            dob = "2000-02-29"),
-                     factor(c("Upper", "Upper", "Upper", "Upper", "Upper"),
+                     factor(c("Upper", "Upper", "Upper", "Upper", "Lower"),
                             levels = c("Lower", "Upper")))
 })
 

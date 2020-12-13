@@ -324,10 +324,8 @@ date_to_triangle_multi <- function(date,
     n_date <- length(date)
     ans <- rep.int("Upper", times = n_date)
     ans[is.na(date) | is.na(dob)] <- NA_character_
-    date_ymd <- as_ymd(date = date,
-                       zap_feb29 = TRUE)
-    dob_ymd <- as_ymd(date = dob,
-                      zap_feb29 = TRUE)
+    date_ymd <- as_ymd(date)
+    dob_ymd <- as_ymd(dob)
     i_month_within_period_date <- i_month_within_period(date_ymd = date_ymd,
                                                         width = width,
                                                         origin = origin,
@@ -539,10 +537,8 @@ date_to_triangle_births <- function(date,
                                        dob = dob)
     age_years <- age_months %/% 12L
     ## recode ages outside 'break_min', 'break_max', if requested
-    date_ymd <- as_ymd(date = date,
-                       zap_feb29 = TRUE)
-    dob_ymd <- as_ymd(date = dob,
-                      zap_feb29 = TRUE)
+    date_ymd <- as_ymd(date)
+    dob_ymd <- as_ymd(dob)
     is_lt_min <- age_years < break_min
     i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
     if (i_lt_min > 0L) {
@@ -734,10 +730,8 @@ date_to_triangle_quarter <- function(date,
     }
     ## assign triangles
     n_date <- length(date)
-    date_ymd <- as_ymd(date = date,
-                       zap_feb29 = TRUE)
-    dob_ymd <- as_ymd(date = dob,
-                      zap_feb29 = TRUE)
+    date_ymd <- as_ymd(date)
+    dob_ymd <- as_ymd(dob)
     ans <- rep.int("Upper", times = n_date)
     ans[is.na(date) | is.na(dob)] <- NA_character_
     i_month_within_qu_date <- (date_ymd$m - 1L) %% 3L
@@ -900,10 +894,8 @@ date_to_triangle_month <- function(date, dob,
                                        unit = "month")
     }
     ## assign triangles
-    date_ymd <- as_ymd(date = date,
-                       zap_feb29 = TRUE)
-    dob_ymd <- as_ymd(date = dob,
-                      zap_feb29 = TRUE)
+    date_ymd <- as_ymd(date)
+    dob_ymd <- as_ymd(dob)
     n_date <- length(date)
     ans <- rep.int("Upper", times = n_date)
     ans[is.na(date) | is.na(dob)] <- NA_character_
