@@ -2,7 +2,7 @@
 title: "Locating events in an age-time plan"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Locating events in an age-time}
+  %\VignetteIndexEntry{Locating events in an age-time plan}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,6 +24,10 @@ deaths <- data.frame(person = c("Anwar", "Baptiste", "Candice"),
 - Demographic analyses use intervals - periods, age, cohort, triangle
 - functions for converting
 - lots of subtle details
+
+```{r}
+library(demprep)
+```
 
 
 # Age-time plans in demography
