@@ -189,18 +189,65 @@ plot_date_to_period_custom(date = deaths_custom$date,
 
 # Age groups
 
-- age in completed years
-- age in completed quarters
-- age in completed months
-  - 12 * (yearnow - yearbirth) + (monthnow - monthbirth) + (if daynow >= daybirth 1 else 0)
-  - months with different lengths
-  - leap years
+Abstract: $\text{age} = t_{\text{event}} - t_{\text{dob}}$
 
+Complications. 
+
+- Child born on 31 October. On what day does child become 1 month old? 
+- Child born on 30 November. On what day does child become 1 month old?
+- Child born on 29 February 2000. On what day does child become 1 year old?
+
+## Age in completed months
+
+\begin{equation}
+    \begin{split}
+  \text{age in completed months} & = 12 \times (\text{year of event} - \text{year of birth}) \\
+  & \quad + \text{month of event} - \text{month of birth} \\
+  & \quad - \text{partial-month adjustment}
+    \end{split}
+\end{equation}
+
+Partial-month adjustment: ff $\text{day of event} \ge \text{day of birth}$, then 0; otherwise 1.
+
+
+## Age in completed quarters
+
+\begin{equation}
+  \text{age in completed quarters} = \text{floor}(\text{age in completed months} / 3)
+\end{equation}
+
+
+## Age in completed years
+
+\begin{equation}
+  \text{age in completed quarters} = \text{floor}(\text{age in completed months} / 12)
+\end{equation}
+
+  
+| Relationship between dates | Age in completed years |
+|:---------------------------|:-----------------------|
+| $\text{month of event} > \text{month of birth}$ | $\text{year of event} - \text{year of birth}$ |
+| $\text{month of event} = \text{month of birth}$, $\text{day of event} \ge \text{day of birth}$ | $\text{year of event} - \text{year of birth}$ |
+| $\text{month of event} = \text{month of birth}$, $\text{day of event} \lt \text{day of birth}$ | $\text{year of event} - \text{year of birth} - 1$ |
+| $\text{month of event} < \text{month of birth}$ | $\text{year of event} - \text{year of birth} - 1$ |
+
+ 
 
 # Cohorts
 
 
 # Lexis triangles
+
+- age and time use same length steps (subject to complications of months and years having different lengths)
+    - one month; one quarter; one year; $n$ years
+- age and time not enough to identify cohort; also need Lexis triangle
+- abstract: 
+- event is in upper Lexis triangle
+    
+- An event occurring during period $t$ to a person in age group $a$ belongs to the upper Lexis triangle if the person was already in age group $a$ at the start of the period, and to the lower Lexis triangle otherwise. (Covers youngest and oldest age groups.)
+
+
+
 
 
 
