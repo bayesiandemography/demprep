@@ -1,9 +1,62 @@
 
 ## HAS_TESTS
-## Calculate the number of completed months since birth.
-## The count ticks up by one each time a new month starts
-## or the day-of-month (eg 17 or 30) for 'date' reaches the
-## the day-of-month of 'dob'.
+## Add 'n' months to 'date'. Where necessary, 'add_month'
+## rolls back to the end of the previous month, to preserve the
+## relationship 'month_new - month_old = n'.
+## 'date' should have class "Date" and 'n'
+## should have class "integer"
+add_months <- function(date, n) {
+    date_ymd <- as_ymd(date)
+    n_month_total <- 12L * (date_ymd$y - 1L) + (date_ymd$m - 1L) + n ## 0-based
+    year_ans <- (n_month_total %/% 12L) + 1L ## 1-based
+    month_ans <- (n_month_total %% 12L) + 1L
+    date_start_month <- sprintf("%d-%d-01",
+                                year_ans,
+                                month_ans)
+    date_start_month <- as.Date(date_start_month)
+    n_day_month <- n_day_month(date_start_month)
+    day_ans <- pmin(date_ymd$d, n_day_month)
+    ans <- sprintf("%d-%d-%d",
+                   year_ans,
+                   month_ans,
+                   day_ans)
+    as.Date(ans)
+}
+
+## HAS_TESTS
+## Add 'n' quarters to 'date'. Where necessary, 'add_quarter'
+## rolls back to the end of the previous month, to preserve the
+## relationship 'month_new - month_old = 3 * n'.
+## 'date' should have class "Date" and 'n'
+## should have class "integer"
+add_quarters <- function(date, n) {
+    n <- 3L * n
+    add_months(date = date,
+               n = n)
+}
+
+## HAS_TESTS
+## Add 'n' years to 'date'. Where the old date is 29 February,
+## and the new date is not a leap year, 'add_years' rolls back to
+## 28 February.
+## 'date' should have class "Date" and 'n'
+## should have class "integer"
+add_years <- function(date, n) {
+    date_ymd <- as_ymd(date)
+    year_date <- date_ymd$y
+    month <- date_ymd$m
+    day_date <- date_ymd$d
+    date_is_29_feb <- (month == 2) & (day_date == 29L)
+    year_ans <- year_date + n
+    year_ans_is_leap_year <- is_leap_year(year_ans)
+    day_ans <- day_date
+    roll_back_29_feb <- date_is_29_feb & !year_ans_is_leap_year
+    day_ans[roll_back_29_feb] <- 28L
+    ans <- sprintf("%d-%d-%d", year_ans, month, day_ans)
+    as.Date(ans)
+}
+
+## HAS_TESTS
 ## Assume that 'date' and 'dob' are valid.
 age_completed_months <- function(date, dob) {
     date_ymd <- as_ymd(date)
@@ -21,36 +74,17 @@ age_completed_months_start_month <- function(date_ymd, dob_ymd) {
         - (dob_ymd$d != 1L))
 }
 
-## Calculate age in years, in a way that accounts for leap years,
-## ie each day counts for 1/365 in a normal year, and 1/366
-## in a leap year. Assume that 'date' and 'dob' are valid,
-## including having same length.
-age_frac_years <- function(date, dob) {
+## HAS_TESTS
+## Assume that 'date' and 'dob' are valid.
+age_completed_years <- function(date, dob) {
     date_ymd <- as_ymd(date)
     dob_ymd <- as_ymd(dob)
     passed_month <- date_ymd$m > dob_ymd$m
     reached_month <- date_ymd$m == dob_ymd$m
     reached_day <- date_ymd$d >= dob_ymd$d
     reached_birthday <- passed_month | (reached_month & reached_day)
-    year_birthday_prev <- date_ymd$y - 1L + reached_birthday
-    year_birthday_next <- year_birthday_next + 1L
-    date_birthday_prev <- sprintf("%d-%d-%d", 
-                                  year_birthday_prev, 
-                                  dob_ymd$m,
-                                  dob_ymd$d)
-    date_birthday_next <- sprintf("%d-%d-%d", 
-                                  year_birthday_next, 
-                                  dob_ymd$m,
-                                  dob_ymd$d)
-    date_birthday_prev <- as.Date(date_birthday_prev)
-    date_birthday_next <- as.Date(date_birthday_next)
-    completed_years <- year_birthday_prev - dob_ymd$y
-    numerator <- date - date_birthday_prev
-    denominator <- date_birthday_next - date_birthday_prev
-    frac_years <- numerator / denominator
-    completed_years + frac_years
+    date_ymd$y - dob_ymd$y - !reached_birthday
 }
-
 
 ## HAS_TESTS
 as_ymd <- function(date) {
@@ -62,6 +96,39 @@ as_ymd <- function(date) {
     list(y = y,
          m = m,
          d = d)
+}
+
+## HAS_TESTS
+## Return coordinates, measured in days,
+## for lines representing lifelines. Each
+## month on the age axis is 31 days, regardless
+## of the length of a month on the time axis.
+## To achieve agreement, lifelines are shifted
+## upwards by 0-3 days at the end of each month.
+## 'date1' and 'dob1' both have length 1
+coord_lifeline <- function(date1, dob1) {
+    first_boundary <- rollforward(dob1)
+    boundaries <- seq.Date(from = first_boundary,
+                           to = date1,
+                           by = "month")
+    x <- c(dob1, rep(boundaries, each = 2L), date1)
+    diff_y <- as.integer(diff(x))
+    first_start <- rollback(dob1)
+    starts <- seq.Date(from = first_start,
+                       by = "month",
+                       length.out = length(boundaries))
+    n_day_month <- n_day_month(starts)
+    shifts <- 31L - n_day_month
+    i_shifts <- seq.int(from = 2L,
+                        by = 2L,
+                        length.out = length(shifts))
+    diff_y[i_shifts] <- shifts
+    y <- c(0L, cumsum(diff_y))
+    n <- length(x)
+    list(x0 = x[-n],
+         y0 = y[-n],
+         x1 = x[-1L],
+         y1 = y[-1L])
 }
 
 ## HAS_TESTS
@@ -104,6 +171,14 @@ i_month_within_period <- function(date_ymd, width, origin, month_start) {
     ans
 }
 
+## HAS_TESTS
+is_leap_year <- function(year) {
+    div_by_4 <- (year %% 4L) == 0L
+    div_by_100 <- (year %% 100L) == 0L
+    div_by_400 <- (year %% 400L) == 0L
+    div_by_400 | (div_by_4 & !div_by_100)
+}
+        
 ## HAS_TESTS
 is_lower_within_month <- function(date_ymd, dob_ymd) {
     ((date_ymd$d - 1L) %/% 2L) >= (dob_ymd$d %/% 2L)
@@ -375,5 +450,43 @@ make_fill <- function(fill, X, INDEX) {
         stop(gettextf("invalid value for '%s'",
                       "fill"))
     }
+}    
+
+## HAS_TESTS
+## Number of days in month containing 'date'. Handles leap years.
+n_day_month <- function(date) {
+    n_day <- c(31L, 28L, 31L, 30L, 31L, 30L, 31L, 31L, 31L, 31L, 30L, 31L)
+    date_ymd <- as_ymd(date)
+    year <- date_ymd$y
+    month <- date_ymd$m
+    is_leap_year <- is_leap_year(year)
+    is_feb <- month == 2L
+    is_feb_in_leap_year <- is_leap_year & is_feb
+    ans <- n_day[month]
+    ans[is_feb_in_leap_year] <- 29L
+    ans
 }
 
+
+## HAS_TESTS
+## Roll back to first day of current month.
+rollback <- function(date) {
+    if (identical(length(date), 0L))
+        return(as.Date(character()))
+    date <- as.POSIXlt(date)
+    date$mday <- 1L
+    as.Date(date)
+}
+
+
+## HAS_TESTS
+## Roll forward to first day of next month.
+rollforward <- function(date) {
+    if (identical(length(date), 0L))
+        return(as.Date(character()))
+    date <- as.POSIXlt(date)
+    date$mday <- 1L
+    date$mon <- date$mon + 1L
+    as.Date(date)
+}
+    

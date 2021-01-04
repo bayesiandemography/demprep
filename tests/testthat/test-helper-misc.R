@@ -1,6 +1,81 @@
 
 context("helper-misc")
 
+## add_months ----------------------------------------------------------------
+
+test_that("'add_months' gives correct answer with valid inputs", {
+    add_months <- demprep:::add_months
+    expect_identical(add_months(date = as.Date("2000-01-31"), n = 0L),
+                     as.Date("2000-01-31"))
+    expect_identical(add_months(date = as.Date("2000-01-31"), n = 1L),
+                     as.Date("2000-02-29"))
+    expect_identical(add_months(date = as.Date("2000-01-31"), n = 13L),
+                     as.Date("2001-02-28"))
+    expect_identical(add_months(date = as.Date("2000-03-31"), n = -1L),
+                     as.Date("2000-02-29"))
+    expect_identical(add_months(date = as.Date("2000-03-31"), n = -49L),
+                     as.Date("1996-02-29"))    
+    expect_identical(add_months(date = as.Date("2000-03-31"), n = -50L),
+                     as.Date("1996-01-31"))
+    expect_identical(add_months(date = as.Date("2000-10-31"), n = 1L),
+                     as.Date("2000-11-30"))
+    expect_identical(add_months(date = as.Date("2000-11-30"), n = 1L),
+                     as.Date("2000-12-30"))
+    expect_identical(add_months(date = as.Date("2000-12-30"), n = 1L),
+                     as.Date("2001-01-30"))
+    expect_identical(add_months(date = as.Date("2002-04-30"), n = 19L),
+                     as.Date("2003-11-30"))
+    expect_identical(add_months(date = as.Date("2002-03-31"), n = 20L),
+                     as.Date("2003-11-30"))
+    expect_identical(add_months(date = as.Date(character()), n = 20L),
+                     as.Date(character()))
+    expect_identical(add_months(date = as.Date(c("1900-03-01", "2000-03-01")), n = 2L),
+                     as.Date(c("1900-05-01", "2000-05-01")))
+})
+
+
+## add_quarters ---------------------------------------------------------------
+
+test_that("'add_quarters' gives correct answer with valid inputs", {
+    add_quarters <- demprep:::add_quarters
+    expect_identical(add_quarters(date = as.Date("2000-01-31"), n = 0L),
+                     as.Date("2000-01-31"))
+    expect_identical(add_quarters(date = as.Date("2000-01-31"), n = 1L),
+                     as.Date("2000-04-30"))
+    expect_identical(add_quarters(date = as.Date("2000-02-29"), n = 1L),
+                     as.Date("2000-05-29"))
+    expect_identical(add_quarters(date = as.Date("2003-11-30"), n = 1L),
+                     as.Date("2004-02-29"))
+    expect_identical(add_quarters(date = as.Date("2003-11-30"), n = 5L),
+                     as.Date("2005-02-28"))
+    expect_identical(add_quarters(date = as.Date("2003-11-30"), n = -5L),
+                     as.Date("2002-08-30"))
+    expect_identical(add_quarters(date = as.Date(character()), n = -5L),
+                     as.Date(character()))
+})
+
+
+## add_years ------------------------------------------------------------------
+
+test_that("'add_years' gives correct answer with valid inputs", {
+    add_years <- demprep:::add_years
+    expect_identical(add_years(date = as.Date("2000-01-31"), n = 0L),
+                     as.Date("2000-01-31"))
+    expect_identical(add_years(date = as.Date(c("2000-01-31", "2000-02-29")), n = 1L),
+                     as.Date(c("2001-01-31", "2001-02-28")))
+    expect_identical(add_years(date = as.Date(c("2000-01-31", "2000-02-29")), n = -1L),
+                     as.Date(c("1999-01-31", "1999-02-28")))
+    expect_identical(add_years(date = as.Date(character()), n = -1L),
+                     as.Date(character()))
+    expect_identical(add_years(date = as.Date("2000-01-31"), n = 10L),
+                     as.Date("2010-01-31"))
+    expect_identical(add_years(date = as.Date("2000-02-29"), n = 12L),
+                     as.Date("2012-02-29"))
+    expect_identical(add_years(date = as.Date("2000-02-28"), n = 12L),
+                     as.Date("2012-02-28"))
+})
+
+
 ## age_completed_months ------------------------------------------------------
 
 test_that("'age_completed_months' gives correct answer with valid inputs", {
@@ -94,6 +169,37 @@ test_that("'age_completed_months_start_month' gives correct answer with valid in
 })
 
 
+## age_completed_years ------------------------------------------------------
+
+test_that("'age_completed_years' gives correct answer with valid inputs", {
+    age_completed_years <- demprep:::age_completed_years
+    expect_identical(age_completed_years(date = as.Date("2000-01-01"),
+                                         dob = as.Date("2000-01-01")),
+                     0L)
+    expect_identical(age_completed_years(date = as.Date(c("2001-02-28",
+                                                          "2001-03-01",
+                                                          "2004-02-28",
+                                                          "2004-02-29")),
+                                         dob = as.Date(c("2000-02-29",
+                                                         "2000-02-29",
+                                                         "2000-02-29",
+                                                         "2000-02-29"))),
+                     c(0L, 1L, 3L, 4L))
+    expect_identical(age_completed_years(date = as.Date(c("2002-02-28",
+                                                          "2001-03-01",
+                                                          "2004-02-28",
+                                                          "2004-02-29")),
+                                         dob = as.Date(c("2001-02-28",
+                                                         "2001-02-28",
+                                                         "2001-02-28",
+                                                         "2001-02-28"))),
+                     c(1L, 0L, 3L, 3L))
+    expect_identical(age_completed_years(date = as.Date(character()),
+                                         dob = as.Date(character())),
+                     integer())
+})
+
+
 ## as_ymd ---------------------------------------------------------------------
 
 test_that("'as_ymd' gives correct answer with valid inputs", {
@@ -114,6 +220,97 @@ test_that("'as_ymd' gives correct answer with valid inputs", {
                      list(y = c(2000L, NA),
                           m = c(1L, NA),
                           d = c(1L, NA)))
+})
+
+
+## coord_lifeline -------------------------------------------------------------
+
+test_that("'coord_lifeline' gives correct answer with valid inputs", {
+    coord_lifeline <- demprep:::coord_lifeline
+    ## single boundary, no upward shift
+    ans_obtained <- coord_lifeline(date1 = as.Date("2020-02-15"),
+                                   dob1 = as.Date("2020-01-15"))
+    ans_expected <- list(x0 = as.Date(c("2020-01-15",
+                                        "2020-02-01",
+                                        "2020-02-01")),
+                         y0 = c(0L, 17L, 17L),
+                         x1 = as.Date(c("2020-02-01",
+                                        "2020-02-01",
+                                        "2020-02-15")),
+                         y1 = c(17L, 17L, 31L))
+    expect_identical(ans_obtained, ans_expected)
+    ## two boundaries, one upward shift
+    ans_obtained <- coord_lifeline(date1 = as.Date("2020-03-15"),
+                                   dob1 = as.Date("2020-01-15"))
+    ans_expected <- list(x0 = as.Date(c("2020-01-15",
+                                        "2020-02-01",
+                                        "2020-02-01",
+                                        "2020-03-01",
+                                        "2020-03-01")),
+                         y0 = c(0L,
+                                17L,
+                                17L,
+                                46L,
+                                48L),
+                         x1 = as.Date(c("2020-02-01",
+                                        "2020-02-01",
+                                        "2020-03-01",
+                                        "2020-03-01",
+                                        "2020-03-15")),
+                         y1 = c(17L,
+                                17L,
+                                46L,
+                                48L,
+                                62L))
+    expect_identical(ans_obtained, ans_expected)
+    ## start on first day of month
+    ans_obtained <- coord_lifeline(date1 = as.Date("2010-03-15"),
+                                   dob1 = as.Date("2010-01-01"))
+    ans_expected <- list(x0 = as.Date(c("2010-01-01",
+                                        "2010-02-01",
+                                        "2010-02-01",
+                                        "2010-03-01",
+                                        "2010-03-01")),
+                         y0 = c(0L,
+                                31L,
+                                31L,
+                                59L,
+                                62L),
+                         x1 = as.Date(c("2010-02-01",
+                                        "2010-02-01",
+                                        "2010-03-01",
+                                        "2010-03-01",
+                                        "2010-03-15")),
+                         y1 = c(31L,
+                                31L,
+                                59L,
+                                62L,
+                                76L))
+    expect_identical(ans_obtained, ans_expected)
+    ## start on last day of month
+    ans_obtained <- coord_lifeline(date1 = as.Date("2010-03-15"),
+                                   dob1 = as.Date("2010-01-31"))
+    ans_expected <- list(x0 = as.Date(c("2010-01-31",
+                                        "2010-02-01",
+                                        "2010-02-01",
+                                        "2010-03-01",
+                                        "2010-03-01")),
+                         y0 = c(0L,
+                                1L,
+                                1L,
+                                29L,
+                                32L),
+                         x1 = as.Date(c("2010-02-01",
+                                        "2010-02-01",
+                                        "2010-03-01",
+                                        "2010-03-01",
+                                        "2010-03-15")),
+                         y1 = c(1L,
+                                1L,
+                                29L,
+                                32L,
+                                46L))
+    expect_identical(ans_obtained, ans_expected)
 })
 
 
@@ -226,6 +423,18 @@ test_that("'i_month_within_period' gives correct answer with valid inputs", {
                                            month_start = "Jul"),
                      1L)
 })
+
+
+## is_leap_year ---------------------------------------------------------------
+
+test_that("'is_leap_year' gives correct answer with valid input", {
+    is_leap_year <- demprep:::is_leap_year
+    expect_identical(is_leap_year(c(1900L, 2000L, 2001, 2004L)),
+                     c(FALSE, TRUE, FALSE, TRUE))
+    expect_identical(is_leap_year(integer()),
+                     logical())                                  
+})    
+                                  
 
 
 ## is_lower_within_month ------------------------------------------------------
@@ -604,7 +813,7 @@ test_that("'make_breaks_integer_year' gives correct answer when break_max is NUL
 
 ## make_fill ------------------------------------------------------------------
 
-test_that("'make_fill gives correct answer with valid inputs", {
+test_that("'make_fill' gives correct answer with valid inputs", {
     X <- 1:5
     INDEX <- data.frame(a = factor(5:1))
     expect_identical(make_fill(fill = 0L,
@@ -637,7 +846,7 @@ test_that("'make_fill gives correct answer with valid inputs", {
                      0L)
 })
 
-test_that("'make_fill gives correct error with invalid inputs", {
+test_that("'make_fill' gives correct error with invalid inputs", {
     X <- c(0.1, 0.3, 0.2)
     INDEX <- data.frame(a = factor(c(1, 2, 1)), b = factor(c(10, 10, 11)))
     expect_error(make_fill(fill = NULL,
@@ -652,3 +861,59 @@ test_that("'make_fill gives correct error with invalid inputs", {
 })
 
 
+## n_day_month ----------------------------------------------------------------
+
+test_that("'n_day_month' gives correct answer with valid inputs", {
+    n_day_month <- demprep:::n_day_month
+    expect_identical(n_day_month(as.Date("2000-01-01")), 31L)
+    expect_identical(n_day_month(as.Date("2000-02-01")), 29L)
+    expect_identical(n_day_month(as.Date("2001-02-01")), 28L)
+    expect_identical(n_day_month(as.Date("2000-03-01")), 31L)
+    expect_identical(n_day_month(as.Date("2000-04-01")), 30L)
+    expect_identical(n_day_month(as.Date("2000-05-01")), 31L)
+    expect_identical(n_day_month(as.Date("2000-06-01")), 30L)
+    expect_identical(n_day_month(as.Date("2000-07-01")), 31L)
+    expect_identical(n_day_month(as.Date("2000-08-01")), 31L)
+    expect_identical(n_day_month(as.Date("2000-09-01")), 31L)
+    expect_identical(n_day_month(as.Date("2000-10-01")), 31L)
+    expect_identical(n_day_month(as.Date("2000-11-01")), 30L)
+    expect_identical(n_day_month(as.Date("2000-12-01")), 31L)
+})
+
+
+## rollback -------------------------------------------------------------------
+
+test_that("'rollback' gives correct answer with valid inputs", {
+    rollback <- demprep:::rollback
+    expect_identical(rollback("2000-01-01"),
+                     as.Date("2000-01-01"))
+    expect_identical(rollback("2000-01-31"),
+                     as.Date("2000-01-01"))
+    expect_identical(rollback("2000-02-29"),
+                     as.Date("2000-02-01"))
+    expect_identical(rollback("2000-12-31"),
+                     as.Date("2000-12-01"))
+    expect_identical(rollback(c("2000-12-31", "2001-01-01")),
+                     as.Date(c("2000-12-01", "2001-01-01")))
+    expect_identical(rollback(as.Date(character())),
+                     as.Date(character()))
+})
+
+
+## rollforward ----------------------------------------------------------------
+
+test_that("'rollforward' gives correct answer with valid inputs", {
+    rollforward <- demprep:::rollforward
+    expect_identical(rollforward("2000-01-01"),
+                     as.Date("2000-02-01"))
+    expect_identical(rollforward("2000-01-31"),
+                     as.Date("2000-02-01"))
+    expect_identical(rollforward("2000-02-29"),
+                     as.Date("2000-03-01"))
+    expect_identical(rollforward("2000-12-31"),
+                     as.Date("2001-01-01"))
+    expect_identical(rollforward(c("2000-12-31", "2001-01-01")),
+                     as.Date(c("2001-01-01", "2001-02-01")))
+    expect_identical(rollforward(as.Date(character())),
+                     as.Date(character()))
+})

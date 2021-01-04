@@ -10,7 +10,8 @@ plot_date_to_age_group_multi(
   dob,
   width = 5,
   break_max = 100,
-  open_last = TRUE
+  open_last = TRUE,
+  show_months = FALSE
 )
 }
 \arguments{
@@ -32,6 +33,10 @@ Defaults to 100.}
 
 \item{open_last}{Whether the final age group
 has no upper limit. Defaults to \code{TRUE}.}
+
+\item{show_months}{Whether to include vertical
+lines showing boundaries between months.
+Defaults to \code{FALSE}.}
 }
 \description{
 Create plot illustrating the inputs and outputs

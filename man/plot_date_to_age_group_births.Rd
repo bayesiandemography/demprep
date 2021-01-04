@@ -12,7 +12,8 @@ plot_date_to_age_group_births(
   break_max = 50,
   width = 5,
   recode_up = FALSE,
-  recode_down = FALSE
+  recode_down = FALSE,
+  show_months = FALSE
 )
 }
 \arguments{
@@ -37,6 +38,10 @@ women in the lowest repoductive age group.}
 aged \code{break_max} or more are treated as
 occurring to women in the highest reproductive
 age group.}
+
+\item{show_months}{Whether to include vertical
+lines showing boundaries between months.
+Defaults to \code{FALSE}.}
 }
 \description{
 Create plot illustrating the inputs and outputs

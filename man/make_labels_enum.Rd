@@ -33,7 +33,7 @@ A character vector.
 Make labels for numeric quantities, broadly defined.
 The quantities may be combined to form intervals,
 including intervals that have no lower limit or
-no upper limit. Negative values are allows,
+no upper limit. Negative values are allowed,
 but fractions are not.
 }
 \details{

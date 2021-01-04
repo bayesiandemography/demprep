@@ -5,7 +5,7 @@
 \title{Depict the intervals created by
 function 'date_to_age_group_lifetab'}
 \usage{
-plot_date_to_age_group_lifetab(date, dob, break_max = 100)
+plot_date_to_age_group_lifetab(date, dob, break_max = 100, show_months = FALSE)
 }
 \arguments{
 \item{date}{Date of death.}
@@ -17,6 +17,10 @@ or a vector that can be coerced to class
 
 \item{break_max}{An integer or \code{NULL}.
 Defaults to 100.}
+
+\item{show_months}{Whether to include vertical
+lines showing boundaries between months.
+Defaults to \code{FALSE}.}
 }
 \description{
 Create plot illustrating the inputs and outputs

@@ -5,18 +5,34 @@
 \title{Depict the intervals created by
 function 'date_to_age_group_month'}
 \usage{
-plot_date_to_age_group_month(date, dob, break_max = 1200, open_last = TRUE)
+plot_date_to_age_group_month(
+  date,
+  dob,
+  break_max = 1200,
+  open_last = TRUE,
+  show_months = FALSE
+)
 }
 \arguments{
-\item{date}{Dates of events or measurements.}
+\item{date}{Dates of events or measurements.
+A vector of class \code{\link[base]{Date}},
+or a vector that can be coerced to class
+\code{Date} using function \code{\link[base]{as.Date}}.}
 
-\item{dob}{Dates of birth.}
+\item{dob}{Dates of birth.
+A vector of class \code{\link[base]{Date}},
+or a vector that can be coerced to class
+\code{Date} using function \code{\link[base]{as.Date}}.}
 
 \item{break_max}{An integer or \code{NULL}.
 Defaults to 1200.}
 
 \item{open_last}{Whether the final age group
 has no upper limit. Defaults to \code{TRUE}.}
+
+\item{show_months}{Whether to include vertical
+lines showing boundaries between months.
+Defaults to \code{FALSE}.}
 }
 \description{
 Create plot illustrating the inputs and outputs

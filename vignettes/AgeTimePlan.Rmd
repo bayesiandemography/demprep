@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
   fig.width = 6.5
 )
 deaths <- data.frame(person = c("Anwar", "Baptiste", "Candice"),
+                     dob = c("2014-02-14", "2012-01-04", "2019-04-29"),
                      date = c("2019-10-11", "2020-02-27", "2020-08-01"))
 ```
 
@@ -35,43 +36,51 @@ library(demprep)
 
 # Design of functions in 'demprep'
 
+- representation of dates
 
 # Periods
+
+## General issues
+
+- when to start
+- varying lengths (months, quarter, leap years)
+- ambiguity of labels
+
 
 ## Single-year periods
 
 ```{r}
-deaths_yr <- deaths
-deaths_yr$jan_true <- date_to_period_year(date = deaths_yr$date)
-deaths_yr
+dth_per_yr <- deaths
+dth_per_yr$jan_true <- date_to_period_year(date = dth_per_yr$date)
+dth_per_yr
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_year(date = deaths_yr$date)
+plot_date_to_period_year(date = dth_per_yr$date)
 ```
 
 
 ```{r}
-deaths_yr$jul_true <- date_to_period_year(date = deaths_yr$date,
+dth_per_yr$jul_true <- date_to_period_year(date = dth_per_yr$date,
                                           month_start = "Jul")
-deaths_yr
+dth_per_yr
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_year(date = deaths_yr$date,
+plot_date_to_period_year(date = dth_per_yr$date,
                          month_start = "Jul")
 ```
 
 
 ```{r}
-deaths_yr$jul_false <- date_to_period_year(date = deaths_yr$date,
+dth_per_yr$jul_false <- date_to_period_year(date = dth_per_yr$date,
                                            month_start = "Jul",
                                            label_year_start = FALSE)
-deaths_yr
+dth_per_yr
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_year(date = deaths_yr$date,
+plot_date_to_period_year(date = dth_per_yr$date,
                          month_start = "Jul",
                          label_year_start = FALSE)
 ```
@@ -79,14 +88,14 @@ plot_date_to_period_year(date = deaths_yr$date,
 
 
 ```{r}
-deaths_yr$jan_false <- date_to_period_year(date = deaths_yr$date,
+dth_per_yr$jan_false <- date_to_period_year(date = dth_per_yr$date,
                                            month_start = "Jan",
                                            label_year_start = FALSE)
-deaths_yr
+dth_per_yr
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_year(date = deaths_yr$date,
+plot_date_to_period_year(date = dth_per_yr$date,
                          month_start = "Jan",
                          label_year_start = FALSE)
 ```
@@ -96,37 +105,37 @@ plot_date_to_period_year(date = deaths_yr$date,
 
 
 ```{r}
-deaths_multi <- deaths
-deaths_multi$jan_5_00 <- date_to_period_multi(date = deaths_multi$date)
-deaths_multi
+dth_per_multi <- deaths
+dth_per_multi$jan_5_00 <- date_to_period_multi(date = dth_per_multi$date)
+dth_per_multi
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_multi(date = deaths_multi$date)
+plot_date_to_period_multi(date = dth_per_multi$date)
 ```
 
 
 ```{r}
-deaths_multi$jul_5_00 <- date_to_period_multi(date = deaths_multi$date,
+dth_per_multi$jul_5_00 <- date_to_period_multi(date = dth_per_multi$date,
                                               month_start = "Jul")
-deaths_multi
+dth_per_multi
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_multi(date = deaths_multi$date,
+plot_date_to_period_multi(date = dth_per_multi$date,
                           month_start = "Jul")
 ```
 
 
 
 ```{r}
-deaths_multi$jan_10_00 <- date_to_period_multi(date = deaths_multi$date,
+dth_per_multi$jan_10_00 <- date_to_period_multi(date = dth_per_multi$date,
                                                width = 10)
-deaths_multi
+dth_per_multi
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_multi(date = deaths_multi$date,
+plot_date_to_period_multi(date = dth_per_multi$date,
                           width = 10)
 ```
 
@@ -135,13 +144,13 @@ plot_date_to_period_multi(date = deaths_multi$date,
 
 
 ```{r}
-deaths_multi$jan_5_01 <- date_to_period_multi(date = deaths_multi$date,
+dth_per_multi$jan_5_01 <- date_to_period_multi(date = dth_per_multi$date,
                                               origin = 2001)
-deaths_multi
+dth_per_multi
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_multi(date = deaths_multi$date,
+plot_date_to_period_multi(date = dth_per_multi$date,
                           origin = 2001)
 ```
 
@@ -150,44 +159,74 @@ plot_date_to_period_multi(date = deaths_multi$date,
 
 
 ```{r}
-deaths_custom <- deaths
-deaths_custom$jan_4_5 <- date_to_period_custom(date = deaths_custom$date,
+dth_per_custom <- deaths
+dth_per_custom$jan_4_5 <- date_to_period_custom(date = dth_per_custom$date,
                                               breaks = c("2016-01-01", "2020-01-01", "2025-01-01"))
-deaths_custom
+dth_per_custom
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_custom(date = deaths_custom$date,
+plot_date_to_period_custom(date = dth_per_custom$date,
                            breaks = c("2016-01-01", "2020-01-01", "2025-01-01"))
 ```
 
 
 ```{r}
-deaths_custom <- deaths
-deaths_custom$jan_1_5 <- date_to_period_custom(date = deaths_custom$date,
+dth_per_custom <- deaths
+dth_per_custom$jan_1_5 <- date_to_period_custom(date = dth_per_custom$date,
                                               breaks = c("2019-01-01", "2020-01-01", "2025-01-01"))
-deaths_custom
+dth_per_custom
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_custom(date = deaths_custom$date,
+plot_date_to_period_custom(date = dth_per_custom$date,
                            breaks = c("2019-01-01", "2020-01-01", "2025-01-01"))
 ```
 
 
 ```{r}
-deaths_custom <- deaths
-deaths_custom$jul_1_5 <- date_to_period_custom(date = deaths_custom$date,
+dth_per_custom <- deaths
+dth_per_custom$jul_1_5 <- date_to_period_custom(date = dth_per_custom$date,
                                                breaks = c("2019-07-01", "2020-07-01", "2025-07-01"))
-deaths_custom
+dth_per_custom
 ```
 
 ```{r, echo = FALSE, fig.height = 1.5}
-plot_date_to_period_custom(date = deaths_custom$date,
+plot_date_to_period_custom(date = dth_per_custom$date,
                            breaks = c("2019-07-01", "2020-07-01", "2025-07-01"))
 ```
 
+
+## Month-length periods
+
+
+```{r}
+dth_per_month <- deaths
+dth_per_month$month <- date_to_period_month(dth_per_custom$date)
+dth_per_month
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_month(dth_per_month$date[1:2])
+```
+
+
+## Quarter-length periods
+
+
+```{r}
+dth_per_quarter <- deaths
+dth_per_quarter$quarter <- date_to_period_quarter(dth_per_custom$date)
+dth_per_quarter
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_quarter(dth_per_quarter$date)
+```
+
 # Age groups
+
+## General issues
 
 Abstract: $\text{age} = t_{\text{event}} - t_{\text{dob}}$
 
@@ -195,9 +234,14 @@ Complications.
 
 - Child born on 31 October. On what day does child become 1 month old? 
 - Child born on 30 November. On what day does child become 1 month old?
-- Child born on 29 February 2000. On what day does child become 1 year old?
+- Child born on 29 February 2000. On what day does child become 1 year old? [1 March 2001]
 
-## Age in completed months
+Principles:
+- tick over when day of date equals day of dob. Includes leap years.
+
+
+
+### Age in completed months
 
 \begin{equation}
     \begin{split}
@@ -207,17 +251,28 @@ Complications.
     \end{split}
 \end{equation}
 
-Partial-month adjustment: ff $\text{day of event} \ge \text{day of birth}$, then 0; otherwise 1.
+Partial-month adjustment: if $\text{day of event} \ge \text{day of birth}$, then 0; otherwise 1.
 
 
-## Age in completed quarters
+```{r, echo = FALSE, fig.height = 1.75}
+date <- as.Date(c("2021-03-30", "2021-03-10"))
+dob <- as.Date(c("2021-01-30", "2021-01-10"))
+plot_date_to_age_group_month(date = date,
+                             dob = dob,
+                             break_max = 2,
+                             show_months = TRUE)
+```
+
+
+
+### Age in completed quarters
 
 \begin{equation}
   \text{age in completed quarters} = \text{floor}(\text{age in completed months} / 3)
 \end{equation}
 
 
-## Age in completed years
+### Age in completed years
 
 \begin{equation}
   \text{age in completed quarters} = \text{floor}(\text{age in completed months} / 12)
@@ -233,6 +288,99 @@ Partial-month adjustment: ff $\text{day of event} \ge \text{day of birth}$, then
 
  
 
+## Single-year age groups
+
+```{r}
+dth_age_yr <- deaths
+dth_age_yr$br_max_2 <- date_to_age_group_year(date = dth_age_yr$date,
+                                              dob = dth_age_yr$dob,
+                                              break_max = 10)
+dth_age_yr
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_age_group_year(date = dth_age_yr$date,
+                            dob = dth_age_yr$dob,
+                            break_max = 5)
+```
+
+Change `break_max`
+
+```{r}
+dth_age_yr$br_max_1 <- date_to_age_group_year(date = dth_age_yr$date,
+                                              dob = dth_age_yr$dob,
+                                              break_max = 6)
+dth_age_yr
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_age_group_year(date = dth_age_yr$date,
+                            dob = dth_age_yr$dob,
+                            break_max = 6)
+```
+
+
+## Multi-year age_groups, with equal lengths
+
+
+```{r}
+dth_age_multi <- deaths
+dth_age_multi$wth_2 <- date_to_age_group_multi(date = dth_age_multi$date,
+                                               dob = dth_age_multi$dob,
+                                               break_max = 10)
+dth_age_multi
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_age_group_multi(date = dth_age_multi$date,
+                             dob = dth_age_multi$dob,
+                             break_max = 10)
+```
+
+
+
+## Multi-year age_groups, with varying lengths
+
+```{r}
+dth_age_custom <- deaths
+dth_age_custom$br_1_5 <- date_to_age_group_custom(date = dth_age_custom$date,
+                                                  dob = dth_age_custom$dob,
+                                                  breaks = c(0, 2, 5, 8, 14),
+                                                  open_last = FALSE)
+dth_age_custom
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_age_group_custom(date = dth_age_custom$date,
+                              dob = dth_age_custom$dob,
+                              breaks = c(0, 2, 5, 8, 14),
+                              open_last = FALSE)
+```
+
+
+
+## Month-length ages
+
+```{r}
+dth_age_month <- deaths
+dth_age_month$max <- date_to_age_group_month(date = dth_age_month$date,
+                                                  dob = dth_age_month$dob)
+dth_age_month
+```
+
+## THIS LOOKS WRONG
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_age_group_month(date = dth_age_month$date,
+                             dob = dth_age_month$dob,
+                             break_max = 20)
+```
+
+
+
+
+
+
 # Cohorts
 
 
@@ -246,6 +394,12 @@ Partial-month adjustment: ff $\text{day of event} \ge \text{day of birth}$, then
     
 - An event occurring during period $t$ to a person in age group $a$ belongs to the upper Lexis triangle if the person was already in age group $a$ at the start of the period, and to the lower Lexis triangle otherwise. (Covers youngest and oldest age groups.)
 
+
+- If index of time equals index for age, then Lower; else Upper.
+
+# Boundaries
+
+- note that cohort is $(t, t + n]$, while age is $[a, a + n)$ and time is $[t, t + n)$.
 
 
 

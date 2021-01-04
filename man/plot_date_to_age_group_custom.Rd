@@ -10,7 +10,7 @@ plot_date_to_age_group_custom(
   dob,
   breaks = NULL,
   open_last = TRUE,
-  as_factor = TRUE
+  show_months = FALSE
 )
 }
 \arguments{
@@ -29,8 +29,9 @@ or a vector that can be coerced to class
 \item{open_last}{Whether the final age group
 has no upper limit. Defaults to \code{TRUE}.}
 
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
+\item{show_months}{Whether to include vertical
+lines showing boundaries between months.
+Defaults to \code{FALSE}.}
 }
 \description{
 Create plot illustrating the inputs and outputs

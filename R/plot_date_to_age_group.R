@@ -1,22 +1,29 @@
 
 ## NO_TESTS
-plot_date_to_age_group <- function(date, dob, breaks, open_last, labels, cex = 0.8) {
+plot_date_to_age_group <- function(date, dob, unit, breaks, open_last, labels,
+                                   show_months, cex = 0.8) {
     old_par <- graphics::par(mar = c(6, 0, 0, 0),
                              mgp = c(0, 0, 0),
                              cex = cex)
     n_date <- length(date)
+    days_per_unit <- switch(unit,
+                            month = 31L,
+                            quarter = 31L * 4L,
+                            year = 31L * 12L,
+                            stop("invalid unit"))
     n_br <- length(breaks)
     diff_br <- diff(breaks)
     date_min <- min(dob, na.rm = TRUE)
+    date_min <- rollback(date_min)
     date_max <- max(date, na.rm = TRUE)
+    date_max <- rollforward(date_max)
     width_date <- date_max - date_min
-    age <- (date - dob) / 365.25
-    age_min <- min(breaks, age)
-    age_max <- max(breaks, age)
+    age_approx <- as.integer(date - dob) %/% days_per_unit
+    age_max <- max(breaks, age_approx)
     if (open_last)
-        age_max <- age_max + diff_br[[n_br - 1L]]
+        age_max <- age_max + diff(breaks)[n_br - 1L]
     x_plot <- c(date_min - 0.15 * width_date, date_max)
-    y_plot <- c(age_min, age_max)
+    y_plot <- c(0, age_max)
     ## empty plotting frame
     plot(x = x_plot,
          y = y_plot,
@@ -24,6 +31,24 @@ plot_date_to_age_group <- function(date, dob, breaks, open_last, labels, cex = 0
          axes = FALSE,
          ylab = "",
          xlab = "")
+    ## vertical lines to show boundaries between months
+    if (show_months) {
+        boundaries_months <- seq(from = date_min,
+                                 to = date_max,
+                                 by = "month")
+        graphics::segments(x0 = boundaries_months,
+                           y0 = 0,
+                           x1 = boundaries_months,
+                           y1 = breaks[[n_br]],
+                           col = "grey")
+        graphics::mtext(text = dob,
+                        side = 1,
+                        line = -0.5,
+                        at = boundaries_months,
+                        cex = 0.6,
+                        las = 3,
+                        col = "grey")
+    }
     ## horizontal lines to show boundaries between age groups
     graphics::segments(x0 = rep(date_min, times = n_br),
                        y0 = breaks,
@@ -58,10 +83,23 @@ plot_date_to_age_group <- function(date, dob, breaks, open_last, labels, cex = 0
                     at = dob,
                     cex = 0.6,
                     las = 3)
-    ## points for 'date'
-    graphics::points(x = date,
-                     y = age,
-                     pch = 19)
+    ## life lines, and points for date
+    for (i in seq_along(date)) {
+        coord <- coord_lifeline(date1 = date[[i]],
+                                dob1 = dob[[i]])
+        x0 <- coord$x0
+        y0 <- coord$y0 / days_per_unit
+        x1 <- coord$x1
+        y1 <- coord$y1 / days_per_unit
+        graphics::segments(x0 = x0,
+                           y0 = y0,
+                           x1 = x1,
+                           y1 = y1,
+                           lty = "dashed")
+        graphics::points(x = date[[i]],
+                         y = y1[[length(y1)]],
+                         pch = 19)
+    }        
     ## labels for 'date'
     graphics::mtext(text = date,
                     side = 1,
@@ -69,12 +107,6 @@ plot_date_to_age_group <- function(date, dob, breaks, open_last, labels, cex = 0
                     at = date,
                     cex = 0.6,
                     las = 3)
-    ## life lines
-    graphics::segments(x0 = dob,
-                       y0 = rep(0, times = n_date),
-                       x1 = date,
-                       y1 = age,
-                       lty = "dashed")
     ## xlab
     graphics::mtext(text = "Time",
                     side = 1,
@@ -86,7 +118,7 @@ plot_date_to_age_group <- function(date, dob, breaks, open_last, labels, cex = 0
     graphics::mtext(text = "Age",
                     side = 2,
                     line = 2,
-                    las = 3,
+                    las = 1,
                     cex = 0.7)
     graphics::par(old_par)
     invisible(NULL)
@@ -118,6 +150,9 @@ plot_date_to_age_group <- function(date, dob, breaks, open_last, labels, cex = 0
 #' Defaults to 100.
 #' @param open_last Whether the final age group
 #' has no upper limit. Defaults to \code{TRUE}.
+#' @param show_months Whether to include vertical
+#' lines showing boundaries between months.
+#' Defaults to \code{FALSE}.
 #'
 #' @examples
 #' plot_date_to_age_group_year(date = c("2002-11-09", "2004-04-27"),
@@ -131,7 +166,8 @@ plot_date_to_age_group <- function(date, dob, breaks, open_last, labels, cex = 0
 plot_date_to_age_group_year <- function(date,
                                         dob,
                                         break_max = 100,
-                                        open_last = TRUE) {
+                                        open_last = TRUE,
+                                        show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -145,6 +181,8 @@ plot_date_to_age_group_year <- function(date,
                                                            null_ok = TRUE)
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
+    demcheck::err_is_logical_flag(x = show_months,
+                                  name = "show_months")
     ## get age in months and years
     age_months <- age_completed_months(date = date,
                                        dob = dob)
@@ -169,9 +207,11 @@ plot_date_to_age_group_year <- function(date,
     ## make plot
     plot_date_to_age_group(date = date,
                            dob = dob,
+                           unit = "year",
                            breaks = breaks,
                            open_last = open_last,
-                           labels = labels)
+                           labels = labels,
+                           show_months = show_months)
 }
 
 ## NO_TESTS
@@ -213,7 +253,8 @@ plot_date_to_age_group_multi <- function(date,
                                          dob,
                                          width = 5,
                                          break_max = 100,
-                                         open_last = TRUE) {
+                                         open_last = TRUE,
+                                         show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -235,6 +276,8 @@ plot_date_to_age_group_multi <- function(date,
                               name1 = "break_max",
                               name2 = "width",
                               null_ok = TRUE)
+    demcheck::err_is_logical_flag(x = show_months,
+                                  name = "show_months")
     ## get age in months and years
     age_months <- age_completed_months(date = date,
                                        dob = dob)
@@ -259,9 +302,11 @@ plot_date_to_age_group_multi <- function(date,
     ## make plot
     plot_date_to_age_group(date = date,
                            dob = dob,
+                           unit = "year",
                            breaks = breaks,
                            open_last = open_last,
-                           labels = labels)
+                           labels = labels,
+                           show_months = show_months)
 }
 
 ## NO_TESTS
@@ -287,7 +332,8 @@ plot_date_to_age_group_multi <- function(date,
 #' @export
 plot_date_to_age_group_lifetab <- function(date,
                                            dob,
-                                           break_max = 100) {
+                                           break_max = 100,
+                                           show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -303,6 +349,8 @@ plot_date_to_age_group_lifetab <- function(date,
                                 name = "break_max",
                                 n = 5L,
                                 null_ok = FALSE)
+    demcheck::err_is_logical_flag(x = show_months,
+                                  name = "show_months")
     ## get age in months and years
     age_months <- age_completed_months(date = date,
                                        dob = dob)
@@ -316,8 +364,10 @@ plot_date_to_age_group_lifetab <- function(date,
     plot_date_to_age_group(date = date,
                            dob = dob,
                            breaks = breaks,
+                           unit = "year",
                            open_last = TRUE,
-                           labels = labels)
+                           labels = labels,
+                           show_months = show_months)
 }
 
 ## NO_TESTS
@@ -333,6 +383,7 @@ plot_date_to_age_group_lifetab <- function(date,
 #' \strong{demprep}. It would not normally be used
 #' during actual data analysis.
 #'
+#' @inheritParams plot_date_to_age_group_year
 #' @param date Dates when births being measured occur.
 #' @param dob Dates of birth of monthers.
 #' @param break_min An integer or \code{NULL}.
@@ -375,7 +426,8 @@ plot_date_to_age_group_births <- function(date, dob,
                                           break_max = 50,
                                           width = 5,
                                           recode_up = FALSE,
-                                          recode_down = FALSE) {
+                                          recode_down = FALSE,
+                                          show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -394,9 +446,9 @@ plot_date_to_age_group_births <- function(date, dob,
                                                        name = "width")
     if (!is.null(break_min) && !is.null(break_max)) {
         demcheck::err_gt_scalar(x1 = break_max,
-                                   x2 = break_min,
-                                   name1 = "break_max",
-                                   name2 = "break_min")
+                                x2 = break_min,
+                                name1 = "break_max",
+                                name2 = "break_min")
         if ((break_max - break_min) %% width != 0L)
             stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
                           "break_max", break_max, "break_min", break_min, "width", width))
@@ -405,6 +457,8 @@ plot_date_to_age_group_births <- function(date, dob,
                                   name = "recode_up")
     demcheck::err_is_logical_flag(x = recode_down,
                                   name = "recode_down")
+    demcheck::err_is_logical_flag(x = show_months,
+                                  name = "show_months")
     ## get age in months and years
     age_months <- age_completed_months(date = date,
                                        dob = dob)
@@ -444,9 +498,9 @@ plot_date_to_age_group_births <- function(date, dob,
     }
     ## make breaks
     breaks <- make_breaks_integer_births(age = age_years,
-                                       width = width,
-                                       break_min = break_min,
-                                       break_max = break_max)
+                                         width = width,
+                                         break_min = break_min,
+                                         break_max = break_max)
     ## make labels for breaks
     labels <- make_labels_age_group(breaks = breaks,
                                     open_last = FALSE)
@@ -454,8 +508,10 @@ plot_date_to_age_group_births <- function(date, dob,
     plot_date_to_age_group(date = date,
                            dob = dob,
                            breaks = breaks,
+                           unit = "year",
                            open_last = FALSE,
-                           labels = labels)
+                           labels = labels,
+                           show_months = show_months)
 }
 
 ## NO_TESTS
@@ -471,7 +527,7 @@ plot_date_to_age_group_births <- function(date, dob,
 #' \strong{demprep}. It would not normally be used
 #' during actual data analysis.
 #'
-#' @inheritParams date_to_age_group_year
+#' @inheritParams plot_date_to_age_group_year
 #' @param breaks A vector of strictly increasing integer values.
 #'
 #' @examples
@@ -492,9 +548,9 @@ plot_date_to_age_group_births <- function(date, dob,
 #'                          open_last = FALSE)
 #' @export
 plot_date_to_age_group_custom <- function(date, dob,
-                                     breaks = NULL,
-                                     open_last = TRUE,
-                                     as_factor = TRUE) {
+                                          breaks = NULL,
+                                          open_last = TRUE,
+                                          show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -510,6 +566,8 @@ plot_date_to_age_group_custom <- function(date, dob,
                              name = "breaks")
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
+    demcheck::err_is_logical_flag(x = show_months,
+                                  name = "show_months")
     ## get age in months and years
     age_months <- age_completed_months(date = date,
                                        dob = dob)
@@ -546,8 +604,10 @@ plot_date_to_age_group_custom <- function(date, dob,
     plot_date_to_age_group(date = date,
                            dob = dob,
                            breaks = breaks,
+                           unit = "year",
                            open_last = open_last,
-                           labels = labels)
+                           labels = labels,
+                           show_months = show_months)
 }
 
 ## NO_TESTS
@@ -563,12 +623,9 @@ plot_date_to_age_group_custom <- function(date, dob,
 #' \strong{demprep}. It would not normally be used
 #' during actual data analysis.
 #'
-#' @param date Dates of events or measurements.
-#' @param dob Dates of birth.
+#' @inheritParams plot_date_to_age_group_year
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 400.
-#' @param open_last Whether the final age group
-#' has no upper limit. Defaults to \code{TRUE}.
 #'
 #' @examples
 #' plot_date_to_age_group_quarter(date = c("2004-03-27", "2002-11-09"),
@@ -591,7 +648,8 @@ plot_date_to_age_group_custom <- function(date, dob,
 plot_date_to_age_group_quarter <- function(date,
                                            dob,
                                            break_max = 400,
-                                           open_last = TRUE) {
+                                           open_last = TRUE,
+                                           show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -605,6 +663,8 @@ plot_date_to_age_group_quarter <- function(date,
                                                            null_ok = TRUE)
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
+    demcheck::err_is_logical_flag(x = show_months,
+                                  name = "show_months")
     ## get age in months and quarters
     age_months <- age_completed_months(date = date,
                                        dob = dob)
@@ -631,8 +691,10 @@ plot_date_to_age_group_quarter <- function(date,
     plot_date_to_age_group(date = date,
                            dob = dob,
                            breaks = breaks,
+                           unit = "quarter",
                            open_last = open_last,
-                           labels = labels)
+                           labels = labels,
+                           show_months = show_months)
 }
 
 ## NO_TESTS
@@ -648,12 +710,9 @@ plot_date_to_age_group_quarter <- function(date,
 #' \strong{demprep}. It would not normally be used
 #' during actual data analysis.
 #'
-#' @param date Dates of events or measurements.
-#' @param dob Dates of birth.
+#' @inheritParams plot_date_to_age_group_year
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 1200.
-#' @param open_last Whether the final age group
-#' has no upper limit. Defaults to \code{TRUE}.
 #'
 #' @examples
 #' plot_date_to_age_group_month(date = c("2004-03-27", "2002-11-09"),
@@ -676,7 +735,8 @@ plot_date_to_age_group_quarter <- function(date,
 plot_date_to_age_group_month <- function(date,
                                          dob,
                                          break_max = 1200,
-                                         open_last = TRUE) {
+                                         open_last = TRUE,
+                                         show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -690,6 +750,8 @@ plot_date_to_age_group_month <- function(date,
                                                            null_ok = TRUE)
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
+    demcheck::err_is_logical_flag(x = show_months,
+                                  name = "show_months")
     ## get age in months
     age_months <- age_completed_months(date = date,
                                        dob = dob)
@@ -715,9 +777,9 @@ plot_date_to_age_group_month <- function(date,
     ## make plot
     plot_date_to_age_group(date = date,
                            dob = dob,
+                           unit = "month",
                            breaks = breaks,
                            open_last = open_last,
-                           labels = labels)
+                           labels = labels,
+                           show_months = show_months)
 }
-
-
