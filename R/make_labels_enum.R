@@ -46,7 +46,7 @@
 #'
 #' @seealso To make labels for age groups, periods,
 #' or cohorts, it is generally better to use
-#' use specialist functions such as \code{\link{make_labels_age_group}}
+#' use specialist functions such as \code{\link{make_labels_age}}
 #' or \code{\link{make_labels_period}}.
 #'
 #' @examples

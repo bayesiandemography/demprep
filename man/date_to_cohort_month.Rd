@@ -53,7 +53,7 @@ and \code{open_first}.
 Supplying a date for \code{break_min} defines
 the first cohort. It is similar
 to supplying a value for \code{break_max} in
-\code{\link{date_to_age_group_multi}}. If
+\code{\link{date_to_age_multi}}. If
 \code{open_first} is \code{TRUE}, then \code{break_min}
 forms the upper limit for the first cohort, and there is no lower
 limit. If \code{open_first} is \code{FALSE}, then
@@ -93,7 +93,7 @@ Other functions for creating cohorts are
 \code{\link{date_to_cohort_custom}},
 and \code{\link{date_to_cohort_quarter}}.
 Other functions for working with one-month intervals are
-\code{\link{date_to_age_group_month}},
+\code{\link{date_to_age_month}},
 \code{\link{date_to_period_month}},
 and \code{\link{date_to_triangle_month}}.
 See \code{\link{make_labels_period_month}} for the rules

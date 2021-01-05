@@ -68,7 +68,7 @@
 #' \code{\link{date_to_period_quarter}},
 #' and \code{\link{date_to_period_month}}.
 #' Other functions for working with one-year intervals are
-#' \code{\link{date_to_age_group_year}},
+#' \code{\link{date_to_age_year}},
 #' \code{\link{date_to_cohort_year}},
 #' and \code{\link{date_to_triangle_year}}.
 #' See \code{\link{make_labels_period}} for the rules
@@ -180,7 +180,7 @@ date_to_period_year <- function(date,
 #' \code{\link{date_to_period_quarter}},
 #' and \code{\link{date_to_period_month}}.
 #' Other functions for working with multi-year intervals are
-#' \code{\link{date_to_age_group_multi}},
+#' \code{\link{date_to_age_multi}},
 #' \code{\link{date_to_cohort_multi}},
 #' and \code{\link{date_to_triangle_multi}}.
 #' See \code{\link{make_labels_period}} for the rules
@@ -313,7 +313,7 @@ date_to_period_multi <- function(date,
 #' \code{\link{date_to_period_quarter}},
 #' and \code{\link{date_to_period_month}}.
 #' Other functions for working with customized intervals are
-#' \code{\link{date_to_age_group_custom}},
+#' \code{\link{date_to_age_custom}},
 #' and \code{\link{date_to_cohort_custom}}.
 #' See \code{\link{make_labels_period}} for the rules
 #' on constructing labels for periods. Function
@@ -437,7 +437,7 @@ date_to_period_custom <- function(date,
 #' \code{\link{date_to_period_custom}},
 #' and \code{\link{date_to_period_month}}.
 #' Other functions for working with quarter intervals are
-#' \code{\link{date_to_age_group_quarter}},
+#' \code{\link{date_to_age_quarter}},
 #' and \code{\link{date_to_cohort_quarter}},
 #' and \code{\link{date_to_triangle_quarter}}.
 #' See \code{\link{make_labels_period_quarter}} on the rules
@@ -522,7 +522,7 @@ date_to_period_quarter <- function(date,
 #' \code{\link{date_to_period_custom}},
 #' and \code{\link{date_to_period_quarter}}.
 #' Other functions for working with month intervals are
-#' \code{\link{date_to_age_group_month}},
+#' \code{\link{date_to_age_month}},
 #' and \code{\link{date_to_cohort_month}},
 #' and \code{\link{date_to_triangle_month}}.
 #' See \code{\link{make_labels_period_month}} on the rules

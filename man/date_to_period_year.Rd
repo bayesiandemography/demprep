@@ -94,7 +94,7 @@ Other functions for creating periods are
 \code{\link{date_to_period_quarter}},
 and \code{\link{date_to_period_month}}.
 Other functions for working with one-year intervals are
-\code{\link{date_to_age_group_year}},
+\code{\link{date_to_age_year}},
 \code{\link{date_to_cohort_year}},
 and \code{\link{date_to_triangle_year}}.
 See \code{\link{make_labels_period}} for the rules

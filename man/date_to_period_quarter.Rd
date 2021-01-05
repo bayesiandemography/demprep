@@ -54,7 +54,7 @@ Other functions for creating periods are
 \code{\link{date_to_period_custom}},
 and \code{\link{date_to_period_month}}.
 Other functions for working with quarter intervals are
-\code{\link{date_to_age_group_quarter}},
+\code{\link{date_to_age_quarter}},
 and \code{\link{date_to_cohort_quarter}},
 and \code{\link{date_to_triangle_quarter}}.
 See \code{\link{make_labels_period_quarter}} on the rules

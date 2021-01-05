@@ -1,7 +1,7 @@
 
 ## NO_TESTS
-plot_date_to_age_group <- function(date, dob, unit, breaks, open_last, labels,
-                                   show_months, cex = 0.8) {
+plot_date_to_age <- function(date, dob, unit, breaks, open_last, labels,
+                             show_months, cex = 0.8) {
     old_par <- graphics::par(mar = c(6, 0, 0, 0),
                              mgp = c(0, 0, 0),
                              cex = cex)
@@ -127,10 +127,10 @@ plot_date_to_age_group <- function(date, dob, unit, breaks, open_last, labels,
 
 ## NO_TESTS
 #' Depict the intervals created by
-#' function 'date_to_age_group_year'
+#' function 'date_to_age_year'
 #'
 #' Create plot illustrating the inputs and outputs
-#' of function \code{\link{date_to_age_group_year}}.
+#' of function \code{\link{date_to_age_year}}.
 #' 
 #' This function is for learning about the
 #' labelling conventions used in the \strong{dem} packages,
@@ -155,19 +155,19 @@ plot_date_to_age_group <- function(date, dob, unit, breaks, open_last, labels,
 #' Defaults to \code{FALSE}.
 #'
 #' @examples
-#' plot_date_to_age_group_year(date = c("2002-11-09", "2004-04-27"),
+#' plot_date_to_age_year(date = c("2002-11-09", "2004-04-27"),
 #'                             dob = c("2000-07-13", "2001-03-21"),
 #'                             break_max = 2)
-#' plot_date_to_age_group_year(date = c("2002-11-09", "2004-04-27"),
+#' plot_date_to_age_year(date = c("2002-11-09", "2004-04-27"),
 #'                             dob = c("2000-07-13", "2001-03-21"),
 #'                             break_max = 4,
 #'                             open_last = FALSE)
 #' @export
-plot_date_to_age_group_year <- function(date,
-                                        dob,
-                                        break_max = 100,
-                                        open_last = TRUE,
-                                        show_months = FALSE) {
+plot_date_to_age_year <- function(date,
+                                  dob,
+                                  break_max = 100,
+                                  open_last = TRUE,
+                                  show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -201,25 +201,25 @@ plot_date_to_age_group_year <- function(date,
                                        break_max = break_max,
                                        open_last = open_last)
     ## make labels for these breaks
-    labels <- make_labels_age_group(breaks = breaks,
-                                    open_last = open_last,
-                                    include_na = FALSE)
+    labels <- make_labels_age(breaks = breaks,
+                              open_last = open_last,
+                              include_na = FALSE)
     ## make plot
-    plot_date_to_age_group(date = date,
-                           dob = dob,
-                           unit = "year",
-                           breaks = breaks,
-                           open_last = open_last,
-                           labels = labels,
-                           show_months = show_months)
+    plot_date_to_age(date = date,
+                     dob = dob,
+                     unit = "year",
+                     breaks = breaks,
+                     open_last = open_last,
+                     labels = labels,
+                     show_months = show_months)
 }
 
 ## NO_TESTS
 #' Depict the intervals created by
-#' function 'date_to_age_group_multi'
+#' function 'date_to_age_multi'
 #'
 #' Create plot illustrating the inputs and outputs
-#' of function \code{\link{date_to_age_group_multi}}.
+#' of function \code{\link{date_to_age_multi}}.
 #' 
 #' This function is for learning about the
 #' labelling conventions used in the \strong{dem} packages,
@@ -227,34 +227,34 @@ plot_date_to_age_group_year <- function(date,
 #' \strong{demprep}. It would not normally be used
 #' during actual data analysis.
 #'
-#' @inheritParams plot_date_to_age_group_year
+#' @inheritParams plot_date_to_age_year
 #' @param width The width in years of the age intervals.
 #' A positive integer. Defaults to 5.
 #'
 #' @examples
-#' plot_date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
+#' plot_date_to_age_multi(date = c("2024-03-27", "2022-11-09"),
 #'                              dob = c("2001-03-21", "2000-07-13"))
 #'
 #' ## alternative values for 'width'
-#' plot_date_to_age_group_multi(date = c("2024-03-27", "2022-11-09"),
+#' plot_date_to_age_multi(date = c("2024-03-27", "2022-11-09"),
 #'                              dob = c("2001-03-21", "2000-07-13"),
 #'                              width = 10)
 #'
 #' ## alternative specifications for oldest age group
-#' plot_date_to_age_group_multi(date = "2019-09-22",
+#' plot_date_to_age_multi(date = "2019-09-22",
 #'                              dob = "1910-01-01",
 #'                               width = 20)
-#' plot_date_to_age_group_multi(date = "2019-09-22",
+#' plot_date_to_age_multi(date = "2019-09-22",
 #'                              dob = "1910-01-01",
 #'                              width = 20,
 #'                              break_max = 80)
 #' @export
-plot_date_to_age_group_multi <- function(date,
-                                         dob,
-                                         width = 5,
-                                         break_max = 100,
-                                         open_last = TRUE,
-                                         show_months = FALSE) {
+plot_date_to_age_multi <- function(date,
+                                   dob,
+                                   width = 5,
+                                   break_max = 100,
+                                   open_last = TRUE,
+                                   show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -296,25 +296,25 @@ plot_date_to_age_group_multi <- function(date,
                                        break_max = break_max,
                                        open_last = open_last)
     ## make labels for these breaks
-    labels <- make_labels_age_group(breaks = breaks,
-                                    open_last = open_last)
+    labels <- make_labels_age(breaks = breaks,
+                              open_last = open_last)
 
     ## make plot
-    plot_date_to_age_group(date = date,
-                           dob = dob,
-                           unit = "year",
-                           breaks = breaks,
-                           open_last = open_last,
-                           labels = labels,
-                           show_months = show_months)
+    plot_date_to_age(date = date,
+                     dob = dob,
+                     unit = "year",
+                     breaks = breaks,
+                     open_last = open_last,
+                     labels = labels,
+                     show_months = show_months)
 }
 
 ## NO_TESTS
 #' Depict the intervals created by
-#' function 'date_to_age_group_lifetab'
+#' function 'date_to_age_lifetab'
 #'
 #' Create plot illustrating the inputs and outputs
-#' of function \code{\link{date_to_age_group_lifetab}}.
+#' of function \code{\link{date_to_age_lifetab}}.
 #' 
 #' This function is for learning about the
 #' labelling conventions used in the \strong{dem} packages,
@@ -322,18 +322,18 @@ plot_date_to_age_group_multi <- function(date,
 #' \strong{demprep}. It would not normally be used
 #' during actual data analysis.
 #'
-#' @inheritParams plot_date_to_age_group_year
+#' @inheritParams plot_date_to_age_year
 #' @param date Date of death.
 #'
 #' @examples
-#' plot_date_to_age_group_lifetab(date = c("2024-03-27", "2022-11-09"),
+#' plot_date_to_age_lifetab(date = c("2024-03-27", "2022-11-09"),
 #'                                dob = c("2001-03-21", "2000-07-13"),
 #'                                break_max = 30)
 #' @export
-plot_date_to_age_group_lifetab <- function(date,
-                                           dob,
-                                           break_max = 100,
-                                           show_months = FALSE) {
+plot_date_to_age_lifetab <- function(date,
+                                     dob,
+                                     break_max = 100,
+                                     show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -358,24 +358,24 @@ plot_date_to_age_group_lifetab <- function(date,
     ## make breaks
     breaks <- make_breaks_integer_lifetab(break_max)
     ## make labels for breaks
-    labels <- make_labels_age_group(breaks = breaks,
-                                    open_last = TRUE,
-                                    include_na = FALSE)
-    plot_date_to_age_group(date = date,
-                           dob = dob,
-                           breaks = breaks,
-                           unit = "year",
-                           open_last = TRUE,
-                           labels = labels,
-                           show_months = show_months)
+    labels <- make_labels_age(breaks = breaks,
+                              open_last = TRUE,
+                              include_na = FALSE)
+    plot_date_to_age(date = date,
+                     dob = dob,
+                     breaks = breaks,
+                     unit = "year",
+                     open_last = TRUE,
+                     labels = labels,
+                     show_months = show_months)
 }
 
 ## NO_TESTS
 #' Depict the intervals created by
-#' function 'date_to_age_group_births'
+#' function 'date_to_age_births'
 #'
 #' Create plot illustrating the inputs and outputs
-#' of function \code{\link{date_to_age_group_births}}.
+#' of function \code{\link{date_to_age_births}}.
 #' 
 #' This function is for learning about the
 #' labelling conventions used in the \strong{dem} packages,
@@ -383,7 +383,7 @@ plot_date_to_age_group_lifetab <- function(date,
 #' \strong{demprep}. It would not normally be used
 #' during actual data analysis.
 #'
-#' @inheritParams plot_date_to_age_group_year
+#' @inheritParams plot_date_to_age_year
 #' @param date Dates when births being measured occur.
 #' @param dob Dates of birth of monthers.
 #' @param break_min An integer or \code{NULL}.
@@ -401,33 +401,33 @@ plot_date_to_age_group_lifetab <- function(date,
 #' age group.
 #'
 #' @examples
-#' plot_date_to_age_group_births(date = c("2024-03-27", "2022-11-09"),
+#' plot_date_to_age_births(date = c("2024-03-27", "2022-11-09"),
 #'                               dob = c("2001-03-21", "2000-07-13"))
-#' plot_date_to_age_group_births(date = c("2024-03-27", "2022-11-09"),
+#' plot_date_to_age_births(date = c("2024-03-27", "2022-11-09"),
 #'                               dob = c("2001-03-21", "2000-07-13"),
 #'                               width = 10,
 #'                               break_min = 20)
 #'
 #' ## allow youngest and oldest age groups to be
 #' ## set by the data
-#' plot_date_to_age_group_births(date = c("2052-01-02", "2019-09-22", "2022-10-08"),
+#' plot_date_to_age_births(date = c("2052-01-02", "2019-09-22", "2022-10-08"),
 #'                               dob = c("2000-01-01", "2001-03-17", "2010-07-05"),
 #'                               break_min = NULL,
 #'                               break_max = NULL)
 #'
 #' ## recode ages outside the expected range
-#' plot_date_to_age_group_births(date = c("2052-01-02", "2019-09-22", "2022-10-08"),
+#' plot_date_to_age_births(date = c("2052-01-02", "2019-09-22", "2022-10-08"),
 #'                               dob = c("2000-01-01", "2001-03-17", "2010-07-05"),
 #'                               recode_up = TRUE,
 #'                               recode_down = TRUE)
 #' @export
-plot_date_to_age_group_births <- function(date, dob,
-                                          break_min = 15,
-                                          break_max = 50,
-                                          width = 5,
-                                          recode_up = FALSE,
-                                          recode_down = FALSE,
-                                          show_months = FALSE) {
+plot_date_to_age_births <- function(date, dob,
+                                    break_min = 15,
+                                    break_max = 50,
+                                    width = 5,
+                                    recode_up = FALSE,
+                                    recode_down = FALSE,
+                                    show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -502,24 +502,24 @@ plot_date_to_age_group_births <- function(date, dob,
                                          break_min = break_min,
                                          break_max = break_max)
     ## make labels for breaks
-    labels <- make_labels_age_group(breaks = breaks,
-                                    open_last = FALSE)
+    labels <- make_labels_age(breaks = breaks,
+                              open_last = FALSE)
     ## make plot
-    plot_date_to_age_group(date = date,
-                           dob = dob,
-                           breaks = breaks,
-                           unit = "year",
-                           open_last = FALSE,
-                           labels = labels,
-                           show_months = show_months)
+    plot_date_to_age(date = date,
+                     dob = dob,
+                     breaks = breaks,
+                     unit = "year",
+                     open_last = FALSE,
+                     labels = labels,
+                     show_months = show_months)
 }
 
 ## NO_TESTS
 #' Depict the intervals created by
-#' function 'date_to_age_group_custom'
+#' function 'date_to_age_custom'
 #'
 #' Create plot illustrating the inputs and outputs
-#' of function \code{\link{date_to_age_group_custom}}.
+#' of function \code{\link{date_to_age_custom}}.
 #' 
 #' This function is for learning about the
 #' labelling conventions used in the \strong{dem} packages,
@@ -527,30 +527,30 @@ plot_date_to_age_group_births <- function(date, dob,
 #' \strong{demprep}. It would not normally be used
 #' during actual data analysis.
 #'
-#' @inheritParams plot_date_to_age_group_year
+#' @inheritParams plot_date_to_age_year
 #' @param breaks A vector of strictly increasing integer values.
 #'
 #' @examples
-#' plot_date_to_age_group_custom(date = c("2024-03-27", "2022-11-09"),
+#' plot_date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
 #'                               dob = c("2001-03-21", "2000-07-13"),
 #'                               breaks = c(0, 15, 60))
-#' plot_date_to_age_group_custom(date = c("2024-03-27", "2022-11-09"),
+#' plot_date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
 #'                               dob = c("2001-03-21", "2000-07-13"),
 #'                               breaks = c(15, 40, 65))
 #'
 #' ## alternative specifications for oldest age group
-#' date_to_age_group_custom(date = c("2024-03-27", "2022-11-09"),
+#' date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
 #'                          dob = c("2001-03-21", "2000-07-13"),
 #'                          breaks = c(15, 65, 100))
-#' date_to_age_group_custom(date = c("2024-03-27", "2022-11-09"),
+#' date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
 #'                          dob = c("2001-03-21", "2000-07-13"),
 #'                          breaks = c(15, 65, 100),
 #'                          open_last = FALSE)
 #' @export
-plot_date_to_age_group_custom <- function(date, dob,
-                                          breaks = NULL,
-                                          open_last = TRUE,
-                                          show_months = FALSE) {
+plot_date_to_age_custom <- function(date, dob,
+                                    breaks = NULL,
+                                    open_last = TRUE,
+                                    show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -597,25 +597,25 @@ plot_date_to_age_group_custom <- function(date, dob,
         }
     }
     ## make labels for breaks
-    labels <- make_labels_age_group(breaks = breaks,
-                                    open_last = open_last,
-                                    include_na = FALSE)
+    labels <- make_labels_age(breaks = breaks,
+                              open_last = open_last,
+                              include_na = FALSE)
     ## make plot
-    plot_date_to_age_group(date = date,
-                           dob = dob,
-                           breaks = breaks,
-                           unit = "year",
-                           open_last = open_last,
-                           labels = labels,
-                           show_months = show_months)
+    plot_date_to_age(date = date,
+                     dob = dob,
+                     breaks = breaks,
+                     unit = "year",
+                     open_last = open_last,
+                     labels = labels,
+                     show_months = show_months)
 }
 
 ## NO_TESTS
 #' Depict the intervals created by
-#' function 'date_to_age_group_quarter'
+#' function 'date_to_age_quarter'
 #'
 #' Create plot illustrating the inputs and outputs
-#' of function \code{\link{date_to_age_group_quarter}}.
+#' of function \code{\link{date_to_age_quarter}}.
 #' 
 #' This function is for learning about the
 #' labelling conventions used in the \strong{dem} packages,
@@ -623,33 +623,33 @@ plot_date_to_age_group_custom <- function(date, dob,
 #' \strong{demprep}. It would not normally be used
 #' during actual data analysis.
 #'
-#' @inheritParams plot_date_to_age_group_year
+#' @inheritParams plot_date_to_age_year
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 400.
 #'
 #' @examples
-#' plot_date_to_age_group_quarter(date = c("2004-03-27", "2002-11-09"),
+#' plot_date_to_age_quarter(date = c("2004-03-27", "2002-11-09"),
 #'                                dob = c("2001-03-21", "2000-07-13"))
 #'
 #' ## alternative specifications for oldest age group
-#' plot_date_to_age_group_quarter(date = "2019-09-22",
+#' plot_date_to_age_quarter(date = "2019-09-22",
 #'                                dob = "1910-01-01")
-#' plot_date_to_age_group_quarter(date = "2019-09-22",
+#' plot_date_to_age_quarter(date = "2019-09-22",
 #'                                dob = "1910-01-01",
 #'                                break_max = 320)
-#' plot_date_to_age_group_quarter(date = "2019-09-22",
+#' plot_date_to_age_quarter(date = "2019-09-22",
 #'                                dob = "1910-01-01",
 #'                                break_max = NULL)
-#' plot_date_to_age_group_quarter(date = "2019-09-22",
+#' plot_date_to_age_quarter(date = "2019-09-22",
 #'                                dob = "1910-01-01",
 #'                                break_max = NULL,
 #'                                open_last = FALSE)
 #' @export
-plot_date_to_age_group_quarter <- function(date,
-                                           dob,
-                                           break_max = 400,
-                                           open_last = TRUE,
-                                           show_months = FALSE) {
+plot_date_to_age_quarter <- function(date,
+                                     dob,
+                                     break_max = 400,
+                                     open_last = TRUE,
+                                     show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -684,25 +684,25 @@ plot_date_to_age_group_quarter <- function(date,
     ## make labels for these breaks
     n_break <- length(breaks)
     break_max <- breaks[[n_break]]
-    labels <- make_labels_age_group_quarter(break_min = 0L,
-                                            break_max = break_max,
-                                            open_last = open_last)
+    labels <- make_labels_age_quarter(break_min = 0L,
+                                      break_max = break_max,
+                                      open_last = open_last)
     ## make plot
-    plot_date_to_age_group(date = date,
-                           dob = dob,
-                           breaks = breaks,
-                           unit = "quarter",
-                           open_last = open_last,
-                           labels = labels,
-                           show_months = show_months)
+    plot_date_to_age(date = date,
+                     dob = dob,
+                     breaks = breaks,
+                     unit = "quarter",
+                     open_last = open_last,
+                     labels = labels,
+                     show_months = show_months)
 }
 
 ## NO_TESTS
 #' Depict the intervals created by
-#' function 'date_to_age_group_month'
+#' function 'date_to_age_month'
 #'
 #' Create plot illustrating the inputs and outputs
-#' of function \code{\link{date_to_age_group_month}}.
+#' of function \code{\link{date_to_age_month}}.
 #' 
 #' This function is for learning about the
 #' labelling conventions used in the \strong{dem} packages,
@@ -710,33 +710,33 @@ plot_date_to_age_group_quarter <- function(date,
 #' \strong{demprep}. It would not normally be used
 #' during actual data analysis.
 #'
-#' @inheritParams plot_date_to_age_group_year
+#' @inheritParams plot_date_to_age_year
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 1200.
 #'
 #' @examples
-#' plot_date_to_age_group_month(date = c("2004-03-27", "2002-11-09"),
+#' plot_date_to_age_month(date = c("2004-03-27", "2002-11-09"),
 #'                              dob = c("2001-03-21", "2000-07-13"))
 #'
 #' ## alternative specifications for oldest age group
-#' plot_date_to_age_group_month(date = "2019-09-22",
+#' plot_date_to_age_month(date = "2019-09-22",
 #'                              dob = "1910-01-01")
-#' plot_date_to_age_group_month(date = "2019-09-22",
+#' plot_date_to_age_month(date = "2019-09-22",
 #'                              dob = "1910-01-01",
 #'                              break_max = 320)
-#' plot_date_to_age_group_month(date = "2019-09-22",
+#' plot_date_to_age_month(date = "2019-09-22",
 #'                              dob = "1910-01-01",
 #'                              break_max = NULL)
-#' plot_date_to_age_group_month(date = "2019-09-22",
+#' plot_date_to_age_month(date = "2019-09-22",
 #'                              dob = "1910-01-01",
 #'                              break_max = NULL,
 #'                              open_last = FALSE)
 #' @export
-plot_date_to_age_group_month <- function(date,
-                                         dob,
-                                         break_max = 1200,
-                                         open_last = TRUE,
-                                         show_months = FALSE) {
+plot_date_to_age_month <- function(date,
+                                   dob,
+                                   break_max = 1200,
+                                   open_last = TRUE,
+                                   show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -770,16 +770,16 @@ plot_date_to_age_group_month <- function(date,
     ## make labels for these breaks
     n_break <- length(breaks)
     break_max <- breaks[[n_break]]
-    labels <- make_labels_age_group_month(break_min = 0L,
-                                          break_max = break_max,
-                                          open_last = open_last,
-                                          include_na = FALSE)
+    labels <- make_labels_age_month(break_min = 0L,
+                                    break_max = break_max,
+                                    open_last = open_last,
+                                    include_na = FALSE)
     ## make plot
-    plot_date_to_age_group(date = date,
-                           dob = dob,
-                           unit = "month",
-                           breaks = breaks,
-                           open_last = open_last,
-                           labels = labels,
-                           show_months = show_months)
+    plot_date_to_age(date = date,
+                     dob = dob,
+                     unit = "month",
+                     breaks = breaks,
+                     open_last = open_last,
+                     labels = labels,
+                     show_months = show_months)
 }

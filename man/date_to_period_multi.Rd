@@ -93,7 +93,7 @@ Other functions for creating periods are
 \code{\link{date_to_period_quarter}},
 and \code{\link{date_to_period_month}}.
 Other functions for working with multi-year intervals are
-\code{\link{date_to_age_group_multi}},
+\code{\link{date_to_age_multi}},
 \code{\link{date_to_cohort_multi}},
 and \code{\link{date_to_triangle_multi}}.
 See \code{\link{make_labels_period}} for the rules

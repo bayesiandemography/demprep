@@ -96,7 +96,7 @@ make_labels_period(breaks = c("2005-07-01",
 }
 \seealso{
 To make labels for age groups measured in years, use
-\code{\link{make_labels_age_group}}, and to
+\code{\link{make_labels_age}}, and to
 make labels for cohorts, use \code{\link{make_labels_cohort}}.
 To make labels for periods with widths of one quarter or one month,
 use functions \code{\link{make_labels_period_quarter}} or

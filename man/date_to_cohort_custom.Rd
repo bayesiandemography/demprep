@@ -109,7 +109,7 @@ Other functions for creating cohorts are
 \code{\link{date_to_cohort_quarter}},
 and \code{\link{date_to_cohort_month}}.
 Other functions for working with customised intervals are
-\code{\link{date_to_age_group_custom}},
+\code{\link{date_to_age_custom}},
 and \code{\link{date_to_period_custom}}.
 See \code{\link{make_labels_period}} for the rules
 on constructing labels for periods and cohorts.

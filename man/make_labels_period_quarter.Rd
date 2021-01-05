@@ -53,7 +53,7 @@ make_labels_period_quarter(break_min = "2005-04-01",
 }
 \seealso{
 To make labels for quarter age groups, use
-\code{\link{make_labels_age_group_quarter}}, and to
+\code{\link{make_labels_age_quarter}}, and to
 make labels for quarter periods, use \code{make_labels_period_quarter}.
 To make labels for periods with widths measured in years,
 use function \code{\link{make_labels_period}}, and to make

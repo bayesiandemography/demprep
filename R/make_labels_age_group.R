@@ -42,29 +42,29 @@
 #' \code{\link{make_labels_period}}, and to
 #' make labels for cohorts, use \code{\link{make_labels_cohort}}.
 #' To make labels for age groups with widths of one quarter or one month,
-#' use functions \code{\link{make_labels_age_group_quarter}} or
-#' \code{\link{make_labels_age_group_month}}.
+#' use functions \code{\link{make_labels_age_quarter}} or
+#' \code{\link{make_labels_age_month}}.
 #'
 #' @examples
 #' ## single-year
-#' make_labels_age_group(breaks = 0:100)
+#' make_labels_age(breaks = 0:100)
 #'
 #' ## 5-year
-#' make_labels_age_group(breaks = seq(0, 80, 5))
+#' make_labels_age(breaks = seq(0, 80, 5))
 #'
 #' ## mixed
-#' make_labels_age_group(breaks = c(0, 1, 4, seq(5, 80, 5)))
+#' make_labels_age(breaks = c(0, 1, 4, seq(5, 80, 5)))
 #'
 #' ## no open age group
-#' make_labels_age_group(breaks = seq(15, 65, 5))
+#' make_labels_age(breaks = seq(15, 65, 5))
 #' 
 #' ## allow for missing
-#' make_labels_age_group(breaks = seq(15, 65, 5),
+#' make_labels_age(breaks = seq(15, 65, 5),
 #'                       include_na = TRUE)
 #' @export
-make_labels_age_group <- function(breaks,
-                                  open_last = TRUE,
-                                  include_na = FALSE) {
+make_labels_age <- function(breaks,
+                            open_last = TRUE,
+                            include_na = FALSE) {
     breaks <- demcheck::err_tdy_breaks_integer_age(breaks = breaks,
                                                    open_last = open_last)
     demcheck::err_is_logical_flag(x = open_last,
@@ -112,7 +112,7 @@ make_labels_age_group <- function(breaks,
 #' is added to the end of the labels. This can be useful
 #' when dealing with dates that include \code{NA}s.
 #'
-#' @inheritParams make_labels_age_group
+#' @inheritParams make_labels_age
 #' @param break_min An integer. The lower limit (in quarters) of
 #' the youngest age group. Defaults to \code{0}.
 #' @param break_max An integer. If \code{open_last} is \code{TRUE},
@@ -127,24 +127,24 @@ make_labels_age_group <- function(breaks,
 #' no \code{make_labels_cohort_quarter} function. To construct
 #' labels for quarter cohorts, just use \code{make_labels_period_quarter}.
 #' To make labels for age groups measured in years,
-#' use function \code{\link{make_labels_age_group}}, and
+#' use function \code{\link{make_labels_age}}, and
 #' to make labels for age groups measured in months,
-#' use function \code{\link{make_labels_age_group_month}}.
+#' use function \code{\link{make_labels_age_month}}.
 #'
 #' @examples
-#' make_labels_age_group_quarter(break_max = 10)
-#' make_labels_age_group_quarter(break_max = 10,
+#' make_labels_age_quarter(break_max = 10)
+#' make_labels_age_quarter(break_max = 10,
 #'                               open_last = FALSE)
-#' make_labels_age_group_quarter(break_min = 5,
+#' make_labels_age_quarter(break_min = 5,
 #'                               break_max = 10,
 #'                               open_last = FALSE)
-#' make_labels_age_group_quarter(break_max = 10,
+#' make_labels_age_quarter(break_max = 10,
 #'                               include_na = TRUE)
 #' @export
-make_labels_age_group_quarter <- function(break_min = 0,
-                                          break_max = 400,
-                                          open_last = TRUE,
-                                          include_na = FALSE) {
+make_labels_age_quarter <- function(break_min = 0,
+                                    break_max = 400,
+                                    open_last = TRUE,
+                                    include_na = FALSE) {
     l <- demcheck::err_tdy_break_min_max_integer(break_min = break_min,
                                                  break_max = break_max,
                                                  null_ok = FALSE,
@@ -197,7 +197,7 @@ make_labels_age_group_quarter <- function(break_min = 0,
 #' is added to the end of the labels. This can be useful
 #' when dealing with dates that include \code{NA}s.
 #'
-#' @inheritParams make_labels_age_group
+#' @inheritParams make_labels_age
 #' @param break_min An integer. The lower limit (in months) of
 #' the youngest age group. Defaults to \code{0}.
 #' @param break_max An integer. If \code{open_last} is \code{TRUE},
@@ -212,24 +212,24 @@ make_labels_age_group_quarter <- function(break_min = 0,
 #' no \code{make_labels_cohort_month} function. To construct
 #' labels for month cohorts, just use \code{make_labels_period_month}.
 #' To make labels for age groups measured in years,
-#' use function \code{\link{make_labels_age_group}}, and
+#' use function \code{\link{make_labels_age}}, and
 #' to make labels for age groups measured in quarters,
-#' use function \code{\link{make_labels_age_group_quarter}}.
+#' use function \code{\link{make_labels_age_quarter}}.
 #'
 #' @examples
-#' make_labels_age_group_month(break_max = 10)
-#' make_labels_age_group_month(break_max = 10,
+#' make_labels_age_month(break_max = 10)
+#' make_labels_age_month(break_max = 10,
 #'                             open_last = FALSE)
-#' make_labels_age_group_month(break_min = 5,
+#' make_labels_age_month(break_min = 5,
 #'                             break_max = 10,
 #'                             open_last = FALSE)
-#' make_labels_age_group_month(break_max = 10,
+#' make_labels_age_month(break_max = 10,
 #'                             include_na = TRUE)
 #' @export
-make_labels_age_group_month <- function(break_min = 0,
-                                        break_max = 1200,
-                                        open_last = TRUE,
-                                        include_na = FALSE) {
+make_labels_age_month <- function(break_min = 0,
+                                  break_max = 1200,
+                                  open_last = TRUE,
+                                  include_na = FALSE) {
     l <- demcheck::err_tdy_break_min_max_integer(break_min = break_min,
                                                  break_max = break_max,
                                                  null_ok = FALSE,

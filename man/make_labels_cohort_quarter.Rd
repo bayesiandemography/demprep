@@ -71,7 +71,7 @@ make_labels_cohort_quarter(break_min = "2005-04-01",
 }
 \seealso{
 To make labels for quarter age groups, use
-\code{\link{make_labels_age_group_quarter}},
+\code{\link{make_labels_age_quarter}},
 and to make labels for quarter periods, use
 \code{make_labels_cohort_period}.
 To make labels for cohorts with widths measured in years,

@@ -82,7 +82,7 @@ Other functions for creating periods are
 \code{\link{date_to_period_quarter}},
 and \code{\link{date_to_period_month}}.
 Other functions for working with customized intervals are
-\code{\link{date_to_age_group_custom}},
+\code{\link{date_to_age_custom}},
 and \code{\link{date_to_cohort_custom}}.
 See \code{\link{make_labels_period}} for the rules
 on constructing labels for periods. Function

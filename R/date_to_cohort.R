@@ -22,7 +22,7 @@
 #' Supplying a date for \code{break_min} defines
 #' the first cohort, and is similar to
 #' to supplying a value for \code{break_max} in
-#' \code{\link{date_to_age_group_year}}. If
+#' \code{\link{date_to_age_year}}. If
 #' \code{open_first} is \code{TRUE}, then \code{break_min}
 #' forms the upper limit for the first cohort, and there is no lower
 #' limit. If \code{open_first} is \code{FALSE}, then
@@ -101,7 +101,7 @@
 #' \code{\link{date_to_cohort_quarter}},
 #' and \code{\link{date_to_cohort_month}}.
 #' Other functions for working with one-year intervals are
-#' \code{\link{date_to_age_group_year}},
+#' \code{\link{date_to_age_year}},
 #' \code{\link{date_to_period_year}},
 #' and \code{\link{date_to_triangle_year}}.
 #' See \code{\link{make_labels_period}} for the rules
@@ -154,7 +154,7 @@ date_to_cohort_year <- function(date,
                                               name = "date")
     if (has_break_min) {
         demcheck::err_length_1(x = break_min,
-                                  name = "break_min")
+                               name = "break_min")
         break_min <- demcheck::err_tdy_date_scalar(x = break_min,
                                                    name = "break_min")
         month_start <- format(break_min, format = "%b")
@@ -229,7 +229,7 @@ date_to_cohort_year <- function(date,
 #' Supplying a date for \code{break_min} defines
 #' the first cohort. It is similar
 #' to supplying a value for \code{break_max} in
-#' \code{\link{date_to_age_group_multi}}. If
+#' \code{\link{date_to_age_multi}}. If
 #' \code{open_first} is \code{TRUE}, then \code{break_min}
 #' forms the upper limit for the first cohort, and there is no lower
 #' limit. If \code{open_first} is \code{FALSE}, then
@@ -270,7 +270,7 @@ date_to_cohort_year <- function(date,
 #' \code{\link{date_to_cohort_quarter}},
 #' and \code{\link{date_to_cohort_month}}.
 #' Other functions for working with multi-year intervals are
-#' \code{\link{date_to_age_group_multi}},
+#' \code{\link{date_to_age_multi}},
 #' \code{\link{date_to_period_multi}},
 #' and \code{\link{date_to_triangle_multi}}.
 #' See \code{\link{make_labels_period}} for the rules
@@ -338,7 +338,7 @@ date_to_cohort_multi <- function(date,
                                                        name = "width")
     if (has_break_min) {
         demcheck::err_length_1(x = break_min,
-                                  name = "break_min")
+                               name = "break_min")
         break_min <- demcheck::err_tdy_date_scalar(x = break_min,
                                                    name = "break_min")
         origin <- NULL
@@ -450,7 +450,7 @@ date_to_cohort_multi <- function(date,
 #' \code{\link{date_to_cohort_quarter}},
 #' and \code{\link{date_to_cohort_month}}.
 #' Other functions for working with customised intervals are
-#' \code{\link{date_to_age_group_custom}},
+#' \code{\link{date_to_age_custom}},
 #' and \code{\link{date_to_period_custom}}.
 #' See \code{\link{make_labels_period}} for the rules
 #' on constructing labels for periods and cohorts.
@@ -580,7 +580,7 @@ date_to_cohort_custom <- function(date,
 #' Supplying a date for \code{break_min} defines
 #' the first cohort. It is similar
 #' to supplying a value for \code{break_max} in
-#' \code{\link{date_to_age_group_multi}}. If
+#' \code{\link{date_to_age_multi}}. If
 #' \code{open_first} is \code{TRUE}, then \code{break_min}
 #' forms the upper limit for the first cohort, and there is no lower
 #' limit. If \code{open_first} is \code{FALSE}, then
@@ -610,7 +610,7 @@ date_to_cohort_custom <- function(date,
 #' \code{\link{date_to_cohort_custom}},
 #' and \code{\link{date_to_cohort_month}}.
 #' Other functions for working with one-quarter intervals are
-#' \code{\link{date_to_age_group_quarter}},
+#' \code{\link{date_to_age_quarter}},
 #' \code{\link{date_to_period_quarter}},
 #' and \code{\link{date_to_triangle_quarter}}.
 #' See \code{\link{make_labels_period_quarter}} for the rules
@@ -652,7 +652,7 @@ date_to_cohort_quarter <- function(date,
                                               name = "date")
     if (has_break_min) {
         demcheck::err_length_1(x = break_min,
-                                  name = "break_min")
+                               name = "break_min")
         break_min <- demcheck::err_tdy_date_scalar(x = break_min,
                                                    name = "break_min")
     }
@@ -714,7 +714,7 @@ date_to_cohort_quarter <- function(date,
 #' Supplying a date for \code{break_min} defines
 #' the first cohort. It is similar
 #' to supplying a value for \code{break_max} in
-#' \code{\link{date_to_age_group_multi}}. If
+#' \code{\link{date_to_age_multi}}. If
 #' \code{open_first} is \code{TRUE}, then \code{break_min}
 #' forms the upper limit for the first cohort, and there is no lower
 #' limit. If \code{open_first} is \code{FALSE}, then
@@ -736,7 +736,7 @@ date_to_cohort_quarter <- function(date,
 #' \code{\link{date_to_cohort_custom}},
 #' and \code{\link{date_to_cohort_quarter}}.
 #' Other functions for working with one-month intervals are
-#' \code{\link{date_to_age_group_month}},
+#' \code{\link{date_to_age_month}},
 #' \code{\link{date_to_period_month}},
 #' and \code{\link{date_to_triangle_month}}.
 #' See \code{\link{make_labels_period_month}} for the rules
@@ -779,7 +779,7 @@ date_to_cohort_month <- function(date,
                                               name = "date")
     if (has_break_min) {
         demcheck::err_length_1(x = break_min,
-                                  name = "break_min")
+                               name = "break_min")
         break_min <- demcheck::err_tdy_date_scalar(x = break_min,
                                                    name = "break_min")
     }

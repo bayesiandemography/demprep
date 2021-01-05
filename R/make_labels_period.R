@@ -59,7 +59,7 @@
 #' @return A character vector. 
 #'
 #' @seealso To make labels for age groups measured in years, use
-#' \code{\link{make_labels_age_group}}, and to
+#' \code{\link{make_labels_age}}, and to
 #' make labels for cohorts, use \code{\link{make_labels_cohort}}.
 #' To make labels for periods with widths of one quarter or one month,
 #' use functions \code{\link{make_labels_period_quarter}} or
@@ -96,8 +96,8 @@ make_labels_period <- function(breaks,
                                include_na = FALSE) {
     breaks <- demcheck::err_tdy_breaks_date_period(breaks = breaks) # checks length not equal to 1
     demcheck::err_first_day_unit_vector(x = breaks,
-                                           name = "breaks",
-                                           unit = "year")
+                                        name = "breaks",
+                                        unit = "year")
     demcheck::err_is_logical_flag(x = include_na,
                                   name = "include_na")
     breaks_year <- as.integer(format(breaks, "%Y"))
@@ -161,7 +161,7 @@ make_labels_period <- function(breaks,
 #' @return A character vector. 
 #'
 #' @seealso To make labels for quarter age groups, use
-#' \code{\link{make_labels_age_group_quarter}}, and to
+#' \code{\link{make_labels_age_quarter}}, and to
 #' make labels for quarter periods, use \code{make_labels_period_quarter}.
 #' To make labels for periods with widths measured in years,
 #' use function \code{\link{make_labels_period}}, and to make
@@ -221,7 +221,7 @@ make_labels_period_quarter <- function(break_min,
 #' @return A character vector. 
 #'
 #' @seealso To make labels for month age groups, use
-#' \code{\link{make_labels_age_group_month}},
+#' \code{\link{make_labels_age_month}},
 #' and to make labels for month periods,
 #' use \code{make_labels_period_month}.
 #' To make labels for periods with widths measured in years,

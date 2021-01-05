@@ -64,7 +64,7 @@ make_labels_cohort_month(break_min = "2005-03-01",
 }
 \seealso{
 To make labels for month age groups, use
-\code{\link{make_labels_age_group_month}}, and to
+\code{\link{make_labels_age_month}}, and to
 make labels for month periods, use
 \code{make_labels_period_month}.
 To make labels for cohorts with widths measured in years,

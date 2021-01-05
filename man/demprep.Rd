@@ -34,13 +34,13 @@ exact dates to intervals:
 
 \tabular{llll}{
    \tab \strong{age} \tab \strong{time} \tab \strong{cohort} \cr
-  Single year \tab \code{\link{date_to_age_group_year}} \tab \code{\link{date_to_period_year}} \tab \code{\link{date_to_cohort_year}} \cr
-  Multi year, constant \tab \code{\link{date_to_age_group_multi}} \tab \code{\link{date_to_period_multi}} \tab \code{\link{date_to_cohort_multi}} \cr
-  Multi year, varying \tab \code{\link{date_to_age_group_custom}} \tab \code{\link{date_to_period_custom}} \tab \code{\link{date_to_cohort_custom}} \cr
-  Single quarter \tab \code{\link{date_to_age_group_quarter}} \tab \code{\link{date_to_period_quarter}} \tab \code{\link{date_to_cohort_quarter}} \cr
-  Single month \tab \code{\link{date_to_age_group_month}} \tab \code{\link{date_to_period_month}} \tab \code{\link{date_to_cohort_month}} \cr
-  Life table \tab \code{\link{date_to_age_group_lifetab}} \tab  \tab \cr
-  Births \tab \code{\link{date_to_age_group_births}} \tab  \tab
+  Single year \tab \code{\link{date_to_age_year}} \tab \code{\link{date_to_period_year}} \tab \code{\link{date_to_cohort_year}} \cr
+  Multi year, constant \tab \code{\link{date_to_age_multi}} \tab \code{\link{date_to_period_multi}} \tab \code{\link{date_to_cohort_multi}} \cr
+  Multi year, varying \tab \code{\link{date_to_age_custom}} \tab \code{\link{date_to_period_custom}} \tab \code{\link{date_to_cohort_custom}} \cr
+  Single quarter \tab \code{\link{date_to_age_quarter}} \tab \code{\link{date_to_period_quarter}} \tab \code{\link{date_to_cohort_quarter}} \cr
+  Single month \tab \code{\link{date_to_age_month}} \tab \code{\link{date_to_period_month}} \tab \code{\link{date_to_cohort_month}} \cr
+  Life table \tab \code{\link{date_to_age_lifetab}} \tab  \tab \cr
+  Births \tab \code{\link{date_to_age_births}} \tab  \tab
 }
 
 When doing demographic accounting, or when working with cohorts,
@@ -68,9 +68,9 @@ using the following functions.
 
 \tabular{llll}{
   \tab \strong{age} \tab \strong{time} \tab \strong{cohort} \cr
-  Years \tab \code{\link{make_labels_age_group}} \tab \code{\link{make_labels_period}} \tab \code{\link{make_labels_cohort}} \cr
-  Quarters \tab \code{\link{make_labels_age_group_quarter}} \tab \code{\link{make_labels_period_quarter}} \tab \code{\link{make_labels_cohort_quarter}} \cr
-  Months \tab \code{\link{make_labels_age_group_month}} \tab \code{\link{make_labels_period_month}} \tab \code{\link{make_labels_cohort_month}}
+  Years \tab \code{\link{make_labels_age}} \tab \code{\link{make_labels_period}} \tab \code{\link{make_labels_cohort}} \cr
+  Quarters \tab \code{\link{make_labels_age_quarter}} \tab \code{\link{make_labels_period_quarter}} \tab \code{\link{make_labels_cohort_quarter}} \cr
+  Months \tab \code{\link{make_labels_age_month}} \tab \code{\link{make_labels_period_month}} \tab \code{\link{make_labels_cohort_month}}
 }
 
 Some cross-classifying variables measure quantities other

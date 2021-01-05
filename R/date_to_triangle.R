@@ -90,7 +90,7 @@
 #' \code{\link{date_to_triangle_quarter}},
 #' and \code{\link{date_to_triangle_month}}.
 #' \code{date_to_triangle_year} is typically used in combination with
-#' \code{\link{date_to_age_group_year}}
+#' \code{\link{date_to_age_year}}
 #' and \code{\link{date_to_period_year}}.
 #'
 #' @examples
@@ -234,7 +234,7 @@ date_to_triangle_year <- function(date,
 #' \code{\link{date_to_triangle_quarter}},
 #' and \code{\link{date_to_triangle_month}}.
 #' \code{date_to_triangle_multi} is typically used in combination with
-#' \code{\link{date_to_age_group_multi}} and
+#' \code{\link{date_to_age_multi}} and
 #' \code{\link{date_to_period_multi}}.
 #'
 #' @examples
@@ -461,7 +461,7 @@ date_to_triangle_multi <- function(date,
 #' \code{\link{date_to_triangle_quarter}},
 #' and \code{\link{date_to_triangle_month}}.
 #' \code{date_to_triangle_births} is typically used in combination with
-#' \code{\link{date_to_age_group_year}}
+#' \code{\link{date_to_age_year}}
 #' and \code{\link{date_to_period_year}}.
 #'
 #' @examples
@@ -664,7 +664,7 @@ date_to_triangle_births <- function(date,
 #' \code{\link{date_to_triangle_births}},
 #' and \code{\link{date_to_triangle_month}}.
 #' \code{date_to_triangle_quarter} is typically used in combination with
-#' \code{\link{date_to_age_group_quarter}}
+#' \code{\link{date_to_age_quarter}}
 #' and \code{\link{date_to_period_quarter}}.
 #'
 #' @examples
@@ -832,7 +832,7 @@ date_to_triangle_quarter <- function(date,
 #' \code{\link{date_to_triangle_births}},
 #' and \code{\link{date_to_triangle_quarter}}.
 #' \code{date_to_triangle_month} is typically used in combination with
-#' \code{\link{date_to_age_group_month}}
+#' \code{\link{date_to_age_month}}
 #' and \code{\link{date_to_period_month}}.
 #'
 #' @examples
