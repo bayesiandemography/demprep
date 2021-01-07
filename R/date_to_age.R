@@ -545,12 +545,12 @@ date_to_age_lifetab <- function(date, dob,
 #'                          recode_down = TRUE)
 #' @export
 date_to_age_births <- function(date, dob,
-                                   break_min = 15,
-                                   break_max = 50,
-                                   width = 5,
-                                   recode_up = FALSE,
-                                   recode_down = FALSE,
-                                   as_factor = TRUE) {
+                               break_min = 15,
+                               break_max = 50,
+                               width = 5,
+                               recode_up = FALSE,
+                               recode_down = FALSE,
+                               as_factor = TRUE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -567,9 +567,9 @@ date_to_age_births <- function(date, dob,
                                                        name = "width")
     if (!is.null(break_min) && !is.null(break_max)) {
         demcheck::err_gt_scalar(x1 = break_max,
-                                   x2 = break_min,
-                                   name1 = "break_max",
-                                   name2 = "break_min")
+                                x2 = break_min,
+                                name1 = "break_max",
+                                name2 = "break_min")
         if ((break_max - break_min) %% width != 0L)
             stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
                           "break_max", break_max, "break_min", break_min, "width", width))
@@ -626,12 +626,12 @@ date_to_age_births <- function(date, dob,
     }
     ## make breaks
     breaks <- make_breaks_integer_births(age = age_years,
-                                       width = width,
-                                       break_min = break_min,
-                                       break_max = break_max)
+                                         width = width,
+                                         break_min = break_min,
+                                         break_max = break_max)
     ## make labels for breaks
     labels <- make_labels_age(breaks = breaks,
-                                    open_last = FALSE)
+                              open_last = FALSE)
     ## assign labels to ages
     i <- findInterval(x = age_years,
                       vec = breaks)

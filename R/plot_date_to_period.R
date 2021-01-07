@@ -20,18 +20,21 @@ plot_date_to_period <- function(date, breaks, labels, cex = 0.8) {
          xlab = "")
     ## x-axis and ticks
     graphics::lines(x = breaks,
-                    y = rep(0, times = n_br))
+                    y = rep(0, times = n_br),
+                    col = "cornflowerblue")
     graphics::segments(x0 = breaks,
                        y0 = -0.1,
                        x1 = breaks,
-                       y1 = 0.1)
+                       y1 = 0.1,
+                       col = "cornflowerblue")
     ## labels for breaks
     graphics::text(x = breaks,
                    y = -0.15,
                    labels = breaks,
                    cex = 0.7,
                    adj = 1,
-                   srt = 90)
+                   srt = 90,
+                   col = "cornflowerblue")
     ## labels for periods
     graphics::text(x = breaks[-n_br] + 0.5 * diff_br,
                    y = 0.3,
@@ -39,12 +42,14 @@ plot_date_to_period <- function(date, breaks, labels, cex = 0.8) {
     ## dates
     graphics::points(x = date,
                      y = rep(0, times = n_date),
-                     pch = 19)
+                     pch = 19,
+                     col = "black")
     ## xlab
     graphics::mtext(text = "Time",
-                     side = 1,
-                     line = 0,
-                     cex = 0.7)
+                    side = 1,
+                    line = 0,
+                    cex = 0.7,
+                    col = "grey35")
     graphics::par(old_par)
     invisible(NULL)
 }

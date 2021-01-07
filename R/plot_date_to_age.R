@@ -50,22 +50,27 @@ plot_date_to_age <- function(date, dob, unit, breaks, open_last, labels,
                         col = "grey")
     }
     ## horizontal lines to show boundaries between age groups
+    y_horiz <- unique(c(0, breaks)) # needed for date_to_age_births
     graphics::segments(x0 = rep(date_min, times = n_br),
-                       y0 = breaks,
+                       y0 = y_horiz,
                        x1 = rep(date_max, times = n_br),
-                       y1 = breaks,
-                       lty = "solid")
+                       y1 = y_horiz,
+                       lwd = 0.5,
+                       lty = "solid",
+                       col = "cornflowerblue")
     ## labels for boundaries between age groups
     graphics::text(x = date_min - 0.02 * width_date,
                    y = breaks,
                    labels = breaks,
-                   cex = 0.7)
+                   cex = 0.7,
+                   col = "cornflowerblue")
     ## labels for age groups
     graphics::text(x = date_min - 0.04 * width_date,
                    y = breaks[-n_br] + 0.5 * diff_br,
                    labels = sprintf('"%s"', labels[seq_len(n_br - 1L)]),
                    pos = 2,
-                   cex = 0.9)
+                   cex = 0.9,
+                   col = "black")
     if (open_last)
         graphics::text(x = date_min - 0.04 * width_date,
                        y = breaks[[n_br]] + 0.5 * diff_br[[n_br - 1L]],
@@ -82,7 +87,8 @@ plot_date_to_age <- function(date, dob, unit, breaks, open_last, labels,
                     line = -0.5,
                     at = dob,
                     cex = 0.6,
-                    las = 3)
+                    las = 3,
+                    col = "black")
     ## life lines, and points for date
     for (i in seq_along(date)) {
         coord <- coord_lifeline(date1 = date[[i]],
@@ -94,8 +100,7 @@ plot_date_to_age <- function(date, dob, unit, breaks, open_last, labels,
         graphics::segments(x0 = x0,
                            y0 = y0,
                            x1 = x1,
-                           y1 = y1,
-                           lty = "dashed")
+                           y1 = y1)
         graphics::points(x = date[[i]],
                          y = y1[[length(y1)]],
                          pch = 19)
@@ -106,12 +111,14 @@ plot_date_to_age <- function(date, dob, unit, breaks, open_last, labels,
                     line = -0.5,
                     at = date,
                     cex = 0.6,
-                    las = 3)
+                    las = 3,
+                    col = "black")
     ## xlab
     graphics::mtext(text = "Time",
                     side = 1,
                     line = 4,
-                    cex = 0.7)
+                    cex = 0.7,
+                    col = "grey35")
     graphics::par(old_par)
     invisible(NULL)
     ## ylab
@@ -119,7 +126,8 @@ plot_date_to_age <- function(date, dob, unit, breaks, open_last, labels,
                     side = 2,
                     line = 2,
                     las = 1,
-                    cex = 0.7)
+                    cex = 0.7,
+                    col = "grey35")
     graphics::par(old_par)
     invisible(NULL)
 }
@@ -468,8 +476,10 @@ plot_date_to_age_births <- function(date, dob,
         is_lt_min <- age_years < break_min
         i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
         if (i_lt_min > 0L) {
-            if (recode_up)
+            if (recode_up) {
                 age_years[is_lt_min] <- break_min
+                dob[is_lt_min] <- add_years(date[is_lt_min], n = -break_min)
+            }
             else {
                 stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
                                     "but 'break_min' is %d and 'recode_up' is FALSE"),
@@ -484,8 +494,10 @@ plot_date_to_age_births <- function(date, dob,
         is_ge_max <- age_years >= break_max
         i_ge_max <- match(TRUE, is_ge_max, nomatch = 0L)
         if (i_ge_max > 0L) {
-            if (recode_down)
+            if (recode_down) {
                 age_years[is_ge_max] <- break_max - 1L
+                dob[is_ge_max] <- add_years(date[is_ge_max], n = -break_max) - 1
+            }
             else {
                 stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
                                     "but 'break_max' is %d and 'recode_down' is FALSE"),
@@ -504,6 +516,12 @@ plot_date_to_age_births <- function(date, dob,
     ## make labels for breaks
     labels <- make_labels_age(breaks = breaks,
                               open_last = FALSE)
+    ## modify dates of birth, where necessary
+    if (recode_up) {
+
+
+
+    }
     ## make plot
     plot_date_to_age(date = date,
                      dob = dob,
