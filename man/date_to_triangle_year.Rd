@@ -14,7 +14,7 @@ date_to_triangle_year(
 )
 }
 \arguments{
-\item{date}{Dates of events or measurements.}
+\item{date}{Dates of events.}
 
 \item{dob}{Dates of birth.}
 
@@ -37,24 +37,30 @@ value is a factor; otherwise it is a character vector.
 The return value has the same length as \code{date}.
 }
 \description{
-Given dates when events occurred, together with dates of birth,
-allocate the events to Lexis triangles.
-All the Lexis triangles have widths
-of one year, though the final upper triangle
-typically has no age limit.
+Based on an age-time plan where age groups and periods both have
+widths of one year, use dates of events and dates of birth
+to allocate events to Lexis triangles.
 }
 \details{
-An event occurring during period \code{[t, t+1)} to
-a person in age group \code{[a, a+1)} belongs to an
-upper Lexis triangle if the person was already in age group
-\code{[a, a+1)} at time \code{t}, and belongs to a
-lower Lexis triangle if the person joins age group
-\code{[a, a+1)} during period \code{[t, t+1)}.
+The allocation of an event to a Lexis triangle depends
+on the timing of the event and on the timing of changes
+in age group. A person moves up into a new age group
+once during each period. An event is allocated
+to an upper Lexis triangle if the event occurs
+before the move to the new age group.
+An event is allocated to a lower Lexis triangle
+if the event occurs with or after the move to the
+new age group.
 
-Information on the Lexis triangle of an event, in addition
-to the period and age group, allows that event to
-be allocated to a birth cohort. The ability to allocate
-events to birth cohorts is essential for demographic accounting.
+Consider, for instance, events occurring to a person
+who was born on 28 March, in an age-time plan
+where periods start on 1 January. 
+If an event occurs on any day
+from 1 January to 27 March (inclusive), then the event
+is allocated to an upper Lexis triangle.
+If an event occurs on
+any day from 28 March to 31 December (inclusive), then the
+event is allocated to a lower Lexis triangle.
 
 \code{date} and \code{dob} are both vectors of class
 \code{\link[base]{Date}}, or vectors that can be coerced to class
@@ -74,34 +80,19 @@ age group is \code{[break_max, Inf)} years. When
 group is \code{[break_max-1, break_max)} years.
 
 If \code{break_max} is \code{NULL}, \code{date_to_triangle_year}
-derives a value, based on the highest age in the data,
-and the value for \code{open_last}.
+derives a value based on the highest age in the data
+and on the value for \code{open_last}.
 
 Periods start on the first day of \code{month_start},
 and end one-year-minus-one-day later.
 The default value for \code{month_start} is \code{"Jan"},
 so periods by default start on 1 January and
-end on 31 December. \code{month_start} can be a
-full month name or an abbreviation.
-
-The allocation of events to Lexis triangles becomes
-tricky when the event and the date of birth share the same
-month and day of the month (eg the event occurs on September
-the 12th and the person's birthday is on
-September the 12th.) Always allocating such
-events to the lower triangle, or always allocating
-them to the upper triangle, would lead to a slight
-imbalance between upper and lower triangles. Instead,
-if the dates match and it is first day of the month,
-the event is allocated to \code{"Lower"}; if the dates match and
-it is the second day of the month, the event is allocated to
-\code{"Upper"}; if the dates match and it is the third day
-of the month, the event is allocated to \code{"Lower"}; and so on.
-See below for an example.
+end on 31 December.
 
 When \code{as_factor} is \code{TRUE}, the levels of
 the factor includes both \code{"Lower"} and
-\code{"Upper"}, even when they do not both appear
+\code{"Upper"}, even when \code{"Lower"}
+and \code{"Upper"} do not both appear
 in the data.
 }
 \examples{
@@ -121,18 +112,13 @@ date_to_triangle_year(date = c("2017-03-27",
                       dob = "2010-01-01",
                       break_max = 10)
 
-## events and births occur on same month
-##  and day of month
-date_to_triangle_year(date = c("2020-03-01",
-                               "2020-03-02",
-                               "2020-03-03",
-                               "2020-03-04",
-                               "2020-03-05"),
-                      dob = c("2012-03-01",
-                              "2012-03-02",
-                              "2012-03-03",
-                              "2012-03-04",
-                              "2012-03-05"))
+## events occurring to people born during the
+## period in question are always allocated to
+## lower Lexis triangles
+date_to_triangle_year(date = c("2020-03-19",
+                               "2020-06-18"),
+                      dob = c("2020-03-01",
+                              "2020-06-18"))
 
 ## return non-factor
 date_to_triangle_year(date = c("2024-03-27",

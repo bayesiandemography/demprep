@@ -32,7 +32,7 @@ test_that("date_to_triangle_year gives correct answers with valid inputs - month
     expect_identical(date_to_triangle_year(date = "2001-02-28",
                                            dob = c("2000-02-29",
                                                    "2000-02-28")),
-                     factor(c("Upper", "Upper"), levels = c("Lower", "Upper")))
+                     factor(c("Upper", "Lower"), levels = c("Lower", "Upper")))
     expect_identical(date_to_triangle_year(date = "2001-01-31",
                                            dob = "2000-02-29"),
                      factor("Upper", levels = c("Lower", "Upper")))
@@ -78,7 +78,7 @@ test_that("date_to_triangle_year gives correct answers with valid inputs - month
                                            dob = c("2000-02-29",
                                                    "2000-02-28"),
                                            month_start = "Jul"),
-                     factor(c("Upper", "Upper"), levels = c("Lower", "Upper")))
+                     factor(c("Upper", "Lower"), levels = c("Lower", "Upper")))
     expect_identical(date_to_triangle_year(date = "2001-01-31",
                                            dob = "2000-02-29"),
                      factor("Upper", levels = c("Lower", "Upper")))
@@ -91,13 +91,13 @@ test_that("date_to_triangle_year gives correct answers with valid inputs - month
 
 test_that("date_to_triangle_year gives correct answers with open age group", {
     expect_identical(date_to_triangle_year(date = c("2000-01-01",
-                                                     "2010-01-01",
+                                                    "2010-01-01",
                                                     "2004-12-31",
                                                     "1999-12-31",
                                                     NA),
-                                            dob = "1900-01-01",
-                                            break_max = 100),
-                     factor(c("Upper", "Upper", "Upper", "Lower", NA),
+                                           dob = "1900-01-01",
+                                           break_max = 100),
+                     factor(c("Lower", "Upper", "Upper", "Lower", NA),
                             levels = c("Lower", "Upper")))
 })
 
@@ -131,10 +131,10 @@ test_that("date_to_triangle_multi gives correct answers with valid inputs", {
                                             width = 5),
                      factor(c("Lower", "Lower", "Lower"), 
                             levels = c("Lower", "Upper")))
-    expect_identical(date_to_triangle_multi(date = c("2000-01-01",
+    expect_identical(date_to_triangle_multi(date = c("2000-01-10",
                                                      "2010-01-01",
                                                      "2004-12-31"),
-                                            dob = "2000-01-01",
+                                            dob = "2000-01-02",
                                             break_max = 10),
                      factor(c("Lower", "Upper", "Lower"),
                             levels = c("Lower", "Upper")))
@@ -149,6 +149,10 @@ test_that("date_to_triangle_multi gives correct answers with valid inputs", {
                                             dob = c(NA, "2000-01-01"),
                                             break_max = 10),
                      factor(rep(NA_character_, 2), levels = c("Lower", "Upper")))
+    expect_identical(date_to_triangle_multi(date = "2001-02-28",
+                                            dob = c("2000-02-28", "2000-02-29")),
+                     factor(c("Lower", "Lower"),
+                            levels = c("Lower", "Upper")))
 })
 
 
@@ -156,38 +160,38 @@ test_that("date_to_triangle_multi gives correct answers with valid inputs", {
 
 test_that("date_to_triangle_births gives correct answers with valid inputs", {
     expect_identical(date_to_triangle_births(date = c("2015-01-01",
-                                                    "2025-01-01",
-                                                    "2029-12-31"),
-                                           dob = "2000-01-01"),
+                                                      "2025-01-01",
+                                                      "2029-12-31"),
+                                             dob = "2000-01-01"),
                      factor(c("Lower", "Lower", "Lower"),
                             levels = c("Lower", "Upper")))
     expect_identical(date_to_triangle_births(date = c("2020-01-01",
-                                                    "2025-01-01",
-                                                    "2029-12-31"),
-                                           dob = "2000-02-01"),
+                                                      "2025-01-01",
+                                                      "2029-12-31"),
+                                             dob = "2000-02-01"),
                      factor(c("Upper", "Upper", "Lower"),
                             levels = c("Lower", "Upper")))
     expect_identical(date_to_triangle_births(date = c("2015-01-01",
-                                                    "2025-01-01",
-                                                    "2029-12-31",
-                                                    NA),
-                                           dob = "2000-01-01",
-                                           break_min = 10,
-                                           break_max = 55),
+                                                      "2025-01-01",
+                                                      "2029-12-31",
+                                                      NA),
+                                             dob = "2000-01-01",
+                                             break_min = 10,
+                                             break_max = 55),
                      factor(c("Lower", "Lower", "Lower", NA),
                             levels = c("Lower", "Upper")))
     expect_identical(date_to_triangle_births(date = c("2015-01-01",
-                                                    "2025-01-01",
-                                                    "2049-12-31"),
-                                           dob = "2000-01-01",
-                                           break_min = 20,
-                                           break_max = 40,
-                                           recode_up = TRUE,
-                                           recode_down = TRUE),
+                                                      "2025-01-01",
+                                                      "2049-12-31"),
+                                             dob = "2000-01-01",
+                                             break_min = 20,
+                                             break_max = 40,
+                                             recode_up = TRUE,
+                                             recode_down = TRUE),
                      factor(c("Lower", "Lower", "Lower"),
                             levels = c("Lower", "Upper")))
     expect_identical(date_to_triangle_births(date = c("2001-01-01", NA),
-                                           dob = c(NA, "2000-01-01")),
+                                             dob = c(NA, "2000-01-01")),
                      factor(rep(NA_character_, 2), levels = c("Lower", "Upper")))
 })
 

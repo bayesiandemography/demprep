@@ -46,6 +46,8 @@ library(demprep)
 - varying lengths (months, quarter, leap years)
 - ambiguity of labels
 
+- birthday starts at first second of day (not at time when born)
+
 
 ## Single-year periods
 
@@ -479,10 +481,18 @@ plot_date_to_age_quarter(date = dth_age_quarter$date[3],
 - abstract: 
 - event is in upper Lexis triangle
 
-- An event occurring during period $t$ to a person in age group $a$ belongs to the upper Lexis triangle if the person was already in age group $a$ at the start of the period, and to the lower Lexis triangle otherwise. (Covers youngest and oldest age groups.)
+- An event occurring during period $t$ to a person in age group $a$ belongs to the lower Lexis triangle if the person attains age $a$ during, and to the upper Lexis triangle otherwise. (Covers youngest and oldest age groups.)
 
 
 - If index of time equals index for age, then Lower; else Upper.
+
+How to work out triangle:
+
+1. Use date now and dob to calculate age group now
+2. Use date now to identify date at start of period
+3. Use date at start of period and dob to calculate age group at start of period
+4. If age group now is equal to age group at start of period, then event occurred in Upper triangle; otherwise occurred in Lower triangle.
+
 
 # Boundaries
 

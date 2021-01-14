@@ -13,7 +13,7 @@ date_to_triangle_quarter(
 )
 }
 \arguments{
-\item{date}{Dates of events or measurements.}
+\item{date}{Dates of events.}
 
 \item{dob}{Dates of birth.}
 
@@ -88,7 +88,7 @@ See below for an example.
 
 When \code{as_factor} is \code{TRUE}, the levels of
 the factor includes both \code{"Lower"} and
-\code{"Upper"}, even when they do not both appear
+\code{"Upper"}, even when \code{"Lower"} and \code{"Upper"} do not both appear
 in the data.
 }
 \examples{

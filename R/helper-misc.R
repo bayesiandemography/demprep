@@ -107,13 +107,13 @@ as_ymd <- function(date) {
 ## upwards by 0-3 days at the end of each month.
 ## 'date1' and 'dob1' both have length 1
 coord_lifeline <- function(date1, dob1) {
-    first_boundary <- rollforward(dob1)
+    first_boundary <- rollforward_month(dob1)
     boundaries <- seq.Date(from = first_boundary,
                            to = date1,
                            by = "month")
     x <- c(dob1, rep(boundaries, each = 2L), date1)
     diff_y <- as.integer(diff(x))
-    first_start <- rollback(dob1)
+    first_start <- rollback_month(dob1)
     starts <- seq.Date(from = first_start,
                        by = "month",
                        length.out = length(boundaries))
@@ -467,10 +467,9 @@ n_day_month <- function(date) {
     ans
 }
 
-
 ## HAS_TESTS
 ## Roll back to first day of current month.
-rollback <- function(date) {
+rollback_month <- function(date) {
     if (identical(length(date), 0L))
         return(as.Date(character()))
     date <- as.POSIXlt(date)
@@ -478,10 +477,39 @@ rollback <- function(date) {
     as.Date(date)
 }
 
+## HAS_TESTS
+## Roll back to first day of current multi-year period.
+rollback_multi <- function(date, width, origin, month_start) {
+    if (identical(length(date), 0L))
+        return(as.Date(character()))
+    if (all(is.na(date)))
+        return(date)
+    breaks <- make_breaks_date_year(date = date,
+                                    month_start = month_start,
+                                    width = width,
+                                    origin = origin,
+                                    break_min = NULL)
+    date_int <- as.integer(date)
+    breaks_int <- as.integer(breaks)
+    i <- findInterval(x = date_int,
+                      vec = breaks_int)
+    breaks[i]
+}
+
+## HAS_TESTS
+## Roll back to first day of current quarter.
+rollback_quarter <- function(date) {
+    if (identical(length(date), 0L))
+        return(as.Date(character()))
+    date <- as.POSIXlt(date)
+    date$mday <- 1L
+    date$mon <- (date$mon %/% 3L) * 3L
+    as.Date(date)
+}
 
 ## HAS_TESTS
 ## Roll forward to first day of next month.
-rollforward <- function(date) {
+rollforward_month <- function(date) {
     if (identical(length(date), 0L))
         return(as.Date(character()))
     date <- as.POSIXlt(date)

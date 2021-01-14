@@ -2,23 +2,29 @@
 ## HAS_TESTS
 #' Convert dates to one-year Lexis triangles
 #'
-#' Given dates when events occurred, together with dates of birth,
-#' allocate the events to Lexis triangles.
-#' All the Lexis triangles have widths
-#' of one year, though the final upper triangle
-#' typically has no age limit.
+#' Based on an age-time plan where age groups and periods both have
+#' widths of one year, use dates of events and dates of birth
+#' to allocate events to Lexis triangles.
 #'
-#' An event occurring during period \code{[t, t+1)} to
-#' a person in age group \code{[a, a+1)} belongs to an
-#' upper Lexis triangle if the person was already in age group
-#' \code{[a, a+1)} at time \code{t}, and belongs to a
-#' lower Lexis triangle if the person joins age group
-#' \code{[a, a+1)} during period \code{[t, t+1)}.
+#' The allocation of an event to a Lexis triangle depends
+#' on the timing of the event and on the timing of changes
+#' in age group. A person moves up into a new age group
+#' once during each period. An event is allocated
+#' to an upper Lexis triangle if the event occurs
+#' before the move to the new age group.
+#' An event is allocated to a lower Lexis triangle
+#' if the event occurs with or after the move to the
+#' new age group.
 #'
-#' Information on the Lexis triangle of an event, in addition
-#' to the period and age group, allows that event to
-#' be allocated to a birth cohort. The ability to allocate
-#' events to birth cohorts is essential for demographic accounting.
+#' Consider, for instance, events occurring to a person
+#' who was born on 28 March, in an age-time plan
+#' where periods start on 1 January. 
+#' If an event occurs on any day
+#' from 1 January to 27 March (inclusive), then the event
+#' is allocated to an upper Lexis triangle.
+#' If an event occurs on
+#' any day from 28 March to 31 December (inclusive), then the
+#' event is allocated to a lower Lexis triangle.
 #'
 #' \code{date} and \code{dob} are both vectors of class
 #' \code{\link[base]{Date}}, or vectors that can be coerced to class
@@ -38,37 +44,22 @@
 #' group is \code{[break_max-1, break_max)} years.
 #' 
 #' If \code{break_max} is \code{NULL}, \code{date_to_triangle_year}
-#' derives a value, based on the highest age in the data,
-#' and the value for \code{open_last}.
+#' derives a value based on the highest age in the data
+#' and on the value for \code{open_last}.
 #' 
 #' Periods start on the first day of \code{month_start},
 #' and end one-year-minus-one-day later.
 #' The default value for \code{month_start} is \code{"Jan"},
 #' so periods by default start on 1 January and
-#' end on 31 December. \code{month_start} can be a
-#' full month name or an abbreviation.
-#'
-#' The allocation of events to Lexis triangles becomes
-#' tricky when the event and the date of birth share the same
-#' month and day of the month (eg the event occurs on September
-#' the 12th and the person's birthday is on
-#' September the 12th.) Always allocating such
-#' events to the lower triangle, or always allocating
-#' them to the upper triangle, would lead to a slight
-#' imbalance between upper and lower triangles. Instead,
-#' if the dates match and it is first day of the month,
-#' the event is allocated to \code{"Lower"}; if the dates match and
-#' it is the second day of the month, the event is allocated to
-#' \code{"Upper"}; if the dates match and it is the third day
-#' of the month, the event is allocated to \code{"Lower"}; and so on.
-#' See below for an example.
+#' end on 31 December.
 #'
 #' When \code{as_factor} is \code{TRUE}, the levels of
 #' the factor includes both \code{"Lower"} and
-#' \code{"Upper"}, even when they do not both appear
+#' \code{"Upper"}, even when \code{"Lower"}
+#' and \code{"Upper"} do not both appear
 #' in the data.
 #'
-#' @param date Dates of events or measurements.
+#' @param date Dates of events.
 #' @param dob Dates of birth.
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 100.
@@ -110,18 +101,13 @@
 #'                       dob = "2010-01-01",
 #'                       break_max = 10)
 #' 
-#' ## events and births occur on same month
-#' ##  and day of month
-#' date_to_triangle_year(date = c("2020-03-01",
-#'                                "2020-03-02",
-#'                                "2020-03-03",
-#'                                "2020-03-04",
-#'                                "2020-03-05"),
-#'                       dob = c("2012-03-01",
-#'                               "2012-03-02",
-#'                               "2012-03-03",
-#'                               "2012-03-04",
-#'                               "2012-03-05"))
+#' ## events occurring to people born during the
+#' ## period in question are always allocated to
+#' ## lower Lexis triangles
+#' date_to_triangle_year(date = c("2020-03-19",
+#'                                "2020-06-18"),
+#'                       dob = c("2020-03-01",
+#'                               "2020-06-18"))
 #'
 #' ## return non-factor
 #' date_to_triangle_year(date = c("2024-03-27",
@@ -216,7 +202,7 @@ date_to_triangle_year <- function(date,
 #'
 #' When \code{as_factor} is \code{TRUE}, the levels of
 #' the factor includes both \code{"Lower"} and
-#' \code{"Upper"}, even when they do not both appear
+#' \code{"Upper"}, even when \code{"Lower"} and \code{"Upper"} do not both appear
 #' in the data.
 #'
 #' @inheritParams date_to_triangle_year
@@ -320,34 +306,45 @@ date_to_triangle_multi <- function(date,
                                        date = date,
                                        dob = dob,
                                        unit = "year")
-    ## assign triangles
-    n_date <- length(date)
-    ans <- rep.int("Upper", times = n_date)
-    ans[is.na(date) | is.na(dob)] <- NA_character_
-    date_ymd <- as_ymd(date)
-    dob_ymd <- as_ymd(dob)
-    i_month_within_period_date <- i_month_within_period(date_ymd = date_ymd,
-                                                        width = width,
-                                                        origin = origin,
-                                                        month_start = month_start)
-    i_month_within_period_dob <- i_month_within_period(date_ymd = dob_ymd,
-                                                       width = width,
-                                                       origin = origin,
-                                                       month_start = month_start)
-    is_lower_within_month <- is_lower_within_month(date_ymd = date_ymd,
-                                                   dob_ymd = dob_ymd)
-    is_lower <- ((i_month_within_period_date > i_month_within_period_dob)
-        | ((i_month_within_period_date == i_month_within_period_dob)
-            & is_lower_within_month))
-    ans[is_lower] <- "Lower"
-    ## deal with oldest open cohort, if present
-    may_have_ages_above_break_max <- !is.null(break_max) && open_last
-    if (may_have_ages_above_break_max) {
-        age_start <- age_completed_months_start_month(date_ymd = date_ymd,
-                                                      dob_ymd = dob_ymd)
-        is_open_upper <- !is.na(age_start) & (age_start >= 12L * break_max)
-        ans[is_open_upper] <- "Upper"
+    ## prepare to assign triangles
+    ans <- rep(NA_character_, times = length(date))
+    date_start_period <- rollback_multi(date = date,
+                                        width = width,
+                                        origin = origin,
+                                        month_start = month_start)
+    ## (subtract one day so that events occurring to people who
+    ## attain age on first day of period are coded as "Lower")
+    date_before_period <- date_start_period - 1L
+    age_months_before_period <- age_completed_months(date = date_before_period,
+                                                     dob = dob)
+    age_years_before_period <- age_months_before_period %/% 12L
+    ## assign triangles - born during period
+    born_during_period <- (!is.na(dob)
+        & !is.na(date_before_period)
+        & (dob > date_before_period)) ## includes first day of period
+    ans[born_during_period] <- "Lower"
+    ## assign triangles - in open age group before start of period
+    if (open_last && !is.null(break_max)) {
+        in_open <- (!is.na(age_years_before_period)
+            & (age_years_before_period >= break_max))
     }
+    else
+        in_open <- rep(FALSE, length = length(ans))
+    ans[in_open] <- "Upper"
+    ## assign triangles - remaining age groups
+    i_age_before <- age_years_before_period %/% width
+    i_age_now <- age_years %/% width
+    is_unassigned <- (!born_during_period
+        & !in_open
+        & !is.na(i_age_before)
+        & !is.na(i_age_now))
+    diff_age <- i_age_now - i_age_before
+    if (any(is_unassigned & !(diff_age %in% c(0L, 1L))))
+        stop("invalid value for 'diff_age'")
+    is_lower <- is_unassigned & (i_age_now == i_age_before + 1L)
+    is_upper <- is_unassigned & !is_lower
+    ans[is_lower] <- "Lower"
+    ans[is_upper] <- "Upper"
     ## return result
     if (as_factor) {
         ans <- factor(ans,
@@ -429,7 +426,7 @@ date_to_triangle_multi <- function(date,
 #'
 #' When \code{as_factor} is \code{TRUE}, the levels of
 #' the factor includes both \code{"Lower"} and
-#' \code{"Upper"}, even when they do not both appear
+#' \code{"Upper"}, even when \code{"Lower"} and \code{"Upper"} do not both appear
 #' in the data.
 #'
 #' @inheritParams date_to_triangle_year
@@ -647,7 +644,7 @@ date_to_triangle_births <- function(date,
 #'
 #' When \code{as_factor} is \code{TRUE}, the levels of
 #' the factor includes both \code{"Lower"} and
-#' \code{"Upper"}, even when they do not both appear
+#' \code{"Upper"}, even when \code{"Lower"} and \code{"Upper"} do not both appear
 #' in the data.
 #'
 #' @inheritParams date_to_triangle_year
@@ -716,40 +713,53 @@ date_to_triangle_quarter <- function(date,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
+    ## calculate age in months and quarters
+    age_months <- age_completed_months(date = date,
+                                       dob = dob)
+    age_quarters <- age_months %/% 3L
     ## if has upper limit, check that all
     ## ages less than limit
     if (!is.null(break_max) && !open_last) {
-        age_months <- age_completed_months(date = date,
-                                           dob = dob)
-        age_quarters <- age_months %/% 3L
         demcheck::err_lt_break_max_age(age = age_quarters,
                                        break_max = break_max,
                                        date = date,
                                        dob = dob,
                                        unit = "month")
     }
-    ## assign triangles
-    n_date <- length(date)
-    date_ymd <- as_ymd(date)
-    dob_ymd <- as_ymd(dob)
-    ans <- rep.int("Upper", times = n_date)
-    ans[is.na(date) | is.na(dob)] <- NA_character_
-    i_month_within_qu_date <- (date_ymd$m - 1L) %% 3L
-    i_month_within_qu_dob <- (dob_ymd$m - 1L) %% 3L
-    is_lower_within_month <- is_lower_within_month(date_ymd = date_ymd,
-                                                   dob_ymd = dob_ymd)
-    is_lower <- ((i_month_within_qu_date > i_month_within_qu_dob)
-        | ((i_month_within_qu_date == i_month_within_qu_dob)
-            & is_lower_within_month))
-    ans[is_lower] <- "Lower"
-    ## deal with oldest open cohort, if present
-    may_have_ages_above_break_max <- !is.null(break_max) && open_last
-    if (may_have_ages_above_break_max) {
-        age_start <- age_completed_months_start_month(date_ymd = date_ymd,
-                                                      dob_ymd = dob_ymd)
-        is_open_upper <- !is.na(age_start) & (age_start >= 3L * break_max)
-        ans[is_open_upper] <- "Upper"
+    ## prepare to assign triangles
+    ans <- rep(NA_character_, times = length(date))
+    date_start_quarter <- rollback_quarter(date)
+    ## (subtract one day so that events occurring to people who
+    ## attain age on first day of quarter are coded as "Lower")
+    date_before_quarter <- date_start_quarter - 1L
+    age_months_before_quarter <- age_completed_months(date = date_before_quarter,
+                                                      dob = dob)
+    age_quarters_before_quarter <- age_months_before_quarter %/% 3L
+    ## assign triangles - born during quarter
+    born_during_quarter <- (!is.na(dob)
+        & !is.na(date_before_quarter)
+        & (dob > date_before_quarter)) ## includes first day of quarter
+    ans[born_during_quarter] <- "Lower"
+    ## assign triangles - in open age group before start of quarter
+    if (open_last && !is.null(break_max)) {
+        in_open <- (!is.na(age_quarters_before_quarter)
+            & (age_quarters_before_quarter >= break_max))
     }
+    else
+        in_open <- rep(FALSE, length = length(ans))
+    ans[in_open] <- "Upper"
+    ## assign triangles - remaining age groups
+    is_unassigned <- (!born_during_quarter
+        & !in_open
+        & !is.na(age_quarters_before_quarter)
+        & !is.na(age_quarters))
+    diff_age <- age_quarters - age_quarters_before_quarter
+    if (any(is_unassigned & !(diff_age %in% c(0L, 1L))))
+        stop("invalid value for 'diff_age'")
+    is_lower <- is_unassigned & (age_quarters == age_quarters_before_quarter + 1L)
+    is_upper <- is_unassigned & !is_lower
+    ans[is_lower] <- "Lower"
+    ans[is_upper] <- "Upper"
     ## return result
     if (as_factor) {
         ans <- factor(ans,
@@ -815,7 +825,7 @@ date_to_triangle_quarter <- function(date,
 #'
 #' When \code{as_factor} is \code{TRUE}, the levels of
 #' the factor includes both \code{"Lower"} and
-#' \code{"Upper"}, even when they do not both appear
+#' \code{"Upper"}, even when \code{"Lower"} and \code{"Upper"} do not both appear
 #' in the data.
 #'
 #' @inheritParams date_to_triangle_year
@@ -882,34 +892,51 @@ date_to_triangle_month <- function(date, dob,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
+    ## calculate age in months
+    age_months <- age_completed_months(date = date,
+                                       dob = dob)
     ## if has upper limit, check that all
     ## ages less than limit
     if (!is.null(break_max) && !open_last) {
-        age_months <- age_completed_months(date = date,
-                                           dob = dob)
         demcheck::err_lt_break_max_age(age = age_months,
                                        break_max = break_max,
                                        date = date,
                                        dob = dob,
                                        unit = "month")
     }
-    ## assign triangles
-    date_ymd <- as_ymd(date)
-    dob_ymd <- as_ymd(dob)
-    n_date <- length(date)
-    ans <- rep.int("Upper", times = n_date)
-    ans[is.na(date) | is.na(dob)] <- NA_character_
-    is_lower <- is_lower_within_month(date_ymd = date_ymd,
-                                      dob_ymd = dob_ymd)
-    ans[is_lower] <- "Lower"
-    ## deal with oldest open cohort, if present
-    may_have_ages_above_break_max <- !is.null(break_max) && open_last
-    if (may_have_ages_above_break_max) {
-        age_start <- age_completed_months_start_month(date_ymd = date_ymd,
-                                                      dob_ymd = dob_ymd)
-        is_open_upper <- !is.na(age_start) & (age_start >= break_max)
-        ans[is_open_upper] <- "Upper"
+    ## prepare to assign triangles
+    ans <- rep(NA_character_, times = length(date))
+    date_start_month <- rollback_month(date)
+    ## (subtract one day so that events occurring to people who
+    ## attain age on first day of month are coded as "Lower")
+    date_before_month <- date_start_month - 1L
+    age_months_before_month <- age_completed_months(date = date_before_month,
+                                                    dob = dob)
+    ## assign triangles - born during month
+    born_during_month <- (!is.na(dob)
+        & !is.na(date_before_month)
+        & (dob > date_before_month)) ## includes first day of month
+    ans[born_during_month] <- "Lower"
+    ## assign triangles - in open age group before start of month
+    if (open_last && !is.null(break_max)) {
+        in_open <- (!is.na(age_months_before_month)
+            & (age_months_before_month >= break_max))
     }
+    else
+        in_open <- rep(FALSE, length = length(ans))
+    ans[in_open] <- "Upper"
+    ## assign triangles - remaining age groups
+    is_unassigned <- (!born_during_month
+        & !in_open
+        & !is.na(age_months_before_month)
+        & !is.na(age_months))
+    diff_age <- age_months - age_months_before_month
+    if (any(is_unassigned & !(diff_age %in% c(0L, 1L))))
+        stop("invalid value for 'diff_age'")
+    is_lower <- is_unassigned & (age_months == age_months_before_month + 1L)
+    is_upper <- is_unassigned & !is_lower
+    ans[is_lower] <- "Lower"
+    ans[is_upper] <- "Upper"
     ## return result
     if (as_factor) {
         ans <- factor(ans,

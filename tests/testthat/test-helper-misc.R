@@ -881,39 +881,110 @@ test_that("'n_day_month' gives correct answer with valid inputs", {
 })
 
 
-## rollback -------------------------------------------------------------------
+## rollback_month -------------------------------------------------------------
 
-test_that("'rollback' gives correct answer with valid inputs", {
-    rollback <- demprep:::rollback
-    expect_identical(rollback("2000-01-01"),
+test_that("'rollback_month' gives correct answer with valid inputs", {
+    rollback_month <- demprep:::rollback_month
+    expect_identical(rollback_month("2000-01-01"),
                      as.Date("2000-01-01"))
-    expect_identical(rollback("2000-01-31"),
+    expect_identical(rollback_month("2000-01-31"),
                      as.Date("2000-01-01"))
-    expect_identical(rollback("2000-02-29"),
+    expect_identical(rollback_month("2000-02-29"),
                      as.Date("2000-02-01"))
-    expect_identical(rollback("2000-12-31"),
+    expect_identical(rollback_month("2000-12-31"),
                      as.Date("2000-12-01"))
-    expect_identical(rollback(c("2000-12-31", "2001-01-01")),
+    expect_identical(rollback_month(c("2000-12-31", "2001-01-01")),
                      as.Date(c("2000-12-01", "2001-01-01")))
-    expect_identical(rollback(as.Date(character())),
+    expect_identical(rollback_month(as.Date(character())),
                      as.Date(character()))
+    expect_identical(rollback_month(as.Date(NA_character_)),
+                     as.Date(NA_character_))
 })
 
 
-## rollforward ----------------------------------------------------------------
+## rollback_multi -------------------------------------------------------------
 
-test_that("'rollforward' gives correct answer with valid inputs", {
-    rollforward <- demprep:::rollforward
-    expect_identical(rollforward("2000-01-01"),
-                     as.Date("2000-02-01"))
-    expect_identical(rollforward("2000-01-31"),
-                     as.Date("2000-02-01"))
-    expect_identical(rollforward("2000-02-29"),
-                     as.Date("2000-03-01"))
-    expect_identical(rollforward("2000-12-31"),
-                     as.Date("2001-01-01"))
-    expect_identical(rollforward(c("2000-12-31", "2001-01-01")),
-                     as.Date(c("2001-01-01", "2001-02-01")))
-    expect_identical(rollforward(as.Date(character())),
+test_that("'rollback_multi' gives correct answer with valid inputs", {
+    rollback_multi <- demprep:::rollback_multi
+    expect_identical(rollback_multi(date = as.Date("2000-01-01"),
+                                    width = 5L,
+                                    origin = 2000L,
+                                    month_start = "Jan"),
+                     as.Date("2000-01-01"))
+    expect_identical(rollback_multi(date = as.Date("2001-01-01"),
+                                    width = 5L,
+                                    origin = 2000L,
+                                    month_start = "Jan"),
+                     as.Date("2000-01-01"))
+    expect_identical(rollback_multi(date = as.Date("2000-01-01"),
+                                    width = 5L,
+                                    origin = 2001L,
+                                    month_start = "Jan"),
+                     as.Date("1996-01-01"))
+    expect_identical(rollback_multi(date = as.Date("2000-01-01"),
+                                    width = 5L,
+                                    origin = 2001L,
+                                    month_start = "Apr"),
+                     as.Date("1996-04-01"))
+    expect_identical(rollback_multi(date = as.Date("2000-01-20"),
+                                    width = 2L,
+                                    origin = 2001L,
+                                    month_start = "Jun"),
+                     as.Date("1999-06-01"))
+    expect_identical(rollback_multi(date = as.Date(c("2000-01-20",
+                                                     NA,
+                                                     "2000-02-29")),
+                                    width = 5L,
+                                    origin = 2001L,
+                                    month_start = "Jun"),
+                     as.Date(c("1996-06-01",
+                               NA,
+                               "1996-06-01")))
+    expect_identical(rollback_multi(date = as.Date(c(NA_character_, NA_character_)),
+                                    width = 5L,
+                                    origin = 2001L,
+                                    month_start = "Jun"),
+                     as.Date(c(NA_character_, NA_character_)))
+})
+                                    
+
+## rollback_quarter -----------------------------------------------------------
+
+test_that("'rollback_quarter' gives correct answer with valid inputs", {
+    rollback_quarter <- demprep:::rollback_quarter
+    expect_identical(rollback_quarter("2000-01-01"),
+                     as.Date("2000-01-01"))
+    expect_identical(rollback_quarter("2000-01-31"),
+                     as.Date("2000-01-01"))
+    expect_identical(rollback_quarter("2000-02-29"),
+                     as.Date("2000-01-01"))
+    expect_identical(rollback_quarter("2000-12-31"),
+                     as.Date("2000-10-01"))
+    expect_identical(rollback_quarter(c("2000-12-31", "2001-01-01")),
+                     as.Date(c("2000-10-01", "2001-01-01")))
+    expect_identical(rollback_quarter(as.Date(character())),
                      as.Date(character()))
+    expect_identical(rollback_quarter(as.Date(NA_character_)),
+                     as.Date(NA_character_))
+})
+
+
+## rollforward_month ----------------------------------------------------------
+
+test_that("'rollforward_month' gives correct answer with valid inputs", {
+    rollforward_month <- demprep:::rollforward_month
+    expect_identical(rollforward_month("2000-01-01"),
+                     as.Date("2000-02-01"))
+    expect_identical(rollforward_month("2000-01-31"),
+                     as.Date("2000-02-01"))
+    expect_identical(rollforward_month("2000-02-29"),
+                     as.Date("2000-03-01"))
+    expect_identical(rollforward_month("2000-12-31"),
+                     as.Date("2001-01-01"))
+    expect_identical(rollforward_month(c("2000-12-31", "2001-01-01")),
+                     as.Date(c("2001-01-01", "2001-02-01")))
+    expect_identical(rollforward_month(as.Date(character())),
+                     as.Date(character()))
+    expect_identical(rollforward_month(as.Date(NA_character_)),
+                     as.Date(NA_character_))
 })

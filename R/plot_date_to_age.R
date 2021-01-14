@@ -14,9 +14,9 @@ plot_date_to_age <- function(date, dob, unit, breaks, open_last, labels,
     n_br <- length(breaks)
     diff_br <- diff(breaks)
     date_min <- min(dob, na.rm = TRUE)
-    date_min <- rollback(date_min)
+    date_min <- rollback_month(date_min)
     date_max <- max(date, na.rm = TRUE)
-    date_max <- rollforward(date_max)
+    date_max <- rollforward_month(date_max)
     width_date <- date_max - date_min
     age_approx <- as.integer(date - dob) %/% days_per_unit
     age_max <- max(breaks, age_approx)
