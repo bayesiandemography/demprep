@@ -53,14 +53,16 @@ if the event occurs with or after the move to the
 new age group.
 
 Consider, for instance, events occurring to a person
-who was born on 28 March, in an age-time plan
+who was born on 28 March in an age-time plan
 where periods start on 1 January. 
 If an event occurs on any day
-from 1 January to 27 March (inclusive), then the event
-is allocated to an upper Lexis triangle.
+from 1 January to 27 March (inclusive), then
+\code{date_to_triangle_year} allocates the event
+to an upper Lexis triangle.
 If an event occurs on
-any day from 28 March to 31 December (inclusive), then the
-event is allocated to a lower Lexis triangle.
+any day from 28 March to 31 December (inclusive), then
+\code{date_to_triangle_year} allocates the event
+to a lower Lexis triangle.
 
 \code{date} and \code{dob} are both vectors of class
 \code{\link[base]{Date}}, or vectors that can be coerced to class
@@ -79,8 +81,9 @@ age group is \code{[break_max, Inf)} years. When
 \code{open_last} is \code{FALSE}, the oldest age
 group is \code{[break_max-1, break_max)} years.
 
-If \code{break_max} is \code{NULL}, \code{date_to_triangle_year}
-derives a value based on the highest age in the data
+If \code{break_max} is \code{NULL}, then
+\code{date_to_triangle_year} derives a value
+for \code{break_max} based on the highest age in the data
 and on the value for \code{open_last}.
 
 Periods start on the first day of \code{month_start},

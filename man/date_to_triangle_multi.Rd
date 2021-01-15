@@ -44,24 +44,34 @@ value is a factor; otherwise it is a character vector.
 The return value has the same length as \code{date}.
 }
 \description{
-Given dates when events occurred, together with dates of birth,
-allocate the events to Lexis triangles.
-All the Lexis triangles have the same width,
-which by default is 5 years, though the final upper triangle
-typically has no age limit.
+Based on an age-time plan where age groups and periods have
+identical widths, use dates of events and dates of birth
+to allocate events to Lexis triangles.
 }
 \details{
-An event occurring during period \code{[t, t+n)} to
-a person in age group \code{[a, a+n)} belongs to an
-upper Lexis triangle if the person was already in age group
-\code{[a, a+n)} at time \code{t}, and belongs to a
-lower Lexis triangle if the person joins age group
-\code{[a, a+n)} during period \code{[t, t+n)}.
+The allocation of an event to a Lexis triangle depends
+on the timing of the event and on the timing of change
+in age group. A person moves up into a new age group
+once during each period. An event is allocated
+to an upper Lexis triangle if the event occurs
+before the move to the new age group.
+An event is allocated to a lower Lexis triangle
+if the event occurs with or after the move to the
+new age group.
 
-Information on the Lexis triangle of an event, in addition
-to the period and age group, allows that event to
-be allocated to a birth cohort. The ability to allocate
-events to birth cohorts is essential for demographic accounting.
+Consider, for instance, events occurring to a person
+who was born on 28 March 2001, in an age-time plan
+where periods start on 1 January 2000, 1 January 2005, etc.
+\code{date_to_triangle_multi} allocates events
+to Lexis triangles as follows:
+\tabular{ll}{
+  \emph{Date of event} \tab \emph{Lexis triangle} \cr
+  28 March 2001 to 31 December 2004 \tab \code{"Lower"} \cr
+  1 January 2005 to 27 March 2006 \tab \code{"Upper"} \cr
+  28 March 2006 to 31 December 2009 \tab \code{"Lower"} \cr
+  1 January 2010 to 27 March 2011 \tab \code{"Upper"} \cr
+  etc \tab etc
+}
 
 \code{date} and \code{dob} are both vectors of class
 \code{\link[base]{Date}}, or vectors that can be coerced to class
@@ -80,39 +90,24 @@ age group is \code{[break_max, Inf)} years. When
 \code{open_last} is \code{FALSE}, the oldest age
 group is \code{[break_max-width, break_max)} years.
 
-If \code{break_max} is \code{NULL}, \code{date_to_triangle_multi}
-derives a value, based on the highest age in the data,
-and the value for \code{open_last}.
+If \code{break_max} is \code{NULL}, then
+\code{date_to_triangle_multi} derives a value for
+\code{break_max} based on the highest age in the data
+and on the value for \code{open_last}.
 
 Periods start on the first day of \code{month_start},
 and end \code{width}-years-minus-one-day later.
 The default value for \code{month_start} is \code{"Jan"},
 so periods by default start on 1 January and
-end on 31 December. \code{month_start} can be a
-full month name or an abbreviation.
+end on 31 December.
 
 The location of the periods can be shifted
 by using different values for \code{origin}.
 
-The allocation of events to Lexis triangles becomes
-tricky when the event and the date of birth share the same
-month and day of the month (eg the event occurs on September
-the 12th and the person's birthday is on
-September the 12th), and the difference in years
-is a multiple of \code{width}. Always allocating such
-events to the lower triangle, or always allocating
-them to the upper triangle, would lead to a slight
-imbalance between upper and lower triangles. Instead,
-if the dates match and it is first day of the month,
-the event is allocated to \code{"Lower"}; if the dates match and
-it is the second day of the month, the event is allocated to
-\code{"Upper"}; if the dates match and it is the third day
-of the month, the event is allocated to \code{"Lower"}; and so on.
-See below for an example.
-
 When \code{as_factor} is \code{TRUE}, the levels of
 the factor includes both \code{"Lower"} and
-\code{"Upper"}, even when \code{"Lower"} and \code{"Upper"} do not both appear
+\code{"Upper"}, even when \code{"Lower"}
+and \code{"Upper"} do not both appear
 in the data.
 }
 \examples{
@@ -133,25 +128,17 @@ date_to_triangle_multi(date = c("2027-03-27",
                        dob = "2010-05-12",
                        month_start = "Jul")
 
+## periods start in 2021, 2026, 2031, etc
+date_to_triangle_multi(date = c("2027-03-27",
+                                "2022-11-09"),
+                       dob = "2010-05-12",
+                       origin = 2001)
+
 ## open age group starts at 10 years
 date_to_triangle_multi(date = c("2027-03-27",
                                 "2022-11-09"),
                        dob = "2003-05-12",
                        break_max = 10)
-
-## events and births occur on same month
-## and day of month, and years differ by
-## a multiple of width
-date_to_triangle_multi(date = c("2020-03-01",
-                                "2020-03-02",
-                                "2020-03-03",
-                                "2020-03-04",
-                                "2020-03-05"),
-                      dob = c("2010-03-01",
-                              "2010-03-02",
-                              "2010-03-03",
-                              "2010-03-04",
-                              "2010-03-05"))
 
 ## return non-factor
 date_to_triangle_multi(date = c("2024-03-27",

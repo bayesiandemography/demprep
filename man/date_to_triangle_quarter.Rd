@@ -2,7 +2,7 @@
 % Please edit documentation in R/date_to_triangle.R
 \name{date_to_triangle_quarter}
 \alias{date_to_triangle_quarter}
-\title{Convert dates to one-quarter Lexis triangles}
+\title{Convert dates to quarter-length Lexis triangles}
 \usage{
 date_to_triangle_quarter(
   date,
@@ -32,24 +32,34 @@ value is a factor; otherwise it is a character vector.
 The return value has the same length as \code{date}.
 }
 \description{
-Given dates when events occurred, together with dates of birth,
-allocate the events to Lexis triangles.
-All the Lexis triangles have widths
-of one quarter (ie three months), though the final upper triangle
-typically has no age limit.
+Based on an age-time plan where age groups and periods both have
+widths of one quarter (ie three months),
+use dates of events and dates of birth
+to allocate events to Lexis triangles.
 }
 \details{
-An event occurring during period \code{[t, t+1)} to
-a person in age group \code{[a, a+1)} belongs to an
-upper Lexis triangle if the person was already in age group
-\code{[a, a+1)} at time \code{t}, and belongs to a
-lower Lexis triangle if the person joins age group
-\code{[a, a+1)} during period \code{[t, t+1)}.
+The allocation of an event to a Lexis triangle depends
+on the timing of the event and on the timing of changes
+in age group. A person moves up into a new age group
+once during each period. An event is allocated
+to an upper Lexis triangle if the event occurs
+before the move to the new age group.
+An event is allocated to a lower Lexis triangle
+if the event occurs with or after the move to the
+new age group.
 
-Information on the Lexis triangle of an event, in addition
-to the period and age group, allows that event to
-be allocated to a birth cohort. The ability to allocate
-events to birth cohorts is essential for demographic accounting.
+Consider, for instance, events occurring to a person
+who was born on 3 March. \code{date_to_triangle_quarter}
+allocates events to Lexis triangles as follows:
+\tabular{ll}{
+  \emph{Date of event} \tab \emph{Lexis triangle} \cr
+  3 March to 31 March \tab \code{"Lower"} \cr
+  1 April to 2 June \tab \code{"Upper"} \cr
+  3 June to 31 September \tab \code{"Lower"} \cr
+  1 October to 2 December \tab \code{"Upper"} \cr
+  3 December to 31 December \tab \code{"Lower"} \cr
+  etc \tab etc
+}
 
 \code{date} and \code{dob} are both vectors of class
 \code{\link[base]{Date}}, or vectors that can be coerced to class
@@ -68,27 +78,16 @@ age group is \code{[break_max, Inf)} years. When
 \code{open_last} is \code{FALSE}, the oldest age
 group is \code{[break_max-1, break_max)} years.
 
-If \code{break_max} is \code{NULL}, \code{date_to_triangle_quarter}
-derives a value, based on the highest age in the data,
+If \code{break_max} is \code{NULL}, then
+\code{date_to_triangle_quarter}
+derives a value for \code{break_max}
+based on the highest age in the data,
 and the value for \code{open_last}.
-
-The allocation of events to Lexis triangles becomes
-tricky when the event and the date of birth share the same
-day of the month and are a multiple of three months apart.
-Always allocating such
-events to the lower triangle, or always allocating
-them to the upper triangle, would lead to a slight
-imbalance between upper and lower triangles. Instead,
-if the dates match and it is first day of the month,
-the event is allocated to \code{"Lower"}; if the dates match and
-it is the second day of the month, the event is allocated to
-\code{"Upper"}; if the dates match and it is the third day
-of the month, the event is allocated to \code{"Lower"}; and so on.
-See below for an example.
 
 When \code{as_factor} is \code{TRUE}, the levels of
 the factor includes both \code{"Lower"} and
-\code{"Upper"}, even when \code{"Lower"} and \code{"Upper"} do not both appear
+\code{"Upper"}, even when \code{"Lower"}
+and \code{"Upper"} do not both appear
 in the data.
 }
 \examples{
@@ -102,19 +101,6 @@ date_to_triangle_quarter(date = c("2017-03-27",
                                   "2024-03-27"),
                          dob = "2010-01-01",
                          break_max = 40)
-
-## events and births occur on same day of month
-## and are a multiple of three months apart
-date_to_triangle_quarter(date = c("2020-04-01",
-                                  "2020-04-02",
-                                  "2020-04-03",
-                                  "2020-04-04",
-                                  "2020-04-05"),
-                         dob = c("2019-01-01",
-                                 "2019-01-02",
-                                 "2019-01-03",
-                                 "2019-01-04",
-                                 "2019-01-05"))
 
 ## return non-factor
 date_to_triangle_quarter(date = c("2024-03-27",
