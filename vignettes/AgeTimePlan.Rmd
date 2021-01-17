@@ -15,8 +15,14 @@ knitr::opts_chunk$set(
     fig.width = 6.5
 )
 deaths <- data.frame(person = c("Anwar", "Baptiste", "Candice"),
-dob = c("2014-02-14", "2012-01-04", "2019-04-29"),
-date = c("2019-10-11", "2020-02-27", "2020-08-01"))
+                     dob = c("2014-02-14", "2012-01-04", "2019-04-29"),
+                     date = c("2019-10-11", "2020-02-27", "2020-08-01"))
+
+births_in <- data.frame(date = c("2020-05-18", "2020-07-02", "2020-10-05"),
+                     dob = c("2000-02-14", "2002-05-18", "1990-12-18"))
+
+births_out <- data.frame(date = c("2020-03-14", "2020-08-22"),
+                         dob = c("1968-01-23", "2008-03-05"))
 ```
 
 # Introduction
@@ -384,50 +390,48 @@ plot_date_to_age_lifetab(date = dth_age_lifetab$date,
 ## Age of parents
 
 ```{r}
-births <- data.frame(date = c("2020-05-18", "2020-07-02", "2020-10-05"),
-                     dob = c("2000-02-14", "2002-05-18", "1990-12-18"))
-births$age <- date_to_age_births(date = births$date,
-                                 dob = births$dob)
-births
+bth_in_age <- births_in
+bth_in_age$age <- date_to_age_births(date = bth_in_age$date,
+                                     dob = bth_in_age$dob)
+bth_in_age
 ```
 
 
 ```{r, fig.width = 5, fig.height = 6}
-plot_date_to_age_births(date = births$date,
-                        dob = births$dob)
+plot_date_to_age_births(date = bth_in_age$date,
+                        dob = bth_in_age$dob)
 ```
 
 ```{r}
-births_outside <- data.frame(date = c("2020-03-14", "2020-08-22"),
-                             dob = c("1968-01-23", "2008-03-05"))
-births_outside$age <- date_to_age_births(date = births_outside$date,
-                                         dob = births_outside$dob,
-                                         break_min = 10,
-                                         break_max = 55)
-births_outside
+bth_out_age <- births_out
+bth_out_age$age <- date_to_age_births(date = bth_out_age$date,
+                                      dob = bth_out_age$dob,
+                                      break_min = 10,
+                                      break_max = 55)
+bth_out_age
 ```
 
 
 ```{r, fig.width = 8, fig.height = 6}
-plot_date_to_age_births(date = births_outside$date,
-                        dob = births_outside$dob,
+plot_date_to_age_births(date = bth_out_age$date,
+                        dob = bth_out_age$dob,
                         break_min = 10,
                         break_max = 55)
 ```
 
 
 ```{r}
-births_outside$age_recoded <- date_to_age_births(date = births_outside$date,
-                                                 dob = births_outside$dob,
-                                                 recode_up = TRUE,
-                                                 recode_down = TRUE)
-births
+bth_out_age$age_recoded <- date_to_age_births(date = bth_out_age$date,
+                                              dob = bth_out_age$dob,
+                                              recode_up = TRUE,
+                                              recode_down = TRUE)
+bth_out_age
 ```
 
 
 ```{r, fig.width = 8, fig.height = 6}
-plot_date_to_age_births(date = births_outside$date,
-                        dob = births_outside$dob,
+plot_date_to_age_births(date = bth_out_age$date,
+                        dob = bth_out_age$dob,
                         recode_up = TRUE,
                         recode_down = TRUE)
 ```
@@ -475,7 +479,7 @@ plot_date_to_age_quarter(date = dth_age_quarter$date[3],
 
 # Lexis triangles
 
-- age and time use same length steps (subject to complications of months and years having different lengths)
+- age and time use same length steps (subject to complications of months and years having different lengths, plus open age group)
 - one month; one quarter; one year; $n$ years
 - age and time not enough to identify cohort; also need Lexis triangle
 - abstract: 
@@ -490,8 +494,150 @@ How to work out triangle:
 
 1. Use date now and dob to calculate age group now
 2. Use date now to identify date at start of period
-3. Use date at start of period and dob to calculate age group at start of period
-4. If age group now is equal to age group at start of period, then event occurred in Upper triangle; otherwise occurred in Lower triangle.
+3. Use date at start of period and dob to calculate whether entered age group during period
+4. If so, lower; if not upper.
+
+## Single-year age-time steps
+
+
+```{r}
+dth_tri_yr <- deaths
+dth_tri_yr$tri_jan <- date_to_triangle_year(date = dth_age_yr$date,
+                                            dob = dth_age_yr$dob,
+                                            break_max = 10)
+dth_tri_yr
+```
+
+```{r, echo = FALSE, fig.height = 6.5}
+plot_date_to_triangle_year(date = dth_tri_yr$date,
+                           dob = dth_tri_yr$dob,
+                           break_max = 10)
+```
+
+Change from 1 Jan to 1 Jul
+
+```{r}
+dth_tri_yr$tri_jul <- date_to_triangle_year(date = dth_age_yr$date,
+                                            dob = dth_age_yr$dob,
+                                            month_start = "Jul",
+                                            break_max = 10)
+dth_tri_yr
+```
+
+```{r, echo = FALSE, fig.height = 6.5}
+plot_date_to_triangle_year(date = dth_tri_yr$date,
+                           dob = dth_tri_yr$dob,
+                           month_start = "Jul",
+                           break_max = 10)
+```
+
+Change `break_max`
+
+```{r}
+dth_tri_yr$tri_6 <- date_to_triangle_year(date = dth_age_yr$date,
+                                          dob = dth_age_yr$dob,
+                                          break_max = 6)
+dth_tri_yr
+```
+
+```{r, echo = FALSE, fig.height = 6}
+plot_date_to_triangle_year(date = dth_tri_yr$date,
+                           dob = dth_tri_yr$dob,
+                           break_max = 6)
+```
+
+
+## Multi-year age-time steps
+
+
+```{r}
+dth_tri_multi <- deaths
+dth_tri_multi$tri_5 <- date_to_triangle_multi(date = dth_age_multi$date,
+                                              dob = dth_age_multi$dob,
+                                              break_max = 30)
+dth_tri_multi
+```
+
+```{r, echo = FALSE, fig.height = 6.5}
+plot_date_to_triangle_multi(date = dth_tri_multi$date,
+                           dob = dth_tri_multi$dob,
+                           break_max = 30)
+```
+
+
+10-year time step
+
+
+```{r}
+dth_tri_multi$tri_10 <- date_to_triangle_multi(date = dth_age_multi$date,
+                                               dob = dth_age_multi$dob,
+                                               width = 10,
+                                               break_max = 30)
+dth_tri_multi
+```
+
+```{r, echo = FALSE, fig.height = 6.5}
+plot_date_to_triangle_multi(date = dth_tri_multi$date,
+                            dob = dth_tri_multi$dob,
+                            width = 10,
+                            break_max = 30)
+```
+
+
+
+
+## Births
+
+
+```{r}
+births_in_tri <- births_in
+births_in_tri$tri <- date_to_triangle_births(date = births_in_tri$date,
+                                             dob = births_in_tri$dob)
+births_in_tri
+```
+
+```{r, echo = FALSE, fig.height = 6.5}
+plot_date_to_triangle_births(date = births_in_tri$date,
+                             dob = births_in_tri$dob)
+```
+
+
+
+
+## Quarter-length age-time steps
+
+
+```{r}
+dth_tri_qu <- deaths
+dth_tri_qu$tri <- date_to_triangle_quarter(date = dth_tri_qu$date,
+                                           dob = dth_tri_qu$dob,
+                                           break_max = 24)
+dth_tri_qu
+```
+
+```{r, echo = FALSE, fig.height = 6.5}
+plot_date_to_triangle_quarter(date = dth_tri_qu$date,
+                              dob = dth_tri_qu$dob,
+                              break_max = 24)
+```
+
+
+
+## Month-length age-time steps
+
+```{r}
+dth_tri_month <- deaths
+dth_tri_month$tri <- date_to_triangle_month(date = dth_tri_month$date,
+                                            dob = dth_tri_month$dob)
+dth_tri_month
+```
+
+
+```{r, echo = FALSE, fig.height = 6}
+plot_date_to_triangle_month(date = dth_tri_month$date[3],
+                            dob = dth_tri_month$dob[3],
+                            break_max = 20)
+```
 
 
 # Boundaries

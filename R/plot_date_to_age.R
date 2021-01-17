@@ -1,139 +1,5 @@
 
 ## NO_TESTS
-plot_date_to_age <- function(date, dob, unit, breaks, open_last, labels,
-                             show_months, cex = 0.8) {
-    old_par <- graphics::par(mar = c(6, 0, 0, 0),
-                             mgp = c(0, 0, 0),
-                             cex = cex)
-    n_date <- length(date)
-    days_per_unit <- switch(unit,
-                            month = 31L,
-                            quarter = 31L * 4L,
-                            year = 31L * 12L,
-                            stop("invalid unit"))
-    n_br <- length(breaks)
-    diff_br <- diff(breaks)
-    date_min <- min(dob, na.rm = TRUE)
-    date_min <- rollback_month(date_min)
-    date_max <- max(date, na.rm = TRUE)
-    date_max <- rollforward_month(date_max)
-    width_date <- date_max - date_min
-    age_approx <- as.integer(date - dob) %/% days_per_unit
-    age_max <- max(breaks, age_approx)
-    if (open_last)
-        age_max <- age_max + diff(breaks)[n_br - 1L]
-    x_plot <- c(date_min - 0.15 * width_date, date_max)
-    y_plot <- c(0, age_max)
-    ## empty plotting frame
-    plot(x = x_plot,
-         y = y_plot,
-         pch = NA,
-         axes = FALSE,
-         ylab = "",
-         xlab = "")
-    ## vertical lines to show boundaries between months
-    if (show_months) {
-        boundaries_months <- seq(from = date_min,
-                                 to = date_max,
-                                 by = "month")
-        graphics::segments(x0 = boundaries_months,
-                           y0 = 0,
-                           x1 = boundaries_months,
-                           y1 = breaks[[n_br]],
-                           col = "grey")
-        graphics::mtext(text = dob,
-                        side = 1,
-                        line = -0.5,
-                        at = boundaries_months,
-                        cex = 0.6,
-                        las = 3,
-                        col = "grey")
-    }
-    ## horizontal lines to show boundaries between age groups
-    y_horiz <- unique(c(0, breaks)) # needed for date_to_age_births
-    graphics::segments(x0 = rep(date_min, times = n_br),
-                       y0 = y_horiz,
-                       x1 = rep(date_max, times = n_br),
-                       y1 = y_horiz,
-                       lwd = 0.5,
-                       lty = "solid",
-                       col = "cornflowerblue")
-    ## labels for boundaries between age groups
-    graphics::text(x = date_min - 0.02 * width_date,
-                   y = breaks,
-                   labels = breaks,
-                   cex = 0.7,
-                   col = "cornflowerblue")
-    ## labels for age groups
-    graphics::text(x = date_min - 0.04 * width_date,
-                   y = breaks[-n_br] + 0.5 * diff_br,
-                   labels = sprintf('"%s"', labels[seq_len(n_br - 1L)]),
-                   pos = 2,
-                   cex = 0.9,
-                   col = "black")
-    if (open_last)
-        graphics::text(x = date_min - 0.04 * width_date,
-                       y = breaks[[n_br]] + 0.5 * diff_br[[n_br - 1L]],
-                       labels = sprintf('"%s"', labels[[n_br]]),
-                       pos = 2,
-                       cex = 0.9)
-    ## points for 'dob'
-    graphics::points(x = dob,
-                     y = rep(0, times = n_date),
-                     pch = 19)    
-    ## labels for 'dob'
-    graphics::mtext(text = dob,
-                    side = 1,
-                    line = -0.5,
-                    at = dob,
-                    cex = 0.6,
-                    las = 3,
-                    col = "black")
-    ## life lines, and points for date
-    for (i in seq_along(date)) {
-        coord <- coord_lifeline(date1 = date[[i]],
-                                dob1 = dob[[i]])
-        x0 <- coord$x0
-        y0 <- coord$y0 / days_per_unit
-        x1 <- coord$x1
-        y1 <- coord$y1 / days_per_unit
-        graphics::segments(x0 = x0,
-                           y0 = y0,
-                           x1 = x1,
-                           y1 = y1)
-        graphics::points(x = date[[i]],
-                         y = y1[[length(y1)]],
-                         pch = 19)
-    }        
-    ## labels for 'date'
-    graphics::mtext(text = date,
-                    side = 1,
-                    line = -0.5,
-                    at = date,
-                    cex = 0.6,
-                    las = 3,
-                    col = "black")
-    ## xlab
-    graphics::mtext(text = "Time",
-                    side = 1,
-                    line = 4,
-                    cex = 0.7,
-                    col = "grey35")
-    graphics::par(old_par)
-    invisible(NULL)
-    ## ylab
-    graphics::mtext(text = "Age",
-                    side = 2,
-                    line = 2,
-                    las = 1,
-                    cex = 0.7,
-                    col = "grey35")
-    graphics::par(old_par)
-    invisible(NULL)
-}
-
-
-## NO_TESTS
 #' Depict the intervals created by
 #' function 'date_to_age_year'
 #'
@@ -213,13 +79,17 @@ plot_date_to_age_year <- function(date,
                               open_last = open_last,
                               include_na = FALSE)
     ## make plot
-    plot_date_to_age(date = date,
-                     dob = dob,
-                     unit = "year",
-                     breaks = breaks,
-                     open_last = open_last,
-                     labels = labels,
-                     show_months = show_months)
+    plot_date_to_age_triangle(date = date,
+                              dob = dob,
+                              unit = "year",
+                              breaks_time = NULL,
+                              breaks_age = breaks,
+                              open_last = open_last,
+                              labels_time = NULL,
+                              labels_age = labels,
+                              show_months = show_months,
+                              show_vert = FALSE,
+                              show_diag = FALSE)
 }
 
 ## NO_TESTS
@@ -292,7 +162,7 @@ plot_date_to_age_multi <- function(date,
     age_years <- age_months %/% 12L
     ## if final interval not open, check that all
     ## ages less than 'break_max'
-    if (!open_last)
+    if (!is.null(break_max) && !open_last)
         demcheck::err_lt_break_max_age(age = age_years,
                                        break_max = break_max,
                                        date = date,
@@ -308,13 +178,17 @@ plot_date_to_age_multi <- function(date,
                               open_last = open_last)
 
     ## make plot
-    plot_date_to_age(date = date,
-                     dob = dob,
-                     unit = "year",
-                     breaks = breaks,
-                     open_last = open_last,
-                     labels = labels,
-                     show_months = show_months)
+    plot_date_to_age_triangle(date = date,
+                              dob = dob,
+                              unit = "year",
+                              breaks_time = NULL,
+                              breaks_age = breaks,
+                              open_last = open_last,
+                              labels_time = NULL,
+                              labels_age = labels,
+                              show_months = show_months,
+                              show_vert = FALSE,
+                              show_diag = FALSE)
 }
 
 ## NO_TESTS
@@ -369,13 +243,17 @@ plot_date_to_age_lifetab <- function(date,
     labels <- make_labels_age(breaks = breaks,
                               open_last = TRUE,
                               include_na = FALSE)
-    plot_date_to_age(date = date,
-                     dob = dob,
-                     breaks = breaks,
-                     unit = "year",
-                     open_last = TRUE,
-                     labels = labels,
-                     show_months = show_months)
+    plot_date_to_age_triangle(date = date,
+                              dob = dob,
+                              unit = "year",
+                              breaks_time = NULL,
+                              breaks_age = breaks,
+                              open_last = TRUE,
+                              labels_time = NULL,
+                              labels_age = labels,
+                              show_months = show_months,
+                              show_vert = FALSE,
+                              show_diag = FALSE)
 }
 
 ## NO_TESTS
@@ -516,20 +394,18 @@ plot_date_to_age_births <- function(date, dob,
     ## make labels for breaks
     labels <- make_labels_age(breaks = breaks,
                               open_last = FALSE)
-    ## modify dates of birth, where necessary
-    if (recode_up) {
-
-
-
-    }
     ## make plot
-    plot_date_to_age(date = date,
-                     dob = dob,
-                     breaks = breaks,
-                     unit = "year",
-                     open_last = FALSE,
-                     labels = labels,
-                     show_months = show_months)
+    plot_date_to_age_triangle(date = date,
+                              dob = dob,
+                              unit = "year",
+                              breaks_time = NULL,
+                              breaks_age = breaks,
+                              open_last = FALSE,
+                              labels_time = NULL,
+                              labels_age = labels,
+                              show_months = show_months,
+                              show_vert = FALSE,
+                              show_diag = FALSE)
 }
 
 ## NO_TESTS
@@ -619,13 +495,17 @@ plot_date_to_age_custom <- function(date, dob,
                               open_last = open_last,
                               include_na = FALSE)
     ## make plot
-    plot_date_to_age(date = date,
-                     dob = dob,
-                     breaks = breaks,
-                     unit = "year",
-                     open_last = open_last,
-                     labels = labels,
-                     show_months = show_months)
+    plot_date_to_age_triangle(date = date,
+                              dob = dob,
+                              unit = "year",
+                              breaks_time = NULL,
+                              breaks_age = breaks,
+                              open_last = open_last,
+                              labels_time = NULL,
+                              labels_age = labels,
+                              show_months = show_months,
+                              show_vert = FALSE,
+                              show_diag = FALSE)
 }
 
 ## NO_TESTS
@@ -706,13 +586,17 @@ plot_date_to_age_quarter <- function(date,
                                       break_max = break_max,
                                       open_last = open_last)
     ## make plot
-    plot_date_to_age(date = date,
-                     dob = dob,
-                     breaks = breaks,
-                     unit = "quarter",
-                     open_last = open_last,
-                     labels = labels,
-                     show_months = show_months)
+    plot_date_to_age_triangle(date = date,
+                              dob = dob,
+                              unit = "quarter",
+                              breaks_time = NULL,
+                              breaks_age = breaks,
+                              open_last = open_last,
+                              labels_time = NULL,
+                              labels_age = labels,
+                              show_months = show_months,
+                              show_vert = FALSE,
+                              show_diag = FALSE)
 }
 
 ## NO_TESTS
@@ -793,11 +677,15 @@ plot_date_to_age_month <- function(date,
                                     open_last = open_last,
                                     include_na = FALSE)
     ## make plot
-    plot_date_to_age(date = date,
-                     dob = dob,
-                     unit = "month",
-                     breaks = breaks,
-                     open_last = open_last,
-                     labels = labels,
-                     show_months = show_months)
+    plot_date_to_age_triangle(date = date,
+                              dob = dob,
+                              unit = "month",
+                              breaks_time = NULL,
+                              breaks_age = breaks,
+                              open_last = open_last,
+                              labels_time = NULL,
+                              labels_age = labels,
+                              show_months = show_months,
+                              show_vert = FALSE,
+                              show_diag = FALSE)
 }

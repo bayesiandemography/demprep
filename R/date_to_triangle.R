@@ -508,6 +508,8 @@ date_to_triangle_births <- function(date,
                                   name = "recode_up")
     demcheck::err_is_logical_flag(x = recode_down,
                                   name = "recode_down")
+    origin <- demcheck::err_tdy_integer_scalar(x = origin,
+                                               name = "origin")
     ## calculate age in months and years
     age_months <- age_completed_months(date = date,
                                        dob = dob)
