@@ -74,7 +74,7 @@
 #' @param label_year_start Logical. Whether to label a cohort
 #' by the calendar year at the beginning of the cohort
 #' or the calendar year at the end. Not needed for cohorts
-#' that start on 1 January.
+#' that start on 1 January. Defaults to \code{TRUE}.
 #' @param break_min The start date of the first cohort,
 #' or \code{NULL} (the default.)
 #' If non-\code{NULL}, \code{break_min} can be a single value of

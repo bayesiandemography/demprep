@@ -54,7 +54,7 @@
 #' @param label_year_start Whether to label a period
 #' by the calendar year at the beginning of the period
 #' or the calendar year at the end. Not needed for periods
-#' that start on 1 January. Defaults to \code{FALSE}.
+#' that start on 1 January. Defaults to \code{TRUE}.
 #' @param as_factor Whether the return value is a factor.
 #' Defaults to \code{TRUE}.
 #'

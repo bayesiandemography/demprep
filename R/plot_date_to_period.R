@@ -75,7 +75,7 @@ plot_date_to_period <- function(date, breaks, labels, cex = 0.8) {
 #' @param label_year_start Whether to label a period
 #' by the calendar year at the beginning of the period
 #' or the calendar year at the end. Not needed for periods
-#' that start on 1 January. Defaults to \code{FALSE}.
+#' that start on 1 January. Defaults to \code{TRUE}.
 #'
 #' @examples
 #' plot_date_to_period_year(date = c("2024-03-27", "2022-11-09"))

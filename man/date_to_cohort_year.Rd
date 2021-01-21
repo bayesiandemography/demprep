@@ -26,7 +26,7 @@ the first day of this month.}
 \item{label_year_start}{Logical. Whether to label a cohort
 by the calendar year at the beginning of the cohort
 or the calendar year at the end. Not needed for cohorts
-that start on 1 January.}
+that start on 1 January. Defaults to \code{TRUE}.}
 
 \item{break_min}{The start date of the first cohort,
 or \code{NULL} (the default.)
