@@ -44,6 +44,14 @@ plot_date_to_period <- function(date, breaks, labels, cex = 0.8) {
                      y = rep(0, times = n_date),
                      pch = 19,
                      col = "black")
+    ## labels for 'date'
+    graphics::text(x = date,
+                   y = -0.05,
+                   labels = date,
+                   cex = 0.9,
+                   adj = 1,
+                   srt = 90,
+                   col = "black")
     ## xlab
     graphics::mtext(text = "Time",
                     side = 1,
@@ -59,18 +67,16 @@ plot_date_to_period <- function(date, breaks, labels, cex = 0.8) {
 #' Depict the intervals created by
 #' function 'date_to_period_year'
 #' 
-#' Create plot illustrating the inputs and outputs
-#' of function \code{\link{date_to_period_year}}.
+#' Create plot illustrating how function
+#' \code{\link{date_to_period_year}} works.
 #' 
-#' This function is for learning about the
-#' labelling conventions used in the \strong{dem} packages,
-#' and about their implementation in package
-#' \strong{demprep}. It would not normally be used
-#' during actual data analysis.
+#' \code{plot_date_to_period_year} is typically used for
+#' learning or documentation, rather than for
+#' actual data analysis.
 #'
 #' @param date Dates of events or measurements.
 #' @param month_start An element of \code{\link[base]{month.name}},
-#' or \code{\link[base]{month.abb}}. The period starts on
+#' or \code{\link[base]{month.abb}}. Each period starts on
 #' the first day of this month.
 #' @param label_year_start Whether to label a period
 #' by the calendar year at the beginning of the period
@@ -78,15 +84,18 @@ plot_date_to_period <- function(date, breaks, labels, cex = 0.8) {
 #' that start on 1 January. Defaults to \code{TRUE}.
 #'
 #' @examples
-#' plot_date_to_period_year(date = c("2024-03-27", "2022-11-09"))
+#' plot_date_to_period_year(date = c("2024-03-27",
+#'                                   "2022-11-09"))
 #'
 #' ## July to June
-#' plot_date_to_period_year(date = c("2024-03-27", "2022-11-09"),
+#' plot_date_to_period_year(date = c("2024-03-27",
+#'                                   "2022-11-09"),
 #'                          month_start = "Jul")
 #'
 #' ## July to June, using the calendar year at
 #' ## the end for the label
-#' plot_date_to_period_year(date = c("2024-03-27", "2022-11-09"),
+#' plot_date_to_period_year(date = c("2024-03-27",
+#'                                   "2022-11-09"),
 #'                          month_start = "Jul",
 #'                          label_year_start = FALSE)
 #' @export
@@ -124,14 +133,12 @@ plot_date_to_period_year <- function(date,
 #' Depict the intervals created by
 #' function 'date_to_period_multi'
 #'
-#' Create plot illustrating the inputs and outputs
-#' of function \code{\link{date_to_period_multi}}.
+#' Create plot illustrating how function
+#' \code{\link{date_to_period_multi}} works.
 #' 
-#' This function is for learning about the
-#' labelling conventions used in the \strong{dem} packages,
-#' and about their implementation in package
-#' \strong{demprep}. It would not normally be used
-#' during actual data analysis.
+#' \code{plot_date_to_period_multi} is typically used for
+#' learning or documentation, rather than for
+#' actual data analysis.
 #'
 #' @inheritParams plot_date_to_period_year
 #' @param width The length, in whole years, of the periods.
@@ -147,19 +154,18 @@ plot_date_to_period_year <- function(date,
 #' plot_date_to_period_multi(date = c("2024-03-27",
 #'                                    "2018-11-09",
 #'                                    "2021-03-02"),
-#'                           width = 5)
+#'                           width = 10)
 #'
 #' ## origin is 2001
 #' plot_date_to_period_multi(date = c("2024-03-27",
-#'                               "2018-11-09",
-#'                               "2021-03-02"),
+#'                                    "2018-11-09",
+#'                                    "2021-03-02"),
 #'                           origin = 2001)
 #'
-#' ## July to June
+#' ## start on 1 July, rather than 1 January
 #' plot_date_to_period_multi(date = c("2024-03-27",
-#'                               "2018-11-09",
-#'                               "2021-03-02"),
-#'                           origin = 2001,
+#'                                    "2018-11-09",
+#'                                    "2021-03-02"),
 #'                           month_start = "Jul")
 #' @export
 plot_date_to_period_multi <- function(date,
@@ -200,14 +206,12 @@ plot_date_to_period_multi <- function(date,
 #' Depict the intervals created by
 #' function 'date_to_period_custom'
 #'
-#' Create plot illustrating the inputs and outputs
-#' of function \code{\link{date_to_period_custom}}.
+#' Create plot illustrating how function
+#' \code{\link{date_to_period_custom}} works.
 #' 
-#' This function is for learning about the
-#' labelling conventions used in the \strong{dem} packages,
-#' and about their implementation in package
-#' \strong{demprep}. It would not normally be used
-#' during actual data analysis.
+#' \code{plot_date_to_period_custom} is typically used for
+#' learning or documentation, rather than for
+#' actual data analysis.
 #'
 #' @inheritParams plot_date_to_period_year
 #' @param breaks Dates defining starts and ends of periods.
@@ -229,14 +233,17 @@ plot_date_to_period_multi <- function(date,
 #'                                       "2019-03-01",
 #'                                       "2026-03-01"))
 #' @export
-plot_date_to_period_custom <- function(date, breaks) {
+plot_date_to_period_custom <- function(date = NULL, breaks) {
+    has_date <- !is.null(date) && (length(date) > 0L)
     ## check arguments and/or apply defaults
-    demcheck::err_positive_length(x = date,
-                                  name = "date")
-    demcheck::err_has_non_na(x = date,
-                             name = "date")
-    date <- demcheck::err_tdy_date_vector(x = date,
-                                          name = "date")
+    if (has_date) {
+        demcheck::err_has_non_na(x = date,
+                                 name = "date")
+        date <- demcheck::err_tdy_date_vector(x = date,
+                                              name = "date")
+    }
+    else
+        date <- as.Date(character())
     demcheck::err_positive_length(x = breaks,
                                   name = "breaks")
     breaks <- demcheck::err_tdy_breaks_date_period(breaks = breaks)
@@ -261,21 +268,18 @@ plot_date_to_period_custom <- function(date, breaks) {
 #' Depict the intervals created by
 #' function 'date_to_period_quarter'
 #'
-#' Create plot illustrating the inputs and outputs
-#' of function \code{\link{date_to_period_quarter}}.
+#' Create plot illustrating how function
+#' \code{\link{date_to_period_quarter}} works.
 #' 
-#' This function is for learning about the
-#' labelling conventions used in the \strong{dem} packages,
-#' and about their implementation in package
-#' \strong{demprep}. It would not normally be used
-#' during actual data analysis.
+#' \code{plot_date_to_period_quarter} is typically used for
+#' learning or documentation, rather than for
+#' actual data analysis.
 #'
 #' @inheritParams plot_date_to_period_year
 #'
 #' @examples
-#' plot_date_to_period_quarter(date = c("2024-03-27",
-#'                                      "2020-01-03",
-#'                                      "2022-11-09"))
+#' plot_date_to_period_quarter(date = c("2021-11-24",
+#'                                      "2022-04-09"))
 #' @export
 plot_date_to_period_quarter <- function(date) {
     ## check arguments and/or apply defaults
@@ -305,21 +309,18 @@ plot_date_to_period_quarter <- function(date) {
 #' Depict the intervals created by
 #' function 'date_to_period_month'
 #'
-#' Create plot illustrating the inputs and outputs
-#' of function \code{\link{date_to_period_month}}.
+#' Create plot illustrating how function
+#' \code{\link{date_to_period_month}} works.
 #' 
-#' This function is for learning about the
-#' labelling conventions used in the \strong{dem} packages,
-#' and about their implementation in package
-#' \strong{demprep}. It would not normally be used
-#' during actual data analysis.
+#' \code{plot_date_to_period_month} is typically used for
+#' learning or documentation, rather than for
+#' actual data analysis.
 #'
 #' @inheritParams plot_date_to_period_year
 #'
 #' @examples
-#' plot_date_to_period_month(date = c("2024-03-27",
-#'                                    "2020-01-03",
-#'                                    "2022-11-09"))
+#' plot_date_to_period_month(date = c("2021-11-24",
+#'                                    "2022-04-09"))
 #' @export
 plot_date_to_period_month <- function(date) {
     ## check arguments and/or apply defaults

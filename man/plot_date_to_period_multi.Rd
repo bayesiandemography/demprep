@@ -16,19 +16,17 @@ Defaults to 5.}
 \item{origin}{An integer. Defaults to 2000.}
 
 \item{month_start}{An element of \code{\link[base]{month.name}},
-or \code{\link[base]{month.abb}}. The period starts on
+or \code{\link[base]{month.abb}}. Each period starts on
 the first day of this month.}
 }
 \description{
-Create plot illustrating the inputs and outputs
-of function \code{\link{date_to_period_multi}}.
+Create plot illustrating how function
+\code{\link{date_to_period_multi}} works.
 }
 \details{
-This function is for learning about the
-labelling conventions used in the \strong{dem} packages,
-and about their implementation in package
-\strong{demprep}. It would not normally be used
-during actual data analysis.
+\code{plot_date_to_period_multi} is typically used for
+learning or documentation, rather than for
+actual data analysis.
 }
 \examples{
 plot_date_to_period_multi(date = c("2024-03-27",
@@ -39,18 +37,17 @@ plot_date_to_period_multi(date = c("2024-03-27",
 plot_date_to_period_multi(date = c("2024-03-27",
                                    "2018-11-09",
                                    "2021-03-02"),
-                          width = 5)
+                          width = 10)
 
 ## origin is 2001
 plot_date_to_period_multi(date = c("2024-03-27",
-                              "2018-11-09",
-                              "2021-03-02"),
+                                   "2018-11-09",
+                                   "2021-03-02"),
                           origin = 2001)
 
-## July to June
+## start on 1 July, rather than 1 January
 plot_date_to_period_multi(date = c("2024-03-27",
-                              "2018-11-09",
-                              "2021-03-02"),
-                          origin = 2001,
+                                   "2018-11-09",
+                                   "2021-03-02"),
                           month_start = "Jul")
 }

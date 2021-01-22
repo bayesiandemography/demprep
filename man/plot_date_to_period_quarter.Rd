@@ -11,18 +11,15 @@ plot_date_to_period_quarter(date)
 \item{date}{Dates of events or measurements.}
 }
 \description{
-Create plot illustrating the inputs and outputs
-of function \code{\link{date_to_period_quarter}}.
+Create plot illustrating how function
+\code{\link{date_to_period_quarter}} works.
 }
 \details{
-This function is for learning about the
-labelling conventions used in the \strong{dem} packages,
-and about their implementation in package
-\strong{demprep}. It would not normally be used
-during actual data analysis.
+\code{plot_date_to_period_quarter} is typically used for
+learning or documentation, rather than for
+actual data analysis.
 }
 \examples{
-plot_date_to_period_quarter(date = c("2024-03-27",
-                                     "2020-01-03",
-                                     "2022-11-09"))
+plot_date_to_period_quarter(date = c("2021-11-24",
+                                     "2022-04-09"))
 }

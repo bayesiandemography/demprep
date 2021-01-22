@@ -21,7 +21,7 @@ otherwise it defaults to \code{FALSE}.}
 \description{
 Create plot illustrating how function
 \code{\link{date_to_cohort_custom}} works.
-\code{plot_date_to_cohort_custom} is designed for
+\code{plot_date_to_cohort_custom} is typically used for
 learning or documentation, rather than for
 actual data analysis.
 }

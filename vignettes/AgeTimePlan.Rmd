@@ -44,6 +44,19 @@ library(demprep)
 
 - representation of dates
 
+
+| Units | Periods | Cohorts | Age groups | Lexis triangles |
+|:------|:--------|:--------|:-----------|:----------------|
+| years | `date_to_period_year` | `date_to_cohort_year` | `date_to_age_year` | `date_to_triangle_year` |
+| years | `date_to_period_multi` | `date_to_cohort_multi` | `date_to_age_multi` | `date_to_triangle_multi` |
+| years | `date_to_period_custom` | `date_to_cohort_custom` | `date_to_age_custom` | \<none\> |
+| years | \<none\> | \<none\> | `date_to_age_lifetab`| \<none\> |
+| years | \<none\> | \<none\> | `date_to_age_births` | `date_to_triangle_births` |
+| quarters | `date_to_period_quarter` | `date_to_cohort_quarter` | `date_to_age_quarter` | `date_to_triangle_quarter` |
+| months | `date_to_period_month` | `date_to_cohort_month` | `date_to_age_month` | `date_to_triangle_month` |
+
+
+
 # Periods
 
 ## General issues
@@ -217,19 +230,6 @@ plot_date_to_period_custom(date = dth_per_custom$date,
 ```
 
 
-## Month-length periods
-
-
-```{r}
-dth_per_month <- deaths
-dth_per_month$time <- date_to_period_month(dth_per_custom$date)
-dth_per_month
-```
-
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_month(dth_per_month$date[1:2])
-```
-
 
 ## Quarter-length periods
 
@@ -242,6 +242,69 @@ dth_per_quarter
 
 ```{r, echo = FALSE, fig.height = 1.75}
 plot_date_to_period_quarter(dth_per_quarter$date)
+```
+
+
+
+## Month-length periods
+
+```{r}
+dth_per_month <- deaths
+dth_per_month$time <- date_to_period_month(dth_per_custom$date)
+dth_per_month
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_month(dth_per_month$date[1:2])
+```
+
+
+# Cohorts
+
+## General issues
+
+Defn of cohort
+
+Same as period, but with open interval at start
+
+Boundaries
+
+
+## Single-year cohorts
+
+```{r}
+dth_per_yr <- deaths
+dth_per_yr$time_closed <- date_to_cohort_year(date = dth_per_yr$date)
+dth_per_yr
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_cohort_year(date = dth_per_yr$date)
+```
+
+
+```{r}
+dth_per_yr$time_open <- date_to_cohort_year(date = dth_per_yr$date,
+                                            open_first = TRUE)
+dth_per_yr
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_cohort_year(date = dth_per_yr$date,
+                         open_first = TRUE)
+```
+
+
+
+```{r}
+dth_per_yr$time_min <- date_to_cohort_year(date = dth_per_yr$date,
+                                            break_min = "2020-01-01")
+dth_per_yr
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_cohort_year(date = dth_per_yr$date,
+                         break_min = "2020-01-01")
 ```
 
 # Age groups
@@ -472,11 +535,6 @@ plot_date_to_age_quarter(date = dth_age_quarter$date[3],
                        break_max = 4)
 ```
 
-
-
-# Cohorts
-
-
 # Lexis triangles
 
 - age and time use same length steps (subject to complications of months and years having different lengths, plus open age group)
@@ -639,10 +697,6 @@ plot_date_to_triangle_month(date = dth_tri_month$date[3],
                             break_max = 20)
 ```
 
-
-# Boundaries
-
-- note that cohort is $(t, t + n]$, while age is $[a, a + n)$ and time is $[t, t + n)$.
 
 
 

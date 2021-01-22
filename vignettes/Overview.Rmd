@@ -22,6 +22,7 @@ deaths <- data.frame(person = c("Anwar", "Baptiste", "Candice"),
 
 # Periods, age groups, cohorts, and Lexis triangles
 
+
 # Tabulating data
 
 # Creating new labels

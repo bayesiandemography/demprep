@@ -42,7 +42,9 @@ Defaults to \code{FALSE}.}
 \description{
 Create plot illustrating how function
 \code{\link{date_to_triangle_year}} works.
-\code{plot_date_to_triangle_year} is designed for
+}
+\details{
+\code{plot_date_to_triangle_year} is typically used for
 instruction or documentation, rather than for
 actual data analysis.
 }

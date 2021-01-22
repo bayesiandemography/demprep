@@ -21,7 +21,7 @@ Defaults to 5.}
 \item{origin}{An integer. Defaults to 2000.}
 
 \item{month_start}{An element of \code{\link[base]{month.name}},
-or \code{\link[base]{month.abb}}. The period starts on
+or \code{\link[base]{month.abb}}. Each period starts on
 the first day of this month.}
 
 \item{as_factor}{Whether the return value is a factor.

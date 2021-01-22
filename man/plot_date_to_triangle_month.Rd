@@ -21,7 +21,9 @@ has no upper limit. Defaults to \code{TRUE}.}
 \description{
 Create plot illustrating how function
 \code{\link{date_to_triangle_month}} works.
-\code{plot_date_to_triangle_month} is designed for
+}
+\details{
+\code{plot_date_to_triangle_month} is typically used for
 instruction or documentation, rather than for
 actual data analysis.
 }

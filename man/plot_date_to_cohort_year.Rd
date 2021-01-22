@@ -45,7 +45,7 @@ Create a plot illustrating how function
 \code{\link{date_to_cohort_year}} works.
 }
 \details{
-\code{plot_date_to_cohort_year} is designed for
+\code{plot_date_to_cohort_year} is typically used for
 learning or documentation, rather than for
 actual data analysis.
 }

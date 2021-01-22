@@ -31,7 +31,9 @@ Defaults to \code{FALSE}.}
 \description{
 Create plot illustrating how function
 \code{\link{date_to_triangle_quarter}} works.
-\code{plot_date_to_triangle_quarter} is designed for
+}
+\details{
+\code{plot_date_to_triangle_quarter} is typically used for
 instruction or documentation, rather than for
 actual data analysis.
 }

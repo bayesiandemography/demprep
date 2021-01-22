@@ -27,6 +27,7 @@ plot_date_to_cohort <- function(date, breaks, open_first, labels, cex = 0.8) {
                     col = "cornflowerblue")
     if (open_first) {
         x_first <- min(date, na.rm = TRUE) - 0.2 * diff_br[[1L]]
+        x_first <- min(x_first, breaks[[1L]] - diff_br[[1L]])
         graphics::lines(x = c(x_first, breaks[[1L]]),
                         y = c(0, 0),
                         col = "cornflowerblue")
@@ -57,6 +58,14 @@ plot_date_to_cohort <- function(date, breaks, open_first, labels, cex = 0.8) {
                      y = rep(0, times = n_date),
                      pch = 19,
                      col = "black")
+    ## labels for 'date'
+    graphics::text(x = date,
+                   y = -0.05,
+                   labels = date,
+                   cex = 0.9,
+                   adj = 1,
+                   srt = 90,
+                   col = "black")
     ## xlab
     graphics::mtext(text = "Time",
                     side = 1,
@@ -75,7 +84,7 @@ plot_date_to_cohort <- function(date, breaks, open_first, labels, cex = 0.8) {
 #' Create a plot illustrating how function
 #' \code{\link{date_to_cohort_year}} works.
 #' 
-#' \code{plot_date_to_cohort_year} is designed for
+#' \code{plot_date_to_cohort_year} is typically used for
 #' learning or documentation, rather than for
 #' actual data analysis.
 #'
@@ -140,6 +149,8 @@ plot_date_to_cohort_year <- function(date,
     has_break_min <- !is.null(break_min)
     has_open_first <- !is.null(open_first)
     ## check arguments and/or apply defaults
+    demcheck::err_positive_length(x = date,
+                                  name = "date")
     date <- demcheck::err_tdy_date_vector(x = date,
                                           name = "date")
     if (has_break_min) {
@@ -191,7 +202,7 @@ plot_date_to_cohort_year <- function(date,
 #'
 #' Create plot illustrating how function
 #' \code{\link{date_to_cohort_multi}} works.
-#' \code{plot_date_to_cohort_multi} is designed for
+#' \code{plot_date_to_cohort_multi} is typically used for
 #' learning or documentation, rather than for
 #' actual data analysis.
 #'
@@ -301,7 +312,7 @@ plot_date_to_cohort_multi <- function(date,
 #'
 #' Create plot illustrating how function
 #' \code{\link{date_to_cohort_custom}} works.
-#' \code{plot_date_to_cohort_custom} is designed for
+#' \code{plot_date_to_cohort_custom} is typically used for
 #' learning or documentation, rather than for
 #' actual data analysis.
 #'
@@ -359,7 +370,7 @@ plot_date_to_cohort_custom <- function(date, breaks, open_first = TRUE) {
 #'
 #' Create plot illustrating how function
 #' \code{\link{date_to_cohort_quarter}} works.
-#' \code{plot_date_to_cohort_quarter} is designed for
+#' \code{plot_date_to_cohort_quarter} is typically used for
 #' learning or documentation, rather than for
 #' actual data analysis.
 #'
@@ -381,6 +392,8 @@ plot_date_to_cohort_quarter <- function(date,
     has_break_min <- !is.null(break_min)
     has_open_first <- !is.null(open_first)
     ## check arguments and/or apply defaults
+    demcheck::err_positive_length(x = date,
+                                  name = "date")
     date <- demcheck::err_tdy_date_vector(x = date,
                                           name = "date")
     if (has_break_min) {
@@ -421,7 +434,7 @@ plot_date_to_cohort_quarter <- function(date,
 #'
 #' Create plot illustrating how function
 #' \code{\link{date_to_cohort_month}} works.
-#' \code{plot_date_to_cohort_month} is designed for
+#' \code{plot_date_to_cohort_month} is typically used for
 #' learning or documentation, rather than for
 #' actual data analysis.
 #'
@@ -443,6 +456,8 @@ plot_date_to_cohort_month <- function(date,
     has_break_min <- !is.null(break_min)
     has_open_first <- !is.null(open_first)
     ## check arguments and/or apply defaults
+    demcheck::err_positive_length(x = date,
+                                  name = "date")
     date <- demcheck::err_tdy_date_vector(x = date,
                                           name = "date")
     if (has_break_min) {

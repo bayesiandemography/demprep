@@ -15,7 +15,7 @@ date_to_period_year(
 \item{date}{Dates of events or measurements.}
 
 \item{month_start}{An element of \code{\link[base]{month.name}},
-or \code{\link[base]{month.abb}}. The period starts on
+or \code{\link[base]{month.abb}}. Each period starts on
 the first day of this month.}
 
 \item{label_year_start}{Whether to label a period

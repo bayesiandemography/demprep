@@ -5,7 +5,7 @@
 \title{Depict the intervals created by
 function 'date_to_period_custom'}
 \usage{
-plot_date_to_period_custom(date, breaks)
+plot_date_to_period_custom(date = NULL, breaks)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}
@@ -13,15 +13,13 @@ plot_date_to_period_custom(date, breaks)
 \item{breaks}{Dates defining starts and ends of periods.}
 }
 \description{
-Create plot illustrating the inputs and outputs
-of function \code{\link{date_to_period_custom}}.
+Create plot illustrating how function
+\code{\link{date_to_period_custom}} works.
 }
 \details{
-This function is for learning about the
-labelling conventions used in the \strong{dem} packages,
-and about their implementation in package
-\strong{demprep}. It would not normally be used
-during actual data analysis.
+\code{plot_date_to_period_custom} is typically used for
+learning or documentation, rather than for
+actual data analysis.
 }
 \examples{
 ## periods start on 1 January

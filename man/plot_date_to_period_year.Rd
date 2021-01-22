@@ -11,7 +11,7 @@ plot_date_to_period_year(date, month_start = "Jan", label_year_start = TRUE)
 \item{date}{Dates of events or measurements.}
 
 \item{month_start}{An element of \code{\link[base]{month.name}},
-or \code{\link[base]{month.abb}}. The period starts on
+or \code{\link[base]{month.abb}}. Each period starts on
 the first day of this month.}
 
 \item{label_year_start}{Whether to label a period
@@ -20,26 +20,27 @@ or the calendar year at the end. Not needed for periods
 that start on 1 January. Defaults to \code{TRUE}.}
 }
 \description{
-Create plot illustrating the inputs and outputs
-of function \code{\link{date_to_period_year}}.
+Create plot illustrating how function
+\code{\link{date_to_period_year}} works.
 }
 \details{
-This function is for learning about the
-labelling conventions used in the \strong{dem} packages,
-and about their implementation in package
-\strong{demprep}. It would not normally be used
-during actual data analysis.
+\code{plot_date_to_period_year} is typically used for
+learning or documentation, rather than for
+actual data analysis.
 }
 \examples{
-plot_date_to_period_year(date = c("2024-03-27", "2022-11-09"))
+plot_date_to_period_year(date = c("2024-03-27",
+                                  "2022-11-09"))
 
 ## July to June
-plot_date_to_period_year(date = c("2024-03-27", "2022-11-09"),
+plot_date_to_period_year(date = c("2024-03-27",
+                                  "2022-11-09"),
                          month_start = "Jul")
 
 ## July to June, using the calendar year at
 ## the end for the label
-plot_date_to_period_year(date = c("2024-03-27", "2022-11-09"),
+plot_date_to_period_year(date = c("2024-03-27",
+                                  "2022-11-09"),
                          month_start = "Jul",
                          label_year_start = FALSE)
 }

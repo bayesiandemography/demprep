@@ -5,7 +5,8 @@
 #'
 #' Create plot illustrating how function
 #' \code{\link{date_to_triangle_year}} works.
-#' \code{plot_date_to_triangle_year} is designed for
+#' 
+#' \code{plot_date_to_triangle_year} is typically used for
 #' instruction or documentation, rather than for
 #' actual data analysis.
 #'
@@ -62,7 +63,8 @@ plot_date_to_triangle_year <- function(date,
 #'
 #' Create plot illustrating how function
 #' \code{\link{date_to_triangle_multi}} works.
-#' \code{plot_date_to_triangle_multi} is designed for
+#' 
+#' \code{plot_date_to_triangle_multi} is typically used for
 #' instruction or documentation, rather than for
 #' actual data analysis.
 #'
@@ -176,7 +178,8 @@ plot_date_to_triangle_multi <- function(date,
 #'
 #' Create plot illustrating how function
 #' \code{\link{date_to_triangle_births}} works.
-#' \code{plot_date_to_triangle_births} is designed for
+#' 
+#' \code{plot_date_to_triangle_births} is typically used for
 #' instruction or documentation, rather than for
 #' actual data analysis.
 #'
@@ -340,7 +343,8 @@ plot_date_to_triangle_births <- function(date,
 #'
 #' Create plot illustrating how function
 #' \code{\link{date_to_triangle_quarter}} works.
-#' \code{plot_date_to_triangle_quarter} is designed for
+#' 
+#' \code{plot_date_to_triangle_quarter} is typically used for
 #' instruction or documentation, rather than for
 #' actual data analysis.
 #'
@@ -431,7 +435,8 @@ plot_date_to_triangle_quarter <- function(date,
 #'
 #' Create plot illustrating how function
 #' \code{\link{date_to_triangle_month}} works.
-#' \code{plot_date_to_triangle_month} is designed for
+#' 
+#' \code{plot_date_to_triangle_month} is typically used for
 #' instruction or documentation, rather than for
 #' actual data analysis.
 #'
