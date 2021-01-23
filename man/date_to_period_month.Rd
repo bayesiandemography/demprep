@@ -46,12 +46,16 @@ Other functions for creating periods are
 \code{\link{date_to_period_multi}},
 \code{\link{date_to_period_custom}},
 and \code{\link{date_to_period_quarter}}.
+
 Other functions for working with month intervals are
 \code{\link{date_to_age_month}},
 and \code{\link{date_to_cohort_month}},
 and \code{\link{date_to_triangle_month}}.
-See \code{\link{make_labels_period_month}} on the rules
+
+\code{\link{make_labels_period_month}} describes the rules
 for constructing labels for month periods.
-Function \code{\link{plot_date_to_period_month}} depicts
-the intervals created by \code{date_to_period_month}.
+
+\code{\link{plot_date_to_period_month}} creates plots
+that illustrate how \code{date_to_period_month}
+works.
 }

@@ -53,12 +53,16 @@ Other functions for creating periods are
 \code{\link{date_to_period_multi}},
 \code{\link{date_to_period_custom}},
 and \code{\link{date_to_period_month}}.
+
 Other functions for working with quarter intervals are
 \code{\link{date_to_age_quarter}},
 and \code{\link{date_to_cohort_quarter}},
 and \code{\link{date_to_triangle_quarter}}.
-See \code{\link{make_labels_period_quarter}} on the rules
+
+\code{\link{make_labels_period_quarter}} describes the rules
 for constructing labels for quarter periods.
-Function \code{\link{plot_date_to_period_quarter}} depicts
-the intervals created by \code{date_to_period_quarter}.
+
+\code{\link{plot_date_to_period_quarter}} creates plots
+that illustrate how \code{date_to_period_quarter}
+works.
 }

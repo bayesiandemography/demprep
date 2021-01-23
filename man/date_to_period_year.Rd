@@ -73,12 +73,12 @@ including periods that not appear in the data.
 \examples{
 date_to_period_year(date = c("2024-03-27", "2022-11-09"))
 
-## July to June
+## period starts on 1 July, not 1 January
 date_to_period_year(date = c("2024-03-27", "2022-11-09"),
                     month_start = "Jul")
 
-## July to June, using the calendar year at
-## the end for the label
+## period starts on 1 July, using the calendar year at
+## the end, rather than beginning, for the label
 date_to_period_year(date = c("2024-03-27", "2022-11-09"),
                     month_start = "Jul",
                     label_year_start = FALSE)
@@ -93,12 +93,16 @@ Other functions for creating periods are
 \code{\link{date_to_period_custom}},
 \code{\link{date_to_period_quarter}},
 and \code{\link{date_to_period_month}}.
+
 Other functions for working with one-year intervals are
 \code{\link{date_to_age_year}},
 \code{\link{date_to_cohort_year}},
 and \code{\link{date_to_triangle_year}}.
-See \code{\link{make_labels_period}} for the rules
-on constructing labels for periods. Function
-\code{\link{plot_date_to_period_year}} depicts
-the intervals created by \code{date_to_period_year}.
+
+\code{\link{make_labels_period}} describes the rules
+for constructing labels for periods.
+
+\code{\link{plot_date_to_period_year}} creates plots
+that illustrate how \code{date_to_period_year}
+works.
 }

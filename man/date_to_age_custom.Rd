@@ -66,32 +66,42 @@ the factor include all intermediate age groups,
 including age groups that not appear in the data.
 }
 \examples{
-date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-                         dob = c("2001-03-21", "2000-07-13"),
-                         breaks = c(0, 15, 60))
-date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-                         dob = c("2001-03-21", "2000-07-13"),
-                         breaks = c(15, 40, 65))
+date_to_age_custom(date = c("2024-03-27",
+                            "2022-11-09"),
+                   dob = c("2001-03-21",
+                           "2000-07-13"),
+                   breaks = c(0, 15, 60))
+date_to_age_custom(date = c("2024-03-27",
+                            "2022-11-09"),
+                   dob = c("2001-03-21",
+                           "2000-07-13"),
+                   breaks = c(15, 40, 65))
 
 ## replicate date of birth
-date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-                         dob = "2001-01-01",
-                         breaks = c(0, 15, 60))
+date_to_age_custom(date = c("2024-03-27",
+                            "2022-11-09"),
+                   dob = "2001-01-01",
+                   breaks = c(0, 15, 60))
 
 ## return non-factor
-date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-                         dob = "2001-01-01",
-                         breaks = c(0, 15, 60),
-                         as_factor = FALSE)
+date_to_age_custom(date = c("2024-03-27",
+                            "2022-11-09"),
+                   dob = "2001-01-01",
+                   breaks = c(0, 15, 60),
+                   as_factor = FALSE)
 
 ## alternative specifications for oldest age group
-date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-                         dob = c("2001-03-21", "2000-07-13"),
-                         breaks = c(15, 65, 100))
-date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-                         dob = c("2001-03-21", "2000-07-13"),
-                         breaks = c(15, 65, 100),
-                         open_last = FALSE)
+date_to_age_custom(date = c("2024-03-27",
+                            "2022-11-09"),
+                   dob = c("2001-03-21",
+                           "2000-07-13"),
+                   breaks = c(15, 65, 100))
+date_to_age_custom(date = c("2024-03-27",
+                            "2022-11-09"),
+                   dob = c("2001-03-21",
+                           "2000-07-13"),
+                   breaks = c(15, 65, 100),
+                   open_last = FALSE)
 }
 \seealso{
 Other functions for creating age groups are
@@ -101,8 +111,11 @@ Other functions for creating age groups are
 \code{\link{date_to_age_births}},
 \code{\link{date_to_age_quarter}},
 and \code{\link{date_to_age_month}}.
-See \code{\link{make_labels_age}} for the rules
-on constructing labels for age groups.
-Function \code{\link{plot_date_to_age_custom}} depicts
-the intervals created by \code{date_to_age_custom}.
+
+\code{\link{make_labels_age}} describes the rules
+for constructing labels for age groups.
+
+\code{\link{plot_date_to_age_custom}} creates plots
+that illustrate how \code{date_to_age_custom}
+works.
 }

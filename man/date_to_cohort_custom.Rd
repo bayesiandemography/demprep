@@ -29,10 +29,9 @@ value is a factor; otherwise it is a character vector.
 The return value has the same length as \code{date}.
 }
 \description{
-Allocate dates of events
-to cohorts with varying widths, though all widths
+Identify cohorts, based on dates of births or other events.
+The cohorts have varying widths. All widths
 are measured in whole years.
-The events are typically, but not always, births.
 }
 \details{
 The interface for \code{date_to_cohort_custom} is the similar
@@ -108,9 +107,15 @@ Other functions for creating cohorts are
 \code{\link{date_to_cohort_multi}},
 \code{\link{date_to_cohort_quarter}},
 and \code{\link{date_to_cohort_month}}.
+
 Other functions for working with customised intervals are
 \code{\link{date_to_age_custom}},
 and \code{\link{date_to_period_custom}}.
+
 See \code{\link{make_labels_period}} for the rules
 on constructing labels for periods and cohorts.
+
+\code{\link{plot_date_to_cohort_custom}} creates plots
+that illustrate how \code{date_to_cohort_custom}
+works.
 }

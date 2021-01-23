@@ -44,6 +44,8 @@ otherwise it defaults to \code{FALSE}.}
 \description{
 Create plot illustrating how function
 \code{\link{date_to_cohort_multi}} works.
+}
+\details{
 \code{plot_date_to_cohort_multi} is typically used for
 learning or documentation, rather than for
 actual data analysis.
@@ -65,7 +67,7 @@ plot_date_to_cohort_multi(date = c("2024-03-27",
                                    "2021-03-02"),
                           origin = 2001)
 
-## July to June
+## starts on 1 July rather than 1 January
 plot_date_to_cohort_multi(date = c("2024-03-27",
                                    "2018-11-09",
                                    "2021-03-02"),

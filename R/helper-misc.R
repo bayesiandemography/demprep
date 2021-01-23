@@ -471,7 +471,7 @@ n_day_month <- function(date) {
 plot_date_to_age_triangle <- function(date, dob, unit, breaks_time = NULL, breaks_age,
                                       open_last, labels_time = NULL, labels_age,
                                       show_months, show_vert, show_diag, cex = 0.8) {
-    old_par <- graphics::par(mar = c(6, 0, 0, 0),
+    old_par <- graphics::par(mar = c(6, 2, 2, 0),
                              mgp = c(0, 0, 0),
                              cex = cex)
     n_date <- length(date)
@@ -492,11 +492,11 @@ plot_date_to_age_triangle <- function(date, dob, unit, breaks_time = NULL, break
     if (!is.null(breaks_time))
         date_max <- max(date_max, breaks_time)
     width_date <- date_max - date_min
-    age_approx <- as.integer(date - dob) %/% days_per_unit
-    age_max <- max(breaks_age, age_approx)
+    age_approx <- as.integer(date - dob) / days_per_unit
+    age_max <- max(breaks_age, 1.05 * age_approx)
     if (open_last) {
-        width <- diff(breaks_age[1:2])
-        age_max  <- max(age_max, breaks_age + 1.2 * width)
+        width <- breaks_age[[n_br_age]] - breaks_age[[n_br_age - 1L]]
+        age_max  <- max(age_max, breaks_age[[n_br_age]] + width)
     }
     x_plot <- c(date_min - 0.15 * width_date, date_max)
     y_plot <- c(0, age_max)

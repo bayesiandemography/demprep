@@ -68,41 +68,49 @@
 #' \code{\link{date_to_age_custom}},
 #' \code{\link{date_to_age_quarter}},
 #' and \code{\link{date_to_age_month}}.
+#'
 #' Other functions for working with one-year intervals are
 #' \code{\link{date_to_period_year}},
 #' \code{\link{date_to_cohort_year}},
 #' and \code{\link{date_to_triangle_year}}.
-#' See \code{\link{make_labels_age}} for the rules
-#' on constructing labels for age groups.
-#' Function \code{\link{plot_date_to_age_year}} depicts
-#' the intervals created by \code{date_to_age_year}.
+#'
+#' \code{\link{make_labels_age}} describes the rules
+#' for constructing labels for age groups.
+#'
+#' \code{\link{plot_date_to_age_year}} creates plots
+#' that illustrate how \code{\link{date_to_age_year}}
+#' works.
 #'
 #' @examples
-#' date_to_age_year(date = c("2024-03-27", "2022-11-09"),
-#'                        dob = c("2001-03-21", "2000-07-13"))
+#' date_to_age_year(date = c("2024-03-27",
+#'                           "2022-11-09"),
+#'                  dob = c("2001-03-21",
+#'                          "2000-07-13"))
 #'
 #' ## replicate date of birth
-#' date_to_age_year(date = c("2024-03-27", "2022-11-09"),
-#'                        dob = "2011-05-18")
+#' date_to_age_year(date = c("2024-03-27",
+#'                           "2022-11-09"),
+#'                  dob = "2011-05-18")
 #'
 #' ## return non-factor
-#' date_to_age_year(date = c("2024-03-27", "2022-11-09"),
-#'                        dob = "2011-05-18",
-#'                        as_factor = FALSE)
+#' date_to_age_year(date = c("2024-03-27",
+#'                           "2022-11-09"),
+#'                  dob = "2011-05-18",
+#'                  as_factor = FALSE)
 #'
 #' ## alternative specifications for oldest age group
 #' date_to_age_year(date = "2019-09-22",
-#'                        dob = "1910-01-01")
+#'                  dob = "1910-01-01")
 #' date_to_age_year(date = "2019-09-22",
-#'                        dob = "1910-01-01",
-#'                        break_max = 80)
+#'                  dob = "1910-01-01",
+#'                  break_max = 80)
 #' date_to_age_year(date = "2019-09-22",
-#'                        dob = "1910-01-01",
-#'                        break_max = NULL)
+#'                  dob = "1910-01-01",
+#'                  break_max = NULL)
 #' date_to_age_year(date = "2019-09-22",
-#'                        dob = "1910-01-01",
-#'                        break_max = NULL,
-#'                        open_last = FALSE)
+#'                  dob = "1910-01-01",
+#'                  break_max = NULL,
+#'                  open_last = FALSE)
 #' @export 
 date_to_age_year <- function(date,
                                    dob,
@@ -211,56 +219,68 @@ date_to_age_year <- function(date,
 #' \code{\link{date_to_age_custom}},
 #' \code{\link{date_to_age_quarter}},
 #' and \code{\link{date_to_age_month}}.
+#'
 #' Other functions for working with multi-year intervals are
 #' \code{\link{date_to_period_multi}},
 #' \code{\link{date_to_cohort_multi}},
 #' and \code{\link{date_to_triangle_multi}}.
-#' See \code{\link{make_labels_age}} for the rules
-#' on constructing labels for age groups.
-#' Function \code{\link{plot_date_to_age_multi}} depicts
-#' the intervals created by \code{date_to_age_multi}.
+#'
+#' \code{\link{make_labels_age}} describes the rules
+#' for constructing labels for age groups.
+#'
+#' \code{\link{plot_date_to_age_multi}} creates plots
+#' that illustrate how \code{date_to_age_multi}
+#' works.
 #'
 #' @examples
-#' date_to_age_multi(date = c("2024-03-27", "2022-11-09"),
-#'                         dob = c("2001-03-21", "2000-07-13"))
+#' date_to_age_multi(date = c("2024-03-27",
+#'                            "2022-11-09"),
+#'                   dob = c("2001-03-21",
+#'                           "2000-07-13"))
 #'
 #' ## alternative values for 'width'
-#' date_to_age_multi(date = c("2024-03-27", "2022-11-09"),
-#'                         dob = c("2001-03-21", "2000-07-13"),
-#'                         width = 10)
-#' date_to_age_multi(date = c("2024-03-27", "2022-11-09"),
-#'                         dob = c("2001-03-21", "2000-07-13"),
-#'                         width = 1)
+#' date_to_age_multi(date = c("2024-03-27",
+#'                            "2022-11-09"),
+#'                   dob = c("2001-03-21",
+#'                           "2000-07-13"),
+#'                   width = 10)
+#' date_to_age_multi(date = c("2024-03-27",
+#'                            "2022-11-09"),
+#'                   dob = c("2001-03-21",
+#'                           "2000-07-13"),
+#'                   width = 1)
 #'
 #' ## replicate date of birth
-#' date_to_age_multi(date = c("2024-03-27", "2022-11-09"),
-#'                         dob = "2011-05-18")
+#' date_to_age_multi(date = c("2024-03-27",
+#'                            "2022-11-09"),
+#'                   dob = "2011-05-18")
 #'
 #' ## return non-factor
-#' date_to_age_multi(date = c("2024-03-27", "2022-11-09"),
-#'                         dob = "2011-05-18",
-#'                         as_factor = FALSE)
+#' date_to_age_multi(date = c("2024-03-27",
+#'                            "2022-11-09"),
+#'                   dob = "2011-05-18",
+#'                   as_factor = FALSE)
 #'
 #' ## alternative specifications for oldest age group
 #' date_to_age_multi(date = "2019-09-22",
-#'                         dob = "1910-01-01")
+#'                   dob = "1910-01-01")
 #' date_to_age_multi(date = "2019-09-22",
-#'                         dob = "1910-01-01",
-#'                         break_max = 80)
+#'                   dob = "1910-01-01",
+#'                   break_max = 80)
 #' date_to_age_multi(date = "2019-09-22",
-#'                         dob = "1910-01-01",
-#'                         break_max = NULL)
+#'                   dob = "1910-01-01",
+#'                   break_max = NULL)
 #' date_to_age_multi(date = "2019-09-22",
-#'                         dob = "1910-01-01",
-#'                         break_max = NULL,
-#'                         open_last = FALSE)
+#'                   dob = "1910-01-01",
+#'                   break_max = NULL,
+#'                   open_last = FALSE)
 #' @export
 date_to_age_multi <- function(date,
-                                    dob,
-                                    width = 5,
-                                    break_max = 100,
-                                    open_last = TRUE,
-                                    as_factor = TRUE) {
+                              dob,
+                              width = 5,
+                              break_max = 100,
+                              open_last = TRUE,
+                              as_factor = TRUE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -312,7 +332,7 @@ date_to_age_multi <- function(date,
                                        open_last = open_last)
     ## make labels for these breaks
     labels <- make_labels_age(breaks = breaks,
-                                    open_last = open_last)
+                              open_last = open_last)
     ## assign labels to ages
     i <- findInterval(x = age_years,
                       vec = breaks)
@@ -364,30 +384,37 @@ date_to_age_multi <- function(date,
 #' \code{\link{date_to_age_custom}},
 #' \code{\link{date_to_age_quarter}},
 #' and \code{\link{date_to_age_month}}.
-#' See \code{\link{make_labels_age}} for the rules
-#' on constructing labels for age groups.
-#' Function \code{\link{plot_date_to_age_lifetab}} depicts
-#' the intervals created by \code{date_to_age_lifetab}.
 #'
+#' \code{\link{make_labels_age}} describes the rules
+#' for constructing labels for age groups.
+#'
+#' \code{\link{plot_date_to_age_lifetab}} creates plots
+#' that illustrate how \code{date_to_age_lifetab}
+#' works.
+#' 
 #' @examples
-#' date_to_age_lifetab(date = c("2024-03-27", "2022-11-09"),
-#'                           dob = c("2001-03-21", "2000-07-13"))
+#' date_to_age_lifetab(date = c("2024-03-27",
+#'                              "2022-11-09"),
+#'                     dob = c("2001-03-21",
+#'                             "2000-07-13"))
 #'
 #' ## replicate date of birth
-#' date_to_age_lifetab(date = c("2024-03-27", "2022-11-09"),
-#'                           dob = "2011-05-18")
+#' date_to_age_lifetab(date = c("2024-03-27",
+#'                              "2022-11-09"),
+#'                     dob = "2011-05-18")
 #'
 #' ## return non-factor
-#' date_to_age_lifetab(date = c("2024-03-27", "2022-11-09"),
-#'                           dob = "2011-05-18",
-#'                           as_factor = FALSE)
+#' date_to_age_lifetab(date = c("2024-03-27",
+#'                              "2022-11-09"),
+#'                     dob = "2011-05-18",
+#'                     as_factor = FALSE)
 #'
 #' ## alternative specifications for oldest age group
 #' date_to_age_lifetab(date = "2019-09-22",
-#'                           dob = "1910-01-01")
+#'                     dob = "1910-01-01")
 #' date_to_age_lifetab(date = "2019-09-22",
-#'                           dob = "1910-01-01",
-#'                           break_max = 80)
+#'                     dob = "1910-01-01",
+#'                     break_max = 80)
 #' @export
 date_to_age_lifetab <- function(date, dob,
                                       break_max = 100,
@@ -504,45 +531,64 @@ date_to_age_lifetab <- function(date, dob,
 #' \code{\link{date_to_age_custom}},
 #' \code{\link{date_to_age_quarter}},
 #' and \code{\link{date_to_age_month}}.
-#' See \code{\link{make_labels_age}} for the rules
-#' on constructing labels for age groups.
-#' Function \code{\link{plot_date_to_age_births}} depicts
-#' the intervals created by \code{date_to_age_births}.
 #'
+#' \code{\link{make_labels_age}} describes the rules
+#' for constructing labels for age groups.
+#'
+#' \code{\link{plot_date_to_age_births}} creates plots
+#' that illustrate how \code{date_to_age_births}
+#' works.
+#' 
 #' @examples
-#' date_to_age_births(date = c("2024-03-27", "2022-11-09"),
-#'                          dob = c("2001-03-21", "2000-07-13"))
+#' date_to_age_births(date = c("2024-03-27",
+#'                             "2022-11-09"),
+#'                    dob = c("2001-03-21",
+#'                            "2000-07-13"))
 #'
 #' ## alternative values for 'width'
-#' date_to_age_births(date = c("2024-03-27", "2022-11-09"),
-#'                          dob = c("2001-03-21", "2000-07-13"),
-#'                          width = 10,
-#'                          break_min = 20)
-#' date_to_age_births(date = c("2024-03-27", "2022-11-09"),
-#'                          dob = c("2001-03-21", "2000-07-13"),
-#'                          width = 1)
+#' date_to_age_births(date = c("2024-03-27",
+#'                             "2022-11-09"),
+#'                    dob = c("2001-03-21",
+#'                            "2000-07-13"),
+#'                    width = 10,
+#'                    break_min = 20)
+#' date_to_age_births(date = c("2024-03-27",
+#'                             "2022-11-09"),
+#'                    dob = c("2001-03-21",
+#'                            "2000-07-13"),
+#'                    width = 1)
 #'
 #' ## replicate date of birth
-#' date_to_age_births(date = c("2024-03-27", "2022-11-09"),
-#'                          dob = "2001-05-18")
+#' date_to_age_births(date = c("2024-03-27",
+#'                             "2022-11-09"),
+#'                    dob = "2001-05-18")
 #'
 #' ## return non-factor
-#' date_to_age_births(date = c("2024-03-27", "2022-11-09"),
-#'                          dob = "2001-05-18",
-#'                          as_factor = FALSE)
+#' date_to_age_births(date = c("2024-03-27",
+#'                             "2022-11-09"),
+#'                    dob = "2001-05-18",
+#'                    as_factor = FALSE)
 #'
 #' ## allow youngest and oldest age groups to be
 #' ## set by the data
-#' date_to_age_births(date = c("2052-01-02", "2019-09-22", "2022-10-08"),
-#'                          dob = c("2000-01-01", "2001-03-17", "2010-07-05"),
-#'                          break_min = NULL,
-#'                          break_max = NULL)
+#' date_to_age_births(date = c("2052-01-02",
+#'                             "2019-09-22",
+#'                             "2022-10-08"),
+#'                    dob = c("2000-01-01",
+#'                            "2001-03-17",
+#'                            "2010-07-05"),
+#'                    break_min = NULL,
+#'                    break_max = NULL)
 #'
 #' ## recode ages outside the expected range
-#' date_to_age_births(date = c("2052-01-02", "2019-09-22", "2022-10-08"),
-#'                          dob = c("2000-01-01", "2001-03-17", "2010-07-05"),
-#'                          recode_up = TRUE,
-#'                          recode_down = TRUE)
+#' date_to_age_births(date = c("2052-01-02",
+#'                             "2019-09-22",
+#'                             "2022-10-08"),
+#'                    dob = c("2000-01-01",
+#'                            "2001-03-17",
+#'                            "2010-07-05"),
+#'                    recode_up = TRUE,
+#'                    recode_down = TRUE)
 #' @export
 date_to_age_births <- function(date, dob,
                                break_min = 15,
@@ -687,38 +733,51 @@ date_to_age_births <- function(date, dob,
 #' \code{\link{date_to_age_births}},
 #' \code{\link{date_to_age_quarter}},
 #' and \code{\link{date_to_age_month}}.
-#' See \code{\link{make_labels_age}} for the rules
-#' on constructing labels for age groups.
-#' Function \code{\link{plot_date_to_age_custom}} depicts
-#' the intervals created by \code{date_to_age_custom}.
 #'
+#' \code{\link{make_labels_age}} describes the rules
+#' for constructing labels for age groups.
+#'
+#' \code{\link{plot_date_to_age_custom}} creates plots
+#' that illustrate how \code{date_to_age_custom}
+#' works.
+#' 
 #' @examples
-#' date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-#'                          dob = c("2001-03-21", "2000-07-13"),
-#'                          breaks = c(0, 15, 60))
-#' date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-#'                          dob = c("2001-03-21", "2000-07-13"),
-#'                          breaks = c(15, 40, 65))
+#' date_to_age_custom(date = c("2024-03-27",
+#'                             "2022-11-09"),
+#'                    dob = c("2001-03-21",
+#'                            "2000-07-13"),
+#'                    breaks = c(0, 15, 60))
+#' date_to_age_custom(date = c("2024-03-27",
+#'                             "2022-11-09"),
+#'                    dob = c("2001-03-21",
+#'                            "2000-07-13"),
+#'                    breaks = c(15, 40, 65))
 #'
 #' ## replicate date of birth
-#' date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-#'                          dob = "2001-01-01",
-#'                          breaks = c(0, 15, 60))
+#' date_to_age_custom(date = c("2024-03-27",
+#'                             "2022-11-09"),
+#'                    dob = "2001-01-01",
+#'                    breaks = c(0, 15, 60))
 #'
 #' ## return non-factor
-#' date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-#'                          dob = "2001-01-01",
-#'                          breaks = c(0, 15, 60),
-#'                          as_factor = FALSE)
+#' date_to_age_custom(date = c("2024-03-27",
+#'                             "2022-11-09"),
+#'                    dob = "2001-01-01",
+#'                    breaks = c(0, 15, 60),
+#'                    as_factor = FALSE)
 #'
 #' ## alternative specifications for oldest age group
-#' date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-#'                          dob = c("2001-03-21", "2000-07-13"),
-#'                          breaks = c(15, 65, 100))
-#' date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-#'                          dob = c("2001-03-21", "2000-07-13"),
-#'                          breaks = c(15, 65, 100),
-#'                          open_last = FALSE)
+#' date_to_age_custom(date = c("2024-03-27",
+#'                             "2022-11-09"),
+#'                    dob = c("2001-03-21",
+#'                            "2000-07-13"),
+#'                    breaks = c(15, 65, 100))
+#' date_to_age_custom(date = c("2024-03-27",
+#'                             "2022-11-09"),
+#'                    dob = c("2001-03-21",
+#'                            "2000-07-13"),
+#'                    breaks = c(15, 65, 100),
+#'                    open_last = FALSE)
 #' @export
 date_to_age_custom <- function(date, dob,
                                      breaks = NULL,
@@ -858,47 +917,55 @@ date_to_age_custom <- function(date, dob,
 #' \code{\link{date_to_age_births}},
 #' \code{\link{date_to_age_custom}},
 #' and \code{\link{date_to_age_month}}.
+#'
 #' Other functions for working with one-quarter intervals are
 #' \code{\link{date_to_period_quarter}},
 #' \code{\link{date_to_cohort_quarter}},
 #' and \code{\link{date_to_triangle_quarter}}.
-#' See \code{\link{make_labels_age_quarter}} for the rules
-#' on constructing labels for age groups.
-#' Function \code{\link{plot_date_to_age_quarter}} depicts
-#' the intervals created by \code{date_to_age_quarter}.
+#'
+#' \code{\link{make_labels_age_quarter}} describes the rules
+#' for constructing labels for quarter age groups.
+#'
+#' \code{\link{plot_date_to_age_quarter}} creates plots
+#' that illustrate how \code{date_to_age_quarter}
+#' works.
 #'
 #' @examples
-#' date_to_age_quarter(date = c("2024-03-27", "2022-11-09"),
-#'                           dob = c("2001-03-21", "2000-07-13"))
+#' date_to_age_quarter(date = c("2024-03-27",
+#'                              "2022-11-09"),
+#'                     dob = c("2001-03-21",
+#'                             "2000-07-13"))
 #'
 #' ## replicate date of birth
-#' date_to_age_quarter(date = c("2024-03-27", "2022-11-09"),
-#'                           dob = "2011-05-18")
+#' date_to_age_quarter(date = c("2024-03-27",
+#'                              "2022-11-09"),
+#'                     dob = "2011-05-18")
 #'
 #' ## return non-factor
-#' date_to_age_quarter(date = c("2024-03-27", "2022-11-09"),
-#'                           dob = "2011-05-18",
-#'                           as_factor = FALSE)
+#' date_to_age_quarter(date = c("2024-03-27",
+#'                              "2022-11-09"),
+#'                     dob = "2011-05-18",
+#'                     as_factor = FALSE)
 #'
 #' ## alternative specifications for oldest age group
 #' date_to_age_quarter(date = "2019-09-22",
-#'                           dob = "1910-01-01")
+#'                     dob = "1910-01-01")
 #' date_to_age_quarter(date = "2019-09-22",
-#'                           dob = "1910-01-01",
-#'                           break_max = 320)
+#'                     dob = "1910-01-01",
+#'                     break_max = 320)
 #' date_to_age_quarter(date = "2019-09-22",
-#'                           dob = "1910-01-01",
-#'                           break_max = NULL)
+#'                     dob = "1910-01-01",
+#'                     break_max = NULL)
 #' date_to_age_quarter(date = "2019-09-22",
-#'                           dob = "1910-01-01",
-#'                           break_max = NULL,
-#'                           open_last = FALSE)
+#'                     dob = "1910-01-01",
+#'                     break_max = NULL,
+#'                     open_last = FALSE)
 #' @export
 date_to_age_quarter <- function(date,
-                                      dob,
-                                      break_max = 400,
-                                      open_last = TRUE,
-                                      as_factor = TRUE) {
+                                dob,
+                                break_max = 400,
+                                open_last = TRUE,
+                                as_factor = TRUE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -943,8 +1010,8 @@ date_to_age_quarter <- function(date,
     n_break <- length(breaks)
     break_max <- breaks[[n_break]]
     labels <- make_labels_age_quarter(break_min = 0L,
-                                            break_max = break_max,
-                                            open_last = open_last)
+                                      break_max = break_max,
+                                      open_last = open_last)
     ## assign labels to ages
     i <- findInterval(x = age_quarters,
                       vec = breaks)
@@ -1013,41 +1080,49 @@ date_to_age_quarter <- function(date,
 #' \code{\link{date_to_age_births}},
 #' \code{\link{date_to_age_custom}},
 #' \code{\link{date_to_age_quarter}}.
+#'
 #' Other functions for working with one-month intervals are
 #' \code{\link{date_to_period_month}},
 #' \code{\link{date_to_cohort_month}},
 #' and \code{\link{date_to_triangle_month}}.
-#' See \code{\link{make_labels_age_month}} for the rules
-#' on constructing labels for age groups.
-#' Function \code{\link{plot_date_to_age_month}} depicts
-#' the intervals created by \code{date_to_age_month}.
+#'
+#' \code{\link{make_labels_age_month}} describes the rules
+#' for constructing labels for month age groups.
+#'
+#' \code{\link{plot_date_to_age_custom}} creates plots
+#' that illustrate how \code{date_to_age_custom}
+#' works.
 #'
 #' @examples
-#' date_to_age_month(date = c("2024-03-27", "2022-11-09"),
-#'                         dob = c("2001-03-21", "2000-07-13"))
+#' date_to_age_month(date = c("2024-03-27",
+#'                            "2022-11-09"),
+#'                   dob = c("2001-03-21",
+#'                           "2000-07-13"))
 #'
 #' ## replicate date of birth
-#' date_to_age_month(date = c("2024-03-27", "2022-11-09"),
-#'                         dob = "2011-05-18")
+#' date_to_age_month(date = c("2024-03-27",
+#'                            "2022-11-09"),
+#'                   dob = "2011-05-18")
 #'
 #' ## return non-factor
-#' date_to_age_month(date = c("2024-03-27", "2022-11-09"),
-#'                         dob = "2011-05-18",
-#'                         as_factor = FALSE)
+#' date_to_age_month(date = c("2024-03-27",
+#'                            "2022-11-09"),
+#'                   dob = "2011-05-18",
+#'                   as_factor = FALSE)
 #'
 #' ## alternative specifications for oldest age group
 #' date_to_age_month(date = "2019-09-22",
-#'                         dob = "1910-01-01")
+#'                   dob = "1910-01-01")
 #' date_to_age_month(date = "2019-09-22",
-#'                         dob = "1910-01-01",
-#'                         break_max = 320)
+#'                   dob = "1910-01-01",
+#'                   break_max = 320)
 #' date_to_age_month(date = "2019-09-22",
-#'                         dob = "1910-01-01",
-#'                         break_max = NULL)
+#'                   dob = "1910-01-01",
+#'                   break_max = NULL)
 #' date_to_age_month(date = "2019-09-22",
-#'                         dob = "1910-01-01",
-#'                         break_max = NULL,
-#'                         open_last = FALSE)
+#'                   dob = "1910-01-01",
+#'                   break_max = NULL,
+#'                   open_last = FALSE)
 #' @export
 date_to_age_month <- function(date,
                                     dob,

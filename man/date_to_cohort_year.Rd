@@ -52,9 +52,8 @@ value is a factor; otherwise it is a character vector.
 The return value has the same length as \code{date}.
 }
 \description{
-Allocate dates of events to cohorts with widths of one year.
-The cohorts by default align with calendar years.
-The events are typically, but not always, births.
+Identify cohorts, based on dates of births or other events.
+The cohorts have widths of one year.
 }
 \details{
 The interface for \code{date_to_cohort_year} is similar
@@ -110,12 +109,12 @@ including cohorts that not appear in the data.
 \examples{
 date_to_cohort_year(date = c("2024-03-27", "2022-11-09"))
 
-## July to June
+## starts on 1 July rather than 1 January
 date_to_cohort_year(date = c("2024-03-27", "2022-11-09"),
                     month_start = "Jul")
 
-## July to June, using the calendar year at
-## the end for the label
+## periods starts on 1 July, rather than 1 January, and uses
+## calendar year at end, rather than beginning, for the label
 date_to_cohort_year(date = c("2024-03-27", "2022-11-09"),
                     month_start = "Jul",
                     label_year_start = FALSE)
@@ -144,10 +143,16 @@ Other functions for creating cohorts are
 \code{\link{date_to_cohort_custom}},
 \code{\link{date_to_cohort_quarter}},
 and \code{\link{date_to_cohort_month}}.
+
 Other functions for working with one-year intervals are
 \code{\link{date_to_age_year}},
 \code{\link{date_to_period_year}},
 and \code{\link{date_to_triangle_year}}.
+
 See \code{\link{make_labels_period}} for the rules
 on constructing labels for periods and cohorts.
+
+\code{\link{plot_date_to_cohort_year}} creates plots
+that illustrate how \code{date_to_cohort_year}
+works.
 }

@@ -83,16 +83,21 @@
 #' \code{\link{date_to_triangle_births}},
 #' \code{\link{date_to_triangle_quarter}},
 #' and \code{\link{date_to_triangle_month}}.
+#'
 #' \code{date_to_triangle_year} is typically used in combination with
 #' \code{\link{date_to_age_year}}
 #' and \code{\link{date_to_period_year}}.
+#'
+#' \code{\link{plot_date_to_triangle_year}} creates plots
+#' that illustrate how \code{date_to_triangle_year}
+#' works.
 #'
 #' @examples
 #' date_to_triangle_year(date = c("2024-03-27",
 #'                                "2022-11-09"),
 #'                       dob = "2020-01-01")
 #'
-#' ## July to June
+#' ## starts on 1 July rather than 1 January
 #' date_to_triangle_year(date = c("2024-03-27",
 #'                                "2022-11-09"),
 #'                       dob = "2020-01-01",
@@ -217,10 +222,15 @@ date_to_triangle_year <- function(date,
 #' \code{\link{date_to_triangle_births}},
 #' \code{\link{date_to_triangle_quarter}},
 #' and \code{\link{date_to_triangle_month}}.
+#'
 #' \code{date_to_triangle_multi} is typically used in combination with
 #' \code{\link{date_to_age_multi}} and
 #' \code{\link{date_to_period_multi}}.
 #'
+#' \code{\link{plot_date_to_triangle_multi}} creates plots
+#' that illustrate how \code{date_to_triangle_multi}
+#' works.
+#' 
 #' @examples
 #' date_to_triangle_multi(date = c("2027-03-27",
 #'                                 "2022-11-09"),
@@ -233,7 +243,7 @@ date_to_triangle_year <- function(date,
 #'                        width = 10)
 #'
 #'
-#' ## July to June
+#' ## starts on 1 July rather than 1 January
 #' date_to_triangle_multi(date = c("2027-03-27",
 #'                                 "2022-11-09"),
 #'                        dob = "2010-05-12",
@@ -450,10 +460,15 @@ date_to_triangle_multi <- function(date,
 #' \code{\link{date_to_triangle_multi}},
 #' \code{\link{date_to_triangle_quarter}},
 #' and \code{\link{date_to_triangle_month}}.
+#'
 #' \code{date_to_triangle_births} is typically used in combination with
 #' \code{\link{date_to_age_year}}
 #' and \code{\link{date_to_period_year}}.
 #'
+#' \code{\link{plot_date_to_triangle_births}} creates plots
+#' that illustrate how \code{date_to_triangle_births}
+#' works.
+#' 
 #' @examples
 #' date_to_triangle_births(date = c("2024-03-27", "2022-11-09"),
 #'                       dob = c("2001-03-21", "2000-07-13"))
@@ -640,10 +655,15 @@ date_to_triangle_births <- function(date,
 #' \code{\link{date_to_triangle_multi}},
 #' \code{\link{date_to_triangle_births}},
 #' and \code{\link{date_to_triangle_month}}.
+#'
 #' \code{date_to_triangle_quarter} is typically used in combination with
 #' \code{\link{date_to_age_quarter}}
 #' and \code{\link{date_to_period_quarter}}.
 #'
+#' \code{\link{plot_date_to_triangle_quarter}} creates plots
+#' that illustrate how \code{date_to_triangle_quarter}
+#' works.
+#' 
 #' @examples
 #' date_to_triangle_quarter(date = c("2024-03-27",
 #'                                   "2022-11-09"),
@@ -808,10 +828,15 @@ date_to_triangle_quarter <- function(date,
 #' \code{\link{date_to_triangle_multi}},
 #' \code{\link{date_to_triangle_births}},
 #' and \code{\link{date_to_triangle_quarter}}.
+#'
 #' \code{date_to_triangle_month} is typically used in combination with
 #' \code{\link{date_to_age_month}}
 #' and \code{\link{date_to_period_month}}.
 #'
+#' \code{\link{plot_date_to_triangle_month}} creates plots
+#' that illustrate how \code{date_to_triangle_month}
+#' works.
+#' 
 #' @examples
 #' date_to_triangle_month(date = c("2024-03-27",
 #'                                 "2022-11-09"),

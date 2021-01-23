@@ -81,11 +81,15 @@ Other functions for creating periods are
 \code{\link{date_to_period_multi}},
 \code{\link{date_to_period_quarter}},
 and \code{\link{date_to_period_month}}.
+
 Other functions for working with customized intervals are
 \code{\link{date_to_age_custom}},
 and \code{\link{date_to_cohort_custom}}.
-See \code{\link{make_labels_period}} for the rules
-on constructing labels for periods. Function
-\code{\link{plot_date_to_period_custom}} depicts
-the intervals created by \code{date_to_period_custom}.
+
+\code{\link{make_labels_period}} describes the rules
+for constructing labels for periods.
+
+\code{\link{plot_date_to_period_custom}} creates plots
+that illustrate how \code{date_to_period_custom}
+works.
 }

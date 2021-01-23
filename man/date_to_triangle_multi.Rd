@@ -122,7 +122,7 @@ date_to_triangle_multi(date = c("2027-03-27",
                        width = 10)
 
 
-## July to June
+## starts on 1 July rather than 1 January
 date_to_triangle_multi(date = c("2027-03-27",
                                 "2022-11-09"),
                        dob = "2010-05-12",
@@ -152,7 +152,12 @@ Other functions for creating Lexis triangles are
 \code{\link{date_to_triangle_births}},
 \code{\link{date_to_triangle_quarter}},
 and \code{\link{date_to_triangle_month}}.
+
 \code{date_to_triangle_multi} is typically used in combination with
 \code{\link{date_to_age_multi}} and
 \code{\link{date_to_period_multi}}.
+
+\code{\link{plot_date_to_triangle_multi}} creates plots
+that illustrate how \code{date_to_triangle_multi}
+works.
 }

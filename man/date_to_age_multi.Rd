@@ -72,39 +72,47 @@ the factor include all intermediate age groups,
 including age groups that not appear in the data.
 }
 \examples{
-date_to_age_multi(date = c("2024-03-27", "2022-11-09"),
-                        dob = c("2001-03-21", "2000-07-13"))
+date_to_age_multi(date = c("2024-03-27",
+                           "2022-11-09"),
+                  dob = c("2001-03-21",
+                          "2000-07-13"))
 
 ## alternative values for 'width'
-date_to_age_multi(date = c("2024-03-27", "2022-11-09"),
-                        dob = c("2001-03-21", "2000-07-13"),
-                        width = 10)
-date_to_age_multi(date = c("2024-03-27", "2022-11-09"),
-                        dob = c("2001-03-21", "2000-07-13"),
-                        width = 1)
+date_to_age_multi(date = c("2024-03-27",
+                           "2022-11-09"),
+                  dob = c("2001-03-21",
+                          "2000-07-13"),
+                  width = 10)
+date_to_age_multi(date = c("2024-03-27",
+                           "2022-11-09"),
+                  dob = c("2001-03-21",
+                          "2000-07-13"),
+                  width = 1)
 
 ## replicate date of birth
-date_to_age_multi(date = c("2024-03-27", "2022-11-09"),
-                        dob = "2011-05-18")
+date_to_age_multi(date = c("2024-03-27",
+                           "2022-11-09"),
+                  dob = "2011-05-18")
 
 ## return non-factor
-date_to_age_multi(date = c("2024-03-27", "2022-11-09"),
-                        dob = "2011-05-18",
-                        as_factor = FALSE)
+date_to_age_multi(date = c("2024-03-27",
+                           "2022-11-09"),
+                  dob = "2011-05-18",
+                  as_factor = FALSE)
 
 ## alternative specifications for oldest age group
 date_to_age_multi(date = "2019-09-22",
-                        dob = "1910-01-01")
+                  dob = "1910-01-01")
 date_to_age_multi(date = "2019-09-22",
-                        dob = "1910-01-01",
-                        break_max = 80)
+                  dob = "1910-01-01",
+                  break_max = 80)
 date_to_age_multi(date = "2019-09-22",
-                        dob = "1910-01-01",
-                        break_max = NULL)
+                  dob = "1910-01-01",
+                  break_max = NULL)
 date_to_age_multi(date = "2019-09-22",
-                        dob = "1910-01-01",
-                        break_max = NULL,
-                        open_last = FALSE)
+                  dob = "1910-01-01",
+                  break_max = NULL,
+                  open_last = FALSE)
 }
 \seealso{
 Other functions for creating age groups are
@@ -114,12 +122,16 @@ Other functions for creating age groups are
 \code{\link{date_to_age_custom}},
 \code{\link{date_to_age_quarter}},
 and \code{\link{date_to_age_month}}.
+
 Other functions for working with multi-year intervals are
 \code{\link{date_to_period_multi}},
 \code{\link{date_to_cohort_multi}},
 and \code{\link{date_to_triangle_multi}}.
-See \code{\link{make_labels_age}} for the rules
-on constructing labels for age groups.
-Function \code{\link{plot_date_to_age_multi}} depicts
-the intervals created by \code{date_to_age_multi}.
+
+\code{\link{make_labels_age}} describes the rules
+for constructing labels for age groups.
+
+\code{\link{plot_date_to_age_multi}} creates plots
+that illustrate how \code{date_to_age_multi}
+works.
 }

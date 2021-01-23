@@ -21,6 +21,8 @@ otherwise it defaults to \code{FALSE}.}
 \description{
 Create plot illustrating how function
 \code{\link{date_to_cohort_custom}} works.
+}
+\details{
 \code{plot_date_to_cohort_custom} is typically used for
 learning or documentation, rather than for
 actual data analysis.
@@ -30,15 +32,15 @@ actual data analysis.
 plot_date_to_cohort_custom(date = c("2024-03-27",
                                     "2018-11-09",
                                     "2021-03-02"),
-                           breaks = c("2000-01-01",
-                                      "2019-01-01",
+                           breaks = c("2010-01-01",
+                                      "2020-01-01",
                                       "2026-01-01"))
 
 ## cohorts start on 1 March
 plot_date_to_cohort_custom(date = c("2024-03-27",
                                     "2018-11-09",
                                     "2021-03-02"),
-                           breaks = c("2000-03-01",
-                                      "2019-03-01",
+                           breaks = c("2010-03-01",
+                                      "2020-03-01",
                                       "2026-03-01"))
 }

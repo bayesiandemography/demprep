@@ -67,24 +67,28 @@
 #' \code{\link{date_to_period_custom}},
 #' \code{\link{date_to_period_quarter}},
 #' and \code{\link{date_to_period_month}}.
+#'
 #' Other functions for working with one-year intervals are
 #' \code{\link{date_to_age_year}},
 #' \code{\link{date_to_cohort_year}},
 #' and \code{\link{date_to_triangle_year}}.
-#' See \code{\link{make_labels_period}} for the rules
-#' on constructing labels for periods. Function
-#' \code{\link{plot_date_to_period_year}} depicts
-#' the intervals created by \code{date_to_period_year}.
+#'
+#' \code{\link{make_labels_period}} describes the rules
+#' for constructing labels for periods.
+#'
+#' \code{\link{plot_date_to_period_year}} creates plots
+#' that illustrate how \code{date_to_period_year}
+#' works.
 #'
 #' @examples
 #' date_to_period_year(date = c("2024-03-27", "2022-11-09"))
 #'
-#' ## July to June
+#' ## period starts on 1 July, not 1 January
 #' date_to_period_year(date = c("2024-03-27", "2022-11-09"),
 #'                     month_start = "Jul")
 #'
-#' ## July to June, using the calendar year at
-#' ## the end for the label
+#' ## period starts on 1 July, using the calendar year at
+#' ## the end, rather than beginning, for the label
 #' date_to_period_year(date = c("2024-03-27", "2022-11-09"),
 #'                     month_start = "Jul",
 #'                     label_year_start = FALSE)
@@ -179,14 +183,18 @@ date_to_period_year <- function(date,
 #' \code{\link{date_to_period_custom}},
 #' \code{\link{date_to_period_quarter}},
 #' and \code{\link{date_to_period_month}}.
+#'
 #' Other functions for working with multi-year intervals are
 #' \code{\link{date_to_age_multi}},
 #' \code{\link{date_to_cohort_multi}},
 #' and \code{\link{date_to_triangle_multi}}.
-#' See \code{\link{make_labels_period}} for the rules
-#' on constructing labels for periods. Function
-#' \code{\link{plot_date_to_period_multi}} depicts
-#' the intervals created by \code{date_to_period_multi}.
+#'
+#' \code{\link{make_labels_period}} describes the rules
+#' for constructing labels for periods.
+#'
+#' \code{\link{plot_date_to_period_multi}} creates plots
+#' that illustrate how \code{date_to_period_multi}
+#' works.
 #'
 #' @examples
 #' date_to_period_multi(date = c("2024-03-27",
@@ -205,7 +213,7 @@ date_to_period_year <- function(date,
 #'                               "2021-03-02"),
 #'                      origin = 2001)
 #'
-#' ## July to June
+#' ## period starts on 1 July, not 1 January
 #' date_to_period_multi(date = c("2024-03-27",
 #'                               "2018-11-09",
 #'                               "2021-03-02"),
@@ -312,13 +320,17 @@ date_to_period_multi <- function(date,
 #' \code{\link{date_to_period_multi}},
 #' \code{\link{date_to_period_quarter}},
 #' and \code{\link{date_to_period_month}}.
+#'
 #' Other functions for working with customized intervals are
 #' \code{\link{date_to_age_custom}},
 #' and \code{\link{date_to_cohort_custom}}.
-#' See \code{\link{make_labels_period}} for the rules
-#' on constructing labels for periods. Function
-#' \code{\link{plot_date_to_period_custom}} depicts
-#' the intervals created by \code{date_to_period_custom}.
+#'
+#' \code{\link{make_labels_period}} describes the rules
+#' for constructing labels for periods.
+#'
+#' \code{\link{plot_date_to_period_custom}} creates plots
+#' that illustrate how \code{date_to_period_custom}
+#' works.
 #'
 #' @examples
 #' ## periods start on 1 January
@@ -436,14 +448,18 @@ date_to_period_custom <- function(date,
 #' \code{\link{date_to_period_multi}},
 #' \code{\link{date_to_period_custom}},
 #' and \code{\link{date_to_period_month}}.
+#'
 #' Other functions for working with quarter intervals are
 #' \code{\link{date_to_age_quarter}},
 #' and \code{\link{date_to_cohort_quarter}},
 #' and \code{\link{date_to_triangle_quarter}}.
-#' See \code{\link{make_labels_period_quarter}} on the rules
+#'
+#' \code{\link{make_labels_period_quarter}} describes the rules
 #' for constructing labels for quarter periods.
-#' Function \code{\link{plot_date_to_period_quarter}} depicts
-#' the intervals created by \code{date_to_period_quarter}.
+#'
+#' \code{\link{plot_date_to_period_quarter}} creates plots
+#' that illustrate how \code{date_to_period_quarter}
+#' works.
 #' 
 #' @examples
 #' date_to_period_quarter(date = c("2024-03-27",
@@ -521,14 +537,18 @@ date_to_period_quarter <- function(date,
 #' \code{\link{date_to_period_multi}},
 #' \code{\link{date_to_period_custom}},
 #' and \code{\link{date_to_period_quarter}}.
+#'
 #' Other functions for working with month intervals are
 #' \code{\link{date_to_age_month}},
 #' and \code{\link{date_to_cohort_month}},
 #' and \code{\link{date_to_triangle_month}}.
-#' See \code{\link{make_labels_period_month}} on the rules
+#'
+#' \code{\link{make_labels_period_month}} describes the rules
 #' for constructing labels for month periods.
-#' Function \code{\link{plot_date_to_period_month}} depicts
-#' the intervals created by \code{date_to_period_month}.
+#'
+#' \code{\link{plot_date_to_period_month}} creates plots
+#' that illustrate how \code{date_to_period_month}
+#' works.
 #'
 #' @examples
 #' date_to_period_month(date = c("2024-03-27",

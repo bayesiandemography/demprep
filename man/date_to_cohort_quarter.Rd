@@ -41,9 +41,7 @@ value is a factor; otherwise it is a character vector.
 The return value has the same length as \code{date}.
 }
 \description{
-Allocate dates of events
-to cohorts of length one quarter, ie three months.
-The events are typically, but not always, births.
+Identify cohorts, based on dates of births or other events.
 Q1 (the first quarter) starts on 1 January
 and ends on 31 March; Q2 starts on 1 April and ends on
 30 June; Q3 starts on 1 July and ends on 30 September;
@@ -96,10 +94,16 @@ Other functions for creating cohorts are
 \code{\link{date_to_cohort_multi}},
 \code{\link{date_to_cohort_custom}},
 and \code{\link{date_to_cohort_month}}.
+
 Other functions for working with one-quarter intervals are
 \code{\link{date_to_age_quarter}},
 \code{\link{date_to_period_quarter}},
 and \code{\link{date_to_triangle_quarter}}.
+
 See \code{\link{make_labels_period_quarter}} for the rules
 on constructing labels for periods and cohorts.
+
+\code{\link{plot_date_to_cohort_quarter}} creates plots
+that illustrate how \code{date_to_cohort_quarter}
+works.
 }

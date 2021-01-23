@@ -9,8 +9,12 @@ plot_date_to_cohort <- function(date, breaks, open_first, labels, cex = 0.8) {
     diff_br <- diff(breaks)
     diff_br_all <- breaks[[n_br]] - breaks[[1L]]
     x_plot_first <- breaks[[1L]] - 0.03 * diff_br_all
-    if (open_first)
-        x_plot_first <- x_plot_first - diff_br[[1L]]
+    if (open_first) {
+        x_plot_first <- min(x_plot_first,
+                            breaks[[1L]] - diff_br[[1L]])
+        x_plot_first <- min(x_plot_first,
+                            min(date, na.rm = TRUE) - 0.2 * diff_br[[1L]])
+    }        
     x_plot_last <- breaks[[n_br]] + 0.03 * diff_br_all
     x_plot <- c(x_plot_first, x_plot_last)
     y_plot <- rep(0, 2L)
@@ -114,26 +118,29 @@ plot_date_to_cohort <- function(date, breaks, open_first, labels, cex = 0.8) {
 #' plot_date_to_cohort_year(date = c("2024-03-27",
 #'                                   "2022-11-09"))
 #'
-#' ## July to June
+#' ## starts on 1 July rather than 1 January
 #' plot_date_to_cohort_year(date = c("2024-03-27",
 #'                                   "2022-11-09"),
 #'                          month_start = "Jul")
 #'
-#' ## July to June, using the calendar year at
-#' ## the end for the label
+#' ## starts on 1 July rather than 1 January,
+#' ## and uses calendar year at end rather than
+#' ## calendar year at the beginning
 #' plot_date_to_cohort_year(date = c("2024-03-27",
 #'                                   "2022-11-09"),
 #'                          month_start = "Jul",
 #'                          label_year_start = FALSE)
 #'
-#' ## Specify oldest cohort, with open_first
-#' ## at default value of TRUE
+#' ## specify oldest cohort, with 'open_first'
+#' ## at default value of 'TRUE', so first cohort
+#' ## has no lower limit
 #' plot_date_to_cohort_year(date = c("2024-03-27",
 #'                                   "2019-08-22",
 #'                                   "2022-11-09"),
 #'                          break_min = "2020-01-01")
 #'
-#' ## Specify oldest cohort, with open_first = FALSE
+#' ## specify oldest cohort with 'open_first' equal to
+#' ## 'FALSE', so first cohort has lower limit
 #' plot_date_to_cohort_year(date = c("2024-03-27",
 #'                                   "2019-08-22",
 #'                                   "2022-11-09"),
@@ -202,6 +209,7 @@ plot_date_to_cohort_year <- function(date,
 #'
 #' Create plot illustrating how function
 #' \code{\link{date_to_cohort_multi}} works.
+#' 
 #' \code{plot_date_to_cohort_multi} is typically used for
 #' learning or documentation, rather than for
 #' actual data analysis.
@@ -228,7 +236,7 @@ plot_date_to_cohort_year <- function(date,
 #'                                    "2021-03-02"),
 #'                           origin = 2001)
 #'
-#' ## July to June
+#' ## starts on 1 July rather than 1 January
 #' plot_date_to_cohort_multi(date = c("2024-03-27",
 #'                                    "2018-11-09",
 #'                                    "2021-03-02"),
@@ -312,6 +320,7 @@ plot_date_to_cohort_multi <- function(date,
 #'
 #' Create plot illustrating how function
 #' \code{\link{date_to_cohort_custom}} works.
+#' 
 #' \code{plot_date_to_cohort_custom} is typically used for
 #' learning or documentation, rather than for
 #' actual data analysis.
@@ -324,16 +333,16 @@ plot_date_to_cohort_multi <- function(date,
 #' plot_date_to_cohort_custom(date = c("2024-03-27",
 #'                                     "2018-11-09",
 #'                                     "2021-03-02"),
-#'                            breaks = c("2000-01-01",
-#'                                       "2019-01-01",
+#'                            breaks = c("2010-01-01",
+#'                                       "2020-01-01",
 #'                                       "2026-01-01"))
 #'
 #' ## cohorts start on 1 March
 #' plot_date_to_cohort_custom(date = c("2024-03-27",
 #'                                     "2018-11-09",
 #'                                     "2021-03-02"),
-#'                            breaks = c("2000-03-01",
-#'                                       "2019-03-01",
+#'                            breaks = c("2010-03-01",
+#'                                       "2020-03-01",
 #'                                       "2026-03-01"))
 #' @export
 plot_date_to_cohort_custom <- function(date, breaks, open_first = TRUE) {
@@ -378,12 +387,12 @@ plot_date_to_cohort_custom <- function(date, breaks, open_first = TRUE) {
 #'
 #' @examples
 #' plot_date_to_cohort_quarter(date = c("2024-03-27",
-#'                                      "2020-01-03",
+#'                                      "2022-05-13",
 #'                                      "2022-11-09"))
 #' plot_date_to_cohort_quarter(date = c("2024-03-27",
-#'                                      "2020-01-03",
+#'                                      "2022-05-13",
 #'                                      "2022-11-09"),
-#'                             break_min = "2018-07-01")
+#'                             break_min = "2022-01-01")
 #' @export
 plot_date_to_cohort_quarter <- function(date,
                                         break_min = NULL,
@@ -434,6 +443,7 @@ plot_date_to_cohort_quarter <- function(date,
 #'
 #' Create plot illustrating how function
 #' \code{\link{date_to_cohort_month}} works.
+#' 
 #' \code{plot_date_to_cohort_month} is typically used for
 #' learning or documentation, rather than for
 #' actual data analysis.
@@ -442,12 +452,12 @@ plot_date_to_cohort_quarter <- function(date,
 #'
 #' @examples
 #' plot_date_to_cohort_month(date = c("2024-03-27",
-#'                                    "2020-01-03",
-#'                                    "2022-11-09"))
+#'                                    "2023-08-13",
+#'                                    "2023-11-09"))
 #' plot_date_to_cohort_month(date = c("2024-03-27",
-#'                                    "2020-01-03",
-#'                                    "2022-11-09"),
-#'                           break_min = "2018-12-01")
+#'                                    "2023-08-13",
+#'                                    "2023-11-09"),
+#'                           break_min = "2023-10-01")
 #' @export
 plot_date_to_cohort_month <- function(date,
                                       break_min = NULL,

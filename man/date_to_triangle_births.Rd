@@ -156,7 +156,12 @@ Other functions for creating Lexis triangles are
 \code{\link{date_to_triangle_multi}},
 \code{\link{date_to_triangle_quarter}},
 and \code{\link{date_to_triangle_month}}.
+
 \code{date_to_triangle_births} is typically used in combination with
 \code{\link{date_to_age_year}}
 and \code{\link{date_to_period_year}}.
+
+\code{\link{plot_date_to_triangle_births}} creates plots
+that illustrate how \code{date_to_triangle_births}
+works.
 }

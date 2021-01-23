@@ -103,7 +103,7 @@ date_to_triangle_year(date = c("2024-03-27",
                                "2022-11-09"),
                       dob = "2020-01-01")
 
-## July to June
+## starts on 1 July rather than 1 January
 date_to_triangle_year(date = c("2024-03-27",
                                "2022-11-09"),
                       dob = "2020-01-01",
@@ -135,7 +135,12 @@ Other functions for creating Lexis triangles are
 \code{\link{date_to_triangle_births}},
 \code{\link{date_to_triangle_quarter}},
 and \code{\link{date_to_triangle_month}}.
+
 \code{date_to_triangle_year} is typically used in combination with
 \code{\link{date_to_age_year}}
 and \code{\link{date_to_period_year}}.
+
+\code{\link{plot_date_to_triangle_year}} creates plots
+that illustrate how \code{date_to_triangle_year}
+works.
 }

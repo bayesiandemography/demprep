@@ -10,9 +10,8 @@
 ## HAS_TESTS
 #' Convert dates to one-year cohorts
 #'
-#' Allocate dates of events to cohorts with widths of one year.
-#' The cohorts by default align with calendar years.
-#' The events are typically, but not always, births.
+#' Identify cohorts, based on dates of births or other events.
+#' The cohorts have widths of one year.
 #' 
 #' The interface for \code{date_to_cohort_year} is similar
 #' to that of \code{\link{date_to_period_year}}, except that
@@ -100,22 +99,28 @@
 #' \code{\link{date_to_cohort_custom}},
 #' \code{\link{date_to_cohort_quarter}},
 #' and \code{\link{date_to_cohort_month}}.
+#'
 #' Other functions for working with one-year intervals are
 #' \code{\link{date_to_age_year}},
 #' \code{\link{date_to_period_year}},
 #' and \code{\link{date_to_triangle_year}}.
+#'
 #' See \code{\link{make_labels_period}} for the rules
 #' on constructing labels for periods and cohorts.
+#'
+#' \code{\link{plot_date_to_cohort_year}} creates plots
+#' that illustrate how \code{date_to_cohort_year}
+#' works.
 #'
 #' @examples
 #' date_to_cohort_year(date = c("2024-03-27", "2022-11-09"))
 #'
-#' ## July to June
+#' ## starts on 1 July rather than 1 January
 #' date_to_cohort_year(date = c("2024-03-27", "2022-11-09"),
 #'                     month_start = "Jul")
 #'
-#' ## July to June, using the calendar year at
-#' ## the end for the label
+#' ## periods starts on 1 July, rather than 1 January, and uses
+#' ## calendar year at end, rather than beginning, for the label
 #' date_to_cohort_year(date = c("2024-03-27", "2022-11-09"),
 #'                     month_start = "Jul",
 #'                     label_year_start = FALSE)
@@ -216,10 +221,8 @@ date_to_cohort_year <- function(date,
 ## HAS_TESTS
 #' Convert dates to multi-year cohorts
 #'
-#' Allocate dates of events to multi-year cohorts.
-#' The cohorts all have the same
-#' with, which by default is 5 years.
-#' The events are typically, but not always, births.
+#' Identify cohorts, based on dates of births or other events.
+#' The cohorts all have the same width, which by default is 5 years.
 #'
 #' The interface for \code{date_to_cohort_multi} is the similar
 #' to that of \code{\link{date_to_period_multi}}, except that
@@ -269,13 +272,20 @@ date_to_cohort_year <- function(date,
 #' \code{\link{date_to_cohort_custom}},
 #' \code{\link{date_to_cohort_quarter}},
 #' and \code{\link{date_to_cohort_month}}.
+#' 
 #' Other functions for working with multi-year intervals are
 #' \code{\link{date_to_age_multi}},
 #' \code{\link{date_to_period_multi}},
 #' and \code{\link{date_to_triangle_multi}}.
+#'
 #' See \code{\link{make_labels_period}} for the rules
 #' on constructing labels for periods and cohorts.
 #'
+#' \code{\link{plot_date_to_cohort_multi}} creates plots
+#' that illustrate how \code{date_to_cohort_multi}
+#' works.
+#'
+#' 
 #' @examples
 #' date_to_cohort_multi(date = c("2024-03-27",
 #'                               "2018-11-09",
@@ -293,21 +303,22 @@ date_to_cohort_year <- function(date,
 #'                               "2021-03-02"),
 #'                      origin = 2001)
 #'
-#' ## July to June
+#' ## starts on 1 July rather than 1 January
 #' date_to_cohort_multi(date = c("2024-03-27",
 #'                               "2018-11-09",
 #'                               "2021-03-02"),
 #'                      origin = 2001,
 #'                      month_start = "Jul")
 #'
-#' ## Specify oldest cohort, with open_first
-#' ## at default value of TRUE
+#' ## specify oldest cohort, with 'open_first'
+#' ## at default value of 'TRUE'
 #' date_to_cohort_multi(date = c("2024-03-27",
 #'                               "2019-08-22",
 #'                               "2022-11-09"),
 #'                      break_min = "2015-01-01")
 #'
-#' ## Specify oldest cohort, with open_first = FALSE
+#' ## specify oldest cohort, with 'open_first'
+#' ## set to 'FALSE'
 #' date_to_cohort_multi(date = c("2024-03-27",
 #'                               "2019-08-22",
 #'                               "2022-11-09"),
@@ -400,10 +411,9 @@ date_to_cohort_multi <- function(date,
 ## HAS_TESTS
 #' Convert dates to customized cohorts
 #'
-#' Allocate dates of events
-#' to cohorts with varying widths, though all widths
+#' Identify cohorts, based on dates of births or other events.
+#' The cohorts have varying widths. All widths
 #' are measured in whole years.
-#' The events are typically, but not always, births.
 #'
 #' The interface for \code{date_to_cohort_custom} is the similar
 #' to that of \code{\link{date_to_period_custom}}, except that
@@ -449,11 +459,17 @@ date_to_cohort_multi <- function(date,
 #' \code{\link{date_to_cohort_multi}},
 #' \code{\link{date_to_cohort_quarter}},
 #' and \code{\link{date_to_cohort_month}}.
+#'
 #' Other functions for working with customised intervals are
 #' \code{\link{date_to_age_custom}},
 #' and \code{\link{date_to_period_custom}}.
+#'
 #' See \code{\link{make_labels_period}} for the rules
 #' on constructing labels for periods and cohorts.
+#'
+#' \code{\link{plot_date_to_cohort_custom}} creates plots
+#' that illustrate how \code{date_to_cohort_custom}
+#' works.
 #'
 #' @examples
 #' ## cohorts start on 1 January
@@ -564,9 +580,7 @@ date_to_cohort_custom <- function(date,
 ## HAS_TESTS
 #' Convert dates to one-quarter cohorts
 #'
-#' Allocate dates of events
-#' to cohorts of length one quarter, ie three months.
-#' The events are typically, but not always, births.
+#' Identify cohorts, based on dates of births or other events.
 #' Q1 (the first quarter) starts on 1 January
 #' and ends on 31 March; Q2 starts on 1 April and ends on
 #' 30 June; Q3 starts on 1 July and ends on 30 September;
@@ -609,13 +623,19 @@ date_to_cohort_custom <- function(date,
 #' \code{\link{date_to_cohort_multi}},
 #' \code{\link{date_to_cohort_custom}},
 #' and \code{\link{date_to_cohort_month}}.
+#'
 #' Other functions for working with one-quarter intervals are
 #' \code{\link{date_to_age_quarter}},
 #' \code{\link{date_to_period_quarter}},
 #' and \code{\link{date_to_triangle_quarter}}.
+#'
 #' See \code{\link{make_labels_period_quarter}} for the rules
 #' on constructing labels for periods and cohorts.
 #'
+#' \code{\link{plot_date_to_cohort_quarter}} creates plots
+#' that illustrate how \code{date_to_cohort_quarter}
+#' works.
+#' 
 #' @examples
 #' date_to_cohort_quarter(date = c("2024-03-27",
 #'                                 "2022-11-09"))
@@ -703,8 +723,8 @@ date_to_cohort_quarter <- function(date,
 ## HAS_TESTS
 #' Convert dates to one-month cohorts
 #'
-#' Allocate dates of events (typically, but not always, births)
-#' to cohorts of length one month.
+#' Identify cohorts, based on dates of births or other events.
+#' The cohorts have widths of one month.
 #'
 #' The interface for \code{date_to_cohort_month} is the similar
 #' to that of \code{\link{date_to_period_month}}, except that
@@ -735,13 +755,19 @@ date_to_cohort_quarter <- function(date,
 #' \code{\link{date_to_cohort_multi}},
 #' \code{\link{date_to_cohort_custom}},
 #' and \code{\link{date_to_cohort_quarter}}.
+#'
 #' Other functions for working with one-month intervals are
 #' \code{\link{date_to_age_month}},
 #' \code{\link{date_to_period_month}},
 #' and \code{\link{date_to_triangle_month}}.
+#'
 #' See \code{\link{make_labels_period_month}} for the rules
 #' on constructing labels for periods and cohorts.
 #'
+#' \code{\link{plot_date_to_cohort_month}} creates plots
+#' that illustrate how \code{date_to_cohort_month}
+#' works.
+#' 
 #' @examples
 #' date_to_cohort_month(date = c("2024-03-27",
 #'                               "2022-11-09"))

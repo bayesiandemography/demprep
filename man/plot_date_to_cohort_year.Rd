@@ -53,26 +53,29 @@ actual data analysis.
 plot_date_to_cohort_year(date = c("2024-03-27",
                                   "2022-11-09"))
 
-## July to June
+## starts on 1 July rather than 1 January
 plot_date_to_cohort_year(date = c("2024-03-27",
                                   "2022-11-09"),
                          month_start = "Jul")
 
-## July to June, using the calendar year at
-## the end for the label
+## starts on 1 July rather than 1 January,
+## and uses calendar year at end rather than
+## calendar year at the beginning
 plot_date_to_cohort_year(date = c("2024-03-27",
                                   "2022-11-09"),
                          month_start = "Jul",
                          label_year_start = FALSE)
 
-## Specify oldest cohort, with open_first
-## at default value of TRUE
+## specify oldest cohort, with 'open_first'
+## at default value of 'TRUE', so first cohort
+## has no lower limit
 plot_date_to_cohort_year(date = c("2024-03-27",
                                   "2019-08-22",
                                   "2022-11-09"),
                          break_min = "2020-01-01")
 
-## Specify oldest cohort, with open_first = FALSE
+## specify oldest cohort with 'open_first' equal to
+## 'FALSE', so first cohort has lower limit
 plot_date_to_cohort_year(date = c("2024-03-27",
                                   "2019-08-22",
                                   "2022-11-09"),

@@ -28,16 +28,18 @@ otherwise it defaults to \code{FALSE}.}
 \description{
 Create plot illustrating how function
 \code{\link{date_to_cohort_month}} works.
+}
+\details{
 \code{plot_date_to_cohort_month} is typically used for
 learning or documentation, rather than for
 actual data analysis.
 }
 \examples{
 plot_date_to_cohort_month(date = c("2024-03-27",
-                                   "2020-01-03",
-                                   "2022-11-09"))
+                                   "2023-08-13",
+                                   "2023-11-09"))
 plot_date_to_cohort_month(date = c("2024-03-27",
-                                   "2020-01-03",
-                                   "2022-11-09"),
-                          break_min = "2018-12-01")
+                                   "2023-08-13",
+                                   "2023-11-09"),
+                          break_min = "2023-10-01")
 }

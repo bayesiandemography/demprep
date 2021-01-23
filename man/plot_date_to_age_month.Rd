@@ -35,31 +35,30 @@ lines showing boundaries between months.
 Defaults to \code{FALSE}.}
 }
 \description{
-Create plot illustrating the inputs and outputs
-of function \code{\link{date_to_age_month}}.
+Create a plot illustrating how function
+\code{\link{date_to_age_month}} works.
 }
 \details{
-This function is for learning about the
-labelling conventions used in the \strong{dem} packages,
-and about their implementation in package
-\strong{demprep}. It would not normally be used
-during actual data analysis.
+\code{plot_date_to_age_month} is typically used for
+learning or documentation, rather than for
+actual data analysis.
 }
 \examples{
-plot_date_to_age_month(date = c("2004-03-27", "2002-11-09"),
-                             dob = c("2001-03-21", "2000-07-13"))
+plot_date_to_age_month(date = c("2004-03-27",
+                                "2004-11-09"),
+                       dob = c("2003-03-21",
+                               "2003-07-13"),
+                       break_max = 24)
 
 ## alternative specifications for oldest age group
 plot_date_to_age_month(date = "2019-09-22",
-                             dob = "1910-01-01")
+                       dob = "2019-01-01",
+                       break_max = 12)
 plot_date_to_age_month(date = "2019-09-22",
-                             dob = "1910-01-01",
-                             break_max = 320)
+                       dob = "2019-01-01",
+                       break_max = NULL)
 plot_date_to_age_month(date = "2019-09-22",
-                             dob = "1910-01-01",
-                             break_max = NULL)
-plot_date_to_age_month(date = "2019-09-22",
-                             dob = "1910-01-01",
-                             break_max = NULL,
-                             open_last = FALSE)
+                       dob = "2019-01-01",
+                       break_max = NULL,
+                       open_last = FALSE)
 }

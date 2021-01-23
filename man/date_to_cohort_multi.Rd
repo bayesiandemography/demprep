@@ -54,10 +54,8 @@ value is a factor; otherwise it is a character vector.
 The return value has the same length as \code{date}.
 }
 \description{
-Allocate dates of events to multi-year cohorts.
-The cohorts all have the same
-with, which by default is 5 years.
-The events are typically, but not always, births.
+Identify cohorts, based on dates of births or other events.
+The cohorts all have the same width, which by default is 5 years.
 }
 \details{
 The interface for \code{date_to_cohort_multi} is the similar
@@ -110,21 +108,22 @@ date_to_cohort_multi(date = c("2024-03-27",
                               "2021-03-02"),
                      origin = 2001)
 
-## July to June
+## starts on 1 July rather than 1 January
 date_to_cohort_multi(date = c("2024-03-27",
                               "2018-11-09",
                               "2021-03-02"),
                      origin = 2001,
                      month_start = "Jul")
 
-## Specify oldest cohort, with open_first
-## at default value of TRUE
+## specify oldest cohort, with 'open_first'
+## at default value of 'TRUE'
 date_to_cohort_multi(date = c("2024-03-27",
                               "2019-08-22",
                               "2022-11-09"),
                      break_min = "2015-01-01")
 
-## Specify oldest cohort, with open_first = FALSE
+## specify oldest cohort, with 'open_first'
+## set to 'FALSE'
 date_to_cohort_multi(date = c("2024-03-27",
                               "2019-08-22",
                               "2022-11-09"),
@@ -142,10 +141,16 @@ Other functions for creating cohorts are
 \code{\link{date_to_cohort_custom}},
 \code{\link{date_to_cohort_quarter}},
 and \code{\link{date_to_cohort_month}}.
+
 Other functions for working with multi-year intervals are
 \code{\link{date_to_age_multi}},
 \code{\link{date_to_period_multi}},
 and \code{\link{date_to_triangle_multi}}.
+
 See \code{\link{make_labels_period}} for the rules
 on constructing labels for periods and cohorts.
+
+\code{\link{plot_date_to_cohort_multi}} creates plots
+that illustrate how \code{date_to_cohort_multi}
+works.
 }

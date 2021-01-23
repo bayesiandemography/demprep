@@ -41,8 +41,8 @@ value is a factor; otherwise it is a character vector.
 The return value has the same length as \code{date}.
 }
 \description{
-Allocate dates of events (typically, but not always, births)
-to cohorts of length one month.
+Identify cohorts, based on dates of births or other events.
+The cohorts have widths of one month.
 }
 \details{
 The interface for \code{date_to_cohort_month} is the similar
@@ -92,10 +92,16 @@ Other functions for creating cohorts are
 \code{\link{date_to_cohort_multi}},
 \code{\link{date_to_cohort_custom}},
 and \code{\link{date_to_cohort_quarter}}.
+
 Other functions for working with one-month intervals are
 \code{\link{date_to_age_month}},
 \code{\link{date_to_period_month}},
 and \code{\link{date_to_triangle_month}}.
+
 See \code{\link{make_labels_period_month}} for the rules
 on constructing labels for periods and cohorts.
+
+\code{\link{plot_date_to_cohort_month}} creates plots
+that illustrate how \code{date_to_cohort_month}
+works.
 }

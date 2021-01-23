@@ -34,30 +34,36 @@ lines showing boundaries between months.
 Defaults to \code{FALSE}.}
 }
 \description{
-Create plot illustrating the inputs and outputs
-of function \code{\link{date_to_age_custom}}.
+Create a plot illustrating how function
+\code{\link{date_to_age_custom}} works.
 }
 \details{
-This function is for learning about the
-labelling conventions used in the \strong{dem} packages,
-and about their implementation in package
-\strong{demprep}. It would not normally be used
-during actual data analysis.
+\code{plot_date_to_age_custom} is typically used for
+learning or documentation, rather than for
+actual data analysis.
 }
 \examples{
-plot_date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-                              dob = c("2001-03-21", "2000-07-13"),
-                              breaks = c(0, 15, 60))
-plot_date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-                              dob = c("2001-03-21", "2000-07-13"),
-                              breaks = c(15, 40, 65))
+plot_date_to_age_custom(date = c("2024-03-27",
+                                 "2022-11-09"),
+                        dob = c("2001-03-21",
+                                "2010-07-13"),
+                        breaks = c(0, 15, 60))
+plot_date_to_age_custom(date = c("2024-03-27",
+                                 "2022-11-09"),
+                        dob = c("2001-03-21",
+                                "2010-07-13"),
+                        breaks = c(10, 40, 65))
 
 ## alternative specifications for oldest age group
-date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-                         dob = c("2001-03-21", "2000-07-13"),
-                         breaks = c(15, 65, 100))
-date_to_age_custom(date = c("2024-03-27", "2022-11-09"),
-                         dob = c("2001-03-21", "2000-07-13"),
-                         breaks = c(15, 65, 100),
-                         open_last = FALSE)
+plot_date_to_age_custom(date = c("2024-03-27",
+                                 "2022-11-09"),
+                        dob = c("2001-03-21",
+                                "2010-07-13"),
+                        breaks = c(0, 15, 50))
+plot_date_to_age_custom(date = c("2024-03-27",
+                                 "2022-11-09"),
+                        dob = c("2001-03-21",
+                                "2010-07-13"),
+                        breaks = c(0, 15, 50),
+                        open_last = FALSE)
 }

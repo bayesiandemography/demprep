@@ -39,31 +39,35 @@ lines showing boundaries between months.
 Defaults to \code{FALSE}.}
 }
 \description{
-Create plot illustrating the inputs and outputs
-of function \code{\link{date_to_age_multi}}.
+Create a plot illustrating how function
+\code{\link{date_to_age_multi}} works.
 }
 \details{
-This function is for learning about the
-labelling conventions used in the \strong{dem} packages,
-and about their implementation in package
-\strong{demprep}. It would not normally be used
-during actual data analysis.
+\code{plot_date_to_age_multi} is typically used for
+learning or documentation, rather than for
+actual data analysis.
 }
 \examples{
-plot_date_to_age_multi(date = c("2024-03-27", "2022-11-09"),
-                             dob = c("2001-03-21", "2000-07-13"))
+plot_date_to_age_multi(date = c("2024-03-27",
+                                "2022-11-09"),
+                       dob = c("2001-03-21",
+                               "2013-07-13"),
+                       break_max = 35)
 
-## alternative values for 'width'
-plot_date_to_age_multi(date = c("2024-03-27", "2022-11-09"),
-                             dob = c("2001-03-21", "2000-07-13"),
-                             width = 10)
+## alternative values for 'width' and 'break_max'
+plot_date_to_age_multi(date = c("2024-03-27",
+                                "2022-11-09"),
+                       dob = c("2001-03-21",
+                               "2013-07-13"),
+                       width = 10,
+                       break_max = 40)
 
-## alternative specifications for oldest age group
-plot_date_to_age_multi(date = "2019-09-22",
-                             dob = "1910-01-01",
-                              width = 20)
-plot_date_to_age_multi(date = "2019-09-22",
-                             dob = "1910-01-01",
-                             width = 20,
-                             break_max = 80)
+## oldest age group closed
+plot_date_to_age_multi(date = c("2024-03-27",
+                                "2022-11-09"),
+                       dob = c("2001-03-21",
+                               "2013-07-13"),
+                       width = 10,
+                       break_max = 40,
+                       open_last = FALSE)
 }

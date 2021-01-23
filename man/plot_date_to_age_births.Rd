@@ -44,34 +44,44 @@ lines showing boundaries between months.
 Defaults to \code{FALSE}.}
 }
 \description{
-Create plot illustrating the inputs and outputs
-of function \code{\link{date_to_age_births}}.
+Create a plot illustrating how function
+\code{\link{date_to_age_births}} works.
 }
 \details{
-This function is for learning about the
-labelling conventions used in the \strong{dem} packages,
-and about their implementation in package
-\strong{demprep}. It would not normally be used
-during actual data analysis.
+\code{plot_date_to_age_births} is typically used for
+learning or documentation, rather than for
+actual data analysis.
 }
 \examples{
-plot_date_to_age_births(date = c("2024-03-27", "2022-11-09"),
-                              dob = c("2001-03-21", "2000-07-13"))
-plot_date_to_age_births(date = c("2024-03-27", "2022-11-09"),
-                              dob = c("2001-03-21", "2000-07-13"),
-                              width = 10,
-                              break_min = 20)
+plot_date_to_age_births(date = c("2024-03-27",
+                                 "2022-11-09"),
+                        dob = c("2001-03-21",
+                                "2000-07-13"))
+plot_date_to_age_births(date = c("2024-03-27",
+                                 "2022-11-09"),
+                        dob = c("2001-03-21",
+                                "2000-07-13"),
+                        width = 10,
+                        break_min = 20)
 
 ## allow youngest and oldest age groups to be
 ## set by the data
-plot_date_to_age_births(date = c("2052-01-02", "2019-09-22", "2022-10-08"),
-                              dob = c("2000-01-01", "2001-03-17", "2010-07-05"),
-                              break_min = NULL,
-                              break_max = NULL)
+plot_date_to_age_births(date = c("2052-01-02",
+                                 "2019-09-22",
+                                 "2022-10-08"),
+                        dob = c("2000-01-01",
+                                "2001-03-17",
+                                "2010-07-05"),
+                        break_min = NULL,
+                        break_max = NULL)
 
 ## recode ages outside the expected range
-plot_date_to_age_births(date = c("2052-01-02", "2019-09-22", "2022-10-08"),
-                              dob = c("2000-01-01", "2001-03-17", "2010-07-05"),
-                              recode_up = TRUE,
-                              recode_down = TRUE)
+plot_date_to_age_births(date = c("2052-01-02",
+                                 "2019-09-22",
+                                 "2022-10-08"),
+                        dob = c("2000-01-01",
+                                "2001-03-17",
+                                "2010-07-05"),
+                        recode_up = TRUE,
+                        recode_down = TRUE)
 }
