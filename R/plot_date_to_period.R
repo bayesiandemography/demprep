@@ -43,7 +43,8 @@ plot_date_to_period <- function(date, breaks, labels, cex = 0.8) {
     graphics::points(x = date,
                      y = rep(0, times = n_date),
                      pch = 19,
-                     col = "black")
+                     col = "black",
+                     cex = 0.8)
     ## labels for 'date'
     graphics::text(x = date,
                    y = -0.05,

@@ -29,13 +29,8 @@ actual data analysis.
 }
 \examples{
 plot_date_to_triangle_month(date = c("2024-03-27",
-                                     "2022-11-09"),
-                            dob = "2020-01-01")
-
-
-## open age group starts at 120 months
-plot_date_to_triangle_month(date = c("2017-03-27",
-                                     "2024-03-27"),
-                            dob = "2010-01-01",
-                            break_max = 120)
+                                     "2024-11-09"),
+                            dob = c("2023-10-05",
+                                    "2024-03-11"),
+                            break_max = 12)
 }

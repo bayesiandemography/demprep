@@ -13,7 +13,6 @@ plot_date_to_triangle_multi(
   open_last = TRUE,
   origin = 2000,
   month_start = "Jan",
-  label_year_start = TRUE,
   show_months = FALSE
 )
 }
@@ -37,11 +36,6 @@ has no upper limit. Defaults to \code{TRUE}.}
 or \code{\link[base]{month.abb}}. The period starts on
 the first day of this month.}
 
-\item{label_year_start}{Whether to label a period
-by the calendar year at the beginning of the period
-or the calendar year at the end. Not needed for periods
-that start on 1 January. Defaults to \code{FALSE}.}
-
 \item{show_months}{Whether to include vertical
 lines showing boundaries between months.
 Defaults to \code{FALSE}.}
@@ -58,24 +52,15 @@ actual data analysis.
 \examples{
 plot_date_to_triangle_multi(date = c("2027-03-27",
                                      "2022-11-09"),
-                            dob = "2010-05-12")
+                            dob = c("2012-05-12",
+                                    "2016-02-29"),
+                            break_max = 20)
 
 ## width is 10
 plot_date_to_triangle_multi(date = c("2027-03-27",
                                      "2022-11-09"),
-                            dob = "2010-05-12",
-                            width = 10)
-
-
-## period starts on 1 July rather than 1 January
-plot_date_to_triangle_multi(date = c("2027-03-27",
-                                     "2022-11-09"),
-                            dob = "2010-05-12",
-                            month_start = "Jul")
-
-## open age group starts at 10 years
-plot_date_to_triangle_multi(date = c("2027-03-27",
-                                     "2022-11-09"),
-                            dob = "2003-05-12",
-                            break_max = 10)
+                            dob = c("2012-05-12",
+                                    "2016-02-29"),
+                            width = 10,
+                            break_max = 20)
 }

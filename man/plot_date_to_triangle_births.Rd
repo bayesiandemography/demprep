@@ -15,7 +15,6 @@ plot_date_to_triangle_births(
   recode_down = FALSE,
   origin = 2000,
   month_start = "Jan",
-  label_year_start = TRUE,
   show_months = FALSE
 )
 }
@@ -48,11 +47,6 @@ age group.}
 or \code{\link[base]{month.abb}}. The period starts on
 the first day of this month.}
 
-\item{label_year_start}{Whether to label a period
-by the calendar year at the beginning of the period
-or the calendar year at the end. Not needed for periods
-that start on 1 January. Defaults to \code{FALSE}.}
-
 \item{show_months}{Whether to include vertical
 lines showing boundaries between months.
 Defaults to \code{FALSE}.}
@@ -67,15 +61,22 @@ instruction or documentation, rather than for
 actual data analysis.
 }
 \examples{
-plot_date_to_triangle_births(date = c("2024-03-27", "2022-11-09"),
-                             dob = c("2001-03-21", "2000-07-13"))
+plot_date_to_triangle_births(date = c("2020-01-27",
+                                      "2022-11-09"),
+                             dob = c("2001-03-21",
+                                     "2000-07-13"))
 
 ## alternative values for 'width'
-plot_date_to_triangle_births(date = c("2024-03-27", "2022-11-09"),
-                             dob = c("2001-03-21", "2000-07-13"),
+plot_date_to_triangle_births(date = c("2024-01-27",
+                                      "2022-11-09"),
+                             dob = c("2001-03-21",
+                                     "2000-07-13"),
                              width = 10,
                              break_min = 20)
-plot_date_to_triangle_births(date = c("2024-03-27", "2022-11-09"),
-                             dob = c("2001-03-21", "2000-07-13"),
-                             width = 1)
+plot_date_to_triangle_births(date = c("2024-01-27",
+                                      "2022-11-09"),
+                             dob = c("2001-03-21",
+                                     "2000-07-13"),
+                             width = 1,
+                             break_max = 45)
 }

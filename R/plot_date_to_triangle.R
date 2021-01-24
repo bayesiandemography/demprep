@@ -19,31 +19,38 @@
 #' @param month_start An element of \code{\link[base]{month.name}},
 #' or \code{\link[base]{month.abb}}. The period starts on
 #' the first day of this month.
-#' @param label_year_start Whether to label a period
-#' by the calendar year at the beginning of the period
-#' or the calendar year at the end. Not needed for periods
-#' that start on 1 January. Defaults to \code{FALSE}.
 #' @param show_months Whether to include vertical
 #' lines showing boundaries between months.
 #' Defaults to \code{FALSE}.
 #'
 #' @examples
-#' plot_date_to_triangle_year(date = c("2024-03-27",
-#'                                     "2022-11-09"),
-#'                            dob = "2020-01-01")
+#' plot_date_to_triangle_year(date = c("2024-05-27",
+#'                                     "2024-11-09"),
+#'                            dob = c("2020-03-13",
+#'                                    "2021-08-24"),
+#'                            break_max = 5)
 #'
-#' ## July to June
-#' plot_date_to_triangle_year(date = c("2024-03-27",
-#'                                     "2022-11-09"),
-#'                            dob = "2020-01-01",
-#'                            month_start = "Jul")
+#' ## final age group closed
+#' plot_date_to_triangle_year(date = c("2024-05-27",
+#'                                     "2024-11-09"),
+#'                            dob = c("2020-03-13",
+#'                                    "2021-08-24"),
+#'                            break_max = 5,
+#'                            open_last = FALSE)
+#'
+#' ## start on 1 July, rather than 1 January
+#' plot_date_to_triangle_year(date = c("2024-05-27",
+#'                                     "2024-11-09"),
+#'                            dob = c("2020-03-13",
+#'                                    "2021-08-24"),
+#'                            break_max = 5,
+#'                            month_start = "July")
 #' @export
 plot_date_to_triangle_year <- function(date,
                                        dob,
                                        break_max = 100,
                                        open_last = TRUE,
                                        month_start = "Jan",
-                                       label_year_start = TRUE,
                                        show_months = FALSE) {
     plot_date_to_triangle_multi(date = date,
                                 dob = dob,
@@ -52,7 +59,6 @@ plot_date_to_triangle_year <- function(date,
                                 open_last = open_last,
                                 origin = 2000L,
                                 month_start = month_start,
-                                label_year_start = label_year_start,
                                 show_months = FALSE)
 }
 
@@ -76,26 +82,17 @@ plot_date_to_triangle_year <- function(date,
 #' @examples
 #' plot_date_to_triangle_multi(date = c("2027-03-27",
 #'                                      "2022-11-09"),
-#'                             dob = "2010-05-12")
+#'                             dob = c("2012-05-12",
+#'                                     "2016-02-29"),
+#'                             break_max = 20)
 #'
 #' ## width is 10
 #' plot_date_to_triangle_multi(date = c("2027-03-27",
 #'                                      "2022-11-09"),
-#'                             dob = "2010-05-12",
-#'                             width = 10)
-#'
-#'
-#' ## period starts on 1 July rather than 1 January
-#' plot_date_to_triangle_multi(date = c("2027-03-27",
-#'                                      "2022-11-09"),
-#'                             dob = "2010-05-12",
-#'                             month_start = "Jul")
-#'
-#' ## open age group starts at 10 years
-#' plot_date_to_triangle_multi(date = c("2027-03-27",
-#'                                      "2022-11-09"),
-#'                             dob = "2003-05-12",
-#'                             break_max = 10)
+#'                             dob = c("2012-05-12",
+#'                                     "2016-02-29"),
+#'                             width = 10,
+#'                             break_max = 20)
 #' @export
 plot_date_to_triangle_multi <- function(date,
                                         dob,
@@ -104,7 +101,6 @@ plot_date_to_triangle_multi <- function(date,
                                         open_last = TRUE,
                                         origin = 2000,
                                         month_start = "Jan",
-                                        label_year_start = TRUE,
                                         show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
@@ -123,8 +119,6 @@ plot_date_to_triangle_multi <- function(date,
                                                name = "origin")
     month_start <- demcheck::err_tdy_month_start(x = month_start,
                                                  name = "month_start")
-    label_year_start <- demcheck::err_is_logical_flag(x = label_year_start,
-                                                      name = "label_year_start")
     demcheck::err_is_logical_flag(x = show_months,
                                   name = "show_months")
     ## calculate age in months and years
@@ -148,7 +142,7 @@ plot_date_to_triangle_multi <- function(date,
                                          break_min = NULL)
     ## make labels for time breaks
     labels_time <- make_labels_period(breaks = breaks_time,
-                                      label_year_start = label_year_start,
+                                      label_year_start = TRUE,
                                       include_na = FALSE)
     ## make age breaks
     breaks_age <- make_breaks_integer_year(age = age_years,
@@ -202,17 +196,24 @@ plot_date_to_triangle_multi <- function(date,
 #' @param origin An integer. Defaults to 2000. 
 #'
 #' @examples
-#' plot_date_to_triangle_births(date = c("2024-03-27", "2022-11-09"),
-#'                              dob = c("2001-03-21", "2000-07-13"))
+#' plot_date_to_triangle_births(date = c("2020-01-27",
+#'                                       "2022-11-09"),
+#'                              dob = c("2001-03-21",
+#'                                      "2000-07-13"))
 #'
 #' ## alternative values for 'width'
-#' plot_date_to_triangle_births(date = c("2024-03-27", "2022-11-09"),
-#'                              dob = c("2001-03-21", "2000-07-13"),
+#' plot_date_to_triangle_births(date = c("2024-01-27",
+#'                                       "2022-11-09"),
+#'                              dob = c("2001-03-21",
+#'                                      "2000-07-13"),
 #'                              width = 10,
 #'                              break_min = 20)
-#' plot_date_to_triangle_births(date = c("2024-03-27", "2022-11-09"),
-#'                              dob = c("2001-03-21", "2000-07-13"),
-#'                              width = 1)
+#' plot_date_to_triangle_births(date = c("2024-01-27",
+#'                                       "2022-11-09"),
+#'                              dob = c("2001-03-21",
+#'                                      "2000-07-13"),
+#'                              width = 1,
+#'                              break_max = 45)
 #' @export
 plot_date_to_triangle_births <- function(date,
                                          dob,
@@ -223,7 +224,6 @@ plot_date_to_triangle_births <- function(date,
                                          recode_down = FALSE,
                                          origin = 2000,
                                          month_start = "Jan",
-                                         label_year_start = TRUE,
                                          show_months = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
@@ -243,8 +243,6 @@ plot_date_to_triangle_births <- function(date,
                                                name = "origin")
     month_start <- demcheck::err_tdy_month_start(x = month_start,
                                                  name = "month_start")
-    demcheck::err_is_logical_flag(x = label_year_start,
-                                  name = "label_year_start")
     demcheck::err_is_logical_flag(x = show_months,
                                   name = "show_months")
     demcheck::err_gt_scalar(x1 = break_max,
@@ -313,7 +311,7 @@ plot_date_to_triangle_births <- function(date,
                                          break_min = NULL)
     ## make labels for time breaks
     labels_time <- make_labels_period(breaks = breaks_time,
-                                      label_year_start = label_year_start,
+                                      label_year_start = TRUE,
                                       include_na = FALSE)
     ## make age breaks
     breaks_age <- make_breaks_integer_births(age = age_years,
@@ -355,13 +353,9 @@ plot_date_to_triangle_births <- function(date,
 #' @examples
 #' plot_date_to_triangle_quarter(date = c("2024-03-27",
 #'                                        "2022-11-09"),
-#'                               dob = "2020-01-01")
-#'
-#' ## open age group starts at 40 quarters
-#' date_to_triangle_quarter(date = c("2017-03-27",
-#'                                   "2024-03-27"),
-#'                          dob = "2010-01-01",
-#'                          break_max = 40)
+#'                               dob = c("2020-05-01",
+#'                                       "2021-06-22"),
+#'                               break_max = 20)
 #' @export
 plot_date_to_triangle_quarter <- function(date,
                                           dob,
@@ -446,15 +440,10 @@ plot_date_to_triangle_quarter <- function(date,
 #'
 #' @examples
 #' plot_date_to_triangle_month(date = c("2024-03-27",
-#'                                      "2022-11-09"),
-#'                             dob = "2020-01-01")
-#'
-#'
-#' ## open age group starts at 120 months
-#' plot_date_to_triangle_month(date = c("2017-03-27",
-#'                                      "2024-03-27"),
-#'                             dob = "2010-01-01",
-#'                             break_max = 120)
+#'                                      "2024-11-09"),
+#'                             dob = c("2023-10-05",
+#'                                     "2024-03-11"),
+#'                             break_max = 12)
 #' @export
 plot_date_to_triangle_month <- function(date,
                                         dob,

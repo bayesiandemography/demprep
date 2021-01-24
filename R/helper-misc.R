@@ -639,7 +639,8 @@ plot_date_to_age_triangle <- function(date, dob, unit, breaks_time = NULL, break
     ## points for 'dob'
     graphics::points(x = dob,
                      y = rep(0, times = n_date),
-                     pch = 19)    
+                     pch = 19,
+                     cex = 0.8)    
     ## labels for 'dob'
     graphics::mtext(text = dob,
                     side = 1,
@@ -662,7 +663,8 @@ plot_date_to_age_triangle <- function(date, dob, unit, breaks_time = NULL, break
                            y1 = y1)
         graphics::points(x = date[[i]],
                          y = y1[[length(y1)]],
-                         pch = 19)
+                         pch = 19,
+                         cex = 0.8)
     }        
     ## labels for 'date'
     graphics::mtext(text = date,

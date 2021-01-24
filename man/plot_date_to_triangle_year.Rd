@@ -11,7 +11,6 @@ plot_date_to_triangle_year(
   break_max = 100,
   open_last = TRUE,
   month_start = "Jan",
-  label_year_start = TRUE,
   show_months = FALSE
 )
 }
@@ -30,11 +29,6 @@ has no upper limit. Defaults to \code{TRUE}.}
 or \code{\link[base]{month.abb}}. The period starts on
 the first day of this month.}
 
-\item{label_year_start}{Whether to label a period
-by the calendar year at the beginning of the period
-or the calendar year at the end. Not needed for periods
-that start on 1 January. Defaults to \code{FALSE}.}
-
 \item{show_months}{Whether to include vertical
 lines showing boundaries between months.
 Defaults to \code{FALSE}.}
@@ -49,13 +43,25 @@ instruction or documentation, rather than for
 actual data analysis.
 }
 \examples{
-plot_date_to_triangle_year(date = c("2024-03-27",
-                                    "2022-11-09"),
-                           dob = "2020-01-01")
+plot_date_to_triangle_year(date = c("2024-05-27",
+                                    "2024-11-09"),
+                           dob = c("2020-03-13",
+                                   "2021-08-24"),
+                           break_max = 5)
 
-## July to June
-plot_date_to_triangle_year(date = c("2024-03-27",
-                                    "2022-11-09"),
-                           dob = "2020-01-01",
-                           month_start = "Jul")
+## final age group closed
+plot_date_to_triangle_year(date = c("2024-05-27",
+                                    "2024-11-09"),
+                           dob = c("2020-03-13",
+                                   "2021-08-24"),
+                           break_max = 5,
+                           open_last = FALSE)
+
+## start on 1 July, rather than 1 January
+plot_date_to_triangle_year(date = c("2024-05-27",
+                                    "2024-11-09"),
+                           dob = c("2020-03-13",
+                                   "2021-08-24"),
+                           break_max = 5,
+                           month_start = "July")
 }
