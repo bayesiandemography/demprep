@@ -27,8 +27,8 @@ births_out <- data.frame(date = c("2020-03-14", "2020-08-22"),
 
 # Introduction
 
-- Raw individual-level data uses dates - birth, occurrence, measurement
-- Demographic analyses use intervals - periods, age, cohort, triangle
+- Raw individual-level data uses dates - birth, occurrence, measurement - continuous
+- Demographic analyses use intervals - periods, age, cohort, triangle - discrete
 - functions for converting
 - lots of subtle details
 
@@ -38,6 +38,55 @@ library(demprep)
 
 
 # Age-time plans in demography
+
+```{r lexis1, echo = FALSE, fig.width = 5, fig.height = 5}
+breaks_time <- seq.Date(from = as.Date("2000-01-01"), 
+                        to = as.Date("2025-01-01"), 
+                        by = "5 years")
+breaks_age <- seq.int(from = 0, 
+                      to = 25, 
+                      by = 5)
+labels_time <- make_labels_period(breaks_time)
+labels_age <- make_labels_age(breaks = breaks_age,
+                              open_last = FALSE)
+demprep:::plot_date_to_age_triangle(date = as.Date("2023-04-18"),
+                                    dob = as.Date("2001-07-22"),
+                                    unit = "year",
+                                    breaks_time = breaks_time,
+                                    breaks_age = breaks_age,
+                                    open_last = FALSE,
+                                    labels_time = labels_time,
+                                    labels_age = labels_age,
+                                    show_vert = TRUE,
+                                    show_diag = FALSE,
+                                    show_months = FALSE)
+```
+
+
+
+```{r lexis2, echo = FALSE, fig.width = 5, fig.height = 5}
+breaks_time <- seq.Date(from = as.Date("1995-01-01"), 
+                        to = as.Date("2025-01-01"), 
+                        by = "10 years")
+breaks_age <- seq.int(from = 0, 
+                      to = 30, 
+                      by = 10)
+labels_time <- make_labels_period(breaks_time)
+labels_age <- make_labels_age(breaks = breaks_age,
+                              open_last = FALSE)
+demprep:::plot_date_to_age_triangle(date = as.Date("2023-04-18"),
+                                    dob = as.Date("2001-07-22"),
+                                    unit = "year",
+                                    breaks_time = breaks_time,
+                                    breaks_age = breaks_age,
+                                    open_last = FALSE,
+                                    labels_time = labels_time,
+                                    labels_age = labels_age,
+                                    show_vert = TRUE,
+                                    show_diag = FALSE,
+                                    show_months = FALSE)
+```
+
 
 
 # Design of functions in 'demprep'
