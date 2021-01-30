@@ -27,19 +27,25 @@ births_out <- data.frame(date = c("2020-03-14", "2020-08-22"),
 
 # Introduction
 
-- Raw individual-level data uses dates - birth, occurrence, measurement - continuous
-- Demographic analyses use intervals - periods, age, cohort, triangle - discrete
-- functions for converting
-- lots of subtle details
-
-```{r}
-library(demprep)
-```
+- Demography works with intervals (example)
+- Raw data works uses dates (example)
+- Turning dates into intervals trickier than appears
+  - decisions about lengths of periods, age groups, etc
+  - leap years, open age groups, etc
+- functions look after details
 
 
 # Age-time plans in demography
 
-```{r lexis1, echo = FALSE, fig.width = 5, fig.height = 5}
+```{r agetime, echo = FALSE}
+library(demprep)
+date <- as.Date(c("2020-12-22", "2022-05-14"))
+dob <- as.Date(c("2001-07-22", "2006-03-14"))
+age <- c(19 + 5/12, 16 + 2/12)
+```
+
+
+```{r lexis1, echo = FALSE, fig.width = 6, fig.height = 6}
 breaks_time <- seq.Date(from = as.Date("2000-01-01"), 
                         to = as.Date("2025-01-01"), 
                         by = "5 years")
@@ -49,8 +55,9 @@ breaks_age <- seq.int(from = 0,
 labels_time <- make_labels_period(breaks_time)
 labels_age <- make_labels_age(breaks = breaks_age,
                               open_last = FALSE)
-demprep:::plot_date_to_age_triangle(date = as.Date("2023-04-18"),
-                                    dob = as.Date("2001-07-22"),
+
+demprep:::plot_date_to_age_triangle(date = date,
+                                    dob = dob,
                                     unit = "year",
                                     breaks_time = breaks_time,
                                     breaks_age = breaks_age,
@@ -58,15 +65,19 @@ demprep:::plot_date_to_age_triangle(date = as.Date("2023-04-18"),
                                     labels_time = labels_time,
                                     labels_age = labels_age,
                                     show_vert = TRUE,
-                                    show_diag = FALSE,
+                                    show_diag = TRUE,
                                     show_months = FALSE)
+text(x = date,
+     y = age,
+     labels = c("A", "B"),
+     pos = 4)
 ```
 
 
 
-```{r lexis2, echo = FALSE, fig.width = 5, fig.height = 5}
-breaks_time <- seq.Date(from = as.Date("1995-01-01"), 
-                        to = as.Date("2025-01-01"), 
+```{r lexis2, echo = FALSE, fig.width = 6, fig.height = 6}
+breaks_time <- seq.Date(from = as.Date("2000-01-01"), 
+                        to = as.Date("2030-01-01"), 
                         by = "10 years")
 breaks_age <- seq.int(from = 0, 
                       to = 30, 
@@ -74,8 +85,8 @@ breaks_age <- seq.int(from = 0,
 labels_time <- make_labels_period(breaks_time)
 labels_age <- make_labels_age(breaks = breaks_age,
                               open_last = FALSE)
-demprep:::plot_date_to_age_triangle(date = as.Date("2023-04-18"),
-                                    dob = as.Date("2001-07-22"),
+demprep:::plot_date_to_age_triangle(date = date,
+                                    dob = dob,
                                     unit = "year",
                                     breaks_time = breaks_time,
                                     breaks_age = breaks_age,
@@ -83,668 +94,680 @@ demprep:::plot_date_to_age_triangle(date = as.Date("2023-04-18"),
                                     labels_time = labels_time,
                                     labels_age = labels_age,
                                     show_vert = TRUE,
-                                    show_diag = FALSE,
+                                    show_diag = TRUE,
                                     show_months = FALSE)
+text(x = date,
+     y = age,
+     labels = c("A", "B"),
+     pos = 4)
 ```
 
 
 
 # Design of functions in 'demprep'
 
+
+```{r}
+library(demprep)
+```
+
+
+
+
+| Periods | Cohorts | Age groups | Lexis triangles |
+|:--------|:--------|:-----------|:----------------|
+| `date_to_period_year` | `date_to_cohort_year` | `date_to_age_year` | `date_to_triangle_year` |
+| `date_to_period_multi` | `date_to_cohort_multi` | `date_to_age_multi` | `date_to_triangle_multi` |
+| `date_to_period_custom` | `date_to_cohort_custom` | `date_to_age_custom` | \<none\> |
+| \<none\> | \<none\> | `date_to_age_lifetab`| \<none\> |
+| \<none\> | \<none\> | `date_to_age_births` | `date_to_triangle_births` |
+| `date_to_period_quarter` | `date_to_cohort_quarter` | `date_to_age_quarter` | `date_to_triangle_quarter` |
+| `date_to_period_month` | `date_to_cohort_month` | `date_to_age_month` | `date_to_triangle_month` |
+
+
 - representation of dates
 
+YYYY-MM-DD
 
-| Units | Periods | Cohorts | Age groups | Lexis triangles |
-|:------|:--------|:--------|:-----------|:----------------|
-| years | `date_to_period_year` | `date_to_cohort_year` | `date_to_age_year` | `date_to_triangle_year` |
-| years | `date_to_period_multi` | `date_to_cohort_multi` | `date_to_age_multi` | `date_to_triangle_multi` |
-| years | `date_to_period_custom` | `date_to_cohort_custom` | `date_to_age_custom` | \<none\> |
-| years | \<none\> | \<none\> | `date_to_age_lifetab`| \<none\> |
-| years | \<none\> | \<none\> | `date_to_age_births` | `date_to_triangle_births` |
-| quarters | `date_to_period_quarter` | `date_to_cohort_quarter` | `date_to_age_quarter` | `date_to_triangle_quarter` |
-| months | `date_to_period_month` | `date_to_cohort_month` | `date_to_age_month` | `date_to_triangle_month` |
+<!-- # Periods -->
 
+<!-- ## General issues -->
 
+<!-- - when to start -->
+<!-- - varying lengths (months, quarter, leap years) -->
+<!-- - ambiguity of labels -->
 
-# Periods
+<!-- - birthday starts at first second of day (not at time when born) -->
 
-## General issues
 
-- when to start
-- varying lengths (months, quarter, leap years)
-- ambiguity of labels
+<!-- ## Single-year periods -->
 
-- birthday starts at first second of day (not at time when born)
+<!-- ```{r} -->
+<!-- dth_per_yr <- deaths -->
+<!-- dth_per_yr$time_jan <- date_to_period_year(date = dth_per_yr$date) -->
+<!-- dth_per_yr -->
+<!-- ``` -->
 
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_period_year(date = dth_per_yr$date) -->
+<!-- ``` -->
 
-## Single-year periods
 
-```{r}
-dth_per_yr <- deaths
-dth_per_yr$time_jan <- date_to_period_year(date = dth_per_yr$date)
-dth_per_yr
-```
+<!-- ```{r} -->
+<!-- dth_per_yr$time_jul <- date_to_period_year(date = dth_per_yr$date, -->
+<!--                                              month_start = "Jul") -->
+<!-- dth_per_yr -->
+<!-- ``` -->
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_year(date = dth_per_yr$date)
-```
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_period_year(date = dth_per_yr$date, -->
+<!--                          month_start = "Jul") -->
+<!-- ``` -->
 
 
-```{r}
-dth_per_yr$time_jul <- date_to_period_year(date = dth_per_yr$date,
-                                             month_start = "Jul")
-dth_per_yr
-```
+<!-- ```{r} -->
+<!-- dth_per_yr$time_jul_end <- date_to_period_year(date = dth_per_yr$date, -->
+<!--                                                month_start = "Jul", -->
+<!--                                                label_year_start = FALSE) -->
+<!-- dth_per_yr -->
+<!-- ``` -->
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_year(date = dth_per_yr$date,
-                         month_start = "Jul")
-```
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_period_year(date = dth_per_yr$date, -->
+<!--                          month_start = "Jul", -->
+<!--                          label_year_start = FALSE) -->
+<!-- ``` -->
 
 
-```{r}
-dth_per_yr$time_jul_end <- date_to_period_year(date = dth_per_yr$date,
-                                               month_start = "Jul",
-                                               label_year_start = FALSE)
-dth_per_yr
-```
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_year(date = dth_per_yr$date,
-                         month_start = "Jul",
-                         label_year_start = FALSE)
-```
+<!-- ```{r} -->
+<!-- dth_per_yr$time_jan_end <- date_to_period_year(date = dth_per_yr$date, -->
+<!--                                                month_start = "Jan", -->
+<!--                                                label_year_start = FALSE) -->
+<!-- dth_per_yr -->
+<!-- ``` -->
 
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_period_year(date = dth_per_yr$date, -->
+<!--                          month_start = "Jan", -->
+<!--                          label_year_start = FALSE) -->
+<!-- ``` -->
 
 
-```{r}
-dth_per_yr$time_jan_end <- date_to_period_year(date = dth_per_yr$date,
-                                               month_start = "Jan",
-                                               label_year_start = FALSE)
-dth_per_yr
-```
+<!-- ## Multi-year periods, with equal lengths -->
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_year(date = dth_per_yr$date,
-                         month_start = "Jan",
-                         label_year_start = FALSE)
-```
 
+<!-- ```{r} -->
+<!-- dth_per_multi <- deaths -->
+<!-- dth_per_multi$time_5 <- date_to_period_multi(date = dth_per_multi$date) -->
+<!-- dth_per_multi -->
+<!-- ``` -->
 
-## Multi-year periods, with equal lengths
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_period_multi(date = dth_per_multi$date) -->
+<!-- ``` -->
 
 
-```{r}
-dth_per_multi <- deaths
-dth_per_multi$time_5 <- date_to_period_multi(date = dth_per_multi$date)
-dth_per_multi
-```
+<!-- ```{r} -->
+<!-- dth_per_multi$time_5_jul <- date_to_period_multi(date = dth_per_multi$date, -->
+<!--                                                  month_start = "Jul") -->
+<!-- dth_per_multi -->
+<!-- ``` -->
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_multi(date = dth_per_multi$date)
-```
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_period_multi(date = dth_per_multi$date, -->
+<!--                           month_start = "Jul") -->
+<!-- ``` -->
 
 
-```{r}
-dth_per_multi$time_5_jul <- date_to_period_multi(date = dth_per_multi$date,
-                                                 month_start = "Jul")
-dth_per_multi
-```
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_multi(date = dth_per_multi$date,
-                          month_start = "Jul")
-```
+<!-- ```{r} -->
+<!-- dth_per_multi$time_10 <- date_to_period_multi(date = dth_per_multi$date, -->
+<!--                                               width = 10) -->
+<!-- dth_per_multi -->
+<!-- ``` -->
 
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_period_multi(date = dth_per_multi$date, -->
+<!--                           width = 10) -->
+<!-- ``` -->
 
 
-```{r}
-dth_per_multi$time_10 <- date_to_period_multi(date = dth_per_multi$date,
-                                              width = 10)
-dth_per_multi
-```
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_multi(date = dth_per_multi$date,
-                          width = 10)
-```
 
 
+<!-- ```{r} -->
+<!-- dth_per_multi$time_01 <- date_to_period_multi(date = dth_per_multi$date, -->
+<!--                                                origin = 2001) -->
+<!-- dth_per_multi -->
+<!-- ``` -->
 
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_period_multi(date = dth_per_multi$date, -->
+<!--                           origin = 2001) -->
+<!-- ``` -->
 
 
-```{r}
-dth_per_multi$time_01 <- date_to_period_multi(date = dth_per_multi$date,
-                                               origin = 2001)
-dth_per_multi
-```
+<!-- ## Multi-year periods, with varying lengths -->
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_multi(date = dth_per_multi$date,
-                          origin = 2001)
-```
 
+<!-- ```{r} -->
+<!-- dth_per_custom <- deaths -->
+<!-- dth_per_custom$time <- date_to_period_custom(date = dth_per_custom$date, -->
+<!--                                              breaks = c("2016-01-01", -->
+<!--                                                         "2020-01-01", -->
+<!--                                                         "2025-01-01")) -->
+<!-- dth_per_custom -->
+<!-- ``` -->
 
-## Multi-year periods, with varying lengths
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_period_custom(date = dth_per_custom$date, -->
+<!--                            breaks = c("2016-01-01", -->
+<!--                                       "2020-01-01",  -->
+<!--                                       "2025-01-01")) -->
+<!-- ``` -->
 
 
-```{r}
-dth_per_custom <- deaths
-dth_per_custom$time <- date_to_period_custom(date = dth_per_custom$date,
-                                             breaks = c("2016-01-01",
-                                                        "2020-01-01",
-                                                        "2025-01-01"))
-dth_per_custom
-```
+<!-- ```{r} -->
+<!-- dth_per_custom <- deaths -->
+<!-- dth_per_custom$jan_1_5 <- date_to_period_custom(date = dth_per_custom$date, -->
+<!--                                                 breaks = c("2019-01-01", -->
+<!--                                                            "2020-01-01", -->
+<!--                                                            "2025-01-01")) -->
+<!-- dth_per_custom -->
+<!-- ``` -->
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_custom(date = dth_per_custom$date,
-                           breaks = c("2016-01-01",
-                                      "2020-01-01", 
-                                      "2025-01-01"))
-```
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_period_custom(date = dth_per_custom$date, -->
+<!--                           breaks = c("2019-01-01",  -->
+<!--                                      "2020-01-01", -->
+<!--                                      "2025-01-01")) -->
+<!-- ``` -->
 
 
-```{r}
-dth_per_custom <- deaths
-dth_per_custom$jan_1_5 <- date_to_period_custom(date = dth_per_custom$date,
-                                                breaks = c("2019-01-01",
-                                                           "2020-01-01",
-                                                           "2025-01-01"))
-dth_per_custom
-```
+<!-- ```{r} -->
+<!-- dth_per_custom <- deaths -->
+<!-- dth_per_custom$time_jul <- date_to_period_custom(date = dth_per_custom$date, -->
+<!--                                                  breaks = c("2019-07-01", -->
+<!--                                                             "2020-07-01", -->
+<!--                                                             "2025-07-01")) -->
+<!-- dth_per_custom -->
+<!-- ``` -->
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_custom(date = dth_per_custom$date,
-                          breaks = c("2019-01-01", 
-                                     "2020-01-01",
-                                     "2025-01-01"))
-```
+<!-- ```{r, echo = FALSE, fig.height = 1.5} -->
+<!-- plot_date_to_period_custom(date = dth_per_custom$date, -->
+<!--                            breaks = c("2019-07-01", -->
+<!--                                       "2020-07-01",  -->
+<!--                                       "2025-07-01")) -->
+<!-- ``` -->
 
 
-```{r}
-dth_per_custom <- deaths
-dth_per_custom$time_jul <- date_to_period_custom(date = dth_per_custom$date,
-                                                 breaks = c("2019-07-01",
-                                                            "2020-07-01",
-                                                            "2025-07-01"))
-dth_per_custom
-```
 
-```{r, echo = FALSE, fig.height = 1.5}
-plot_date_to_period_custom(date = dth_per_custom$date,
-                           breaks = c("2019-07-01",
-                                      "2020-07-01", 
-                                      "2025-07-01"))
-```
+<!-- ## Quarter-length periods -->
 
 
+<!-- ```{r} -->
+<!-- dth_per_quarter <- deaths -->
+<!-- dth_per_quarter$time <- date_to_period_quarter(dth_per_custom$date) -->
+<!-- dth_per_quarter -->
+<!-- ``` -->
 
-## Quarter-length periods
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_period_quarter(dth_per_quarter$date) -->
+<!-- ``` -->
 
 
-```{r}
-dth_per_quarter <- deaths
-dth_per_quarter$time <- date_to_period_quarter(dth_per_custom$date)
-dth_per_quarter
-```
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_quarter(dth_per_quarter$date)
-```
+<!-- ## Month-length periods -->
 
+<!-- ```{r} -->
+<!-- dth_per_month <- deaths -->
+<!-- dth_per_month$time <- date_to_period_month(dth_per_custom$date) -->
+<!-- dth_per_month -->
+<!-- ``` -->
 
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_period_month(dth_per_month$date[1:2]) -->
+<!-- ``` -->
 
-## Month-length periods
 
-```{r}
-dth_per_month <- deaths
-dth_per_month$time <- date_to_period_month(dth_per_custom$date)
-dth_per_month
-```
+<!-- # Cohorts -->
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_month(dth_per_month$date[1:2])
-```
+<!-- ## General issues -->
 
+<!-- Defn of cohort -->
 
-# Cohorts
+<!-- Same as period, but with open interval at start -->
 
-## General issues
+<!-- Boundaries -->
 
-Defn of cohort
 
-Same as period, but with open interval at start
+<!-- ## Single-year cohorts -->
 
-Boundaries
+<!-- ```{r} -->
+<!-- dth_per_yr <- deaths -->
+<!-- dth_per_yr$time_closed <- date_to_cohort_year(date = dth_per_yr$date) -->
+<!-- dth_per_yr -->
+<!-- ``` -->
 
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_cohort_year(date = dth_per_yr$date) -->
+<!-- ``` -->
 
-## Single-year cohorts
 
-```{r}
-dth_per_yr <- deaths
-dth_per_yr$time_closed <- date_to_cohort_year(date = dth_per_yr$date)
-dth_per_yr
-```
+<!-- ```{r} -->
+<!-- dth_per_yr$time_open <- date_to_cohort_year(date = dth_per_yr$date, -->
+<!--                                             open_first = TRUE) -->
+<!-- dth_per_yr -->
+<!-- ``` -->
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_cohort_year(date = dth_per_yr$date)
-```
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_cohort_year(date = dth_per_yr$date, -->
+<!--                          open_first = TRUE) -->
+<!-- ``` -->
 
 
-```{r}
-dth_per_yr$time_open <- date_to_cohort_year(date = dth_per_yr$date,
-                                            open_first = TRUE)
-dth_per_yr
-```
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_cohort_year(date = dth_per_yr$date,
-                         open_first = TRUE)
-```
+<!-- ```{r} -->
+<!-- dth_per_yr$time_min <- date_to_cohort_year(date = dth_per_yr$date, -->
+<!--                                             break_min = "2020-01-01") -->
+<!-- dth_per_yr -->
+<!-- ``` -->
 
+<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
+<!-- plot_date_to_cohort_year(date = dth_per_yr$date, -->
+<!--                          break_min = "2020-01-01") -->
+<!-- ``` -->
 
+<!-- # Age groups -->
 
-```{r}
-dth_per_yr$time_min <- date_to_cohort_year(date = dth_per_yr$date,
-                                            break_min = "2020-01-01")
-dth_per_yr
-```
+<!-- ## General issues -->
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_cohort_year(date = dth_per_yr$date,
-                         break_min = "2020-01-01")
-```
+<!-- Abstract: $\text{age} = t_{\text{event}} - t_{\text{dob}}$ -->
 
-# Age groups
+<!-- Complications.  -->
 
-## General issues
+<!-- - Child born on 31 October. On what day does child become 1 month old?  -->
+<!-- - Child born on 30 November. On what day does child become 1 month old? -->
+<!-- - Child born on 29 February 2000. On what day does child become 1 year old? [1 March 2001] -->
 
-Abstract: $\text{age} = t_{\text{event}} - t_{\text{dob}}$
+<!-- Principles: -->
+<!-- - tick over when day of date equals day of dob. Includes leap years. -->
 
-Complications. 
+<!-- \begin{equation} -->
+<!-- \begin{split} -->
+<!-- \text{age in completed months} & = 12 \times (\text{year of event} - \text{year of birth}) \\ -->
+<!-- & \quad + \text{month of event} - \text{month of birth} \\ -->
+<!-- & \quad - \text{partial-month adjustment} -->
+<!-- \end{split} -->
+<!-- \end{equation} -->
 
-- Child born on 31 October. On what day does child become 1 month old? 
-- Child born on 30 November. On what day does child become 1 month old?
-- Child born on 29 February 2000. On what day does child become 1 year old? [1 March 2001]
+<!-- Partial-month adjustment: if $\text{day of event} \ge \text{day of birth}$, then 0; otherwise 1. -->
 
-Principles:
-- tick over when day of date equals day of dob. Includes leap years.
 
-\begin{equation}
-\begin{split}
-\text{age in completed months} & = 12 \times (\text{year of event} - \text{year of birth}) \\
-& \quad + \text{month of event} - \text{month of birth} \\
-& \quad - \text{partial-month adjustment}
-\end{split}
-\end{equation}
+<!-- ```{r, echo = FALSE, fig.height = 6.5} -->
+<!-- date <- as.Date(c("2021-03-30", "2021-03-10")) -->
+<!-- dob <- as.Date(c("2021-01-30", "2021-01-10")) -->
+<!-- plot_date_to_age_month(date = date, -->
+<!--                        dob = dob, -->
+<!--                        break_max = 2, -->
+<!--                        show_months = TRUE) -->
+<!-- ``` -->
 
-Partial-month adjustment: if $\text{day of event} \ge \text{day of birth}$, then 0; otherwise 1.
 
 
-```{r, echo = FALSE, fig.height = 6.5}
-date <- as.Date(c("2021-03-30", "2021-03-10"))
-dob <- as.Date(c("2021-01-30", "2021-01-10"))
-plot_date_to_age_month(date = date,
-                       dob = dob,
-                       break_max = 2,
-                       show_months = TRUE)
-```
+<!-- \begin{equation} -->
+<!-- \text{age in completed quarters} = \text{floor}(\text{age in completed months} / 3) -->
+<!-- \end{equation} -->
 
+<!-- \begin{equation} -->
+<!-- \text{age in completed quarters} = \text{floor}(\text{age in completed months} / 12) -->
+<!-- \end{equation} -->
 
 
-\begin{equation}
-\text{age in completed quarters} = \text{floor}(\text{age in completed months} / 3)
-\end{equation}
+<!-- | Relationship between dates | Age in completed years | -->
+<!-- |:---------------------------|:-----------------------| -->
+<!-- | $\text{month of event} > \text{month of birth}$ | $\text{year of event} - \text{year of birth}$ | -->
+<!-- | $\text{month of event} = \text{month of birth}$, $\text{day of event} \ge \text{day of birth}$ | $\text{year of event} - \text{year of birth}$ | -->
+<!-- | $\text{month of event} = \text{month of birth}$, $\text{day of event} \lt \text{day of birth}$ | $\text{year of event} - \text{year of birth} - 1$ | -->
+<!-- | $\text{month of event} < \text{month of birth}$ | $\text{year of event} - \text{year of birth} - 1$ | -->
 
-\begin{equation}
-\text{age in completed quarters} = \text{floor}(\text{age in completed months} / 12)
-\end{equation}
 
 
-| Relationship between dates | Age in completed years |
-|:---------------------------|:-----------------------|
-| $\text{month of event} > \text{month of birth}$ | $\text{year of event} - \text{year of birth}$ |
-| $\text{month of event} = \text{month of birth}$, $\text{day of event} \ge \text{day of birth}$ | $\text{year of event} - \text{year of birth}$ |
-| $\text{month of event} = \text{month of birth}$, $\text{day of event} \lt \text{day of birth}$ | $\text{year of event} - \text{year of birth} - 1$ |
-| $\text{month of event} < \text{month of birth}$ | $\text{year of event} - \text{year of birth} - 1$ |
+<!-- ## Single-year age groups -->
 
+<!-- ```{r} -->
+<!-- dth_age_yr <- deaths -->
+<!-- dth_age_yr$age_10 <- date_to_age_year(date = dth_age_yr$date, -->
+<!--                                    dob = dth_age_yr$dob, -->
+<!--                                    break_max = 10) -->
+<!-- dth_age_yr -->
+<!-- ``` -->
 
+<!-- ```{r, echo = FALSE, fig.height = 6.5} -->
+<!-- plot_date_to_age_year(date = dth_age_yr$date, -->
+<!--                       dob = dth_age_yr$dob, -->
+<!--                       break_max = 10) -->
+<!-- ``` -->
 
-## Single-year age groups
+<!-- Change `break_max` -->
 
-```{r}
-dth_age_yr <- deaths
-dth_age_yr$age_10 <- date_to_age_year(date = dth_age_yr$date,
-                                   dob = dth_age_yr$dob,
-                                   break_max = 10)
-dth_age_yr
-```
+<!-- ```{r} -->
+<!-- dth_age_yr$age_6 <- date_to_age_year(date = dth_age_yr$date, -->
+<!--                                      dob = dth_age_yr$dob, -->
+<!--                                      break_max = 6) -->
+<!-- dth_age_yr -->
+<!-- ``` -->
 
-```{r, echo = FALSE, fig.height = 6.5}
-plot_date_to_age_year(date = dth_age_yr$date,
-                      dob = dth_age_yr$dob,
-                      break_max = 10)
-```
+<!-- ```{r, echo = FALSE, fig.height = 6} -->
+<!-- plot_date_to_age_year(date = dth_age_yr$date, -->
+<!--                       dob = dth_age_yr$dob, -->
+<!--                       break_max = 6) -->
+<!-- ``` -->
 
-Change `break_max`
 
-```{r}
-dth_age_yr$age_6 <- date_to_age_year(date = dth_age_yr$date,
-                                     dob = dth_age_yr$dob,
-                                     break_max = 6)
-dth_age_yr
-```
+<!-- ## Multi-year ages, with equal lengths -->
 
-```{r, echo = FALSE, fig.height = 6}
-plot_date_to_age_year(date = dth_age_yr$date,
-                      dob = dth_age_yr$dob,
-                      break_max = 6)
-```
 
+<!-- ```{r} -->
+<!-- dth_age_multi <- deaths -->
+<!-- dth_age_multi$age <- date_to_age_multi(date = dth_age_multi$date, -->
+<!--                                        dob = dth_age_multi$dob, -->
+<!--                                        break_max = 10) -->
+<!-- dth_age_multi -->
+<!-- ``` -->
 
-## Multi-year ages, with equal lengths
+<!-- ```{r, echo = FALSE, fig.height = 6} -->
+<!-- plot_date_to_age_multi(date = dth_age_multi$date, -->
+<!--                        dob = dth_age_multi$dob, -->
+<!--                        break_max = 10) -->
+<!-- ``` -->
 
 
-```{r}
-dth_age_multi <- deaths
-dth_age_multi$age <- date_to_age_multi(date = dth_age_multi$date,
-                                       dob = dth_age_multi$dob,
-                                       break_max = 10)
-dth_age_multi
-```
 
-```{r, echo = FALSE, fig.height = 6}
-plot_date_to_age_multi(date = dth_age_multi$date,
-                       dob = dth_age_multi$dob,
-                       break_max = 10)
-```
+<!-- ## Multi-year ages, with varying lengths -->
 
+<!-- ```{r} -->
+<!-- dth_age_custom <- deaths -->
+<!-- dth_age_custom$age <- date_to_age_custom(date = dth_age_custom$date, -->
+<!--                                          dob = dth_age_custom$dob, -->
+<!--                                          breaks = c(0, 2, 5, 8, 14), -->
+<!--                                          open_last = FALSE) -->
+<!-- dth_age_custom -->
+<!-- ``` -->
 
+<!-- ```{r, echo = FALSE, fig.height = 6} -->
+<!-- plot_date_to_age_custom(date = dth_age_custom$date, -->
+<!--                         dob = dth_age_custom$dob, -->
+<!--                         breaks = c(0, 2, 5, 8, 14), -->
+<!--                         open_last = FALSE) -->
+<!-- ``` -->
 
-## Multi-year ages, with varying lengths
 
-```{r}
-dth_age_custom <- deaths
-dth_age_custom$age <- date_to_age_custom(date = dth_age_custom$date,
-                                         dob = dth_age_custom$dob,
-                                         breaks = c(0, 2, 5, 8, 14),
-                                         open_last = FALSE)
-dth_age_custom
-```
 
-```{r, echo = FALSE, fig.height = 6}
-plot_date_to_age_custom(date = dth_age_custom$date,
-                        dob = dth_age_custom$dob,
-                        breaks = c(0, 2, 5, 8, 14),
-                        open_last = FALSE)
-```
 
+<!-- ## Lifetable age groups -->
 
+<!-- ```{r} -->
+<!-- dth_age_lifetab <- deaths -->
+<!-- dth_age_lifetab$age <- date_to_age_lifetab(date = dth_age_lifetab$date, -->
+<!--                                          dob = dth_age_lifetab$dob, -->
+<!--                                          break_max = 10) -->
+<!-- dth_age_lifetab -->
+<!-- ``` -->
 
+<!-- ```{r, echo = FALSE, fig.height = 6} -->
+<!-- plot_date_to_age_lifetab(date = dth_age_lifetab$date, -->
+<!--                          dob = dth_age_lifetab$dob, -->
+<!--                          break_max = 10) -->
+<!-- ``` -->
 
-## Lifetable age groups
+<!-- ## Age of parents -->
 
-```{r}
-dth_age_lifetab <- deaths
-dth_age_lifetab$age <- date_to_age_lifetab(date = dth_age_lifetab$date,
-                                         dob = dth_age_lifetab$dob,
-                                         break_max = 10)
-dth_age_lifetab
-```
+<!-- ```{r} -->
+<!-- bth_in_age <- births_in -->
+<!-- bth_in_age$age <- date_to_age_births(date = bth_in_age$date, -->
+<!--                                      dob = bth_in_age$dob) -->
+<!-- bth_in_age -->
+<!-- ``` -->
 
-```{r, echo = FALSE, fig.height = 6}
-plot_date_to_age_lifetab(date = dth_age_lifetab$date,
-                         dob = dth_age_lifetab$dob,
-                         break_max = 10)
-```
 
-## Age of parents
+<!-- ```{r, fig.width = 5, fig.height = 6} -->
+<!-- plot_date_to_age_births(date = bth_in_age$date, -->
+<!--                         dob = bth_in_age$dob) -->
+<!-- ``` -->
 
-```{r}
-bth_in_age <- births_in
-bth_in_age$age <- date_to_age_births(date = bth_in_age$date,
-                                     dob = bth_in_age$dob)
-bth_in_age
-```
+<!-- ```{r} -->
+<!-- bth_out_age <- births_out -->
+<!-- bth_out_age$age <- date_to_age_births(date = bth_out_age$date, -->
+<!--                                       dob = bth_out_age$dob, -->
+<!--                                       break_min = 10, -->
+<!--                                       break_max = 55) -->
+<!-- bth_out_age -->
+<!-- ``` -->
 
 
-```{r, fig.width = 5, fig.height = 6}
-plot_date_to_age_births(date = bth_in_age$date,
-                        dob = bth_in_age$dob)
-```
+<!-- ```{r, fig.width = 8, fig.height = 6} -->
+<!-- plot_date_to_age_births(date = bth_out_age$date, -->
+<!--                         dob = bth_out_age$dob, -->
+<!--                         break_min = 10, -->
+<!--                         break_max = 55) -->
+<!-- ``` -->
 
-```{r}
-bth_out_age <- births_out
-bth_out_age$age <- date_to_age_births(date = bth_out_age$date,
-                                      dob = bth_out_age$dob,
-                                      break_min = 10,
-                                      break_max = 55)
-bth_out_age
-```
 
+<!-- ```{r} -->
+<!-- bth_out_age$age_recoded <- date_to_age_births(date = bth_out_age$date, -->
+<!--                                               dob = bth_out_age$dob, -->
+<!--                                               recode_up = TRUE, -->
+<!--                                               recode_down = TRUE) -->
+<!-- bth_out_age -->
+<!-- ``` -->
 
-```{r, fig.width = 8, fig.height = 6}
-plot_date_to_age_births(date = bth_out_age$date,
-                        dob = bth_out_age$dob,
-                        break_min = 10,
-                        break_max = 55)
-```
 
+<!-- ```{r, fig.width = 8, fig.height = 6} -->
+<!-- plot_date_to_age_births(date = bth_out_age$date, -->
+<!--                         dob = bth_out_age$dob, -->
+<!--                         recode_up = TRUE, -->
+<!--                         recode_down = TRUE) -->
+<!-- ``` -->
 
-```{r}
-bth_out_age$age_recoded <- date_to_age_births(date = bth_out_age$date,
-                                              dob = bth_out_age$dob,
-                                              recode_up = TRUE,
-                                              recode_down = TRUE)
-bth_out_age
-```
 
 
-```{r, fig.width = 8, fig.height = 6}
-plot_date_to_age_births(date = bth_out_age$date,
-                        dob = bth_out_age$dob,
-                        recode_up = TRUE,
-                        recode_down = TRUE)
-```
+<!-- ## Month-length ages -->
 
+<!-- ```{r} -->
+<!-- dth_age_month <- deaths -->
+<!-- dth_age_month$age <- date_to_age_month(date = dth_age_month$date, -->
+<!--                                        dob = dth_age_month$dob) -->
+<!-- dth_age_month -->
+<!-- ``` -->
 
 
-## Month-length ages
+<!-- ```{r, echo = FALSE, fig.height = 6} -->
+<!-- plot_date_to_age_month(date = dth_age_month$date[3], -->
+<!--                        dob = dth_age_month$dob[3], -->
+<!--                        break_max = 20) -->
+<!-- ``` -->
 
-```{r}
-dth_age_month <- deaths
-dth_age_month$age <- date_to_age_month(date = dth_age_month$date,
-                                       dob = dth_age_month$dob)
-dth_age_month
-```
 
 
-```{r, echo = FALSE, fig.height = 6}
-plot_date_to_age_month(date = dth_age_month$date[3],
-                       dob = dth_age_month$dob[3],
-                       break_max = 20)
-```
+<!-- ## Quarter-length ages -->
 
+<!-- ```{r} -->
+<!-- dth_age_quarter <- deaths -->
+<!-- dth_age_quarter$age <- date_to_age_quarter(date = dth_age_quarter$date, -->
+<!--                                            dob = dth_age_quarter$dob) -->
+<!-- dth_age_quarter -->
+<!-- ``` -->
 
 
-## Quarter-length ages
+<!-- ```{r, echo = FALSE, fig.height = 6} -->
+<!-- plot_date_to_age_quarter(date = dth_age_quarter$date[3], -->
+<!--                        dob = dth_age_quarter$dob[3], -->
+<!--                        break_max = 4) -->
+<!-- ``` -->
 
-```{r}
-dth_age_quarter <- deaths
-dth_age_quarter$age <- date_to_age_quarter(date = dth_age_quarter$date,
-                                           dob = dth_age_quarter$dob)
-dth_age_quarter
-```
+<!-- # Lexis triangles -->
 
+<!-- - age and time use same length steps (subject to complications of months and years having different lengths, plus open age group) -->
+<!-- - one month; one quarter; one year; $n$ years -->
+<!-- - age and time not enough to identify cohort; also need Lexis triangle -->
+<!-- - abstract:  -->
+<!-- - event is in upper Lexis triangle -->
 
-```{r, echo = FALSE, fig.height = 6}
-plot_date_to_age_quarter(date = dth_age_quarter$date[3],
-                       dob = dth_age_quarter$dob[3],
-                       break_max = 4)
-```
+<!-- - An event occurring during period $t$ to a person in age group $a$ belongs to the lower Lexis triangle if the person attains age $a$ during, and to the upper Lexis triangle otherwise. (Covers youngest and oldest age groups.) -->
 
-# Lexis triangles
 
-- age and time use same length steps (subject to complications of months and years having different lengths, plus open age group)
-- one month; one quarter; one year; $n$ years
-- age and time not enough to identify cohort; also need Lexis triangle
-- abstract: 
-- event is in upper Lexis triangle
+<!-- - If index of time equals index for age, then Lower; else Upper. -->
 
-- An event occurring during period $t$ to a person in age group $a$ belongs to the lower Lexis triangle if the person attains age $a$ during, and to the upper Lexis triangle otherwise. (Covers youngest and oldest age groups.)
+<!-- How to work out triangle: -->
 
+<!-- 1. Use date now and dob to calculate age group now -->
+<!-- 2. Use date now to identify date at start of period -->
+<!-- 3. Use date at start of period and dob to calculate whether entered age group during period -->
+<!-- 4. If so, lower; if not upper. -->
 
-- If index of time equals index for age, then Lower; else Upper.
+<!-- ## Single-year age-time steps -->
 
-How to work out triangle:
 
-1. Use date now and dob to calculate age group now
-2. Use date now to identify date at start of period
-3. Use date at start of period and dob to calculate whether entered age group during period
-4. If so, lower; if not upper.
+<!-- ```{r} -->
+<!-- dth_tri_yr <- deaths -->
+<!-- dth_tri_yr$tri_jan <- date_to_triangle_year(date = dth_age_yr$date, -->
+<!--                                             dob = dth_age_yr$dob, -->
+<!--                                             break_max = 10) -->
+<!-- dth_tri_yr -->
+<!-- ``` -->
 
-## Single-year age-time steps
+<!-- ```{r, echo = FALSE, fig.height = 6.5} -->
+<!-- plot_date_to_triangle_year(date = dth_tri_yr$date, -->
+<!--                            dob = dth_tri_yr$dob, -->
+<!--                            break_max = 10) -->
+<!-- ``` -->
 
+<!-- Change from 1 Jan to 1 Jul -->
 
-```{r}
-dth_tri_yr <- deaths
-dth_tri_yr$tri_jan <- date_to_triangle_year(date = dth_age_yr$date,
-                                            dob = dth_age_yr$dob,
-                                            break_max = 10)
-dth_tri_yr
-```
+<!-- ```{r} -->
+<!-- dth_tri_yr$tri_jul <- date_to_triangle_year(date = dth_age_yr$date, -->
+<!--                                             dob = dth_age_yr$dob, -->
+<!--                                             month_start = "Jul", -->
+<!--                                             break_max = 10) -->
+<!-- dth_tri_yr -->
+<!-- ``` -->
 
-```{r, echo = FALSE, fig.height = 6.5}
-plot_date_to_triangle_year(date = dth_tri_yr$date,
-                           dob = dth_tri_yr$dob,
-                           break_max = 10)
-```
+<!-- ```{r, echo = FALSE, fig.height = 6.5} -->
+<!-- plot_date_to_triangle_year(date = dth_tri_yr$date, -->
+<!--                            dob = dth_tri_yr$dob, -->
+<!--                            month_start = "Jul", -->
+<!--                            break_max = 10) -->
+<!-- ``` -->
 
-Change from 1 Jan to 1 Jul
+<!-- Change `break_max` -->
 
-```{r}
-dth_tri_yr$tri_jul <- date_to_triangle_year(date = dth_age_yr$date,
-                                            dob = dth_age_yr$dob,
-                                            month_start = "Jul",
-                                            break_max = 10)
-dth_tri_yr
-```
+<!-- ```{r} -->
+<!-- dth_tri_yr$tri_6 <- date_to_triangle_year(date = dth_age_yr$date, -->
+<!--                                           dob = dth_age_yr$dob, -->
+<!--                                           break_max = 6) -->
+<!-- dth_tri_yr -->
+<!-- ``` -->
 
-```{r, echo = FALSE, fig.height = 6.5}
-plot_date_to_triangle_year(date = dth_tri_yr$date,
-                           dob = dth_tri_yr$dob,
-                           month_start = "Jul",
-                           break_max = 10)
-```
+<!-- ```{r, echo = FALSE, fig.height = 6} -->
+<!-- plot_date_to_triangle_year(date = dth_tri_yr$date, -->
+<!--                            dob = dth_tri_yr$dob, -->
+<!--                            break_max = 6) -->
+<!-- ``` -->
 
-Change `break_max`
 
-```{r}
-dth_tri_yr$tri_6 <- date_to_triangle_year(date = dth_age_yr$date,
-                                          dob = dth_age_yr$dob,
-                                          break_max = 6)
-dth_tri_yr
-```
+<!-- ## Multi-year age-time steps -->
 
-```{r, echo = FALSE, fig.height = 6}
-plot_date_to_triangle_year(date = dth_tri_yr$date,
-                           dob = dth_tri_yr$dob,
-                           break_max = 6)
-```
 
+<!-- ```{r} -->
+<!-- dth_tri_multi <- deaths -->
+<!-- dth_tri_multi$tri_5 <- date_to_triangle_multi(date = dth_age_multi$date, -->
+<!--                                               dob = dth_age_multi$dob, -->
+<!--                                               break_max = 30) -->
+<!-- dth_tri_multi -->
+<!-- ``` -->
 
-## Multi-year age-time steps
+<!-- ```{r, echo = FALSE, fig.height = 6.5} -->
+<!-- plot_date_to_triangle_multi(date = dth_tri_multi$date, -->
+<!--                            dob = dth_tri_multi$dob, -->
+<!--                            break_max = 30) -->
+<!-- ``` -->
 
 
-```{r}
-dth_tri_multi <- deaths
-dth_tri_multi$tri_5 <- date_to_triangle_multi(date = dth_age_multi$date,
-                                              dob = dth_age_multi$dob,
-                                              break_max = 30)
-dth_tri_multi
-```
+<!-- 10-year time step -->
 
-```{r, echo = FALSE, fig.height = 6.5}
-plot_date_to_triangle_multi(date = dth_tri_multi$date,
-                           dob = dth_tri_multi$dob,
-                           break_max = 30)
-```
 
+<!-- ```{r} -->
+<!-- dth_tri_multi$tri_10 <- date_to_triangle_multi(date = dth_age_multi$date, -->
+<!--                                                dob = dth_age_multi$dob, -->
+<!--                                                width = 10, -->
+<!--                                                break_max = 30) -->
+<!-- dth_tri_multi -->
+<!-- ``` -->
 
-10-year time step
+<!-- ```{r, echo = FALSE, fig.height = 6.5} -->
+<!-- plot_date_to_triangle_multi(date = dth_tri_multi$date, -->
+<!--                             dob = dth_tri_multi$dob, -->
+<!--                             width = 10, -->
+<!--                             break_max = 30) -->
+<!-- ``` -->
 
 
-```{r}
-dth_tri_multi$tri_10 <- date_to_triangle_multi(date = dth_age_multi$date,
-                                               dob = dth_age_multi$dob,
-                                               width = 10,
-                                               break_max = 30)
-dth_tri_multi
-```
 
-```{r, echo = FALSE, fig.height = 6.5}
-plot_date_to_triangle_multi(date = dth_tri_multi$date,
-                            dob = dth_tri_multi$dob,
-                            width = 10,
-                            break_max = 30)
-```
 
+<!-- ## Births -->
 
 
+<!-- ```{r} -->
+<!-- births_in_tri <- births_in -->
+<!-- births_in_tri$tri <- date_to_triangle_births(date = births_in_tri$date, -->
+<!--                                              dob = births_in_tri$dob) -->
+<!-- births_in_tri -->
+<!-- ``` -->
 
-## Births
+<!-- ```{r, echo = FALSE, fig.height = 6.5} -->
+<!-- plot_date_to_triangle_births(date = births_in_tri$date, -->
+<!--                              dob = births_in_tri$dob) -->
+<!-- ``` -->
 
 
-```{r}
-births_in_tri <- births_in
-births_in_tri$tri <- date_to_triangle_births(date = births_in_tri$date,
-                                             dob = births_in_tri$dob)
-births_in_tri
-```
 
-```{r, echo = FALSE, fig.height = 6.5}
-plot_date_to_triangle_births(date = births_in_tri$date,
-                             dob = births_in_tri$dob)
-```
 
+<!-- ## Quarter-length age-time steps -->
 
 
+<!-- ```{r} -->
+<!-- dth_tri_qu <- deaths -->
+<!-- dth_tri_qu$tri <- date_to_triangle_quarter(date = dth_tri_qu$date, -->
+<!--                                            dob = dth_tri_qu$dob, -->
+<!--                                            break_max = 24) -->
+<!-- dth_tri_qu -->
+<!-- ``` -->
 
-## Quarter-length age-time steps
+<!-- ```{r, echo = FALSE, fig.height = 6.5} -->
+<!-- plot_date_to_triangle_quarter(date = dth_tri_qu$date, -->
+<!--                               dob = dth_tri_qu$dob, -->
+<!--                               break_max = 24) -->
+<!-- ``` -->
 
 
-```{r}
-dth_tri_qu <- deaths
-dth_tri_qu$tri <- date_to_triangle_quarter(date = dth_tri_qu$date,
-                                           dob = dth_tri_qu$dob,
-                                           break_max = 24)
-dth_tri_qu
-```
 
-```{r, echo = FALSE, fig.height = 6.5}
-plot_date_to_triangle_quarter(date = dth_tri_qu$date,
-                              dob = dth_tri_qu$dob,
-                              break_max = 24)
-```
+<!-- ## Month-length age-time steps -->
 
+<!-- ```{r} -->
+<!-- dth_tri_month <- deaths -->
+<!-- dth_tri_month$tri <- date_to_triangle_month(date = dth_tri_month$date, -->
+<!--                                             dob = dth_tri_month$dob) -->
+<!-- dth_tri_month -->
+<!-- ``` -->
 
 
-## Month-length age-time steps
-
-```{r}
-dth_tri_month <- deaths
-dth_tri_month$tri <- date_to_triangle_month(date = dth_tri_month$date,
-                                            dob = dth_tri_month$dob)
-dth_tri_month
-```
-
-
-```{r, echo = FALSE, fig.height = 6}
-plot_date_to_triangle_month(date = dth_tri_month$date[3],
-                            dob = dth_tri_month$dob[3],
-                            break_max = 20)
-```
+<!-- ```{r, echo = FALSE, fig.height = 6} -->
+<!-- plot_date_to_triangle_month(date = dth_tri_month$date[3], -->
+<!--                             dob = dth_tri_month$dob[3], -->
+<!--                             break_max = 20) -->
+<!-- ``` -->
 
 
 

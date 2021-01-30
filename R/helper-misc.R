@@ -471,7 +471,7 @@ n_day_month <- function(date) {
 plot_date_to_age_triangle <- function(date, dob, unit, breaks_time = NULL, breaks_age,
                                       open_last, labels_time = NULL, labels_age,
                                       show_months, show_vert, show_diag, cex = 0.8) {
-    old_par <- graphics::par(mar = c(6, 2, 2, 0),
+    old_par <- graphics::par(mar = c(6, 3, 2, 0),
                              mgp = c(0, 0, 0),
                              cex = cex)
     n_date <- length(date)
@@ -684,7 +684,7 @@ plot_date_to_age_triangle <- function(date, dob, unit, breaks_time = NULL, break
     ## ylab
     graphics::mtext(text = "Age",
                     side = 2,
-                    line = 2,
+                    line = 1.5,
                     las = 1,
                     cex = 0.7,
                     col = "grey35")
