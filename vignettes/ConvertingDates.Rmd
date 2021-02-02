@@ -1,18 +1,19 @@
 ---
-title: "Locating events in an age-time plan"
+title: "Converting Dates to Periods, Cohorts, Age Groups, and Lexis Triangles"
 output: rmarkdown::html_vignette
 vignette: >
-    %\VignetteIndexEntry{Locating events in an age-time plan}
+    %\VignetteIndexEntry{Converting Dates to Periods, Cohorts, Age Groups, and Lexis Triangles}
     %\VignetteEngine{knitr::rmarkdown}
     %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(
-    collapse = TRUE,
-    comment = "#>",
-    echo = TRUE,
-    fig.width = 6.5
+library(knitr)
+opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  fig.width = 6.5
 )
 deaths <- data.frame(person = c("Anwar", "Baptiste", "Candice"),
                      dob = c("2014-02-14", "2012-01-04", "2019-04-29"),
@@ -27,12 +28,43 @@ births_out <- data.frame(date = c("2020-03-14", "2020-08-22"),
 
 # Introduction
 
-- Demography works with intervals (example)
-- Raw data works uses dates (example)
-- Turning dates into intervals trickier than appears
-  - decisions about lengths of periods, age groups, etc
-  - leap years, open age groups, etc
-- functions look after details
+Classic demographic datasets, including the demographic arrays used throughout the **dem** packages, use intervals such as periods and age groups to classify events. In the dataset below, for instance, counts of deaths are classified by age and year:
+```{r deaths-array, echo = FALSE}
+deaths_array <- matrix(c(98, 25, 11, 89, 29, 12, 93, 32, 16),
+                       nrow = 3, 
+                       ncol = 3,
+                       dimnames = list(age = c("0", "1-4", "5-9"),
+                                       year = 2020:2022))
+kable(deaths_array)
+```
+Raw data, such as data on a census file or in an administrative database, typically refers to individual people ore events, and uses dates rather than periods or age groups. The dataset below, for instance, contains one line per person, and shows the date of the person's birth and death:
+
+```{r deaths-list, echo = FALSE}
+deaths_list <- data.frame(names = c("Aadya",
+                                    "Diya", 
+                                    "Saanvi", 
+                                    "Amaira"),
+                          date_of_birth = c("1965-11-07", 
+                                            "1958-01-26", 
+                                            "2007-02-06", 
+                                            "1935-07-18"), 
+                          date_of_death = c("2020-02-01",
+                                            "2020-04-03", 
+                                            "2020-06-02", 
+                                            "2020-10-06"))
+kable(deaths_list)
+```
+
+Converting individual-level dates into intervals such as periods and age groups can be harder than it first appears. Consider, for instance, the problem of measuring a person's age in completed months. If a person is born on 31 January 2001, one what day does that person turn one month old: 28 February 2001, 1 March 2001, or some other date? According to base **R**, the answer is 3 March 2001:
+```{r one-month}
+seq.Date(from = as.Date("2001-01-31"), 
+         by = "month",
+         length.out = 2)
+```
+
+Package **demprep** contains a suite of functions to help with converting dates to intervals. These functions have a consistent format, and follow common principles. In some cases, such as deciding when a person turns one month old, there is no universally agreed-upon answer. In such cases, **demprep** favours answers that meet the needs of applied demography.
+
+ROADMAP FOR VIGNETTE.
 
 
 # Age-time plans in demography
@@ -101,6 +133,8 @@ text(x = date,
      labels = c("A", "B"),
      pos = 4)
 ```
+
+In practice, difficult because of unequal lengths.
 
 
 
