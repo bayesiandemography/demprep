@@ -28,22 +28,23 @@ births_out <- data.frame(date = c("2020-03-14", "2020-08-22"),
 
 # Introduction
 
-Classic demographic datasets, including the demographic arrays used throughout the **dem** packages, use intervals such as periods and age groups to classify events. In the dataset below, for instance, counts of deaths are classified by age and year:
+Most demographic datasets, including datasets used in the **dem** packages, are tabulations of people or events classified by categories such as period or age group. The cross-tabulation below is a simple example:
 ```{r deaths-array, echo = FALSE}
 deaths_array <- matrix(c(98, 25, 11, 89, 29, 12, 93, 32, 16),
                        nrow = 3, 
                        ncol = 3,
-                       dimnames = list(age = c("0", "1-4", "5-9"),
-                                       year = 2020:2022))
-kable(deaths_array)
+                       dimnames = list(age = paste("Age", c("0", "1-4", "5-9")),
+                                       year = c("2000-2005", "2005-2010", "2010-2015")))
+kable(deaths_array,
+      align = "c",
+      caption = "Cross-tabulation of deaths by age and period")
 ```
-Raw data, such as data on a census file or in an administrative database, typically refers to individual people ore events, and uses dates rather than periods or age groups. The dataset below, for instance, contains one line per person, and shows the date of the person's birth and death:
-
+The raw data from which these sorts of tables are assembled typically refer to individuals, and give precise dates, rather than periods or age groups. The data frame below is an example:
 ```{r deaths-list, echo = FALSE}
-deaths_list <- data.frame(names = c("Aadya",
-                                    "Diya", 
-                                    "Saanvi", 
-                                    "Amaira"),
+deaths_list <- data.frame(name = c("Aadya",
+                                  "Diya", 
+                                  "Saanvi", 
+                                  "Amaira"),
                           date_of_birth = c("1965-11-07", 
                                             "1958-01-26", 
                                             "2007-02-06", 
@@ -52,30 +53,30 @@ deaths_list <- data.frame(names = c("Aadya",
                                             "2020-04-03", 
                                             "2020-06-02", 
                                             "2020-10-06"))
-kable(deaths_list)
+kable(deaths_list,
+      caption = "Individual-level data on date of birth and date of death")
 ```
 
-Converting individual-level dates into intervals such as periods and age groups can be harder than it first appears. Consider, for instance, the problem of measuring a person's age in completed months. If a person is born on 31 January 2001, one what day does that person turn one month old: 28 February 2001, 1 March 2001, or some other date? According to base **R**, the answer is 3 March 2001:
+Converting dates into periods and age groups can be harder than it looks. Consider, for instance, the problem of measuring a person's age in months. If a person is born on 31 January 2001, on what date does that person become one month old? On 28 February 2001, 1 March 2001, or some other date? According to base **R**, the answer is 3 March 2001:
 ```{r one-month}
 seq.Date(from = as.Date("2001-01-31"), 
          by = "month",
          length.out = 2)
 ```
 
-Package **demprep** contains a suite of functions to help with converting dates to intervals. These functions have a consistent format, and follow common principles. In some cases, such as deciding when a person turns one month old, there is no universally agreed-upon answer. In such cases, **demprep** favours answers that meet the needs of applied demography.
-
-ROADMAP FOR VIGNETTE.
+Package **demprep** contains a suite of functions for converting dates to periods, age groups, and other categories needed by the **dem** packages. To help resolve cases where the answers are not obvious, such as when deciding when a person turns one month old, **demprep** uses some basic rules that try to reflect common practices in applied demography.
 
 
-# Age-time plans in demography
+# Lexis diagrams and age-time plans
 
 ```{r agetime, echo = FALSE}
 library(demprep)
-date <- as.Date(c("2020-12-22", "2022-05-14"))
+date <- as.Date(c("2020-12-07", "2022-05-30"))
 dob <- as.Date(c("2001-07-22", "2006-03-14"))
-age <- c(19 + 5/12, 16 + 2/12)
+age <- c(19 + 4.5/12, 16 + 2.5/12)
 ```
 
+When reasoning about age and time, demographers often make use of Lexis diagrams. The figure below is an example of a Lexis diagram. The horizontal axis measures calendar time, and the vertical axis measures age. The black diagonal line marked "A" is the "life line" for a person who was born on `r strftime(dob[1], "%e %B %Y")` and who died on `r strftime(date[1], "%e %B %Y")`. Similarly, the line marked "B" is the life line for a person who was born on `r strftime(dob[2], "%e %B %Y")` and died on `r strftime(date[2], "%e %B %Y")`. A life line in a traditional Lexis diagram always covers the same distance along the vertical axis as it does along the horizontal axis, because a person always gains one year of age for each year of calendar time.
 
 ```{r lexis1, echo = FALSE, fig.width = 6, fig.height = 6}
 breaks_time <- seq.Date(from = as.Date("2000-01-01"), 
@@ -104,6 +105,8 @@ text(x = date,
      labels = c("A", "B"),
      pos = 4)
 ```
+
+The light blue grid in the Lexis diagram above depicts an "age-time plan" [references]. An age-time plan is a set of rules for how points on the Lexis plane are assigned to age and time categories. The age-time plan above divides divides age into 5-year age groups, and divides time into 5-year periods, each starting on 1 January. The deaths of A and B in the Lexis diagram above both belong to the age group "15-19" and to the period "2020-2025".
 
 
 
