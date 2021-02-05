@@ -78,7 +78,7 @@ age <- c(19 + 4.5/12, 16 + 2.5/12)
 
 When reasoning about age and time, demographers often make use of Lexis diagrams. The figure below is an example of a Lexis diagram. The horizontal axis measures calendar time, and the vertical axis measures age. The black diagonal line marked "A" is the "life line" for a person who was born on `r strftime(dob[1], "%e %B %Y")` and who died on `r strftime(date[1], "%e %B %Y")`. Similarly, the line marked "B" is the life line for a person who was born on `r strftime(dob[2], "%e %B %Y")` and died on `r strftime(date[2], "%e %B %Y")`. A life line in a traditional Lexis diagram always covers the same distance along the vertical axis as it does along the horizontal axis, because a person always gains one year of age for each year of calendar time.
 
-```{r lexis1, echo = FALSE, fig.width = 6, fig.height = 6}
+```{r lexis1, echo = FALSE, fig.width = 5, fig.height = 5}
 breaks_time <- seq.Date(from = as.Date("2000-01-01"), 
                         to = as.Date("2025-01-01"), 
                         by = "5 years")
@@ -108,34 +108,12 @@ text(x = date,
 
 The light blue grid in the Lexis diagram above depicts an "age-time plan" [references]. An age-time plan is a set of rules for how points on the Lexis plane are assigned to age and time categories. The age-time plan above divides divides age into 5-year age groups, and divides time into 5-year periods, each starting on 1 January. The deaths of A and B in the Lexis diagram above both belong to the age group "15-19" and to the period "2020-2025".
 
+Although age group and period are the most common age-time categories in demography, the idea of the "cohort" is also important. A cohort is a group of people who all experienced the same defining event during the same period. The defining event is normally birth, but it can be, for instance, marriage or entering a organization. The birth cohort of 1950-1960, for instance, is everyone born during the 1960s, and the marriage cohort of 2018 is everyone who married during 2018.
 
+On a Lexis diagram, the birth cohort for a person or event can be inferred by following the relevant life line back to the horizontal axis and noting the period that the birth falls within. In the Lexis diagram above, for instance, A belongs to the birth cohort "2000-2005" and B belongs to the birth cohort "2005-2010".
 
-```{r lexis2, echo = FALSE, fig.width = 6, fig.height = 6}
-breaks_time <- seq.Date(from = as.Date("2000-01-01"), 
-                        to = as.Date("2030-01-01"), 
-                        by = "10 years")
-breaks_age <- seq.int(from = 0, 
-                      to = 30, 
-                      by = 10)
-labels_time <- make_labels_period(breaks_time)
-labels_age <- make_labels_age(breaks = breaks_age,
-                              open_last = FALSE)
-demprep:::plot_date_to_age_triangle(date = date,
-                                    dob = dob,
-                                    unit = "year",
-                                    breaks_time = breaks_time,
-                                    breaks_age = breaks_age,
-                                    open_last = FALSE,
-                                    labels_time = labels_time,
-                                    labels_age = labels_age,
-                                    show_vert = TRUE,
-                                    show_diag = TRUE,
-                                    show_months = FALSE)
-text(x = date,
-     y = age,
-     labels = c("A", "B"),
-     pos = 4)
-```
+When working with cohorts, it is often helpful to add one further category: the Lexis triangle. 
+
 
 In practice, difficult because of unequal lengths.
 
