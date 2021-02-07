@@ -9,11 +9,13 @@ vignette: >
 
 ```{r, include = FALSE}
 library(knitr)
+library(demprep)
 opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   echo = TRUE,
-  fig.width = 6.5
+  fig.width = 6.5,
+  fig.align = "center"
 )
 deaths <- data.frame(person = c("Anwar", "Baptiste", "Candice"),
                      dob = c("2014-02-14", "2012-01-04", "2019-04-29"),
@@ -28,7 +30,7 @@ births_out <- data.frame(date = c("2020-03-14", "2020-08-22"),
 
 # Introduction
 
-Most demographic datasets, including datasets used in the **dem** packages, are tabulations of people or events classified by categories such as period or age group. The cross-tabulation below is a simple example:
+Most demographic datasets, including datasets used in the **dem** packages, divide events into groups defined by combinations of categories based on characteristics such as age, sex, region, and time. The cross-tabulation below, for example, classifes deaths by age group and period:
 ```{r deaths-array, echo = FALSE}
 deaths_array <- matrix(c(98, 25, 11, 89, 29, 12, 93, 32, 16),
                        nrow = 3, 
@@ -36,10 +38,9 @@ deaths_array <- matrix(c(98, 25, 11, 89, 29, 12, 93, 32, 16),
                        dimnames = list(age = paste("Age", c("0", "1-4", "5-9")),
                                        year = c("2000-2005", "2005-2010", "2010-2015")))
 kable(deaths_array,
-      align = "c",
-      caption = "Cross-tabulation of deaths by age and period")
+      align = "c")
 ```
-The raw data from which these sorts of tables are assembled typically refer to individuals, and give precise dates, rather than periods or age groups. The data frame below is an example:
+The raw individual-level that these sorts of tables ultimately derive from typically refer to dates, rather than periods or age groups. The data below, for example refers to date of birth and date of death:
 ```{r deaths-list, echo = FALSE}
 deaths_list <- data.frame(name = c("Aadya",
                                   "Diya", 
@@ -53,30 +54,28 @@ deaths_list <- data.frame(name = c("Aadya",
                                             "2020-04-03", 
                                             "2020-06-02", 
                                             "2020-10-06"))
-kable(deaths_list,
-      caption = "Individual-level data on date of birth and date of death")
+kable(deaths_list)
 ```
 
-Converting dates into periods and age groups can be harder than it looks. Consider, for instance, the problem of measuring a person's age in months. If a person is born on 31 January 2001, on what date does that person become one month old? On 28 February 2001, 1 March 2001, or some other date? According to base **R**, the answer is 3 March 2001:
+Converting dates into periods and age groups is not always easy. Consider, for instance, the problem of measuring a person's age in months. If a person is born on 31 January 2001, on what date does that person become one month old? On 28 February 2001, 1 March 2001, or some other date? According to base *R*, the answer is 3 March 2001:
 ```{r one-month}
 seq.Date(from = as.Date("2001-01-31"), 
          by = "month",
          length.out = 2)
 ```
 
-Package **demprep** contains a suite of functions for converting dates to periods, age groups, and other categories needed by the **dem** packages. To help resolve cases where the answers are not obvious, such as when deciding when a person turns one month old, **demprep** uses some basic rules that try to reflect common practices in applied demography.
+Package **demprep** contains a suite of functions for converting dates to age groups, periods, and other age-time categories needed by the **dem** packages. To help resolve cases where the answers are not obvious, such as when deciding when a person turns one month old, **demprep** uses some basic rules that try to reflect common practices in applied demography.
 
 
 # Lexis diagrams and age-time plans
 
 ```{r agetime, echo = FALSE}
-library(demprep)
 date <- as.Date(c("2020-12-07", "2022-05-30"))
 dob <- as.Date(c("2001-07-22", "2006-03-14"))
 age <- c(19 + 4.5/12, 16 + 2.5/12)
 ```
 
-When reasoning about age and time, demographers often make use of Lexis diagrams. The figure below is an example of a Lexis diagram. The horizontal axis measures calendar time, and the vertical axis measures age. The black diagonal line marked "A" is the "life line" for a person who was born on `r strftime(dob[1], "%e %B %Y")` and who died on `r strftime(date[1], "%e %B %Y")`. Similarly, the line marked "B" is the life line for a person who was born on `r strftime(dob[2], "%e %B %Y")` and died on `r strftime(date[2], "%e %B %Y")`. A life line in a traditional Lexis diagram always covers the same distance along the vertical axis as it does along the horizontal axis, because a person always gains one year of age for each year of calendar time.
+When reasoning about age and time, demographers often make use of Lexis diagrams. The figure below is an example of a Lexis diagram. The horizontal axis measures calendar time, and the vertical axis measures age. The black diagonal line with an *A* at the end is the "life line" for a person who is born on `r strftime(dob[1], "%e %B %Y")` and who dies on `r strftime(date[1], "%e %B %Y")`. Similarly, the line with the *B* at the end the life line for a person who is born on `r strftime(dob[2], "%e %B %Y")` and dies on `r strftime(date[2], "%e %B %Y")`. A life line in a traditional Lexis diagram always covers the same distance along the vertical axis as it does along the horizontal axis, because a person always gains one year of age for each year of calendar time.
 
 ```{r lexis1, echo = FALSE, fig.width = 5, fig.height = 5}
 breaks_time <- seq.Date(from = as.Date("2000-01-01"), 
@@ -102,32 +101,29 @@ demprep:::plot_date_to_age_triangle(date = date,
                                     show_months = FALSE)
 text(x = date,
      y = age,
-     labels = c("A", "B"),
+     labels = expression(italic(A), italic(B)),
      pos = 4)
 ```
 
-The light blue grid in the Lexis diagram above depicts an "age-time plan" [references]. An age-time plan is a set of rules for how points on the Lexis plane are assigned to age and time categories. The age-time plan above divides divides age into 5-year age groups, and divides time into 5-year periods, each starting on 1 January. The deaths of A and B in the Lexis diagram above both belong to the age group "15-19" and to the period "2020-2025".
+The light blue grid in the Lexis diagram above depicts an "age-time plan" [references]. An age-time plan is a set of rules for how exact times and ages (i.e. points in the Lexis plane) are assigned to discrete age and time categories. The age-time plan above divides divides age into 5-year age groups, and divides time into 5-year periods, with each period starting on 1 January. Deaths *A* and *B* both belong to age group "15-19" and period "2020-2025".
 
-Although age group and period are the most common age-time categories in demography, the idea of the "cohort" is also important. A cohort is a group of people who all experienced the same defining event during the same period. The defining event is normally birth, but it can be, for instance, marriage or entering a organization. The birth cohort of 1950-1960, for instance, is everyone born during the 1960s, and the marriage cohort of 2018 is everyone who married during 2018.
+Although age group and period are the most commonly-used age-time categories in demography, "cohorts" are also important to some applications. A cohort is a group of people who all experience a particular event during a given period. The event is normally birth, but it can be, for instance, marriage or joining an organization. The people who are born during the period 1950-1960, form a birth cohort, for example, and the people who marry during the year 2018 form a marriage cohort.
 
-On a Lexis diagram, the birth cohort for a person or event can be inferred by following the relevant life line back to the horizontal axis and noting the period that the birth falls within. In the Lexis diagram above, for instance, A belongs to the birth cohort "2000-2005" and B belongs to the birth cohort "2005-2010".
+On a Lexis diagram, the birth cohort for a person or event can be inferred by following the relevant life line back to the horizontal axis and seeing which period the birth falls within. In the Lexis diagram above, for instance, death *A* belongs to the birth cohort "2000-2005" and death *B* belongs to the birth cohort "2005-2010".
 
-When working with cohorts, it is often helpful to add one further category: the Lexis triangle. 
+When working with cohorts, it is often helpful to add one additional age-time category: the Lexis triangle. Lexis triangles are defined by diagonal, vertical, and horizontal lines in a Lexis diagram. Death *A* in the diagram above belongs to an upper Lexis triangle, and death *B* belongs to a lower Lexis triangle.
 
+Knowing the age group and period of an event is not enough to fully determine the cohort for that event. If we did not have access to the Lexis diagram above, for instance, and all we knew about death *A* was that it belonged to age group "15-19" and period "2020-2025", then we would not be able to determine whether *A* belonged to the the cohort "2000-2005" or to the cohort "2005-2010". If, however, we also knew that *A* belonged to an upper Lexis triangle, then the ambiguity would be be removed: we could infer that *A* belonged to the cohort "2000-2005". Similarly, if we knew only that *B* belonged to age group "15-19", period "2020-2025", and a lower Lexis triangle, we would have enough information to conclude that *B* belongs to the cohort "2005-2010".
 
-In practice, difficult because of unequal lengths.
+Open age group. (and first cohort)
 
-
-
-# Design of functions in 'demprep'
-
-
-```{r}
-library(demprep)
-```
+Equal age-time lengths.
 
 
 
+# Overview of date conversion functions
+
+The date conversion functions in **demprep** are
 
 | Periods | Cohorts | Age groups | Lexis triangles |
 |:--------|:--------|:-----------|:----------------|
@@ -139,10 +135,19 @@ library(demprep)
 | `date_to_period_quarter` | `date_to_cohort_quarter` | `date_to_age_quarter` | `date_to_triangle_quarter` |
 | `date_to_period_month` | `date_to_cohort_month` | `date_to_age_month` | `date_to_triangle_month` |
 
+The functions have a common format: `date_to_<type>_<length>`. The choices for type are "period", "cohort", "age" (short for "age group"), and "triangle" (short for "Lexis triangle".) The choices for length are
 
-- representation of dates
+- `year` All intervals have length equal to one year.
+- `multi` All intervals have lengths of $n$ years, where $n$ is typically 5 or 10.
+- `custom` Intervals are measured in whole years, but can have varying lengths.
+- `lifetab` A specialised form of `custom` often used for defining age group in life tables.
+- `births` A specialised form a `custom`, often used with births.
+- `quarter` Three-month intervals. Periods and cohorts begin on 1 January, 1 April, 1 July, and 1 October.
+- `month` One-month intervals.
 
-YYYY-MM-DD
+- special case: 
+- exception to equality: final age group, first cohort
+- Lexis triangle only definied 
 
 <!-- # Periods -->
 
@@ -156,6 +161,8 @@ YYYY-MM-DD
 
 
 <!-- ## Single-year periods -->
+
+
 
 <!-- ```{r} -->
 <!-- dth_per_yr <- deaths -->
@@ -786,7 +793,7 @@ YYYY-MM-DD
 
 
 
-
+<!-- # Plotting functions -->
 
 
 
