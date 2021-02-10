@@ -14,7 +14,7 @@ plot_date_to_cohort_custom(date, breaks, open_first = TRUE)
 
 \item{open_first}{Whether the first cohort
 has no lower limit. If \code{break_min} is non-\code{NULL}
-and \code{label_year_start} is \code{TRUE}, then
+and \code{label_year_start} is \code{TRUE},
 then \code{open_first} defaults to \code{TRUE};
 otherwise it defaults to \code{FALSE}.}
 }

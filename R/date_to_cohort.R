@@ -56,8 +56,9 @@
 #' the start year. To use the end year, set
 #' \code{label_year_start} to \code{FALSE}.
 #'
-#' If \code{open_first} is \code{TRUE}, then
-#' \code{label_year_start} must also be \code{TRUE}.
+#' If \code{open_first} can only be \code{TRUE},
+#' if a value for \code{break_min} is supplied,
+#' and if \code{label_year_start} is \code{TRUE}.
 #'
 #' When \code{as_factor} is \code{TRUE} the levels of
 #' the factor include all intermediate cohorts,
@@ -84,7 +85,7 @@
 #' a month.
 #' @param open_first Whether the first cohort
 #' has no lower limit. If \code{break_min} is non-\code{NULL}
-#' and \code{label_year_start} is \code{TRUE}, then
+#' and \code{label_year_start} is \code{TRUE},
 #' then \code{open_first} defaults to \code{TRUE};
 #' otherwise it defaults to \code{FALSE}.
 #' @param as_factor Whether the return value is a factor.
@@ -173,12 +174,15 @@ date_to_cohort_year <- function(date,
     if (has_open_first) {
         demcheck::err_is_logical_flag(x = open_first,
                                       name = "open_first")
+        if (open_first && !has_break_min)
+            stop(gettextf("'%s' is %s but '%s' is %s",
+                          "open_first", "TRUE", "break_min", "NULL"))
+        if (open_first && !isTRUE(label_year_start))
+            stop(gettextf("'%s' is %s but '%s' is %s",
+                          "open_first", "TRUE", "label_year_start", "FALSE"))
     }
     else        
-        open_first <- isTRUE(label_year_start) && has_break_min
-    if (open_first && !label_year_start)
-        stop(gettextf("'%s' is %s but '%s' is %s",
-                      "open_first", "TRUE", "label_year_start", "FALSE"))
+        open_first <- has_break_min && isTRUE(label_year_start)
     if (!open_first && has_break_min)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
@@ -253,6 +257,9 @@ date_to_cohort_year <- function(date,
 #' unless a value for \code{break_min} has been
 #' supplied, in which case \code{origin} is ignored.
 #' 
+#' If \code{open_first} can only be \code{TRUE},
+#' if a value for \code{break_min} is supplied.
+#'
 #' When \code{as_factor} is \code{TRUE} the levels of
 #' the factor include all intermediate cohorts,
 #' including cohorts that not appear in the data.
@@ -262,6 +269,10 @@ date_to_cohort_year <- function(date,
 #' Defaults to 5.
 #' @param origin An integer. Defaults to 2000.
 #' Ignored if value supplied for \code{break_min}.
+#' @param open_first Whether the first cohort
+#' has no lower limit. If \code{break_min} is non-\code{NULL},
+#' then \code{open_first} defaults to \code{TRUE};
+#' otherwise it defaults to \code{FALSE}.
 #'
 #' @return If \code{as_factor} is \code{TRUE}, then the return
 #' value is a factor; otherwise it is a character vector.
@@ -364,6 +375,9 @@ date_to_cohort_multi <- function(date,
     if (has_open_first) {
         demcheck::err_is_logical_flag(x = open_first,
                                       name = "open_first")
+        if (open_first && !has_break_min)
+            stop(gettextf("'%s' is %s but '%s' is %s",
+                          "open_first", "TRUE", "break_min", "NULL"))
     }
     else
         open_first <- has_break_min

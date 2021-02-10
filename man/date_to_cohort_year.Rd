@@ -39,7 +39,7 @@ a month.}
 
 \item{open_first}{Whether the first cohort
 has no lower limit. If \code{break_min} is non-\code{NULL}
-and \code{label_year_start} is \code{TRUE}, then
+and \code{label_year_start} is \code{TRUE},
 then \code{open_first} defaults to \code{TRUE};
 otherwise it defaults to \code{FALSE}.}
 
@@ -99,8 +99,9 @@ others label it \code{"2001"}. Function
 the start year. To use the end year, set
 \code{label_year_start} to \code{FALSE}.
 
-If \code{open_first} is \code{TRUE}, then
-\code{label_year_start} must also be \code{TRUE}.
+If \code{open_first} can only be \code{TRUE},
+if a value for \code{break_min} is supplied,
+and if \code{label_year_start} is \code{TRUE}.
 
 When \code{as_factor} is \code{TRUE} the levels of
 the factor include all intermediate cohorts,

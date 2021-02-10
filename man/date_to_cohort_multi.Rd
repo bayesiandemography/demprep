@@ -40,8 +40,7 @@ in either case, it must be the first day of
 a month.}
 
 \item{open_first}{Whether the first cohort
-has no lower limit. If \code{break_min} is non-\code{NULL}
-and \code{label_year_start} is \code{TRUE}, then
+has no lower limit. If \code{break_min} is non-\code{NULL},
 then \code{open_first} defaults to \code{TRUE};
 otherwise it defaults to \code{FALSE}.}
 
@@ -86,6 +85,9 @@ The location of the periods can be shifted
 by using different values for \code{origin},
 unless a value for \code{break_min} has been
 supplied, in which case \code{origin} is ignored.
+
+If \code{open_first} can only be \code{TRUE},
+if a value for \code{break_min} is supplied.
 
 When \code{as_factor} is \code{TRUE} the levels of
 the factor include all intermediate cohorts,

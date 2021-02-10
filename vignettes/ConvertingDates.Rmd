@@ -18,7 +18,7 @@ opts_chunk$set(
   fig.align = "center"
 )
 deaths <- data.frame(name = c("Anwar", "Baptiste", "Candice"),
-                     date_birth = c("2014-02-14", "2012-01-04", "2019-04-29"),
+                     date_birth = c("2014-02-17", "2012-01-10", "2019-04-29"),
                      date_death = c("2019-10-11", "2020-02-27", "2020-08-01"))
 
 births_in <- data.frame(date_child = c("2020-05-18", "2020-07-02", "2020-10-05"),
@@ -55,6 +55,8 @@ seq.Date(from = as.Date("2001-01-31"),
 ```
 
 Package **demprep** contains a suite of functions for converting dates to age groups, periods, and other age-time categories needed by the **dem** packages. These functions deal with details such as whether one-year periods start in January or July. It also follows a consistent approach to dealing with the fact that months and years have variable lengths. Under this approach, the entry into a new age group, or the start of a new period, depends on reaching a certain day of the month or month of the year, rather than on the number of days that have elapsed. As we discuss below, this approach reflects common practices in applied demography.
+
+DOESN'T TRY TO DEAL WITH ALL POSSIBLE SCENARIOS, SCHEMES - TO AVOID OVERLY COMPLICATED INTERFACE.
 
 # Lexis diagrams and age-time plans
 
@@ -237,139 +239,109 @@ table(deaths_temp$period_nonfac)
 ```
 
 
-## Multi-year periods, with equal lengths
+## Multi-year periods with equal lengths
 
+Function `date_to_period_multi` creates multiple-year periods, all of which have have the same length. By default, the periods have widths of 5 years:
 ```{r}
 deaths_temp <- deaths
 deaths_temp$period_5 <- date_to_period_multi(date = deaths_temp$date_death)
 deaths_temp
 ```
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_multi(date = deaths_temp$date_death)
-```
-
-
+Alternative lengths can be specified via the `width` argument: 
 ```{r}
 deaths_temp$period_10 <- date_to_period_multi(date = deaths_temp$date_death,
                                               width = 10)
 deaths_temp
 ```
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_multi(date = deaths_temp$date_death,
-                          width = 10)
-```
-
-
-
+The periods can be shifted backwards and forwards by supplying alternative values for the `origin` argument:
 ```{r}
-deaths_temp$period_01 <- date_to_period_multi(date = deaths_temp$date_death,
-                                              origin = 2001)
+deaths_temp$period_shift <- date_to_period_multi(date = deaths_temp$date_death,
+                                                 origin = 2001)
 deaths_temp
 ```
 
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_multi(date = deaths_temp$date_death,
-                          origin = 2001)
-```
+## Multi-year periods with varying lengths
 
-
-## Multi-year periods, with varying lengths
-
-
+To generate periods with varying lengths, we use `date_to_period_custom`. The lengths of the periods are specified via the `breaks` argument. Each period must start in the same month, on the first day of that month:
 ```{r}
 deaths_temp <- deaths
-deaths_temp$time <- date_to_period_custom(date = deaths_temp$date_death,
-                                          breaks = c("2018-01-01",
-                                                     "2020-01-01",
-                                                     "2025-01-01"))
+deaths_temp$period <- date_to_period_custom(date = deaths_temp$date_death,
+                                            breaks = c("2018-12-01",
+                                                       "2019-12-01",
+                                                       "2024-12-01"))
 deaths_temp
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
 plot_date_to_period_custom(date = deaths_temp$date_death,
-                           breaks = c("2018-01-01",
-                                      "2020-01-01",
-                                      "2025-01-01"))
+                           breaks = c("2018-12-01",
+                                      "2019-12-01",
+                                      "2024-12-01"))
 ```
 
 
 ## Quarter-length periods
 
-
+Quarters are three-month periods starting on the first day of January, April, July, and October:
 ```{r}
-dth_per_quarter <- deaths
-dth_per_quarter$time <- date_to_period_quarter(deaths_temp$date_death)
-dth_per_quarter
+deaths_temp <- deaths
+deaths_temp$time <- date_to_period_quarter(deaths_temp$date_death)
+deaths_temp
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_quarter(dth_per_quarter$date_death)
+plot_date_to_period_quarter(deaths_temp$date_death)
 ```
-
-
 
 ## Month-length periods
 
+Month-length periods are similarly straightforward:
 ```{r}
-dth_per_month <- deaths
-dth_per_month$time <- date_to_period_month(deaths_temp$date_death)
-dth_per_month
+deaths_temp <- deaths
+deaths_temp$time <- date_to_period_month(deaths_temp$date_death)
+deaths_temp
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_month(dth_per_month$date_death[1:2])
+plot_date_to_period_month(deaths_temp$date_death[1:2])
 ```
 
 
-<!-- # Cohorts -->
-
-<!-- ## General issues -->
-
-<!-- Defn of cohort -->
-
-<!-- Same as period, but with open interval at start -->
-
-<!-- Boundaries -->
+# Cohorts
 
 
-<!-- ## Single-year cohorts -->
-
-<!-- ```{r} -->
-<!-- dth_per_yr <- deaths -->
-<!-- dth_per_yr$time_closed <- date_to_cohort_year(date = dth_per_yr$date_death) -->
-<!-- dth_per_yr -->
-<!-- ``` -->
-
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_cohort_year(date = dth_per_yr$date_death) -->
-<!-- ``` -->
+Same as period, but with open interval at start
 
 
-<!-- ```{r} -->
-<!-- dth_per_yr$time_open <- date_to_cohort_year(date = dth_per_yr$date_death, -->
-<!--                                             open_first = TRUE) -->
-<!-- dth_per_yr -->
-<!-- ``` -->
+```{r}
+deaths_temp <- deaths
+deaths_temp$cohort <- date_to_cohort_multi(date = deaths_temp$date_birth)
+deaths_temp
+```
 
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_cohort_year(date = dth_per_yr$date_death, -->
-<!--                          open_first = TRUE) -->
-<!-- ``` -->
-
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_cohort_multi(date = deaths_temp$date_birth)
+```
 
 
-<!-- ```{r} -->
-<!-- dth_per_yr$time_min <- date_to_cohort_year(date = dth_per_yr$date_death, -->
-<!--                                             break_min = "2020-01-01") -->
-<!-- dth_per_yr -->
-<!-- ``` -->
+```{r}
+deaths_temp$cohort_open <- date_to_cohort_multi(date = deaths_temp$date_birth,
+                                                break_min = "2015-01-01")
+deaths_temp
+```
 
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_cohort_year(date = dth_per_yr$date_death, -->
-<!--                          break_min = "2020-01-01") -->
-<!-- ``` -->
+```{r}
+levels(deaths_temp$cohort_open)
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_cohort_multi(date = deaths_temp$date_birth,
+                          break_min = "2015-01-01")
+```
+
+
 
 <!-- # Age groups -->
 
@@ -764,9 +736,4 @@ plot_date_to_period_month(dth_per_month$date_death[1:2])
 
 
 <!-- # Plotting functions -->
-
-
-
-
-
 

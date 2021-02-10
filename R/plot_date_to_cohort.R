@@ -111,7 +111,7 @@ plot_date_to_cohort <- function(date, breaks, open_first, labels, cex = 0.8) {
 #' a month.
 #' @param open_first Whether the first cohort
 #' has no lower limit. If \code{break_min} is non-\code{NULL}
-#' and \code{label_year_start} is \code{TRUE}, then
+#' and \code{label_year_start} is \code{TRUE},
 #' then \code{open_first} defaults to \code{TRUE};
 #' otherwise it defaults to \code{FALSE}.
 #'
@@ -177,12 +177,15 @@ plot_date_to_cohort_year <- function(date,
     if (has_open_first) {
         demcheck::err_is_logical_flag(x = open_first,
                                       name = "open_first")
+        if (open_first && !has_break_min)
+            stop(gettextf("'%s' is %s but '%s' is %s",
+                          "open_first", "TRUE", "break_min", "NULL"))
+        if (open_first && !isTRUE(label_year_start))
+            stop(gettextf("'%s' is %s but '%s' is %s",
+                          "open_first", "TRUE", "label_year_start", "FALSE"))
     }
     else        
         open_first <- isTRUE(label_year_start) && has_break_min
-    if (open_first && !label_year_start)
-        stop(gettextf("'%s' is %s but '%s' is %s",
-                      "open_first", "TRUE", "label_year_start", "FALSE"))
     if (!open_first && has_break_min)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
@@ -219,6 +222,10 @@ plot_date_to_cohort_year <- function(date,
 #' @param width The length, in whole years, of the cohorts.
 #' Defaults to 5.
 #' @param origin An integer. Defaults to 2000.
+#' @param open_first Whether the first cohort
+#' has no lower limit. If \code{break_min} is non-\code{NULL},
+#' then \code{open_first} defaults to \code{TRUE};
+#' otherwise it defaults to \code{FALSE}.
 #'
 #' @examples
 #' plot_date_to_cohort_multi(date = c("2024-03-27",
@@ -291,6 +298,9 @@ plot_date_to_cohort_multi <- function(date,
     if (has_open_first) {
         demcheck::err_is_logical_flag(x = open_first,
                                       name = "open_first")
+        if (open_first && !has_break_min)
+            stop(gettextf("'%s' is %s but '%s' is %s",
+                          "open_first", "TRUE", "break_min", "NULL"))
     }
     else
         open_first <- has_break_min
