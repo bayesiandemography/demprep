@@ -17,20 +17,20 @@ opts_chunk$set(
   fig.width = 6.5,
   fig.align = "center"
 )
-deaths <- data.frame(person = c("Anwar", "Baptiste", "Candice"),
-                     dob = c("2014-02-14", "2012-01-04", "2019-04-29"),
-                     date = c("2019-10-11", "2020-02-27", "2020-08-01"))
+deaths <- data.frame(name = c("Anwar", "Baptiste", "Candice"),
+                     date_birth = c("2014-02-14", "2012-01-04", "2019-04-29"),
+                     date_death = c("2019-10-11", "2020-02-27", "2020-08-01"))
 
-births_in <- data.frame(date = c("2020-05-18", "2020-07-02", "2020-10-05"),
-                     dob = c("2000-02-14", "2002-05-18", "1990-12-18"))
+births_in <- data.frame(date_child = c("2020-05-18", "2020-07-02", "2020-10-05"),
+                        date_parent = c("2000-02-14", "2002-05-18", "1990-12-18"))
 
-births_out <- data.frame(date = c("2020-03-14", "2020-08-22"),
-                         dob = c("1968-01-23", "2008-03-05"))
+births_out <- data.frame(date_child = c("2020-03-14", "2020-08-22"),
+                         date_parent = c("1968-01-23", "2008-03-05"))
 ```
 
 # Introduction
 
-Most demographic datasets, including datasets used in the **dem** packages, divide events into groups defined by combinations of categories based on characteristics such as age, sex, region, and time. The cross-tabulation below, for example, classifes deaths by age group and period:
+Demographic datasets typically classify events using age groups and periods, like the table below:
 ```{r deaths-array, echo = FALSE}
 deaths_array <- matrix(c(98, 25, 11, 89, 29, 12, 93, 32, 16),
                        nrow = 3, 
@@ -38,34 +38,23 @@ deaths_array <- matrix(c(98, 25, 11, 89, 29, 12, 93, 32, 16),
                        dimnames = list(age = paste("Age", c("0", "1-4", "5-9")),
                                        year = c("2000-2005", "2005-2010", "2010-2015")))
 kable(deaths_array,
-      align = "c")
+      align = "c",
+      caption = "Counts of deaths by age group and year")
 ```
-The raw individual-level that these sorts of tables ultimately derive from typically refer to dates, rather than periods or age groups. The data below, for example refers to date of birth and date of death:
+The demographic datasets ultimately derive from individual-level data contains specific dates, rather than age groups, like the data below:
 ```{r deaths-list, echo = FALSE}
-deaths_list <- data.frame(name = c("Aadya",
-                                  "Diya", 
-                                  "Saanvi", 
-                                  "Amaira"),
-                          date_of_birth = c("1965-11-07", 
-                                            "1958-01-26", 
-                                            "2007-02-06", 
-                                            "1935-07-18"), 
-                          date_of_death = c("2020-02-01",
-                                            "2020-04-03", 
-                                            "2020-06-02", 
-                                            "2020-10-06"))
-kable(deaths_list)
+kable(deaths,
+      caption = "Individual-level data on births and deaths")
 ```
 
-Converting dates into periods and age groups is not always easy. Consider, for instance, the problem of measuring a person's age in months. If a person is born on 31 January 2001, on what date does that person become one month old? On 28 February 2001, 1 March 2001, or some other date? According to base *R*, the answer is 3 March 2001:
+Converting dates into age groups and periods requires care, and can sometimes be difficult. Consider, for instance, the problem of measuring a person's age in months. If a person is born on 31 January 2001, on what date does that person become one month old? On 28 February 2001, on 1 March 2001, or on some other date? According to base *R*, the answer is 3 March 2001:
 ```{r one-month}
 seq.Date(from = as.Date("2001-01-31"), 
          by = "month",
          length.out = 2)
 ```
 
-Package **demprep** contains a suite of functions for converting dates to age groups, periods, and other age-time categories needed by the **dem** packages. To help resolve cases where the answers are not obvious, such as when deciding when a person turns one month old, **demprep** uses some basic rules that try to reflect common practices in applied demography.
-
+Package **demprep** contains a suite of functions for converting dates to age groups, periods, and other age-time categories needed by the **dem** packages. These functions deal with details such as whether one-year periods start in January or July. It also follows a consistent approach to dealing with the fact that months and years have variable lengths. Under this approach, the entry into a new age group, or the start of a new period, depends on reaching a certain day of the month or month of the year, rather than on the number of days that have elapsed. As we discuss below, this approach reflects common practices in applied demography.
 
 # Lexis diagrams and age-time plans
 
@@ -75,7 +64,7 @@ dob <- as.Date(c("2001-07-22", "2006-03-14"))
 age <- c(19 + 4.5/12, 16 + 2.5/12)
 ```
 
-When reasoning about age and time, demographers often make use of Lexis diagrams. The figure below is an example of a Lexis diagram. The horizontal axis measures calendar time, and the vertical axis measures age. The black diagonal line with an *A* at the end is the "life line" for a person who is born on `r strftime(dob[1], "%e %B %Y")` and who dies on `r strftime(date[1], "%e %B %Y")`. Similarly, the line with the *B* at the end the life line for a person who is born on `r strftime(dob[2], "%e %B %Y")` and dies on `r strftime(date[2], "%e %B %Y")`. A life line in a traditional Lexis diagram always covers the same distance along the vertical axis as it does along the horizontal axis, because a person always gains one year of age for each year of calendar time.
+When reasoning about age and time, demographers often make use of Lexis diagrams. The figure below is an example of a Lexis diagram. The horizontal axis measures calendar time, and the vertical axis measures age. The black dots marked $A$ and $B$ represent deaths. The black diagonal lines are "life lines" for the people experiencing these deaths. The black dots on the horizontal axis represent births. A life line in a traditional Lexis diagram always covers the same distance along the vertical axis as it does along the horizontal axis, because a person always gains one year of age for each year of calendar time.
 
 ```{r lexis1, echo = FALSE, fig.width = 5, fig.height = 5}
 breaks_time <- seq.Date(from = as.Date("2000-01-01"), 
@@ -105,25 +94,21 @@ text(x = date,
      pos = 4)
 ```
 
-The light blue grid in the Lexis diagram above depicts an "age-time plan" [references]. An age-time plan is a set of rules for how exact times and ages (i.e. points in the Lexis plane) are assigned to discrete age and time categories. The age-time plan above divides divides age into 5-year age groups, and divides time into 5-year periods, with each period starting on 1 January. Deaths *A* and *B* both belong to age group "15-19" and period "2020-2025".
+The light blue grid in the Lexis diagram above depicts an "age-time plan" [references]. An age-time plan is a set of rules for how exact times and ages (represented by dots in the Lexis diagram) are assigned to discrete age and time categories. The age-time plan above divides divides age into 5-year age groups, and divides time into 5-year periods, with each period starting on 1 January. Deaths *A* and *B* both belong to age group "15-19" and period "2020-2025".
 
-Although age group and period are the most commonly-used age-time categories in demography, "cohorts" are also important to some applications. A cohort is a group of people who all experience a particular event during a given period. The event is normally birth, but it can be, for instance, marriage or joining an organization. The people who are born during the period 1950-1960, form a birth cohort, for example, and the people who marry during the year 2018 form a marriage cohort.
+Although age group and period are the most commonly-used age-time categories in demography, some applications also make use of cohorts. A cohort is a group of people who all experience a particular event during a given period. The event is normally birth, but it can be, for instance, marriage or joining an organization. The people who are born during the period 1950-1960, form a birth cohort, for example, and the people who marry during the year 2018 form a marriage cohort.
 
-On a Lexis diagram, the birth cohort for a person or event can be inferred by following the relevant life line back to the horizontal axis and seeing which period the birth falls within. In the Lexis diagram above, for instance, death *A* belongs to the birth cohort "2000-2005" and death *B* belongs to the birth cohort "2005-2010".
+On a Lexis diagram, the birth cohort for a person or event can be inferred by following the relevant life line back to the horizontal axis and noting which period the birth falls within. In the Lexis diagram above, for instance, death *A* belongs to the birth cohort "2000-2005" and death *B* belongs to the birth cohort "2005-2010".
 
-When working with cohorts, it is often helpful to add one additional age-time category: the Lexis triangle. Lexis triangles are defined by diagonal, vertical, and horizontal lines in a Lexis diagram. Death *A* in the diagram above belongs to an upper Lexis triangle, and death *B* belongs to a lower Lexis triangle.
+When working with cohorts, it is often helpful to add one additional age-time category: the Lexis triangle. Each combination of age group and period has two Lexis triangles. Death *A* in the diagram above belongs to an upper Lexis triangle, and death *B* belongs to a lower Lexis triangle.
 
-Knowing the age group and period of an event is not enough to fully determine the cohort for that event. If we did not have access to the Lexis diagram above, for instance, and all we knew about death *A* was that it belonged to age group "15-19" and period "2020-2025", then we would not be able to determine whether *A* belonged to the the cohort "2000-2005" or to the cohort "2005-2010". If, however, we also knew that *A* belonged to an upper Lexis triangle, then the ambiguity would be be removed: we could infer that *A* belonged to the cohort "2000-2005". Similarly, if we knew only that *B* belonged to age group "15-19", period "2020-2025", and a lower Lexis triangle, we would have enough information to conclude that *B* belongs to the cohort "2005-2010".
+Knowing the age group and period of an event is not enough to fully determine the cohort for that event. If we did not have access to the Lexis diagram above, for instance, and all we knew about death *A* was that it belonged to age group "15-19" and period "2020-2025", then we would not be able to determine whether *A* belonged to the the cohort "2000-2005" or to the cohort "2005-2010". If, however, we also knew that *A* belonged to an upper Lexis triangle, then the ambiguity would be be removed: we could infer that *A* belonged to the cohort "2000-2005". Similarly, if we knew that *B* belonged to the lower Lexis triangle within the square formed by age group "15-19" and period "2020-2025", we could conclude that *B* belongs to the cohort "2005-2010".
 
-Open age group. (and first cohort)
-
-Equal age-time lengths.
-
-
+Lexis triangles are only defined when age groups and periods have the same length, as in the diagram above, when both have lengths of 5 years. Age-time plans with unequal lengths are, in fact common, such as age-time plans with 5-year age groups and 1-year periods.
 
 # Overview of date conversion functions
 
-The date conversion functions in **demprep** are
+The date conversion functions in **demprep** are listed below:
 
 | Periods | Cohorts | Age groups | Lexis triangles |
 |:--------|:--------|:-----------|:----------------|
@@ -135,222 +120,207 @@ The date conversion functions in **demprep** are
 | `date_to_period_quarter` | `date_to_cohort_quarter` | `date_to_age_quarter` | `date_to_triangle_quarter` |
 | `date_to_period_month` | `date_to_cohort_month` | `date_to_age_month` | `date_to_triangle_month` |
 
-The functions have a common format: `date_to_<type>_<length>`. The choices for type are "period", "cohort", "age" (short for "age group"), and "triangle" (short for "Lexis triangle".) The choices for length are
+The last part of the name of each function refers to the length of the interval. These lenghts are defined as follows:
 
 - `year` All intervals have length equal to one year.
 - `multi` All intervals have lengths of $n$ years, where $n$ is typically 5 or 10.
 - `custom` Intervals are measured in whole years, but can have varying lengths.
 - `lifetab` A specialised form of `custom` often used for defining age group in life tables.
-- `births` A specialised form a `custom`, often used with births.
+- `births` A specialised form a `custom`, used for specifying ages of parents.
 - `quarter` Three-month intervals. Periods and cohorts begin on 1 January, 1 April, 1 July, and 1 October.
 - `month` One-month intervals.
 
-- special case: 
-- exception to equality: final age group, first cohort
-- Lexis triangle only definied 
-
-<!-- # Periods -->
-
-<!-- ## General issues -->
-
-<!-- - when to start -->
-<!-- - varying lengths (months, quarter, leap years) -->
-<!-- - ambiguity of labels -->
-
-<!-- - birthday starts at first second of day (not at time when born) -->
 
 
-<!-- ## Single-year periods -->
+# Periods
+
+## Measurement using dates attained, rather than days elapsed
+
+In everyday usage, the endpoints of a period depend on dates attained rather than days elapsed. The period from 1 January 2020 to 1 January 2021 and the period from 1 January 2021 to 1 January 2022 both count as one year, even though the first period has 366 days and the second has 365. Similarly, the period from 1 June to 1 July and the period from 1 July to 1 August both count as one month, even though the first period has 30 days and the second has 31.
+
+In the case of years, periods are defined by lining up the days of the month and the month of the year, and then calculating at the difference in years. For instance, 30 June 2014 and 30 June 2017 are suitably aligned, so we can conclude that the two dates are 3 years apart. 
+
+In the case of months, periods are defined by lining up days of the month and then calculating the difference month. For instance, 1 January 2000 and 1 April 2001 are suitably aligned, so we can conclude that the two dates are 15 months (or, equivalently, one year and three months) apart.
+
+Sometimes, however, it is not possible to align days and months. If we want to go one year forward from 29 February 2020, we there is no 29 February 2021 to align to. As noted above, a similar problem arises when trying to go one month forward from 31 January in any year. These sorts of problems arise for days of the month, such as the 31st, that occur in some months but not others.
+
+**demprep** sidesteps the problem of irregular days of the month by requiring that all periods start on the first of the month. For example, year-long periods can begin on any month of the year, but they must always begin on the first day of the month. A period beginning on 1 December is allowed, but a period beginning on 2 January is not. This restriction makes the practice of defining periods simpler and more predictable, and is consistent with what most producers of data do in any case.
 
 
+## Single-year periods
 
-<!-- ```{r} -->
-<!-- dth_per_yr <- deaths -->
-<!-- dth_per_yr$time_jan <- date_to_period_year(date = dth_per_yr$date) -->
-<!-- dth_per_yr -->
-<!-- ``` -->
-
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_period_year(date = dth_per_yr$date) -->
-<!-- ``` -->
-
-
-<!-- ```{r} -->
-<!-- dth_per_yr$time_jul <- date_to_period_year(date = dth_per_yr$date, -->
-<!--                                              month_start = "Jul") -->
-<!-- dth_per_yr -->
-<!-- ``` -->
-
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_period_year(date = dth_per_yr$date, -->
-<!--                          month_start = "Jul") -->
-<!-- ``` -->
-
-
-<!-- ```{r} -->
-<!-- dth_per_yr$time_jul_end <- date_to_period_year(date = dth_per_yr$date, -->
-<!--                                                month_start = "Jul", -->
-<!--                                                label_year_start = FALSE) -->
-<!-- dth_per_yr -->
-<!-- ``` -->
-
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_period_year(date = dth_per_yr$date, -->
-<!--                          month_start = "Jul", -->
-<!--                          label_year_start = FALSE) -->
-<!-- ``` -->
+We begin with function `date_to_period_year`, which assigns dates to 1-year periods. We illustrate this, and other functions, using the dataset introduced above:
+```{r deaths}
+deaths
+```
 
 
 
-<!-- ```{r} -->
-<!-- dth_per_yr$time_jan_end <- date_to_period_year(date = dth_per_yr$date, -->
-<!--                                                month_start = "Jan", -->
-<!--                                                label_year_start = FALSE) -->
-<!-- dth_per_yr -->
-<!-- ``` -->
+By default, `date_to_period_year` creates periods that start on 1 January. To demonstrate, using a dataset, introduced above, called `deaths`:
+```{r}
+deaths
+```
 
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_period_year(date = dth_per_yr$date, -->
-<!--                          month_start = "Jan", -->
-<!--                          label_year_start = FALSE) -->
-<!-- ``` -->
+We make a temporary copy of `deaths`, and then call `date_to_period_year` on the `date_death` column, using the default settings for `date_to_period_year`. By default, `date_to_period_year` constructs periods that start on 1 January:
+```{r}
+deaths_temp <- deaths
+deaths_temp$period_jan <- date_to_period_year(date = deaths_temp$date_death)
+deaths_temp
+```
+The two periods created by `date_to_period_year` are depicted below. 
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_year(date = deaths$date_death)
+```
+The first starts on 1 January 2019, and the second starts on 1 January 2020.
 
+To create periods that start on a date other than 1 January, we use the `month_start` argument:
+```{r}
+deaths_temp$period_jul <- date_to_period_year(date = deaths_temp$date_death,
+                                              month_start = "Jul")
+deaths_temp
+```
+The resulting periods start on 1 July 2019 and 1 July 2020:
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_year(date = deaths_temp$date_death,
+                         month_start = "Jul")
+```
 
-<!-- ## Multi-year periods, with equal lengths -->
+The first of these periods spans calendar years 2019 and 2020, and the second spans calendar years 2020 and 2021. By default, `date_to_period_year` labels single-year periods using the calendary year at the start of the period. The periods above are therefore labelled "2019" and "2020". Authorities follow a different convention, and refer to the periods above as the year to June 2020, and the year to June 2021, leading to the labels "2020" and "2021". To create labels based on the calendar year at the end of each period, rather than the calendar year at the begining, we set the `label_year_start` argument of `date_to_period_year` to `FALSE`:
+```{r}
+deaths_temp$period_jul_end <- date_to_period_year(date = deaths_temp$date_death,
+                                                  month_start = "Jul",
+                                                  label_year_start = FALSE)
+deaths_temp
+```
 
+The resulting periods are defined by exactly the same dates as the previous ones, but have different labels.
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_year(date = deaths_temp$date_death,
+                         month_start = "Jul",
+                         label_year_start = FALSE)
+```
 
-<!-- ```{r} -->
-<!-- dth_per_multi <- deaths -->
-<!-- dth_per_multi$time_5 <- date_to_period_multi(date = dth_per_multi$date) -->
-<!-- dth_per_multi -->
-<!-- ``` -->
+When one-year periods start on 1 January, the question of whether to label by the start year or the end year does not arise, since the period falls within a single calendar year.
 
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_period_multi(date = dth_per_multi$date) -->
-<!-- ``` -->
+`date_to_period_year` creates enough periods so that every element of the `date` argument can be assigned to a period. As the following example demonstrates, `date_to_period_year` also, by default, fills in any gaps between the first and last period, even if the resulting periods do not contain any elements from `date`. We first create a dataset with no deaths during the year 2018.
+```{r}
+deaths_temp <- rbind(deaths,
+                     data.frame(name = "Ding", 
+                                date_birth = "2017-03-18",
+                                date_death = "2017-07-15"))
+deaths_temp$period <- date_to_period_year(date = deaths_temp$date_death)
+deaths_temp
+```
 
+The `period` column is a factor. Even there are no deaths during 2018, the levels of the factor include 2018:
+```{r}
+levels(deaths_temp$period)
+```
 
-<!-- ```{r} -->
-<!-- dth_per_multi$time_5_jul <- date_to_period_multi(date = dth_per_multi$date, -->
-<!--                                                  month_start = "Jul") -->
-<!-- dth_per_multi -->
-<!-- ``` -->
+Tabulation functions such as `table` make use of the levels attribute of factors, and return zero counts for factors that are not used.
+```{r}
+table(deaths_temp$period)
+```
 
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_period_multi(date = dth_per_multi$date, -->
-<!--                           month_start = "Jul") -->
-<!-- ``` -->
+In most cases, keeping track of intermediate years, and including them in tabulations even when no events occur, is exactly what we want. If we are tracking annual deaths, we want to know that there were no deaths in 2018.
 
+In some cases, however, we only want to keep track of periods with non-zero counts. In these cases, we can set the `as_factor` argument to `FALSE`:
+```{r}
+deaths_temp$period_nonfac <- date_to_period_year(date = deaths_temp$date_death,
+                                                 as_factor = FALSE)
+deaths_temp
+```
 
-
-<!-- ```{r} -->
-<!-- dth_per_multi$time_10 <- date_to_period_multi(date = dth_per_multi$date, -->
-<!--                                               width = 10) -->
-<!-- dth_per_multi -->
-<!-- ``` -->
-
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_period_multi(date = dth_per_multi$date, -->
-<!--                           width = 10) -->
-<!-- ``` -->
-
-
-
-
-
-<!-- ```{r} -->
-<!-- dth_per_multi$time_01 <- date_to_period_multi(date = dth_per_multi$date, -->
-<!--                                                origin = 2001) -->
-<!-- dth_per_multi -->
-<!-- ``` -->
-
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_period_multi(date = dth_per_multi$date, -->
-<!--                           origin = 2001) -->
-<!-- ``` -->
-
-
-<!-- ## Multi-year periods, with varying lengths -->
-
-
-<!-- ```{r} -->
-<!-- dth_per_custom <- deaths -->
-<!-- dth_per_custom$time <- date_to_period_custom(date = dth_per_custom$date, -->
-<!--                                              breaks = c("2016-01-01", -->
-<!--                                                         "2020-01-01", -->
-<!--                                                         "2025-01-01")) -->
-<!-- dth_per_custom -->
-<!-- ``` -->
-
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_period_custom(date = dth_per_custom$date, -->
-<!--                            breaks = c("2016-01-01", -->
-<!--                                       "2020-01-01",  -->
-<!--                                       "2025-01-01")) -->
-<!-- ``` -->
+Tabulations of the resulting output will omit the periods with zero counts:
+```{r}
+table(deaths_temp$period_nonfac)
+```
 
 
-<!-- ```{r} -->
-<!-- dth_per_custom <- deaths -->
-<!-- dth_per_custom$jan_1_5 <- date_to_period_custom(date = dth_per_custom$date, -->
-<!--                                                 breaks = c("2019-01-01", -->
-<!--                                                            "2020-01-01", -->
-<!--                                                            "2025-01-01")) -->
-<!-- dth_per_custom -->
-<!-- ``` -->
+## Multi-year periods, with equal lengths
 
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_period_custom(date = dth_per_custom$date, -->
-<!--                           breaks = c("2019-01-01",  -->
-<!--                                      "2020-01-01", -->
-<!--                                      "2025-01-01")) -->
-<!-- ``` -->
+```{r}
+deaths_temp <- deaths
+deaths_temp$period_5 <- date_to_period_multi(date = deaths_temp$date_death)
+deaths_temp
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_multi(date = deaths_temp$date_death)
+```
 
 
-<!-- ```{r} -->
-<!-- dth_per_custom <- deaths -->
-<!-- dth_per_custom$time_jul <- date_to_period_custom(date = dth_per_custom$date, -->
-<!--                                                  breaks = c("2019-07-01", -->
-<!--                                                             "2020-07-01", -->
-<!--                                                             "2025-07-01")) -->
-<!-- dth_per_custom -->
-<!-- ``` -->
+```{r}
+deaths_temp$period_10 <- date_to_period_multi(date = deaths_temp$date_death,
+                                              width = 10)
+deaths_temp
+```
 
-<!-- ```{r, echo = FALSE, fig.height = 1.5} -->
-<!-- plot_date_to_period_custom(date = dth_per_custom$date, -->
-<!--                            breaks = c("2019-07-01", -->
-<!--                                       "2020-07-01",  -->
-<!--                                       "2025-07-01")) -->
-<!-- ``` -->
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_multi(date = deaths_temp$date_death,
+                          width = 10)
+```
 
 
 
-<!-- ## Quarter-length periods -->
+```{r}
+deaths_temp$period_01 <- date_to_period_multi(date = deaths_temp$date_death,
+                                              origin = 2001)
+deaths_temp
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_multi(date = deaths_temp$date_death,
+                          origin = 2001)
+```
 
 
-<!-- ```{r} -->
-<!-- dth_per_quarter <- deaths -->
-<!-- dth_per_quarter$time <- date_to_period_quarter(dth_per_custom$date) -->
-<!-- dth_per_quarter -->
-<!-- ``` -->
-
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_period_quarter(dth_per_quarter$date) -->
-<!-- ``` -->
+## Multi-year periods, with varying lengths
 
 
+```{r}
+deaths_temp <- deaths
+deaths_temp$time <- date_to_period_custom(date = deaths_temp$date_death,
+                                          breaks = c("2018-01-01",
+                                                     "2020-01-01",
+                                                     "2025-01-01"))
+deaths_temp
+```
 
-<!-- ## Month-length periods -->
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_custom(date = deaths_temp$date_death,
+                           breaks = c("2018-01-01",
+                                      "2020-01-01",
+                                      "2025-01-01"))
+```
 
-<!-- ```{r} -->
-<!-- dth_per_month <- deaths -->
-<!-- dth_per_month$time <- date_to_period_month(dth_per_custom$date) -->
-<!-- dth_per_month -->
-<!-- ``` -->
 
-<!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_period_month(dth_per_month$date[1:2]) -->
-<!-- ``` -->
+## Quarter-length periods
+
+
+```{r}
+dth_per_quarter <- deaths
+dth_per_quarter$time <- date_to_period_quarter(deaths_temp$date_death)
+dth_per_quarter
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_quarter(dth_per_quarter$date_death)
+```
+
+
+
+## Month-length periods
+
+```{r}
+dth_per_month <- deaths
+dth_per_month$time <- date_to_period_month(deaths_temp$date_death)
+dth_per_month
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_period_month(dth_per_month$date_death[1:2])
+```
 
 
 <!-- # Cohorts -->
@@ -368,36 +338,36 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 <!-- ```{r} -->
 <!-- dth_per_yr <- deaths -->
-<!-- dth_per_yr$time_closed <- date_to_cohort_year(date = dth_per_yr$date) -->
+<!-- dth_per_yr$time_closed <- date_to_cohort_year(date = dth_per_yr$date_death) -->
 <!-- dth_per_yr -->
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_cohort_year(date = dth_per_yr$date) -->
+<!-- plot_date_to_cohort_year(date = dth_per_yr$date_death) -->
 <!-- ``` -->
 
 
 <!-- ```{r} -->
-<!-- dth_per_yr$time_open <- date_to_cohort_year(date = dth_per_yr$date, -->
+<!-- dth_per_yr$time_open <- date_to_cohort_year(date = dth_per_yr$date_death, -->
 <!--                                             open_first = TRUE) -->
 <!-- dth_per_yr -->
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_cohort_year(date = dth_per_yr$date, -->
+<!-- plot_date_to_cohort_year(date = dth_per_yr$date_death, -->
 <!--                          open_first = TRUE) -->
 <!-- ``` -->
 
 
 
 <!-- ```{r} -->
-<!-- dth_per_yr$time_min <- date_to_cohort_year(date = dth_per_yr$date, -->
+<!-- dth_per_yr$time_min <- date_to_cohort_year(date = dth_per_yr$date_death, -->
 <!--                                             break_min = "2020-01-01") -->
 <!-- dth_per_yr -->
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 1.75} -->
-<!-- plot_date_to_cohort_year(date = dth_per_yr$date, -->
+<!-- plot_date_to_cohort_year(date = dth_per_yr$date_death, -->
 <!--                          break_min = "2020-01-01") -->
 <!-- ``` -->
 
@@ -460,14 +430,14 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 <!-- ```{r} -->
 <!-- dth_age_yr <- deaths -->
-<!-- dth_age_yr$age_10 <- date_to_age_year(date = dth_age_yr$date, -->
+<!-- dth_age_yr$age_10 <- date_to_age_year(date = dth_age_yr$date_death, -->
 <!--                                    dob = dth_age_yr$dob, -->
 <!--                                    break_max = 10) -->
 <!-- dth_age_yr -->
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
-<!-- plot_date_to_age_year(date = dth_age_yr$date, -->
+<!-- plot_date_to_age_year(date = dth_age_yr$date_death, -->
 <!--                       dob = dth_age_yr$dob, -->
 <!--                       break_max = 10) -->
 <!-- ``` -->
@@ -475,14 +445,14 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 <!-- Change `break_max` -->
 
 <!-- ```{r} -->
-<!-- dth_age_yr$age_6 <- date_to_age_year(date = dth_age_yr$date, -->
+<!-- dth_age_yr$age_6 <- date_to_age_year(date = dth_age_yr$date_death, -->
 <!--                                      dob = dth_age_yr$dob, -->
 <!--                                      break_max = 6) -->
 <!-- dth_age_yr -->
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_age_year(date = dth_age_yr$date, -->
+<!-- plot_date_to_age_year(date = dth_age_yr$date_death, -->
 <!--                       dob = dth_age_yr$dob, -->
 <!--                       break_max = 6) -->
 <!-- ``` -->
@@ -493,14 +463,14 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 <!-- ```{r} -->
 <!-- dth_age_multi <- deaths -->
-<!-- dth_age_multi$age <- date_to_age_multi(date = dth_age_multi$date, -->
+<!-- dth_age_multi$age <- date_to_age_multi(date = dth_age_multi$date_death, -->
 <!--                                        dob = dth_age_multi$dob, -->
 <!--                                        break_max = 10) -->
 <!-- dth_age_multi -->
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_age_multi(date = dth_age_multi$date, -->
+<!-- plot_date_to_age_multi(date = dth_age_multi$date_death, -->
 <!--                        dob = dth_age_multi$dob, -->
 <!--                        break_max = 10) -->
 <!-- ``` -->
@@ -511,7 +481,7 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 <!-- ```{r} -->
 <!-- dth_age_custom <- deaths -->
-<!-- dth_age_custom$age <- date_to_age_custom(date = dth_age_custom$date, -->
+<!-- dth_age_custom$age <- date_to_age_custom(date = dth_age_custom$date_death, -->
 <!--                                          dob = dth_age_custom$dob, -->
 <!--                                          breaks = c(0, 2, 5, 8, 14), -->
 <!--                                          open_last = FALSE) -->
@@ -519,7 +489,7 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_age_custom(date = dth_age_custom$date, -->
+<!-- plot_date_to_age_custom(date = dth_age_custom$date_death, -->
 <!--                         dob = dth_age_custom$dob, -->
 <!--                         breaks = c(0, 2, 5, 8, 14), -->
 <!--                         open_last = FALSE) -->
@@ -532,14 +502,14 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 <!-- ```{r} -->
 <!-- dth_age_lifetab <- deaths -->
-<!-- dth_age_lifetab$age <- date_to_age_lifetab(date = dth_age_lifetab$date, -->
+<!-- dth_age_lifetab$age <- date_to_age_lifetab(date = dth_age_lifetab$date_death, -->
 <!--                                          dob = dth_age_lifetab$dob, -->
 <!--                                          break_max = 10) -->
 <!-- dth_age_lifetab -->
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_age_lifetab(date = dth_age_lifetab$date, -->
+<!-- plot_date_to_age_lifetab(date = dth_age_lifetab$date_death, -->
 <!--                          dob = dth_age_lifetab$dob, -->
 <!--                          break_max = 10) -->
 <!-- ``` -->
@@ -548,20 +518,20 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 <!-- ```{r} -->
 <!-- bth_in_age <- births_in -->
-<!-- bth_in_age$age <- date_to_age_births(date = bth_in_age$date, -->
+<!-- bth_in_age$age <- date_to_age_births(date = bth_in_age$date_death, -->
 <!--                                      dob = bth_in_age$dob) -->
 <!-- bth_in_age -->
 <!-- ``` -->
 
 
 <!-- ```{r, fig.width = 5, fig.height = 6} -->
-<!-- plot_date_to_age_births(date = bth_in_age$date, -->
+<!-- plot_date_to_age_births(date = bth_in_age$date_death, -->
 <!--                         dob = bth_in_age$dob) -->
 <!-- ``` -->
 
 <!-- ```{r} -->
 <!-- bth_out_age <- births_out -->
-<!-- bth_out_age$age <- date_to_age_births(date = bth_out_age$date, -->
+<!-- bth_out_age$age <- date_to_age_births(date = bth_out_age$date_death, -->
 <!--                                       dob = bth_out_age$dob, -->
 <!--                                       break_min = 10, -->
 <!--                                       break_max = 55) -->
@@ -570,7 +540,7 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 
 <!-- ```{r, fig.width = 8, fig.height = 6} -->
-<!-- plot_date_to_age_births(date = bth_out_age$date, -->
+<!-- plot_date_to_age_births(date = bth_out_age$date_death, -->
 <!--                         dob = bth_out_age$dob, -->
 <!--                         break_min = 10, -->
 <!--                         break_max = 55) -->
@@ -578,7 +548,7 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 
 <!-- ```{r} -->
-<!-- bth_out_age$age_recoded <- date_to_age_births(date = bth_out_age$date, -->
+<!-- bth_out_age$age_recoded <- date_to_age_births(date = bth_out_age$date_death, -->
 <!--                                               dob = bth_out_age$dob, -->
 <!--                                               recode_up = TRUE, -->
 <!--                                               recode_down = TRUE) -->
@@ -587,7 +557,7 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 
 <!-- ```{r, fig.width = 8, fig.height = 6} -->
-<!-- plot_date_to_age_births(date = bth_out_age$date, -->
+<!-- plot_date_to_age_births(date = bth_out_age$date_death, -->
 <!--                         dob = bth_out_age$dob, -->
 <!--                         recode_up = TRUE, -->
 <!--                         recode_down = TRUE) -->
@@ -599,14 +569,14 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 <!-- ```{r} -->
 <!-- dth_age_month <- deaths -->
-<!-- dth_age_month$age <- date_to_age_month(date = dth_age_month$date, -->
+<!-- dth_age_month$age <- date_to_age_month(date = dth_age_month$date_death, -->
 <!--                                        dob = dth_age_month$dob) -->
 <!-- dth_age_month -->
 <!-- ``` -->
 
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_age_month(date = dth_age_month$date[3], -->
+<!-- plot_date_to_age_month(date = dth_age_month$date_death[3], -->
 <!--                        dob = dth_age_month$dob[3], -->
 <!--                        break_max = 20) -->
 <!-- ``` -->
@@ -617,14 +587,14 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 <!-- ```{r} -->
 <!-- dth_age_quarter <- deaths -->
-<!-- dth_age_quarter$age <- date_to_age_quarter(date = dth_age_quarter$date, -->
+<!-- dth_age_quarter$age <- date_to_age_quarter(date = dth_age_quarter$date_death, -->
 <!--                                            dob = dth_age_quarter$dob) -->
 <!-- dth_age_quarter -->
 <!-- ``` -->
 
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_age_quarter(date = dth_age_quarter$date[3], -->
+<!-- plot_date_to_age_quarter(date = dth_age_quarter$date_death[3], -->
 <!--                        dob = dth_age_quarter$dob[3], -->
 <!--                        break_max = 4) -->
 <!-- ``` -->
@@ -654,14 +624,14 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 <!-- ```{r} -->
 <!-- dth_tri_yr <- deaths -->
-<!-- dth_tri_yr$tri_jan <- date_to_triangle_year(date = dth_age_yr$date, -->
+<!-- dth_tri_yr$tri_jan <- date_to_triangle_year(date = dth_age_yr$date_death, -->
 <!--                                             dob = dth_age_yr$dob, -->
 <!--                                             break_max = 10) -->
 <!-- dth_tri_yr -->
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
-<!-- plot_date_to_triangle_year(date = dth_tri_yr$date, -->
+<!-- plot_date_to_triangle_year(date = dth_tri_yr$date_death, -->
 <!--                            dob = dth_tri_yr$dob, -->
 <!--                            break_max = 10) -->
 <!-- ``` -->
@@ -669,7 +639,7 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 <!-- Change from 1 Jan to 1 Jul -->
 
 <!-- ```{r} -->
-<!-- dth_tri_yr$tri_jul <- date_to_triangle_year(date = dth_age_yr$date, -->
+<!-- dth_tri_yr$tri_jul <- date_to_triangle_year(date = dth_age_yr$date_death, -->
 <!--                                             dob = dth_age_yr$dob, -->
 <!--                                             month_start = "Jul", -->
 <!--                                             break_max = 10) -->
@@ -677,7 +647,7 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
-<!-- plot_date_to_triangle_year(date = dth_tri_yr$date, -->
+<!-- plot_date_to_triangle_year(date = dth_tri_yr$date_death, -->
 <!--                            dob = dth_tri_yr$dob, -->
 <!--                            month_start = "Jul", -->
 <!--                            break_max = 10) -->
@@ -686,14 +656,14 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 <!-- Change `break_max` -->
 
 <!-- ```{r} -->
-<!-- dth_tri_yr$tri_6 <- date_to_triangle_year(date = dth_age_yr$date, -->
+<!-- dth_tri_yr$tri_6 <- date_to_triangle_year(date = dth_age_yr$date_death, -->
 <!--                                           dob = dth_age_yr$dob, -->
 <!--                                           break_max = 6) -->
 <!-- dth_tri_yr -->
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_triangle_year(date = dth_tri_yr$date, -->
+<!-- plot_date_to_triangle_year(date = dth_tri_yr$date_death, -->
 <!--                            dob = dth_tri_yr$dob, -->
 <!--                            break_max = 6) -->
 <!-- ``` -->
@@ -704,14 +674,14 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 <!-- ```{r} -->
 <!-- dth_tri_multi <- deaths -->
-<!-- dth_tri_multi$tri_5 <- date_to_triangle_multi(date = dth_age_multi$date, -->
+<!-- dth_tri_multi$tri_5 <- date_to_triangle_multi(date = dth_age_multi$date_death, -->
 <!--                                               dob = dth_age_multi$dob, -->
 <!--                                               break_max = 30) -->
 <!-- dth_tri_multi -->
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
-<!-- plot_date_to_triangle_multi(date = dth_tri_multi$date, -->
+<!-- plot_date_to_triangle_multi(date = dth_tri_multi$date_death, -->
 <!--                            dob = dth_tri_multi$dob, -->
 <!--                            break_max = 30) -->
 <!-- ``` -->
@@ -721,7 +691,7 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 
 <!-- ```{r} -->
-<!-- dth_tri_multi$tri_10 <- date_to_triangle_multi(date = dth_age_multi$date, -->
+<!-- dth_tri_multi$tri_10 <- date_to_triangle_multi(date = dth_age_multi$date_death, -->
 <!--                                                dob = dth_age_multi$dob, -->
 <!--                                                width = 10, -->
 <!--                                                break_max = 30) -->
@@ -729,7 +699,7 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
-<!-- plot_date_to_triangle_multi(date = dth_tri_multi$date, -->
+<!-- plot_date_to_triangle_multi(date = dth_tri_multi$date_death, -->
 <!--                             dob = dth_tri_multi$dob, -->
 <!--                             width = 10, -->
 <!--                             break_max = 30) -->
@@ -743,13 +713,13 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 <!-- ```{r} -->
 <!-- births_in_tri <- births_in -->
-<!-- births_in_tri$tri <- date_to_triangle_births(date = births_in_tri$date, -->
+<!-- births_in_tri$tri <- date_to_triangle_births(date = births_in_tri$date_death, -->
 <!--                                              dob = births_in_tri$dob) -->
 <!-- births_in_tri -->
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
-<!-- plot_date_to_triangle_births(date = births_in_tri$date, -->
+<!-- plot_date_to_triangle_births(date = births_in_tri$date_death, -->
 <!--                              dob = births_in_tri$dob) -->
 <!-- ``` -->
 
@@ -761,14 +731,14 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 <!-- ```{r} -->
 <!-- dth_tri_qu <- deaths -->
-<!-- dth_tri_qu$tri <- date_to_triangle_quarter(date = dth_tri_qu$date, -->
+<!-- dth_tri_qu$tri <- date_to_triangle_quarter(date = dth_tri_qu$date_death, -->
 <!--                                            dob = dth_tri_qu$dob, -->
 <!--                                            break_max = 24) -->
 <!-- dth_tri_qu -->
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
-<!-- plot_date_to_triangle_quarter(date = dth_tri_qu$date, -->
+<!-- plot_date_to_triangle_quarter(date = dth_tri_qu$date_death, -->
 <!--                               dob = dth_tri_qu$dob, -->
 <!--                               break_max = 24) -->
 <!-- ``` -->
@@ -779,14 +749,14 @@ The functions have a common format: `date_to_<type>_<length>`. The choices for t
 
 <!-- ```{r} -->
 <!-- dth_tri_month <- deaths -->
-<!-- dth_tri_month$tri <- date_to_triangle_month(date = dth_tri_month$date, -->
+<!-- dth_tri_month$tri <- date_to_triangle_month(date = dth_tri_month$date_death, -->
 <!--                                             dob = dth_tri_month$dob) -->
 <!-- dth_tri_month -->
 <!-- ``` -->
 
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_triangle_month(date = dth_tri_month$date[3], -->
+<!-- plot_date_to_triangle_month(date = dth_tri_month$date_death[3], -->
 <!--                             dob = dth_tri_month$dob[3], -->
 <!--                             break_max = 20) -->
 <!-- ``` -->
