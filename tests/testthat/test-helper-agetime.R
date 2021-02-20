@@ -1,5 +1,5 @@
 
-context("helper-misc")
+context("helper-agetime")
 
 ## add_months ----------------------------------------------------------------
 
@@ -8,9 +8,9 @@ test_that("'add_months' gives correct answer with valid inputs", {
     expect_identical(add_months(date = as.Date("2000-01-31"), n = 0L),
                      as.Date("2000-01-31"))
     expect_identical(add_months(date = as.Date("2000-01-31"), n = 1L),
-                     as.Date("2000-02-29"))
+                     as.Date("2000-03-01"))
     expect_identical(add_months(date = as.Date("2000-01-31"), n = 13L),
-                     as.Date("2001-02-28"))
+                     as.Date("2001-03-01"))
     expect_identical(add_months(date = as.Date("2000-03-31"), n = -1L),
                      as.Date("2000-02-29"))
     expect_identical(add_months(date = as.Date("2000-03-31"), n = -49L),
@@ -18,7 +18,7 @@ test_that("'add_months' gives correct answer with valid inputs", {
     expect_identical(add_months(date = as.Date("2000-03-31"), n = -50L),
                      as.Date("1996-01-31"))
     expect_identical(add_months(date = as.Date("2000-10-31"), n = 1L),
-                     as.Date("2000-11-30"))
+                     as.Date("2000-12-01"))
     expect_identical(add_months(date = as.Date("2000-11-30"), n = 1L),
                      as.Date("2000-12-30"))
     expect_identical(add_months(date = as.Date("2000-12-30"), n = 1L),
@@ -26,11 +26,18 @@ test_that("'add_months' gives correct answer with valid inputs", {
     expect_identical(add_months(date = as.Date("2002-04-30"), n = 19L),
                      as.Date("2003-11-30"))
     expect_identical(add_months(date = as.Date("2002-03-31"), n = 20L),
-                     as.Date("2003-11-30"))
+                     as.Date("2003-12-01"))
     expect_identical(add_months(date = as.Date(character()), n = 20L),
                      as.Date(character()))
-    expect_identical(add_months(date = as.Date(c("1900-03-01", "2000-03-01")), n = 2L),
+    expect_identical(add_months(date = as.Date(c("1900-03-01", "2000-03-01")),
+                                n = c(2L, 2L)),
                      as.Date(c("1900-05-01", "2000-05-01")))
+    expect_identical(add_months(date = as.Date(c(NA, "2000-03-01")),
+                                n = c(2L, 2L)),
+                     as.Date(c(NA, "2000-05-01")))
+    expect_identical(add_months(date = as.Date(c("1900-03-01", "2000-03-01")),
+                                n = c(2L, NA)),
+                     as.Date(c("1900-05-01", NA)))
 })
 
 
@@ -41,17 +48,21 @@ test_that("'add_quarters' gives correct answer with valid inputs", {
     expect_identical(add_quarters(date = as.Date("2000-01-31"), n = 0L),
                      as.Date("2000-01-31"))
     expect_identical(add_quarters(date = as.Date("2000-01-31"), n = 1L),
-                     as.Date("2000-04-30"))
+                     as.Date("2000-05-01"))
     expect_identical(add_quarters(date = as.Date("2000-02-29"), n = 1L),
                      as.Date("2000-05-29"))
     expect_identical(add_quarters(date = as.Date("2003-11-30"), n = 1L),
-                     as.Date("2004-02-29"))
+                     as.Date("2004-03-01"))
     expect_identical(add_quarters(date = as.Date("2003-11-30"), n = 5L),
-                     as.Date("2005-02-28"))
+                     as.Date("2005-03-01"))
     expect_identical(add_quarters(date = as.Date("2003-11-30"), n = -5L),
                      as.Date("2002-08-30"))
     expect_identical(add_quarters(date = as.Date(character()), n = -5L),
                      as.Date(character()))
+    expect_identical(add_quarters(date = as.Date(NA), n = -5L),
+                     as.Date(NA))
+    expect_identical(add_quarters(date = as.Date("2003-11-30"), n = NA_integer_),
+                     as.Date(NA))
 })
 
 
@@ -62,7 +73,7 @@ test_that("'add_years' gives correct answer with valid inputs", {
     expect_identical(add_years(date = as.Date("2000-01-31"), n = 0L),
                      as.Date("2000-01-31"))
     expect_identical(add_years(date = as.Date(c("2000-01-31", "2000-02-29")), n = 1L),
-                     as.Date(c("2001-01-31", "2001-02-28")))
+                     as.Date(c("2001-01-31", "2001-03-01")))
     expect_identical(add_years(date = as.Date(c("2000-01-31", "2000-02-29")), n = -1L),
                      as.Date(c("1999-01-31", "1999-02-28")))
     expect_identical(add_years(date = as.Date(character()), n = -1L),
@@ -73,6 +84,10 @@ test_that("'add_years' gives correct answer with valid inputs", {
                      as.Date("2012-02-29"))
     expect_identical(add_years(date = as.Date("2000-02-28"), n = 12L),
                      as.Date("2012-02-28"))
+    expect_identical(add_years(date = as.Date(NA), n = 12L),
+                     as.Date(NA))
+    expect_identical(add_years(date = as.Date("2000-02-28"), n = NA_integer_),
+                     as.Date(NA))
 })
 
 
@@ -223,97 +238,6 @@ test_that("'as_ymd' gives correct answer with valid inputs", {
 })
 
 
-## coord_lifeline -------------------------------------------------------------
-
-test_that("'coord_lifeline' gives correct answer with valid inputs", {
-    coord_lifeline <- demprep:::coord_lifeline
-    ## single boundary, no upward shift
-    ans_obtained <- coord_lifeline(date1 = as.Date("2020-02-15"),
-                                   dob1 = as.Date("2020-01-15"))
-    ans_expected <- list(x0 = as.Date(c("2020-01-15",
-                                        "2020-02-01",
-                                        "2020-02-01")),
-                         y0 = c(0L, 17L, 17L),
-                         x1 = as.Date(c("2020-02-01",
-                                        "2020-02-01",
-                                        "2020-02-15")),
-                         y1 = c(17L, 17L, 31L))
-    expect_identical(ans_obtained, ans_expected)
-    ## two boundaries, one upward shift
-    ans_obtained <- coord_lifeline(date1 = as.Date("2020-03-15"),
-                                   dob1 = as.Date("2020-01-15"))
-    ans_expected <- list(x0 = as.Date(c("2020-01-15",
-                                        "2020-02-01",
-                                        "2020-02-01",
-                                        "2020-03-01",
-                                        "2020-03-01")),
-                         y0 = c(0L,
-                                17L,
-                                17L,
-                                46L,
-                                48L),
-                         x1 = as.Date(c("2020-02-01",
-                                        "2020-02-01",
-                                        "2020-03-01",
-                                        "2020-03-01",
-                                        "2020-03-15")),
-                         y1 = c(17L,
-                                17L,
-                                46L,
-                                48L,
-                                62L))
-    expect_identical(ans_obtained, ans_expected)
-    ## start on first day of month
-    ans_obtained <- coord_lifeline(date1 = as.Date("2010-03-15"),
-                                   dob1 = as.Date("2010-01-01"))
-    ans_expected <- list(x0 = as.Date(c("2010-01-01",
-                                        "2010-02-01",
-                                        "2010-02-01",
-                                        "2010-03-01",
-                                        "2010-03-01")),
-                         y0 = c(0L,
-                                31L,
-                                31L,
-                                59L,
-                                62L),
-                         x1 = as.Date(c("2010-02-01",
-                                        "2010-02-01",
-                                        "2010-03-01",
-                                        "2010-03-01",
-                                        "2010-03-15")),
-                         y1 = c(31L,
-                                31L,
-                                59L,
-                                62L,
-                                76L))
-    expect_identical(ans_obtained, ans_expected)
-    ## start on last day of month
-    ans_obtained <- coord_lifeline(date1 = as.Date("2010-03-15"),
-                                   dob1 = as.Date("2010-01-31"))
-    ans_expected <- list(x0 = as.Date(c("2010-01-31",
-                                        "2010-02-01",
-                                        "2010-02-01",
-                                        "2010-03-01",
-                                        "2010-03-01")),
-                         y0 = c(0L,
-                                1L,
-                                1L,
-                                29L,
-                                32L),
-                         x1 = as.Date(c("2010-02-01",
-                                        "2010-02-01",
-                                        "2010-03-01",
-                                        "2010-03-01",
-                                        "2010-03-15")),
-                         y1 = c(1L,
-                                1L,
-                                29L,
-                                32L,
-                                46L))
-    expect_identical(ans_obtained, ans_expected)
-})
-
-
 ## date_ymd_ge ----------------------------------------------------------------
 
 test_that("'date_ymd_ge' gives correct answer with valid inputs", {
@@ -330,6 +254,7 @@ test_that("'date_ymd_ge' gives correct answer with valid inputs", {
     expect_false(date_ymd_ge(y1 = 2000L, m1 = 7L, d1 = 1L,
                              y2 = 2000L, m2 = 8L, d2 = 1L))
 })
+
 
 ## diff_completed_year -------------------------------------------------------
 
@@ -434,7 +359,6 @@ test_that("'is_leap_year' gives correct answer with valid input", {
     expect_identical(is_leap_year(integer()),
                      logical())                                  
 })    
-                                  
 
 
 ## is_lower_within_month ------------------------------------------------------
@@ -811,55 +735,6 @@ test_that("'make_breaks_integer_year' gives correct answer when break_max is NUL
                      seq.int(from = 0L, by = 5L, to = 80L))
 })
 
-## make_fill ------------------------------------------------------------------
-
-test_that("'make_fill' gives correct answer with valid inputs", {
-    X <- 1:5
-    INDEX <- data.frame(a = factor(5:1))
-    expect_identical(make_fill(fill = 0L,
-                               X = X,
-                               INDEX = INDEX),
-                     0L)
-    expect_identical(make_fill(fill = 0,
-                               X = X,
-                               INDEX = INDEX),
-                     0L)
-    expect_identical(make_fill(fill = 999,
-                               X = X,
-                               INDEX = INDEX),
-                     999L)
-    expect_identical(make_fill(fill = NA,
-                               X = X,
-                               INDEX = INDEX),
-                     NA_integer_)
-    expect_identical(make_fill(fill = NULL,
-                               X = X,
-                               INDEX = INDEX),
-                     0L)
-    expect_identical(make_fill(fill = NULL,
-                               X = -X,
-                               INDEX = INDEX),
-                     NA_integer_)
-    expect_identical(make_fill(fill = NULL,
-                               X = rep(0.1, 5),
-                               INDEX = INDEX),
-                     0L)
-})
-
-test_that("'make_fill' gives correct error with invalid inputs", {
-    X <- c(0.1, 0.3, 0.2)
-    INDEX <- data.frame(a = factor(c(1, 2, 1)), b = factor(c(10, 10, 11)))
-    expect_error(make_fill(fill = NULL,
-                           X = X,
-                           INDEX = INDEX),
-                 paste("some combinations of the cross-classifying variables are not included",
-                       "in the data, but no value for 'fill' has been supplied"))
-    expect_error(make_fill(fill = "a",
-                           X = X,
-                           INDEX = INDEX),
-                 "invalid value for 'fill'")
-})
-
 
 ## n_day_month ----------------------------------------------------------------
 
@@ -874,7 +749,7 @@ test_that("'n_day_month' gives correct answer with valid inputs", {
     expect_identical(n_day_month(as.Date("2000-06-01")), 30L)
     expect_identical(n_day_month(as.Date("2000-07-01")), 31L)
     expect_identical(n_day_month(as.Date("2000-08-01")), 31L)
-    expect_identical(n_day_month(as.Date("2000-09-01")), 31L)
+    expect_identical(n_day_month(as.Date("2000-09-01")), 30L)
     expect_identical(n_day_month(as.Date("2000-10-01")), 31L)
     expect_identical(n_day_month(as.Date("2000-11-01")), 30L)
     expect_identical(n_day_month(as.Date("2000-12-01")), 31L)

@@ -1,34 +1,51 @@
 
+## Functions to help with age-time calculations that end users do not use directly.
+
 ## HAS_TESTS
-## Add 'n' months to 'date'. Where necessary, 'add_month'
-## rolls back to the end of the previous month, to preserve the
-## relationship 'month_new - month_old = n'.
+## Find the first date 'd' such that
+##   (i) if 'n' is negative - a person who is born on 'd'
+##       is 'n' months old on date 'date', or
+##   (ii) if 'n' is positive - a person who is born
+##       on date 'date' is 'n' months old on date 'd'.
 ## 'date' should have class "Date" and 'n'
-## should have class "integer"
+## should have class "integer".
+## 'date' and 'n' can both have NAs.
 add_months <- function(date, n) {
     date_ymd <- as_ymd(date)
     n_month_total <- 12L * (date_ymd$y - 1L) + (date_ymd$m - 1L) + n ## 0-based
-    year_ans <- (n_month_total %/% 12L) + 1L ## 1-based
-    month_ans <- (n_month_total %% 12L) + 1L
-    date_start_month <- sprintf("%d-%d-01",
-                                year_ans,
-                                month_ans)
+    y_ans <- (n_month_total %/% 12L) + 1L ## 1-based
+    m_ans <- (n_month_total %% 12L) + 1L ## 1-based
+    d_ans <- date_ymd$d
+    date_start_month <- ifelse(is.na(n_month_total),
+                               NA_character_,
+                               sprintf("%d-%d-01",
+                                       y_ans,
+                                       m_ans))
     date_start_month <- as.Date(date_start_month)
     n_day_month <- n_day_month(date_start_month)
-    day_ans <- pmin(date_ymd$d, n_day_month)
-    ans <- sprintf("%d-%d-%d",
-                   year_ans,
-                   month_ans,
-                   day_ans)
+    need_to_roll <- !is.na(d_ans) & !is.na(n_day_month) & (d_ans > n_day_month)
+    roll_back <- need_to_roll & (n < 0L)
+    roll_forward <- need_to_roll & (n > 0L)
+    d_ans[roll_back] <- n_day_month[roll_back]
+    d_ans[roll_forward] <- 1L
+    ## should never roll forward from December,
+    ## since December has 31 days, so OK to
+    ## add on one month without adjusting year
+    m_ans[roll_forward] <- m_ans + 1L
+    ans <- ifelse(is.na(y_ans) | is.na(m_ans) | is.na(d_ans),
+                  NA_character_,
+                  sprintf("%d-%d-%d",
+                          y_ans,
+                          m_ans,
+                          d_ans))
     as.Date(ans)
 }
 
 ## HAS_TESTS
-## Add 'n' quarters to 'date'. Where necessary, 'add_quarter'
-## rolls back to the end of the previous month, to preserve the
-## relationship 'month_new - month_old = 3 * n'.
+## Add 'n' quarters to 'date'.
 ## 'date' should have class "Date" and 'n'
 ## should have class "integer"
+## 'date' and 'n' can both have NAs
 add_quarters <- function(date, n) {
     n <- 3L * n
     add_months(date = date,
@@ -36,23 +53,44 @@ add_quarters <- function(date, n) {
 }
 
 ## HAS_TESTS
-## Add 'n' years to 'date'. Where the old date is 29 February,
-## and the new date is not a leap year, 'add_years' rolls back to
-## 28 February.
+## Find the first date 'd' such that
+##   (i) if 'n' is negative - a person who is born on 'd'
+##       is 'n' years old on date 'date', or
+##   (ii) if 'n' is positive - a person who is born
+##       on date 'date' is 'n' years old on date 'd'.
+## This means replacing 'y-m-d' with
+## '(y+n)-m-d' except when 'date' is
+## 'y-02-29' and y+n is not a leap year. In this case
+##   (i) if 'n' is negative - answer is '(y+n)-02-28'
+##   (ii) if 'n' is positive - answer is '(y+n)-03-01'.
 ## 'date' should have class "Date" and 'n'
 ## should have class "integer"
+## 'date' and 'n' can both have NAs
 add_years <- function(date, n) {
     date_ymd <- as_ymd(date)
-    year_date <- date_ymd$y
-    month <- date_ymd$m
-    day_date <- date_ymd$d
-    date_is_29_feb <- (month == 2) & (day_date == 29L)
-    year_ans <- year_date + n
-    year_ans_is_leap_year <- is_leap_year(year_ans)
-    day_ans <- day_date
-    roll_back_29_feb <- date_is_29_feb & !year_ans_is_leap_year
-    day_ans[roll_back_29_feb] <- 28L
-    ans <- sprintf("%d-%d-%d", year_ans, month, day_ans)
+    y_date <- date_ymd$y
+    m_date <- date_ymd$m
+    d_date <- date_ymd$d
+    date_is_29_feb <- (m_date == 2) & (d_date == 29L)
+    y_ans <- y_date + n
+    m_ans <- m_date
+    d_ans <- d_date
+    y_ans_is_leap_year <- is_leap_year(y_ans)
+    need_to_roll <- (!is.na(date_is_29_feb)
+        & !is.na(y_ans_is_leap_year)
+        & date_is_29_feb 
+        & !y_ans_is_leap_year)
+    roll_back <- need_to_roll & (n < 0L)
+    roll_forward <- need_to_roll & (n > 0L)
+    d_ans[roll_back] <- 28L
+    d_ans[roll_forward] <- 1L
+    m_ans[roll_forward] <- 3L
+    ans <- ifelse(is.na(y_ans) | is.na(m_ans) | is.na(d_ans),
+                  NA_character_,
+                  sprintf("%d-%d-%d",
+                          y_ans,
+                          m_ans,
+                          d_ans))
     as.Date(ans)
 }
 
@@ -96,39 +134,6 @@ as_ymd <- function(date) {
     list(y = y,
          m = m,
          d = d)
-}
-
-## HAS_TESTS
-## Return coordinates, measured in days,
-## for lines representing lifelines. Each
-## month on the age axis is 31 days, regardless
-## of the length of a month on the time axis.
-## To achieve agreement, lifelines are shifted
-## upwards by 0-3 days at the end of each month.
-## 'date1' and 'dob1' both have length 1
-coord_lifeline <- function(date1, dob1) {
-    first_boundary <- rollforward_month(dob1)
-    boundaries <- seq.Date(from = first_boundary,
-                           to = date1,
-                           by = "month")
-    x <- c(dob1, rep(boundaries, each = 2L), date1)
-    diff_y <- as.integer(diff(x))
-    first_start <- rollback_month(dob1)
-    starts <- seq.Date(from = first_start,
-                       by = "month",
-                       length.out = length(boundaries))
-    n_day_month <- n_day_month(starts)
-    shifts <- 31L - n_day_month
-    i_shifts <- seq.int(from = 2L,
-                        by = 2L,
-                        length.out = length(shifts))
-    diff_y[i_shifts] <- shifts
-    y <- c(0L, cumsum(diff_y))
-    n <- length(x)
-    list(x0 = x[-n],
-         y0 = y[-n],
-         x1 = x[-1L],
-         y1 = y[-1L])
 }
 
 ## HAS_TESTS
@@ -409,53 +414,9 @@ make_breaks_integer_year <- function(age, width, break_max, open_last) {
 }
 
 ## HAS_TESTS
-make_fill <- function(fill, X, INDEX) {
-    stopifnot(is.data.frame(INDEX))
-    stopifnot(all(sapply(INDEX, is.factor)))
-    stopifnot(identical(length(X), nrow(INDEX)))
-    if (is.null(fill)) {
-        if (!is.null(X)) { 
-            if (identical(length(X), 0L))
-                return(0L)
-            ## try to infer value of 'fill'
-            X_obs <- stats::na.omit(X)
-            if (length(X_obs) > 0L) {
-                is_pos <- X_obs > 0L
-                is_int <- X_obs == round(X_obs)
-                if (all(is_pos & is_int))
-                    return(0L)
-                if (any(!is_pos))
-                    return(NA_integer_)
-            }
-        }
-        n_possible_combn <- prod(sapply(INDEX, nlevels))
-        n_actual_combn <- nrow(unique(INDEX))
-        if (n_actual_combn < n_possible_combn)
-            stop(gettextf(paste("some combinations of the cross-classifying variables are not",
-                                "included in the data, but no value for '%s' has been supplied"),
-                          "fill"),
-                 call. = FALSE)
-        return(0L)
-    }
-    else {
-        demcheck::err_length_1(x = fill,
-                               name = "fill")
-        if (is.na(fill))
-            return(NA_integer_)
-        if (is.numeric(fill)) {
-            if (fill == round(fill))
-                fill <- as.integer(fill)
-            return(fill)
-        }
-        stop(gettextf("invalid value for '%s'",
-                      "fill"))
-    }
-}    
-
-## HAS_TESTS
 ## Number of days in month containing 'date'. Handles leap years.
 n_day_month <- function(date) {
-    n_day <- c(31L, 28L, 31L, 30L, 31L, 30L, 31L, 31L, 31L, 31L, 30L, 31L)
+    n_day <- c(31L, 28L, 31L, 30L, 31L, 30L, 31L, 31L, 30L, 31L, 30L, 31L)
     date_ymd <- as_ymd(date)
     year <- date_ymd$y
     month <- date_ymd$m
@@ -465,231 +426,6 @@ n_day_month <- function(date) {
     ans <- n_day[month]
     ans[is_feb_in_leap_year] <- 29L
     ans
-}
-
-## NO_TESTS
-plot_date_to_age_triangle <- function(date, dob, unit, breaks_time = NULL, breaks_age,
-                                      open_last, labels_time = NULL, labels_age,
-                                      show_months, show_vert, show_diag, cex = 0.8) {
-    old_par <- graphics::par(mar = c(6, 3, 2, 1),
-                             mgp = c(0, 0, 0),
-                             cex = cex)
-    n_date <- length(date)
-    days_per_unit <- switch(unit,
-                            month = 31L,
-                            quarter = 31L * 3L,
-                            year = 31L * 12L,
-                            stop("invalid unit"))
-    n_br_time <- length(breaks_time)
-    n_br_age <- length(breaks_age)
-    diff_br_age <- diff(breaks_age)
-    date_min <- min(dob, na.rm = TRUE)
-    date_min <- rollback_month(date_min)
-    if (!is.null(breaks_time))
-        date_min <- min(date_min, breaks_time)
-    date_max <- max(date, na.rm = TRUE)
-    date_max <- rollforward_month(date_max)
-    if (!is.null(breaks_time))
-        date_max <- max(date_max, breaks_time)
-    width_date <- date_max - date_min
-    age_approx <- as.integer(date - dob) / days_per_unit
-    age_max <- max(breaks_age, 1.05 * age_approx)
-    if (open_last) {
-        width <- breaks_age[[n_br_age]] - breaks_age[[n_br_age - 1L]]
-        age_max  <- max(age_max, breaks_age[[n_br_age]] + width)
-    }
-    x_plot <- c(date_min - 0.15 * width_date, date_max)
-    y_plot <- c(0, age_max)
-    ## empty plotting frame
-    plot(x = x_plot,
-         y = y_plot,
-         pch = NA,
-         axes = FALSE,
-         ylab = "",
-         xlab = "")
-    ## vertical lines to show boundaries between months (optional)
-    if (show_months) {
-        boundaries_months <- seq(from = date_min,
-                                 to = date_max,
-                                 by = "month")
-        graphics::segments(x0 = boundaries_months,
-                           y0 = 0,
-                           x1 = boundaries_months,
-                           y1 = breaks_age[[n_br_age]],
-                           col = "grey")
-        graphics::mtext(text = dob,
-                        side = 1,
-                        line = -0.5,
-                        at = boundaries_months,
-                        cex = 0.6,
-                        las = 3,
-                        col = "grey")
-    }
-    ## vertical lines and labels to show time breaks (optional)
-    if (show_vert) {
-        ## lines
-        graphics::segments(x0 = breaks_time,
-                           y0 = 0,
-                           x1 = breaks_time,
-                           y1 = age_max,
-                           lwd = 0.5,
-                           col = "cornflowerblue")
-        ## labels for boundaries
-        graphics::mtext(text = breaks_time,
-                        side = 1,
-                        line = -0.5,
-                        at = breaks_time,
-                        cex = 0.5,
-                        las = 3,
-                        col = "cornflowerblue")
-        ## labels for periods
-        labels_time <- sprintf('"%s"', labels_time)
-        graphics::mtext(text = labels_time,
-                        side = 1,
-                        line = 3,
-                        at = breaks_time[-n_br_time] + 0.5 * diff(breaks_time),
-                        cex = 0.7,
-                        las = 1,
-                        col = "black")
-    }
-    ## diagonal lines to show Lexis triangles (optional)
-    if (show_diag) {
-        ## diagonal lines starting at horizontal axis
-        n_age <- n_br_age + open_last
-        date_diag_start <- breaks_time[-n_br_time]
-        i_date_diag_end <- seq.int(from = n_age,
-                                   along.with = date_diag_start)
-        i_date_diag_end <- pmin(i_date_diag_end, n_br_time)
-        date_diag_end <- breaks_time[i_date_diag_end]
-        break_age_min <- min(breaks_age)
-        for (i in seq_along(date_diag_start)) {
-            date1 <- date_diag_end[[i]]
-            dob1 <- date_diag_start[[i]]
-            if (date1 > dob1) {
-                coord <- coord_lifeline(date1 = date1,
-                                        dob1 = dob1)
-                x0 <- coord$x0
-                y0 <- coord$y0 / days_per_unit
-                x1 <- coord$x1
-                y1 <- coord$y1 / days_per_unit
-                graphics::segments(x0 = x0,
-                                   y0 = y0 + break_age_min, # for births
-                                   x1 = x1,
-                                   y1 = y1 + break_age_min, # for births
-                                   lwd = 0.5,
-                                   col = "cornflowerblue")
-            }
-        }
-        ## diagonal lines starting at left
-        if (open_last) {
-            date_diag_start <- rep(breaks_time[[1L]], times = n_br_age - 1L)
-            i_end <- pmin(n_br_age : 2L, n_br_time)
-            date_diag_end <- breaks_time[i_end]
-        }
-        else {
-            date_diag_start <- rep(breaks_time[[1L]], times = n_br_age - 2L)
-            i_end <- pmin((n_br_age - 1L) : 2L, n_br_time)
-            date_diag_end <- breaks_time[i_end]
-        }
-        for (i in seq_along(date_diag_start)) {
-            date1 <- date_diag_end[[i]]
-            dob1 <- date_diag_start[[i]]
-            coord <- coord_lifeline(date1 = date1,
-                                    dob1 = dob1)
-            x0 <- coord$x0
-            y0 <- coord$y0 / days_per_unit + breaks_age[[i + 1L]]
-            x1 <- coord$x1
-            y1 <- coord$y1 / days_per_unit + breaks_age[[i + 1L]]
-            graphics::segments(x0 = x0,
-                               y0 = y0,
-                               x1 = x1,
-                               y1 = y1,
-                               lwd = 0.5,
-                               col = "cornflowerblue")
-        }
-    }
-    ## horizontal lines to show boundaries between age groups
-    y_horiz <- unique(c(0, breaks_age)) # needed for date_to_age_births
-    graphics::segments(x0 = rep(date_min, times = n_br_age),
-                       y0 = y_horiz,
-                       x1 = rep(date_max, times = n_br_age),
-                       y1 = y_horiz,
-                       lwd = 0.5,
-                       lty = "solid",
-                       col = "cornflowerblue")
-    ## labels for boundaries between age groups
-    graphics::text(x = date_min - 0.02 * width_date,
-                   y = breaks_age,
-                   labels = breaks_age,
-                   cex = 0.7,
-                   col = "cornflowerblue")
-    ## labels for age groups
-    labels_age <- sprintf('"%s"', labels_age)
-    y_labels_age <- breaks_age[-n_br_age] + 0.5 * diff_br_age
-    if (open_last) {
-        y_open <- breaks_age[[n_br_age]] + 0.5 * diff_br_age[[n_br_age - 1L]]
-        y_labels_age <- c(y_labels_age, y_open)
-    }
-    graphics::text(x = date_min - 0.04 * width_date,
-                   y = y_labels_age,
-                   labels = labels_age,
-                   pos = 2,
-                   cex = 0.9,
-                   col = "black")
-    ## points for 'dob'
-    graphics::points(x = dob,
-                     y = rep(0, times = n_date),
-                     pch = 19,
-                     cex = 0.8)    
-    ## labels for 'dob'
-    graphics::mtext(text = dob,
-                    side = 1,
-                    line = -0.5,
-                    at = dob,
-                    cex = 0.6,
-                    las = 3,
-                    col = "black")
-    ## life lines, and points for date
-    for (i in seq_along(date)) {
-        coord <- coord_lifeline(date1 = date[[i]],
-                                dob1 = dob[[i]])
-        x0 <- coord$x0
-        y0 <- coord$y0 / days_per_unit
-        x1 <- coord$x1
-        y1 <- coord$y1 / days_per_unit
-        graphics::segments(x0 = x0,
-                           y0 = y0,
-                           x1 = x1,
-                           y1 = y1)
-        graphics::points(x = date[[i]],
-                         y = y1[[length(y1)]],
-                         pch = 19,
-                         cex = 0.8)
-    }        
-    ## labels for 'date'
-    graphics::mtext(text = date,
-                    side = 1,
-                    line = -0.5,
-                    at = date,
-                    cex = 0.6,
-                    las = 3,
-                    col = "black")
-    ## xlab
-    graphics::mtext(text = "Time",
-                    side = 1,
-                    line = 4.5,
-                    cex = 0.7,
-                    col = "grey35")
-    graphics::par(old_par)
-    ## ylab
-    graphics::mtext(text = "Age",
-                    side = 2,
-                    line = 1.5,
-                    las = 1,
-                    cex = 0.7,
-                    col = "grey35")
-    graphics::par(old_par)
-    invisible(NULL)
 }
 
 ## HAS_TESTS

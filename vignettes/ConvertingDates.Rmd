@@ -57,6 +57,7 @@ seq.Date(from = as.Date("2001-01-31"),
 Package **demprep** contains a suite of functions for converting dates to age groups, periods, and other age-time categories needed by the **dem** packages. These functions deal with details such as whether one-year periods start in January or July. It also follows a consistent approach to dealing with the fact that months and years have variable lengths. Under this approach, the entry into a new age group, or the start of a new period, depends on reaching a certain day of the month or month of the year, rather than on the number of days that have elapsed. As we discuss below, this approach reflects common practices in applied demography.
 
 DOESN'T TRY TO DEAL WITH ALL POSSIBLE SCENARIOS, SCHEMES - TO AVOID OVERLY COMPLICATED INTERFACE.
+- a bit prescriptive. Can always use general-purpose R tools, eg 'cut'. 
 
 # Lexis diagrams and age-time plans
 
@@ -309,40 +310,6 @@ plot_date_to_period_month(deaths_temp$date_death[1:2])
 ```
 
 
-# Cohorts
-
-
-Same as period, but with open interval at start
-
-
-```{r}
-deaths_temp <- deaths
-deaths_temp$cohort <- date_to_cohort_multi(date = deaths_temp$date_birth)
-deaths_temp
-```
-
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_cohort_multi(date = deaths_temp$date_birth)
-```
-
-
-```{r}
-deaths_temp$cohort_open <- date_to_cohort_multi(date = deaths_temp$date_birth,
-                                                break_min = "2015-01-01")
-deaths_temp
-```
-
-```{r}
-levels(deaths_temp$cohort_open)
-```
-
-```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_cohort_multi(date = deaths_temp$date_birth,
-                          break_min = "2015-01-01")
-```
-
-
-
 <!-- # Age groups -->
 
 <!-- ## General issues -->
@@ -570,6 +537,43 @@ plot_date_to_cohort_multi(date = deaths_temp$date_birth,
 <!--                        dob = dth_age_quarter$dob[3], -->
 <!--                        break_max = 4) -->
 <!-- ``` -->
+
+
+
+# Cohorts
+
+
+Same as period, but with open interval at start
+
+
+```{r}
+deaths_temp <- deaths
+deaths_temp$cohort <- date_to_cohort_multi(date = deaths_temp$date_birth)
+deaths_temp
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_cohort_multi(date = deaths_temp$date_birth)
+```
+
+
+```{r}
+deaths_temp$cohort_open <- date_to_cohort_multi(date = deaths_temp$date_birth,
+                                                break_min = "2015-01-01")
+deaths_temp
+```
+
+```{r}
+levels(deaths_temp$cohort_open)
+```
+
+```{r, echo = FALSE, fig.height = 1.75}
+plot_date_to_cohort_multi(date = deaths_temp$date_birth,
+                          break_min = "2015-01-01")
+```
+
+
+
 
 <!-- # Lexis triangles -->
 
