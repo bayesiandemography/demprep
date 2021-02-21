@@ -147,6 +147,7 @@ plot_date_to_triangle_multi <- function(date,
     ## make age breaks
     breaks_age <- make_breaks_integer_year(age = age_years,
                                            width = width,
+                                           break_min = 0L,
                                            break_max = break_max,
                                            open_last = open_last)
     ## make labels for age breaks
@@ -400,6 +401,7 @@ plot_date_to_triangle_quarter <- function(date,
                                               include_na = FALSE)
     ## make age breaks
     breaks_age <- make_breaks_integer_month_quarter(age = age_quarters,
+                                                    break_min = 0L,
                                                     break_max = break_max,
                                                     open_last = open_last)
     break_min_age <- breaks_age[[1L]]
@@ -484,6 +486,7 @@ plot_date_to_triangle_month <- function(date,
                                             include_na = FALSE)
     ## make age breaks
     breaks_age <- make_breaks_integer_month_quarter(age = age_months,
+                                                    break_min = 0L,
                                                     break_max = break_max,
                                                     open_last = open_last)
     break_min_age <- breaks_age[[1L]]

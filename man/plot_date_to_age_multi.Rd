@@ -9,6 +9,7 @@ plot_date_to_age_multi(
   date,
   dob,
   width = 5,
+  break_min = 0,
   break_max = 100,
   open_last = TRUE,
   show_months = FALSE
@@ -27,6 +28,9 @@ or a vector that can be coerced to class
 
 \item{width}{The width in years of the age intervals.
 A positive integer. Defaults to 5.}
+
+\item{break_min}{An integer or \code{NULL}.
+Defaults to 0.}
 
 \item{break_max}{An integer or \code{NULL}.
 Defaults to 100.}

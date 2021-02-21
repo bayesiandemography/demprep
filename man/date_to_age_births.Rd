@@ -16,9 +16,9 @@ date_to_age_births(
 )
 }
 \arguments{
-\item{date}{Dates when births being measured occur.}
+\item{date}{Dates when births being tabulated occur.}
 
-\item{dob}{Dates of birth of monthers.}
+\item{dob}{Dates of birth of parents.}
 
 \item{break_min}{An integer or \code{NULL}.
 Defaults to 15.}
@@ -29,13 +29,13 @@ Defaults to 50.}
 \item{width}{The width in years of the age intervals.
 A positive integer defaulting to 5.}
 
-\item{recode_up}{If \code{TRUE}, births to women
+\item{recode_up}{If \code{TRUE}, births to parents
 aged less than \code{break_min} are treated as occurring to
-women in the lowest repoductive age group.}
+people in the lowest repoductive age group.}
 
-\item{recode_down}{If \code{TRUE}, births to women
+\item{recode_down}{If \code{TRUE}, births to parents
 aged \code{break_max} or more are treated as
-occurring to women in the highest reproductive
+occurring to people in the highest reproductive
 age group.}
 
 \item{as_factor}{Whether the return value is a factor.
@@ -50,7 +50,7 @@ is greater.
 }
 \description{
 Given the dates when births occur,
-and the dates of birth of the mothers,
+and the dates of birth of the parents (typically mothers),
 allocate the births to age groups. These age groups all
 have the same width, which is measured in years,
 and in an integer.
@@ -67,19 +67,19 @@ is assumed to occur. If, for instance,
 is \code{50}, all births are assumed to
 occur to women aged 15 to 49 (inclusive).
 
-Datasets sometimes contain a few births to mothers
+Datasets sometimes contain a few births to parents
 younger than the assumed minimum age of reproduction,
-or births to mothers older than the assumed maximum age
+or births to parents older than the assumed maximum age
 of reproduction. Demographers often recode such births,
-so that ones to unexpectedly young mothers are
+so that ones to unexpectedly young parents are
 treated as occurring just above the minimum age
-for reproduction, and ones to unexpectedly old mothers
+for reproduction, and ones to unexpectedly old parents
 are treated as occurring just below the maximum
 age for reproduction. This recoding can be justified
 on the grounds that some of the original ages may have
 been misreported, but it also alleviates any problems
 with tabulations having small counts at extreme ages.
-Recoding of mothers' ages outside the expected range
+Recoding of parents' ages outside the expected range
 is controlled by parameters \code{recode_up}
 and \code{recode_down}. The default
 is for no recoding to occur.

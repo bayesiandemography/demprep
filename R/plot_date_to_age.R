@@ -18,6 +18,8 @@
 #' A vector of class \code{\link[base]{Date}},
 #' or a vector that can be coerced to class
 #' \code{Date} using function \code{\link[base]{as.Date}}.
+#' @param break_min An integer or \code{NULL}.
+#' Defaults to 0.
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 100.
 #' @param open_last Whether the final age group
@@ -41,6 +43,7 @@
 #' @export
 plot_date_to_age_year <- function(date,
                                   dob,
+                                  break_min = 0,
                                   break_max = 100,
                                   open_last = TRUE,
                                   show_months = FALSE) {
@@ -50,11 +53,18 @@ plot_date_to_age_year <- function(date,
                                     dob = dob)
     date <- l$date
     dob <- l$dob
-    demcheck::err_has_non_na(x = date,
-                             name = "date")
+    break_min <- demcheck::err_tdy_non_negative_integer_scalar(x = break_min,
+                                                               name = "break_min",
+                                                               null_ok = TRUE)
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = TRUE)
+    if (!is.null(break_min) && !is.null(break_max)) {
+        demcheck::err_lt_scalar(x1 = break_min,
+                                x2 = break_max,
+                                name1 = "break_min",
+                                name2 = "break_max")
+    }
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = show_months,
@@ -63,6 +73,14 @@ plot_date_to_age_year <- function(date,
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
+    ## check that all ages greater than or equal to 'break_min'
+    if (!is.null(break_min)) {
+        demcheck::err_ge_break_min_age(age = age_years,
+                                       break_min = break_min,
+                                       date = date,
+                                       dob = dob,
+                                       unit = "year")
+    }
     ## if final interval not open, check that all
     ## ages less than 'break_max'
     if (!open_last && !is.null(break_max))
@@ -74,6 +92,7 @@ plot_date_to_age_year <- function(date,
     ## make breaks
     breaks <- make_breaks_integer_year(age = age_years,
                                        width = 1L,
+                                       break_min = break_min,
                                        break_max = break_max,
                                        open_last = open_last)
     ## make labels for these breaks
@@ -136,6 +155,7 @@ plot_date_to_age_year <- function(date,
 plot_date_to_age_multi <- function(date,
                                    dob,
                                    width = 5,
+                                   break_min = 0,
                                    break_max = 100,
                                    open_last = TRUE,
                                    show_months = FALSE) {
@@ -149,23 +169,37 @@ plot_date_to_age_multi <- function(date,
                              name = "date")
     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
                                                        name = "width")
+    break_min <- demcheck::err_tdy_non_negative_integer_scalar(x = break_min,
+                                                               name = "break_min",
+                                                               null_ok = TRUE)
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = TRUE)
-    if (!is.null(break_max))
-        demcheck::err_is_logical_flag(x = open_last,
-                                      name = "open_last")
-    demcheck::err_multiple_of(x1 = break_max,
-                              x2 = width,
-                              name1 = "break_max",
-                              name2 = "width",
-                              null_ok = TRUE)
+    if (!is.null(break_min) && !is.null(break_max)) {
+        demcheck::err_gt_scalar(x1 = break_max,
+                                x2 = break_min,
+                                name1 = "break_max",
+                                name2 = "break_min")
+        if ((break_max - break_min) %% width != 0L)
+            stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
+                          "break_max", break_max, "break_min", break_min, "width", width))
+    }
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
     demcheck::err_is_logical_flag(x = show_months,
                                   name = "show_months")
     ## get age in months and years
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
+    ## check that all ages greater than 'break_min'
+    if (!is.null(break_min)) {
+        demcheck::err_ge_break_min_age(age = age_years,
+                                       break_min = break_min,
+                                       date = date,
+                                       dob = dob,
+                                       unit = "year")
+    }
     ## if final interval not open, check that all
     ## ages less than 'break_max'
     if (!is.null(break_max) && !open_last)
@@ -177,6 +211,7 @@ plot_date_to_age_multi <- function(date,
     ## make breaks
     breaks <- make_breaks_integer_year(age = age_years,
                                        width = width,
+                                       break_min = break_min,
                                        break_max = break_max,
                                        open_last = open_last)
     ## make labels for these breaks
@@ -566,6 +601,7 @@ plot_date_to_age_custom <- function(date, dob,
 #' @export
 plot_date_to_age_quarter <- function(date,
                                      dob,
+                                     break_min = 0,
                                      break_max = 400,
                                      open_last = TRUE,
                                      show_months = FALSE) {
@@ -577,9 +613,18 @@ plot_date_to_age_quarter <- function(date,
     dob <- l$dob
     demcheck::err_has_non_na(x = date,
                              name = "date")
+    break_min <- demcheck::err_tdy_non_negative_integer_scalar(x = break_min,
+                                                               name = "break_min",
+                                                               null_ok = TRUE)
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = TRUE)
+    if (!is.null(break_min) && !is.null(break_max)) {
+        demcheck::err_lt_scalar(x1 = break_min,
+                                x2 = break_max,
+                                name1 = "break_min",
+                                name2 = "break_max")
+    }
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = show_months,
@@ -588,6 +633,14 @@ plot_date_to_age_quarter <- function(date,
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_quarters <- age_months %/% 3L
+    ## check that all ages greater than 'break_min'
+    if (!is.null(break_min)) {
+        demcheck::err_ge_break_min_age(age = age_quarters,
+                                       break_min = break_min,
+                                       date = date,
+                                       dob = dob,
+                                       unit = "quarter")
+    }
     ## if final interval not open, check that all
     ## ages less than 'break_max'
     if (!is.null(break_max) && !open_last)
@@ -598,12 +651,14 @@ plot_date_to_age_quarter <- function(date,
                                        unit = "quarter")
     ## make breaks
     breaks <- make_breaks_integer_month_quarter(age = age_quarters,
+                                                break_min = break_min,
                                                 break_max = break_max,
                                                 open_last = open_last)
     ## make labels for these breaks
     n_break <- length(breaks)
+    break_min <- breaks[[1L]]
     break_max <- breaks[[n_break]]
-    labels <- make_labels_age_quarter(break_min = 0L,
+    labels <- make_labels_age_quarter(break_min = break_min,
                                       break_max = break_max,
                                       open_last = open_last)
     ## make plot
@@ -656,6 +711,7 @@ plot_date_to_age_quarter <- function(date,
 #' @export
 plot_date_to_age_month <- function(date,
                                    dob,
+                                   break_min = 0,
                                    break_max = 1200,
                                    open_last = TRUE,
                                    show_months = FALSE) {
@@ -667,9 +723,18 @@ plot_date_to_age_month <- function(date,
     dob <- l$dob
     demcheck::err_has_non_na(x = date,
                              name = "date")
+    break_min <- demcheck::err_tdy_non_negative_integer_scalar(x = break_min,
+                                                               name = "break_min",
+                                                               null_ok = TRUE)
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = TRUE)
+    if (!is.null(break_min) && !is.null(break_max)) {
+        demcheck::err_lt_scalar(x1 = break_min,
+                                x2 = break_max,
+                                name1 = "break_min",
+                                name2 = "break_max")
+    }
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = show_months,
@@ -677,6 +742,14 @@ plot_date_to_age_month <- function(date,
     ## get age in months
     age_months <- age_completed_months(date = date,
                                        dob = dob)
+    ## check that all ages greater than 'break_min'
+    if (!is.null(break_min)) {
+        demcheck::err_ge_break_min_age(age = age_months,
+                                       break_min = break_min,
+                                       date = date,
+                                       dob = dob,
+                                       unit = "month")
+    }
     ## if final interval not open, check that all
     ## ages less than 'break_max'
     if (!open_last && !is.null(break_max))
@@ -687,12 +760,14 @@ plot_date_to_age_month <- function(date,
                                        unit = "month")
     ## make breaks
     breaks <- make_breaks_integer_month_quarter(age = age_months,
+                                                break_min = break_min,
                                                 break_max = break_max,
                                                 open_last = open_last)
     ## make labels for these breaks
     n_break <- length(breaks)
+    break_min <- breaks[[1L]]
     break_max <- breaks[[n_break]]
-    labels <- make_labels_age_month(break_min = 0L,
+    labels <- make_labels_age_month(break_min = break_min,
                                     break_max = break_max,
                                     open_last = open_last,
                                     include_na = FALSE)

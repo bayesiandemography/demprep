@@ -9,38 +9,39 @@
 ## HAS_TESTS
 #' Convert dates to one-year age groups
 #'
-#' Given dates when events occurred or measurements were made,
-#' together with dates of birth, allocate the events or measurements
-#' to age groups. All the age groups have widths
+#' Given the dates when events occurred,
+#' and the dates of birth of the people experiencing the events,
+#' allocate the events to age groups.
+#' All the resulting age groups have widths
 #' of one year, except possibly the final age group.
 #'
-#' A person belongs to age group \code{"a"} if that
-#' person was exactly \code{a} years
+#' A person belongs to age group \code{"x"} if that
+#' person was exactly \code{x} years
 #' old at their most recent birthday. For instance, a person
-#' who had their fifth birthday two days ago belongs to age
-#' group \code{"5"} and a person who was born (had their zero-th
-#' birthday) three months ago belongs to age group \code{"0"}.
+#' belongs to age group {"5"} if that person had their
+#' 5th birthday two days ago, and a person belongs to age
+#' group \code{"0"} if that person had their 0th birthday
+#' (ie was born) three months ago.
 #'
 #' \code{date} and \code{dob} must have the same length,
 #' unless one of them has length 1, in which case the
 #' argument with length 1 is recycled.
 #'
-#' \code{break_max} and \code{open_last} are used to specify
-#' the oldest age group.
-#' If \code{break_max} is non-\code{NULL} and
-#' \code{open_last} is \code{TRUE}, the oldest
-#' age group is \code{[break_max, Inf)} years. If
-#' \code{break_max} is non-\code{NULL} and 
-#' \code{open_last} is \code{FALSE}, the oldest age
-#' group is \code{[break_max-1, break_max)} years.
-#' If \code{break_max} is \code{NULL}, \code{date_to_age_year}
-#' the oldest age group is determined by the data.
+#' If \code{break_min} or \code{break_max} is set to \code{NULL},
+#' rather than to a specific value, then \code{date_to_age_year}
+#' finds the narrowest range that accommodates the data.
 #'
+#' When \code{open_last} is \code{TRUE}, the final age group
+#' is "open", which means that it has no upper limit.
+#' (The definition of an open interval in demography is
+#' is different from the definition of an open interval
+#' in mathematics.)
+#' 
 #' When \code{as_factor} is \code{TRUE} the levels of
 #' the factor include all intermediate age groups,
 #' including age groups that not appear in the data.
 #'
-#' @param date Dates of events or measurements.
+#' @param date Dates of events.
 #' A vector of class \code{\link[base]{Date}},
 #' or a vector that can be coerced to class
 #' \code{Date} using function \code{\link[base]{as.Date}}.
@@ -48,6 +49,8 @@
 #' A vector of class \code{\link[base]{Date}},
 #' or a vector that can be coerced to class
 #' \code{Date} using function \code{\link[base]{as.Date}}.
+#' @param break_min An integer or \code{NULL}.
+#' Defaults to 0.
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 100.
 #' @param open_last Whether the final age group
@@ -92,50 +95,73 @@
 #'                           "2022-11-09"),
 #'                  dob = "2011-05-18")
 #'
+#' ## specify alternative values for the
+#' ## lowest and highest breaks
+#' date_to_age_year(date = c("2024-03-27",
+#'                           "2022-11-09"),
+#'                  dob = c("2001-03-21",
+#'                          "2000-07-13"),
+#'                  break_min = 20,
+#'                  break_max = 30)
+#' 
+#' ## allow lowest age group to be set by the data
+#' date_to_age_year(date = c("2024-03-27",
+#'                           "2022-11-09"),
+#'                  dob = c("2001-03-21",
+#'                          "2000-07-13"),
+#'                  break_min = NULL,
+#'                  break_max = 30)
+#'
+#' ## highest age group is closed rather
+#' ## than open
+#' date_to_age_year(date = c("2024-03-27",
+#'                           "2022-11-09"),
+#'                  dob = c("2001-03-21",
+#'                          "2000-07-13"),
+#'                  break_min = NULL,
+#'                  break_max = 30,
+#'                  open_last = FALSE)
+#'
 #' ## return non-factor
 #' date_to_age_year(date = c("2024-03-27",
 #'                           "2022-11-09"),
 #'                  dob = "2011-05-18",
 #'                  as_factor = FALSE)
-#'
-#' ## alternative specifications for oldest age group
-#' date_to_age_year(date = "2019-09-22",
-#'                  dob = "1910-01-01")
-#' date_to_age_year(date = "2019-09-22",
-#'                  dob = "1910-01-01",
-#'                  break_max = 80)
-#' date_to_age_year(date = "2019-09-22",
-#'                  dob = "1910-01-01",
-#'                  break_max = NULL)
-#' date_to_age_year(date = "2019-09-22",
-#'                  dob = "1910-01-01",
-#'                  break_max = NULL,
-#'                  open_last = FALSE)
 #' @export 
 date_to_age_year <- function(date,
-                                   dob,
-                                   break_max = 100,
-                                   open_last = TRUE,
-                                   as_factor = TRUE) {
+                             dob,
+                             break_min = 0,
+                             break_max = 100,
+                             open_last = TRUE,
+                             as_factor = TRUE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
     date <- l$date
     dob <- l$dob
+    break_min <- demcheck::err_tdy_non_negative_integer_scalar(x = break_min,
+                                                               name = "break_min",
+                                                               null_ok = TRUE)
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = TRUE)
+    if (!is.null(break_min) && !is.null(break_max)) {
+        demcheck::err_lt_scalar(x1 = break_min,
+                                x2 = break_max,
+                                name1 = "break_min",
+                                name2 = "break_max")
+    }
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    ## deal with "empty" case where
-    ## all date-dob pairs have NA
-    ## and no 'break_max' supplied
+    ## deal with "empty" case where all date-dob pairs have NA
+    ## and 'break_min' or 'break_max' is missing
+    ## (so cannot construct levels)
     n_date <- length(date)
     all_empty <- all(is.na(date) | is.na(dob))
-    if (all_empty && is.null(break_max)) {
+    if (all_empty && (is.null(break_min) || is.null(break_max))) {
         ans <- rep(NA_character_, times = n_date)
         if (as_factor)
             ans <- factor(ans)
@@ -145,6 +171,14 @@ date_to_age_year <- function(date,
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
+    ## check that all ages greater than or equal to 'break_min'
+    if (!is.null(break_min)) {
+        demcheck::err_ge_break_min_age(age = age_years,
+                                       break_min = break_min,
+                                       date = date,
+                                       dob = dob,
+                                       unit = "year")
+    }
     ## if final interval not open, check that all
     ## ages less than 'break_max'
     if (!open_last && !is.null(break_max))
@@ -156,12 +190,13 @@ date_to_age_year <- function(date,
     ## make breaks
     breaks <- make_breaks_integer_year(age = age_years,
                                        width = 1L,
+                                       break_min = break_min,
                                        break_max = break_max,
                                        open_last = open_last)
     ## make labels for these breaks
     labels <- make_labels_age(breaks = breaks,
-                                    open_last = open_last,
-                                    include_na = FALSE)
+                              open_last = open_last,
+                              include_na = FALSE)
     ## assign labels to ages
     i <- findInterval(x = age_years,
                       vec = breaks)
@@ -176,9 +211,9 @@ date_to_age_year <- function(date,
 ## HAS_TESTS
 #' Convert dates to multi-year age groups
 #'
-#' Given dates when events occurred or measurements were made,
-#' together with dates of birth, allocate the events or
-#' measurements to age groups. These
+#' Given the dates when events occurred,
+#' and the dates of birth of the people experiencing the events,
+#' allocate the events to age groups. These
 #' age groups all have the same width, except possibly
 #' the final age group. The width is measured in years
 #' and must be an integer.
@@ -187,17 +222,16 @@ date_to_age_year <- function(date,
 #' unless one of them has length 1, in which case the
 #' length-1 argument is recycled.
 #'
-#' \code{break_max} and \code{open_last} are used to specify
-#' the oldest age group.
-#' If \code{break_max} is non-\code{NULL} and
-#' \code{open_last} is \code{TRUE}, the oldest
-#' age group is \code{[break_max, Inf)} years. If
-#' \code{break_max} is non-\code{NULL} and 
-#' \code{open_last} is \code{FALSE}, the oldest age
-#' group is \code{[break_max-width, break_max)} years.
-#' If \code{break_max} is \code{NULL}, the oldest
-#' age group is derived from the data.
+#' If \code{break_min} or \code{break_max} is set to \code{NULL},
+#' rather than to a specific value, then \code{date_to_age_year}
+#' finds the narrowest range that accommodates the data.
 #'
+#' When \code{open_last} is \code{TRUE}, the final age group
+#' is "open", which means that it has no upper limit.
+#' (The definition of an open interval in demography is
+#' is different from the definition of an open interval
+#' in mathematics.)
+#' 
 #' When \code{as_factor} is \code{TRUE} the levels of
 #' the factor include all intermediate age groups,
 #' including age groups that not appear in the data.
@@ -238,46 +272,39 @@ date_to_age_year <- function(date,
 #'                   dob = c("2001-03-21",
 #'                           "2000-07-13"))
 #'
-#' ## alternative values for 'width'
+#' ## alternative value for 'width'
 #' date_to_age_multi(date = c("2024-03-27",
 #'                            "2022-11-09"),
 #'                   dob = c("2001-03-21",
 #'                           "2000-07-13"),
 #'                   width = 10)
+#'
+#' ## final age group closed
 #' date_to_age_multi(date = c("2024-03-27",
 #'                            "2022-11-09"),
 #'                   dob = c("2001-03-21",
 #'                           "2000-07-13"),
-#'                   width = 1)
+#'                   width = 10,
+#'                   open_last = FALSE)
 #'
-#' ## replicate date of birth
+#' ## allow highest age group to be set by the data
 #' date_to_age_multi(date = c("2024-03-27",
 #'                            "2022-11-09"),
-#'                   dob = "2011-05-18")
+#'                   dob = c("2001-03-21",
+#'                           "2000-07-13"),
+#'                   width = 10,
+#'                   break_max = NULL)
 #'
 #' ## return non-factor
 #' date_to_age_multi(date = c("2024-03-27",
 #'                            "2022-11-09"),
 #'                   dob = "2011-05-18",
 #'                   as_factor = FALSE)
-#'
-#' ## alternative specifications for oldest age group
-#' date_to_age_multi(date = "2019-09-22",
-#'                   dob = "1910-01-01")
-#' date_to_age_multi(date = "2019-09-22",
-#'                   dob = "1910-01-01",
-#'                   break_max = 80)
-#' date_to_age_multi(date = "2019-09-22",
-#'                   dob = "1910-01-01",
-#'                   break_max = NULL)
-#' date_to_age_multi(date = "2019-09-22",
-#'                   dob = "1910-01-01",
-#'                   break_max = NULL,
-#'                   open_last = FALSE)
 #' @export
 date_to_age_multi <- function(date,
                               dob,
                               width = 5,
+                              break_min = 0,
                               break_max = 100,
                               open_last = TRUE,
                               as_factor = TRUE) {
@@ -289,25 +316,31 @@ date_to_age_multi <- function(date,
     dob <- l$dob
     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
                                                        name = "width")
+    break_min <- demcheck::err_tdy_non_negative_integer_scalar(x = break_min,
+                                                               name = "break_min",
+                                                               null_ok = TRUE)
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = TRUE)
-    if (!is.null(break_max))
-        demcheck::err_is_logical_flag(x = open_last,
-                                      name = "open_last")
+    if (!is.null(break_min) && !is.null(break_max)) {
+        demcheck::err_gt_scalar(x1 = break_max,
+                                x2 = break_min,
+                                name1 = "break_max",
+                                name2 = "break_min")
+        if ((break_max - break_min) %% width != 0L)
+            stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
+                          "break_max", break_max, "break_min", break_min, "width", width))
+    }
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    demcheck::err_multiple_of(x1 = break_max,
-                              x2 = width,
-                              name1 = "break_max",
-                              name2 = "width",
-                              null_ok = TRUE)
-    ## deal with "empty" case where
-    ## all date-dob pairs have NA
-    ## and no 'break_max' supplied
+    ## deal with "empty" case where all date-dob pairs have NA
+    ## and 'break_min' or 'break_max' is missing
+    ## (so cannot construct levels)
     n_date <- length(date)
     all_empty <- all(is.na(date) | is.na(dob))
-    if (all_empty && is.null(break_max)) {
+    if (all_empty && (is.null(break_min) || is.null(break_max))) {
         ans <- rep(NA_character_, times = n_date)
         if (as_factor)
             ans <- factor(ans)
@@ -317,6 +350,14 @@ date_to_age_multi <- function(date,
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_years <- age_months %/% 12L
+    ## check that all ages greater than 'break_min'
+    if (!is.null(break_min)) {
+        demcheck::err_ge_break_min_age(age = age_years,
+                                       break_min = break_min,
+                                       date = date,
+                                       dob = dob,
+                                       unit = "year")
+    }
     ## if final interval not open, check that all
     ## ages less than 'break_max'
     if (!open_last)
@@ -328,6 +369,7 @@ date_to_age_multi <- function(date,
     ## make breaks
     breaks <- make_breaks_integer_year(age = age_years,
                                        width = width,
+                                       break_min = break_min,
                                        break_max = break_max,
                                        open_last = open_last)
     ## make labels for these breaks
@@ -351,16 +393,15 @@ date_to_age_multi <- function(date,
 #' allocate the deaths to age groups. These
 #' age groups are the ones typically used in
 #' "abridged" (ie not single-year) life tables: "0", "1-4",
-#' and "5-9", "10-14", "10-14", and so on up to the
-#' highest age group.
+#' and "5-9", "10-14", and so on up to the
+#' highest age group, which is always open.
 #'
 #' \code{date} and \code{dob} must have the same length,
 #' unless one of them has length 1, in which case the
 #' length-1 argument is recycled.
 #'
 #' \code{break_max} is used to specify
-#' the oldest age group, which is always open
-#' on the right.
+#' the oldest age group.
 #' If \code{break_max} is \code{NULL}, the oldest
 #' age group is derived from the data.
 #'
@@ -398,27 +439,15 @@ date_to_age_multi <- function(date,
 #'                     dob = c("2001-03-21",
 #'                             "2000-07-13"))
 #'
-#' ## replicate date of birth
-#' date_to_age_lifetab(date = c("2024-03-27",
-#'                              "2022-11-09"),
-#'                     dob = "2011-05-18")
-#'
-#' ## return non-factor
-#' date_to_age_lifetab(date = c("2024-03-27",
-#'                              "2022-11-09"),
-#'                     dob = "2011-05-18",
-#'                     as_factor = FALSE)
-#'
-#' ## alternative specifications for oldest age group
-#' date_to_age_lifetab(date = "2019-09-22",
-#'                     dob = "1910-01-01")
+#' ## set oldest age group to 80+
 #' date_to_age_lifetab(date = "2019-09-22",
 #'                     dob = "1910-01-01",
 #'                     break_max = 80)
 #' @export
-date_to_age_lifetab <- function(date, dob,
-                                      break_max = 100,
-                                      as_factor = TRUE) {
+date_to_age_lifetab <- function(date,
+                                dob,
+                                break_max = 100,
+                                as_factor = TRUE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -468,7 +497,7 @@ date_to_age_lifetab <- function(date, dob,
 #' Convert dates to age groups when measuring fertility 
 #'
 #' Given the dates when births occur,
-#' and the dates of birth of the mothers,
+#' and the dates of birth of the parents (typically mothers),
 #' allocate the births to age groups. These age groups all
 #' have the same width, which is measured in years,
 #' and in an integer.
@@ -484,38 +513,38 @@ date_to_age_lifetab <- function(date, dob,
 #' is \code{50}, all births are assumed to
 #' occur to women aged 15 to 49 (inclusive).
 #'
-#' Datasets sometimes contain a few births to mothers
+#' Datasets sometimes contain a few births to parents
 #' younger than the assumed minimum age of reproduction,
-#' or births to mothers older than the assumed maximum age
+#' or births to parents older than the assumed maximum age
 #' of reproduction. Demographers often recode such births,
-#' so that ones to unexpectedly young mothers are
+#' so that ones to unexpectedly young parents are
 #' treated as occurring just above the minimum age
-#' for reproduction, and ones to unexpectedly old mothers
+#' for reproduction, and ones to unexpectedly old parents
 #' are treated as occurring just below the maximum
 #' age for reproduction. This recoding can be justified
 #' on the grounds that some of the original ages may have
 #' been misreported, but it also alleviates any problems
 #' with tabulations having small counts at extreme ages.
-#' Recoding of mothers' ages outside the expected range
+#' Recoding of parents' ages outside the expected range
 #' is controlled by parameters \code{recode_up}
 #' and \code{recode_down}. The default
 #' is for no recoding to occur.
 #'
 #' @inheritParams date_to_age_year
-#' @param date Dates when births being measured occur.
-#' @param dob Dates of birth of monthers.
+#' @param date Dates when births being tabulated occur.
+#' @param dob Dates of birth of parents.
 #' @param break_min An integer or \code{NULL}.
 #' Defaults to 15.
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 50.
 #' @param width The width in years of the age intervals.
 #' A positive integer defaulting to 5.
-#' @param recode_up If \code{TRUE}, births to women
+#' @param recode_up If \code{TRUE}, births to parents
 #' aged less than \code{break_min} are treated as occurring to
-#' women in the lowest repoductive age group.
-#' @param recode_down If \code{TRUE}, births to women
+#' people in the lowest repoductive age group.
+#' @param recode_down If \code{TRUE}, births to parents
 #' aged \code{break_max} or more are treated as
-#' occurring to women in the highest reproductive
+#' occurring to people in the highest reproductive
 #' age group.
 #'
 #' @return If \code{as_factor} is \code{TRUE}, then the return
@@ -624,6 +653,8 @@ date_to_age_births <- function(date, dob,
                                   name = "recode_up")
     demcheck::err_is_logical_flag(x = recode_down,
                                   name = "recode_down")
+    demcheck::err_is_logical_flag(x = as_factor,
+                                  name = "as_factor")
     ## deal with "empty" case where
     ## all date-dob pairs have NA, and
     ## we aren't making factors
@@ -692,9 +723,10 @@ date_to_age_births <- function(date, dob,
 ## HAS_TESTS
 #' Convert dates to customized age groups
 #'
-#' Given dates when events occurred or measurements were made,
-#' and dates of birth, allocate the events or measurements
-#' to age groups. \code{date_to_age_custom} is the most flexible
+#' Given the dates when events occurred,
+#' and the dates of birth of the people experiencing the events,
+#' allocate the events to age groups.
+#' \code{date_to_age_custom} is the most flexible
 #' of the \code{date_to_age} functions
 #' in that the age groups can have any combination of widths,
 #' though the widths must be defined in whole numbers of years.
@@ -752,19 +784,6 @@ date_to_age_births <- function(date, dob,
 #'                    dob = c("2001-03-21",
 #'                            "2000-07-13"),
 #'                    breaks = c(15, 40, 65))
-#'
-#' ## replicate date of birth
-#' date_to_age_custom(date = c("2024-03-27",
-#'                             "2022-11-09"),
-#'                    dob = "2001-01-01",
-#'                    breaks = c(0, 15, 60))
-#'
-#' ## return non-factor
-#' date_to_age_custom(date = c("2024-03-27",
-#'                             "2022-11-09"),
-#'                    dob = "2001-01-01",
-#'                    breaks = c(0, 15, 60),
-#'                    as_factor = FALSE)
 #'
 #' ## alternative specifications for oldest age group
 #' date_to_age_custom(date = c("2024-03-27",
@@ -863,46 +882,39 @@ date_to_age_custom <- function(date, dob,
 ## HAS_TESTS
 #' Convert dates to one-quarter age groups
 #'
-#' Given dates when events occurred or measurements were made,
-#' and dates of birth, allocate the events or measurements
-#' to age groups. These
+#' Given the dates when events occurred,
+#' and the dates of birth of the people experiencing the events,
+#' allocate the events to age groups. The resulting
 #' age groups all have widths of one quarter (ie three months),
 #' except possibly the final age group.
 #'
-#' A person belongs to age group \code{"a"} if that
-#' person was exactly \code{a} quarters
+#' A person belongs to age group \code{"x"} if that
+#' person was exactly \code{x} quarters
 #' old at their most recent birthday. For instance, a person
-#' who had their fifth birthday two days ago belongs to age
-#' group \code{"20q"} and a person who was born (had their zero-th
-#' birthday) three months ago belongs to age group \code{"0q"}.
+#' belongs to age group \code{"20q"} if that person had
+#' their 5th birthday (= 20 quarters) two days ago.
 #'
 #' \code{date} and \code{dob} must have the same length,
 #' unless one of them has length 1, in which case the
 #' length-1 argument is recycled.
 #'
-#' \code{break_max} and \code{open_last} are used to specify
-#' the oldest age group.
-#' If \code{break_max} is non-\code{NULL} and
-#' \code{open_last} is \code{TRUE}, the oldest
-#' age group is \code{[break_max, Inf)} quarters. if
-#' \code{break_max} is non-\code{NULL} and 
-#' \code{open_last} is \code{FALSE}, the oldest age
-#' group is \code{[break_max-1, break_max)} quarters.
-#' If \code{break_max} is \code{NULL}, the oldest
-#' age group is derived from the data.
+#' If \code{break_min} or \code{break_max} is set to \code{NULL},
+#' rather than to a specific value, then \code{date_to_age_year}
+#' finds the narrowest range that accommodates the data.
+#'
+#' When \code{open_last} is \code{TRUE}, the final age group
+#' is "open", which means that it has no upper limit.
+#' (The definition of an open interval in demography is
+#' is different from the definition of an open interval
+#' in mathematics.)
 #'
 #' When \code{as_factor} is \code{TRUE} the levels of
 #' the factor include all intermediate age groups,
 #' including age groups that not appear in the data.
 #'
-#' @param date Dates of events or measurements.
-#' @param dob Dates of birth.
+#' @inheritParams date_to_age_year
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 400.
-#' @param open_last Whether the final age group
-#' has no upper limit. Defaults to \code{TRUE}.
-#' @param as_factor Whether the return value is a factor.
-#' Defaults to \code{TRUE}.
 #'
 #' @return If \code{as_factor} is \code{TRUE}, then the return
 #' value is a factor; otherwise it is a character vector.
@@ -936,33 +948,27 @@ date_to_age_custom <- function(date, dob,
 #'                     dob = c("2001-03-21",
 #'                             "2000-07-13"))
 #'
-#' ## replicate date of birth
-#' date_to_age_quarter(date = c("2024-03-27",
-#'                              "2022-11-09"),
-#'                     dob = "2011-05-18")
+#' ## specify highest age group
+#' date_to_age_quarter(date = "2019-09-22",
+#'                     dob = "2010-01-01",
+#'                     break_max = 48)
 #'
-#' ## return non-factor
-#' date_to_age_quarter(date = c("2024-03-27",
-#'                              "2022-11-09"),
-#'                     dob = "2011-05-18",
-#'                     as_factor = FALSE)
+#' ## let lowest age group be set by the data
+#' date_to_age_quarter(date = "2019-09-22",
+#'                     dob = "2010-01-01",
+#'                     break_min = NULL,
+#'                     break_max = 48)
 #'
-#' ## alternative specifications for oldest age group
+#' ## make final age group closed
 #' date_to_age_quarter(date = "2019-09-22",
-#'                     dob = "1910-01-01")
-#' date_to_age_quarter(date = "2019-09-22",
-#'                     dob = "1910-01-01",
-#'                     break_max = 320)
-#' date_to_age_quarter(date = "2019-09-22",
-#'                     dob = "1910-01-01",
-#'                     break_max = NULL)
-#' date_to_age_quarter(date = "2019-09-22",
-#'                     dob = "1910-01-01",
-#'                     break_max = NULL,
+#'                     dob = "2010-01-01",
+#'                     break_min = NULL,
+#'                     break_max = 48,
 #'                     open_last = FALSE)
 #' @export
 date_to_age_quarter <- function(date,
                                 dob,
+                                break_min = 0,
                                 break_max = 400,
                                 open_last = TRUE,
                                 as_factor = TRUE) {
@@ -972,19 +978,28 @@ date_to_age_quarter <- function(date,
                                     dob = dob)
     date <- l$date
     dob <- l$dob
+    break_min <- demcheck::err_tdy_non_negative_integer_scalar(x = break_min,
+                                                               name = "break_min",
+                                                               null_ok = TRUE)
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = TRUE)
+    if (!is.null(break_min) && !is.null(break_max)) {
+        demcheck::err_lt_scalar(x1 = break_min,
+                                x2 = break_max,
+                                name1 = "break_min",
+                                name2 = "break_max")
+    }
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    ## deal with "empty" case where
-    ## all date-dob pairs have NA
-    ## and no 'break_max' supplied
+    ## deal with "empty" case where all date-dob pairs have NA
+    ## and 'break_min' or 'break_max' is missing
+    ## (so cannot construct levels)
     n_date <- length(date)
     all_empty <- all(is.na(date) | is.na(dob))
-    if (all_empty && is.null(break_max)) {
+    if (all_empty && (is.null(break_min) || is.null(break_max))) {
         ans <- rep(NA_character_, times = n_date)
         if (as_factor)
             ans <- factor(ans)
@@ -994,6 +1009,14 @@ date_to_age_quarter <- function(date,
     age_months <- age_completed_months(date = date,
                                        dob = dob)
     age_quarters <- age_months %/% 3L
+    ## check that all ages greater than 'break_min'
+    if (!is.null(break_min)) {
+        demcheck::err_ge_break_min_age(age = age_quarters,
+                                       break_min = break_min,
+                                       date = date,
+                                       dob = dob,
+                                       unit = "quarter")
+    }
     ## if final interval not open, check that all
     ## ages less than 'break_max'
     if (!is.null(break_max) && !open_last)
@@ -1004,12 +1027,14 @@ date_to_age_quarter <- function(date,
                                        unit = "quarter")
     ## make breaks
     breaks <- make_breaks_integer_month_quarter(age = age_quarters,
+                                                break_min = break_min,
                                                 break_max = break_max,
                                                 open_last = open_last)
     ## make labels for these breaks
     n_break <- length(breaks)
+    break_min <- breaks[[1L]]
     break_max <- breaks[[n_break]]
-    labels <- make_labels_age_quarter(break_min = 0L,
+    labels <- make_labels_age_quarter(break_min = break_min,
                                       break_max = break_max,
                                       open_last = open_last)
     ## assign labels to ages
@@ -1026,46 +1051,40 @@ date_to_age_quarter <- function(date,
 ## HAS_TESTS
 #' Convert dates to one-month age groups
 #'
-#' Given dates when events occurred or measurements were made,
-#' and dates of birth, allocate the events or
-#' measurements to age groups. These
+#' Given the dates when events occurred,
+#' and the dates of birth of the people experiencing the events,
+#' allocate the events to age groups. These
 #' age groups all have widths of one month,
 #' except possibly the final age group.
 #'
-#' A person belongs to age group \code{"a"} if that
-#' person was exactly \code{a} months
-#' old at their most recent birthday. For instance, a person
-#' who had their fifth birthday two days ago belongs to age
-#' group \code{"60m"} and a person who was born (had their zero-th
-#' birthday) three months ago belongs to age group \code{"60m"}.
+#' A person belongs to age group \code{"x"} if that
+#' person was exactly \code{x} months
+#' old at their most recent birthday.
+#' For instance, a person belongs to age
+#' group \code{"60m"} if that person had their
+#' 5th birthday (= 60 months) two days ago.
 #'
 #' \code{date} and \code{dob} must have the same length,
 #' unless one of them has length 1, in which case the
 #' length-1 argument is recycled.
 #'
-#' \code{break_max} and \code{open_last} are used to specify
-#' the oldest age group.
-#' If \code{break_max} is non-\code{NULL} and
-#' \code{open_last} is \code{TRUE}, the oldest
-#' age group is \code{[break_max, Inf)} months. If
-#' \code{break_max} is non-\code{NULL} and 
-#' \code{open_last} is \code{FALSE}, the oldest age
-#' group is \code{[break_max-1, break_max)} months.
-#' If \code{break_max} is \code{NULL}, the oldest
-#' age group is derived from the data.
+#' If \code{break_min} or \code{break_max} is set to \code{NULL},
+#' rather than to a specific value, then \code{date_to_age_year}
+#' finds the narrowest range that accommodates the data.
+#'
+#' When \code{open_last} is \code{TRUE}, the final age group
+#' is "open", which means that it has no upper limit.
+#' (The definition of an open interval in demography is
+#' is different from the definition of an open interval
+#' in mathematics.)
 #'
 #' When \code{as_factor} is \code{TRUE} the levels of
 #' the factor include all intermediate age groups,
 #' including age groups that not appear in the data.
 #'
-#' @param date Dates of events or measurements.
-#' @param dob Dates of birth.
+#' @inheritParams date_to_age_year
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 1200.
-#' @param open_last Whether the final age group
-#' has no upper limit. Defaults to \code{TRUE}.
-#' @param as_factor Whether the return value is a factor.
-#' Defaults to \code{TRUE}.
 #'
 #' @return If \code{as_factor} is \code{TRUE}, then the return
 #' value is a factor; otherwise it is a character vector.
@@ -1096,58 +1115,61 @@ date_to_age_quarter <- function(date,
 #' @examples
 #' date_to_age_month(date = c("2024-03-27",
 #'                            "2022-11-09"),
-#'                   dob = c("2001-03-21",
-#'                           "2000-07-13"))
+#'                   dob = c("2021-03-21",
+#'                           "2020-07-13"))
 #'
-#' ## replicate date of birth
-#' date_to_age_month(date = c("2024-03-27",
-#'                            "2022-11-09"),
-#'                   dob = "2011-05-18")
+#' ## specify highest age group
+#' date_to_age_month(date = "2019-10-22",
+#'                   dob = "2018-01-01",
+#'                   break_max = 24)
 #'
-#' ## return non-factor
-#' date_to_age_month(date = c("2024-03-27",
-#'                            "2022-11-09"),
-#'                   dob = "2011-05-18",
-#'                   as_factor = FALSE)
+#' ## let lowest age group be set by the data
+#' date_to_age_month(date = "2019-10-22",
+#'                   dob = "2018-01-01",
+#'                   break_min = NULL,
+#'                   break_max = 24)
 #'
-#' ## alternative specifications for oldest age group
-#' date_to_age_month(date = "2019-09-22",
-#'                   dob = "1910-01-01")
-#' date_to_age_month(date = "2019-09-22",
-#'                   dob = "1910-01-01",
-#'                   break_max = 320)
-#' date_to_age_month(date = "2019-09-22",
-#'                   dob = "1910-01-01",
-#'                   break_max = NULL)
-#' date_to_age_month(date = "2019-09-22",
-#'                   dob = "1910-01-01",
-#'                   break_max = NULL,
+#' ## make final age group closed
+#' date_to_age_month(date = "2019-10-22",
+#'                   dob = "2018-01-01",
+#'                   break_min = NULL,
+#'                   break_max = 24,
 #'                   open_last = FALSE)
 #' @export
 date_to_age_month <- function(date,
-                                    dob,
-                                    break_max = 1200,
-                                    open_last = TRUE,
-                                    as_factor = TRUE) {
+                              dob,
+                              break_min = 0,
+                              break_max = 1200,
+                              open_last = TRUE,
+                              as_factor = TRUE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
                                     dob = dob)
     date <- l$date
     dob <- l$dob
+    break_min <- demcheck::err_tdy_non_negative_integer_scalar(x = break_min,
+                                                               name = "break_min",
+                                                               null_ok = TRUE)
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
                                                            null_ok = TRUE)
+    if (!is.null(break_min) && !is.null(break_max)) {
+        demcheck::err_lt_scalar(x1 = break_min,
+                                x2 = break_max,
+                                name1 = "break_min",
+                                name2 = "break_max")
+    }
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
     demcheck::err_is_logical_flag(x = as_factor,
                                   name = "as_factor")
-    ## deal with "empty" case where
-    ## all date-dob pairs have NA
-    ## and no 'break_max' supplied
+    ## deal with "empty" case where all date-dob pairs have NA
+    ## and 'break_min' or 'break_max' is missing
+    ## (so cannot construct levels)
     n_date <- length(date)
     all_empty <- all(is.na(date) | is.na(dob))
-    if (all_empty && is.null(break_max)) {
+    if (all_empty && (is.null(break_min) || is.null(break_max))) {
         ans <- rep(NA_character_, times = n_date)
         if (as_factor)
             ans <- factor(ans)
@@ -1156,6 +1178,14 @@ date_to_age_month <- function(date,
     ## get age in months
     age_months <- age_completed_months(date = date,
                                        dob = dob)
+    ## check that all ages greater than 'break_min'
+    if (!is.null(break_min)) {
+        demcheck::err_ge_break_min_age(age = age_months,
+                                       break_min = break_min,
+                                       date = date,
+                                       dob = dob,
+                                       unit = "month")
+    }
     ## if final interval not open, check that all
     ## ages less than 'break_max'
     if (!open_last && !is.null(break_max))
@@ -1166,15 +1196,17 @@ date_to_age_month <- function(date,
                                        unit = "month")
     ## make breaks
     breaks <- make_breaks_integer_month_quarter(age = age_months,
+                                                break_min = break_min,
                                                 break_max = break_max,
                                                 open_last = open_last)
     ## make labels for these breaks
     n_break <- length(breaks)
+    break_min <- breaks[[1L]]
     break_max <- breaks[[n_break]]
-    labels <- make_labels_age_month(break_min = 0L,
-                                          break_max = break_max,
-                                          open_last = open_last,
-                                          include_na = FALSE)
+    labels <- make_labels_age_month(break_min = break_min,
+                                    break_max = break_max,
+                                    open_last = open_last,
+                                    include_na = FALSE)
     ## assign labels to ages
     i <- findInterval(x = age_months,
                       vec = breaks)

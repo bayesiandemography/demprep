@@ -32,8 +32,8 @@ Given dates of death and dates of birth,
 allocate the deaths to age groups. These
 age groups are the ones typically used in
 "abridged" (ie not single-year) life tables: "0", "1-4",
-and "5-9", "10-14", "10-14", and so on up to the
-highest age group.
+and "5-9", "10-14", and so on up to the
+highest age group, which is always open.
 }
 \details{
 \code{date} and \code{dob} must have the same length,
@@ -41,8 +41,7 @@ unless one of them has length 1, in which case the
 length-1 argument is recycled.
 
 \code{break_max} is used to specify
-the oldest age group, which is always open
-on the right.
+the oldest age group.
 If \code{break_max} is \code{NULL}, the oldest
 age group is derived from the data.
 
@@ -56,20 +55,7 @@ date_to_age_lifetab(date = c("2024-03-27",
                     dob = c("2001-03-21",
                             "2000-07-13"))
 
-## replicate date of birth
-date_to_age_lifetab(date = c("2024-03-27",
-                             "2022-11-09"),
-                    dob = "2011-05-18")
-
-## return non-factor
-date_to_age_lifetab(date = c("2024-03-27",
-                             "2022-11-09"),
-                    dob = "2011-05-18",
-                    as_factor = FALSE)
-
-## alternative specifications for oldest age group
-date_to_age_lifetab(date = "2019-09-22",
-                    dob = "1910-01-01")
+## set oldest age group to 80+
 date_to_age_lifetab(date = "2019-09-22",
                     dob = "1910-01-01",
                     break_max = 80)

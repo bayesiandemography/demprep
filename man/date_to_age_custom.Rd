@@ -13,7 +13,7 @@ date_to_age_custom(
 )
 }
 \arguments{
-\item{date}{Dates of events or measurements.
+\item{date}{Dates of events.
 A vector of class \code{\link[base]{Date}},
 or a vector that can be coerced to class
 \code{Date} using function \code{\link[base]{as.Date}}.}
@@ -39,9 +39,10 @@ of \code{date} or the length of \code{dob}, whichever
 is greater.
 }
 \description{
-Given dates when events occurred or measurements were made,
-and dates of birth, allocate the events or measurements
-to age groups. \code{date_to_age_custom} is the most flexible
+Given the dates when events occurred,
+and the dates of birth of the people experiencing the events,
+allocate the events to age groups.
+\code{date_to_age_custom} is the most flexible
 of the \code{date_to_age} functions
 in that the age groups can have any combination of widths,
 though the widths must be defined in whole numbers of years.
@@ -76,19 +77,6 @@ date_to_age_custom(date = c("2024-03-27",
                    dob = c("2001-03-21",
                            "2000-07-13"),
                    breaks = c(15, 40, 65))
-
-## replicate date of birth
-date_to_age_custom(date = c("2024-03-27",
-                            "2022-11-09"),
-                   dob = "2001-01-01",
-                   breaks = c(0, 15, 60))
-
-## return non-factor
-date_to_age_custom(date = c("2024-03-27",
-                            "2022-11-09"),
-                   dob = "2001-01-01",
-                   breaks = c(0, 15, 60),
-                   as_factor = FALSE)
 
 ## alternative specifications for oldest age group
 date_to_age_custom(date = c("2024-03-27",

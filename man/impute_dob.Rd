@@ -17,24 +17,23 @@ impute_dob(date, age_years = NULL, age_months = NULL)
 A vector of class \code{\link[base]{Date}}
 }
 \description{
-Given a vector of dates and a vector of ages,
-randomly generate a vector of dates of birth. Ages
+Given dates and ages, randomly generate 
+dates of birth. Ages
 are measured in complete years and/or completed
 months. The dates of birth are generated from a 
 uniform distribution: all dates that fall within 
 the range implied by the \code{date},
 \code{age_years}, and \code{age_months} 
-arguements have the same chance of being selected.
+arguments have the same chance of being selected.
 For instance, if \code{date} is \code{"2000-12-31"}
 and \code{age} is \code{0}, then every date from
 \code{"2000-01-01"} to \code{"2000-12-31"}
 has the same 1/366 chance of being selected.
 }
 \details{
-The range of valid dates depends for each
-combination of date and age on whether
+The range of possible dates depends on whether
 age is specified in years or months.
-If age is specified in years only, then range
+If age is specified in years only, then
 the range is one year. If age is specified in months,
 or in a combination of years and months,
 then the range is one month. See below for an example.
@@ -45,7 +44,7 @@ ADD DISCUSSION OF SUBTLETIES OF MEASURING AGE
 or can be coerced to class \code{Date}
 via function \code{\link[base]{as.Date}}.
 
-\code{date} and \code{age} must have the same length
+\code{date} and \code{age} must have the same length.
 }
 \examples{
 impute_dob(date = c("2000-06-30", "2001-01-01"),

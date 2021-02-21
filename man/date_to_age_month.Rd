@@ -7,15 +7,25 @@
 date_to_age_month(
   date,
   dob,
+  break_min = 0,
   break_max = 1200,
   open_last = TRUE,
   as_factor = TRUE
 )
 }
 \arguments{
-\item{date}{Dates of events or measurements.}
+\item{date}{Dates of events.
+A vector of class \code{\link[base]{Date}},
+or a vector that can be coerced to class
+\code{Date} using function \code{\link[base]{as.Date}}.}
 
-\item{dob}{Dates of birth.}
+\item{dob}{Dates of birth.
+A vector of class \code{\link[base]{Date}},
+or a vector that can be coerced to class
+\code{Date} using function \code{\link[base]{as.Date}}.}
+
+\item{break_min}{An integer or \code{NULL}.
+Defaults to 0.}
 
 \item{break_max}{An integer or \code{NULL}.
 Defaults to 1200.}
@@ -34,34 +44,33 @@ of \code{date} or the length of \code{dob}, whichever
 is greater.
 }
 \description{
-Given dates when events occurred or measurements were made,
-and dates of birth, allocate the events or
-measurements to age groups. These
+Given the dates when events occurred,
+and the dates of birth of the people experiencing the events,
+allocate the events to age groups. These
 age groups all have widths of one month,
 except possibly the final age group.
 }
 \details{
-A person belongs to age group \code{"a"} if that
-person was exactly \code{a} months
-old at their most recent birthday. For instance, a person
-who had their fifth birthday two days ago belongs to age
-group \code{"60m"} and a person who was born (had their zero-th
-birthday) three months ago belongs to age group \code{"60m"}.
+A person belongs to age group \code{"x"} if that
+person was exactly \code{x} months
+old at their most recent birthday.
+For instance, a person belongs to age
+group \code{"60m"} if that person had their
+5th birthday (= 60 months) two days ago.
 
 \code{date} and \code{dob} must have the same length,
 unless one of them has length 1, in which case the
 length-1 argument is recycled.
 
-\code{break_max} and \code{open_last} are used to specify
-the oldest age group.
-If \code{break_max} is non-\code{NULL} and
-\code{open_last} is \code{TRUE}, the oldest
-age group is \code{[break_max, Inf)} months. If
-\code{break_max} is non-\code{NULL} and 
-\code{open_last} is \code{FALSE}, the oldest age
-group is \code{[break_max-1, break_max)} months.
-If \code{break_max} is \code{NULL}, the oldest
-age group is derived from the data.
+If \code{break_min} or \code{break_max} is set to \code{NULL},
+rather than to a specific value, then \code{date_to_age_year}
+finds the narrowest range that accommodates the data.
+
+When \code{open_last} is \code{TRUE}, the final age group
+is "open", which means that it has no upper limit.
+(The definition of an open interval in demography is
+is different from the definition of an open interval
+in mathematics.)
 
 When \code{as_factor} is \code{TRUE} the levels of
 the factor include all intermediate age groups,
@@ -70,32 +79,25 @@ including age groups that not appear in the data.
 \examples{
 date_to_age_month(date = c("2024-03-27",
                            "2022-11-09"),
-                  dob = c("2001-03-21",
-                          "2000-07-13"))
+                  dob = c("2021-03-21",
+                          "2020-07-13"))
 
-## replicate date of birth
-date_to_age_month(date = c("2024-03-27",
-                           "2022-11-09"),
-                  dob = "2011-05-18")
+## specify highest age group
+date_to_age_month(date = "2019-10-22",
+                  dob = "2018-01-01",
+                  break_max = 24)
 
-## return non-factor
-date_to_age_month(date = c("2024-03-27",
-                           "2022-11-09"),
-                  dob = "2011-05-18",
-                  as_factor = FALSE)
+## let lowest age group be set by the data
+date_to_age_month(date = "2019-10-22",
+                  dob = "2018-01-01",
+                  break_min = NULL,
+                  break_max = 24)
 
-## alternative specifications for oldest age group
-date_to_age_month(date = "2019-09-22",
-                  dob = "1910-01-01")
-date_to_age_month(date = "2019-09-22",
-                  dob = "1910-01-01",
-                  break_max = 320)
-date_to_age_month(date = "2019-09-22",
-                  dob = "1910-01-01",
-                  break_max = NULL)
-date_to_age_month(date = "2019-09-22",
-                  dob = "1910-01-01",
-                  break_max = NULL,
+## make final age group closed
+date_to_age_month(date = "2019-10-22",
+                  dob = "2018-01-01",
+                  break_min = NULL,
+                  break_max = 24,
                   open_last = FALSE)
 }
 \seealso{

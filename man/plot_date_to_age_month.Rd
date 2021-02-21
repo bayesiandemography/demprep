@@ -8,6 +8,7 @@ function 'date_to_age_month'}
 plot_date_to_age_month(
   date,
   dob,
+  break_min = 0,
   break_max = 1200,
   open_last = TRUE,
   show_months = FALSE
@@ -23,6 +24,9 @@ or a vector that can be coerced to class
 A vector of class \code{\link[base]{Date}},
 or a vector that can be coerced to class
 \code{Date} using function \code{\link[base]{as.Date}}.}
+
+\item{break_min}{An integer or \code{NULL}.
+Defaults to 0.}
 
 \item{break_max}{An integer or \code{NULL}.
 Defaults to 1200.}

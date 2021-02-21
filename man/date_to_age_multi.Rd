@@ -8,13 +8,14 @@ date_to_age_multi(
   date,
   dob,
   width = 5,
+  break_min = 0,
   break_max = 100,
   open_last = TRUE,
   as_factor = TRUE
 )
 }
 \arguments{
-\item{date}{Dates of events or measurements.
+\item{date}{Dates of events.
 A vector of class \code{\link[base]{Date}},
 or a vector that can be coerced to class
 \code{Date} using function \code{\link[base]{as.Date}}.}
@@ -26,6 +27,9 @@ or a vector that can be coerced to class
 
 \item{width}{The width in years of the age intervals.
 A positive integer. Defaults to 5.}
+
+\item{break_min}{An integer or \code{NULL}.
+Defaults to 0.}
 
 \item{break_max}{An integer or \code{NULL}.
 Defaults to 100.}
@@ -44,9 +48,9 @@ of \code{date} or the length of \code{dob}, whichever
 is greater.
 }
 \description{
-Given dates when events occurred or measurements were made,
-together with dates of birth, allocate the events or
-measurements to age groups. These
+Given the dates when events occurred,
+and the dates of birth of the people experiencing the events,
+allocate the events to age groups. These
 age groups all have the same width, except possibly
 the final age group. The width is measured in years
 and must be an integer.
@@ -56,16 +60,15 @@ and must be an integer.
 unless one of them has length 1, in which case the
 length-1 argument is recycled.
 
-\code{break_max} and \code{open_last} are used to specify
-the oldest age group.
-If \code{break_max} is non-\code{NULL} and
-\code{open_last} is \code{TRUE}, the oldest
-age group is \code{[break_max, Inf)} years. If
-\code{break_max} is non-\code{NULL} and 
-\code{open_last} is \code{FALSE}, the oldest age
-group is \code{[break_max-width, break_max)} years.
-If \code{break_max} is \code{NULL}, the oldest
-age group is derived from the data.
+If \code{break_min} or \code{break_max} is set to \code{NULL},
+rather than to a specific value, then \code{date_to_age_year}
+finds the narrowest range that accommodates the data.
+
+When \code{open_last} is \code{TRUE}, the final age group
+is "open", which means that it has no upper limit.
+(The definition of an open interval in demography is
+is different from the definition of an open interval
+in mathematics.)
 
 When \code{as_factor} is \code{TRUE} the levels of
 the factor include all intermediate age groups,
@@ -77,42 +80,34 @@ date_to_age_multi(date = c("2024-03-27",
                   dob = c("2001-03-21",
                           "2000-07-13"))
 
-## alternative values for 'width'
+## alternative value for 'width'
 date_to_age_multi(date = c("2024-03-27",
                            "2022-11-09"),
                   dob = c("2001-03-21",
                           "2000-07-13"),
                   width = 10)
+
+## final age group closed
 date_to_age_multi(date = c("2024-03-27",
                            "2022-11-09"),
                   dob = c("2001-03-21",
                           "2000-07-13"),
-                  width = 1)
+                  width = 10,
+                  open_last = FALSE)
 
-## replicate date of birth
+## allow highest age group to be set by the data
 date_to_age_multi(date = c("2024-03-27",
                            "2022-11-09"),
-                  dob = "2011-05-18")
+                  dob = c("2001-03-21",
+                          "2000-07-13"),
+                  width = 10,
+                  break_max = NULL)
 
 ## return non-factor
 date_to_age_multi(date = c("2024-03-27",
                            "2022-11-09"),
                   dob = "2011-05-18",
                   as_factor = FALSE)
-
-## alternative specifications for oldest age group
-date_to_age_multi(date = "2019-09-22",
-                  dob = "1910-01-01")
-date_to_age_multi(date = "2019-09-22",
-                  dob = "1910-01-01",
-                  break_max = 80)
-date_to_age_multi(date = "2019-09-22",
-                  dob = "1910-01-01",
-                  break_max = NULL)
-date_to_age_multi(date = "2019-09-22",
-                  dob = "1910-01-01",
-                  break_max = NULL,
-                  open_last = FALSE)
 }
 \seealso{
 Other functions for creating age groups are

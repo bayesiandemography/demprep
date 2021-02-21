@@ -18,8 +18,8 @@ specifying months. Optional.}
 A vector of class \code{\link[base]{Date}}.
 }
 \description{
-Given a vector of years, and possibly vectors 
-of months and days, randomly generate a vector of dates. 
+Given years, and possibly months and days, 
+randomly generate a dates. 
 The dates are generated
 from a uniform distribution:
 all dates that fall within the range implied by 
@@ -44,10 +44,6 @@ Months can be specified in one of four ways:
 
 \code{month} and \code{day}, if supplied, must have the
 same length as \code{year}.
-
-\code{year}, \code{month}, and \code{day} can all
-include \code{NA}s. The corresponding elements of the return
-value will also be \code{NA}.
 }
 \examples{
 impute_date(year = 2000:2004)

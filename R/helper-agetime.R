@@ -389,18 +389,26 @@ make_breaks_integer_lifetab <- function(break_max) {
 }
 
 ## HAS_TESTS
-make_breaks_integer_month_quarter <- function(age, break_max, open_last) {
+make_breaks_integer_month_quarter <- function(age, break_min, break_max, open_last) {
+    if (is.null(break_min)) {
+        break_min <- min(age, na.rm = TRUE)
+    }
     if (is.null(break_max)) {
         break_max <- max(age, na.rm = TRUE)
         if (!open_last)
             break_max <- break_max + 1L
     }
-    seq.int(from = 0L,
+    seq.int(from = break_min,
             to = break_max)
 }
 
 ## HAS_TESTS
-make_breaks_integer_year <- function(age, width, break_max, open_last) {
+make_breaks_integer_year <- function(age, width, break_min,
+                                     break_max, open_last) {
+    if (is.null(break_min)) {
+        break_min <- min(age, na.rm = TRUE)
+        break_min <- (break_min %/% width) * width
+    }
     if (is.null(break_max)) {
         break_max <- max(age, na.rm = TRUE)
         if (open_last)
@@ -408,7 +416,7 @@ make_breaks_integer_year <- function(age, width, break_max, open_last) {
         else
             break_max <- (break_max %/% width + 1L) * width
     }
-    seq.int(from = 0L,
+    seq.int(from = break_min,
             to = break_max,
             by = width)
 }
