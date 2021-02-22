@@ -1,4 +1,44 @@
 
+
+
+
+
+
+clean_age <- function(x) {
+    ans <- clean_age_5(x)
+    if (!is.null(ans))
+        return(ans)
+    ans <- clean_age_lifetab(x)
+    if (!is.null(ans))
+        return(ans)
+    x <- tolower(x)
+    ## trim leading zeros from any numbers
+    x <- gsub("(?<![0-9])0+(?=[0-9])", "", x, perl = TRUE)
+    ## remove "year" labels
+    x <- gsub("year|years|yr|yrs", "", x)
+    ## translate synonyms for age group "0"
+    x <- gsub("infant|in 1st|less than 1|under 1|less than one", "0", x)
+    ## translate synonyms for "+"
+    x <- gsub("and over|plus|and above|and older", "+", x)
+    ## remove spaces
+    x <- gsub(" ", "", x)
+    ## tranlsate synonyms for "-"
+    x <- gsub("^([0-9]+)to([0-9]+)$", "\\1-\\2", x)
+    x <- gsub("^([0-9]+)[[:punct:]]+([0-9]+)$", "\\1-\\2", x)
+    ## translate English digits
+    x <- gsub("one", "1", x)
+    x <- gsub("two", "2", x)
+    x <- gsub("three", "3", x)
+    x <- gsub("four", "4", x)
+    x <- gsub("five", "5", x)
+    x <- gsub("six", "6", x)
+    x <- gsub("seven", "7", x)
+    x <- gsub("eight", "8", x)
+    x <- gsub("nine", "9", x)
+    x
+}
+
+
 ## ## need to allow for medians
 ## cleanquantile <- function(x) {
 ##     x_is_na <- is.na(x)

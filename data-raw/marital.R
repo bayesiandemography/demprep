@@ -19,17 +19,30 @@ marital <- synthpop::SD2011 %>%
     sample_n(size = 1000)
 
 
-marital$age <- date_to_age_custom(date = marital$date_survey,
-                                  dob = marital$date_birth,
-                                  breaks = 16:90,
-                                  open_last = TRUE)
+marital$age <- date_to_age_year(date = rep("2011-01-01", 1000),
+                                dob = marital$date_birth,
+                                break_min = NULL,
+                                break_max = 90)
 head(marital)
 dtabs(marital, ~ age)
+
+
+marital$age5 <- date_to_age_multi(date = rep("2011-01-01", 1000),
+                                  dob = marital$date_birth,
+                                  width = 5,
+                                  break_min = NULL,
+                                  break_max = 90)
+head(marital)
+dtabs(marital, ~ age5)
+
 
 marital$period_birth <- date_to_period_multi(date = marital$date_birth,
                                              origin = 2011)
 head(marital)
+dtabs(marital, ~ period_birth)
 
+
+    
 marital$period_marry <- date_to_period_multi(date = marital$date_marry,
                                              origin = 2011)
 head(marital)
