@@ -9,6 +9,7 @@ Authors@R:
            comment = c(ORCID = "0000-0002-8010-9748"))
 Description: Functions for preparing demographic data
     for further analysis.
+Depends: R (>= 3.5.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

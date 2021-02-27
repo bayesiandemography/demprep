@@ -30,5 +30,6 @@ icebirths <- read_csv("data-raw/icebirths/MAN05102.csv",
     arrange(dob_child)
 
 save(icebirths,
-     file = "data/icebirths.rda")
+     file = "data/icebirths.rda",
+     compress = "xz")
 
