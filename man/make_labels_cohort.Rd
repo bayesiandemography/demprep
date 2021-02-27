@@ -46,7 +46,8 @@ one cohort begins on 2000-01-01 and ends on 2000-12-31,
 and the other starts on 2001-01-01 and ends on 2001-12-31.
 However, when \code{open_first} is \code{TRUE}, an 'open' cohort
 extending indefinitely into the past is appended to the start
-of the series. By default, \code{open_first} is \code{FALSE}.
+of the series. This cohort corresponds to the open age group
+in age group labels. By default, \code{open_first} is \code{FALSE}.
 
 If all cohorts have widths of one year,
 then the labels consist of a single years, eg
@@ -59,12 +60,11 @@ one-year cohorts can be ambiguous.
 If a cohort starts on 2020-01-01 and ends on 2020-12-31,
 then it is clear that the single-year
 label should be \code{"2020"}. However, if a cohort
-starts on 2020-07-01 and ends on 2021-06-30, then it is
-not obvious how the label should be constructed.
-Some authorities use the calendar year at the \emph{start} of
-the cohort, so that the label is
-\code{"2020"}. Other authorities use the calendar
-year at the \emph{end} of the cohort, so that the label
+starts on 2020-07-01 and ends on 2021-06-30,
+some people use the calendar year at the
+\emph{start}, so that the label is
+\code{"2020"}, and others use the calendar
+year at the \emph{end}, so that the label
 is \code{"2021"}. (In the latter case,
 cohorts are often called "years to", eg "years to June".)
 

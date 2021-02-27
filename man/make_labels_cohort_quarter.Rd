@@ -49,7 +49,9 @@ define the lower and upper limits of the cohorts.
 be the start dates of quarters.
 When \code{open_first} is \code{TRUE}, an 'open' cohort
 extending indefinitely into the past is appended to the start
-of the labels. By default, \code{open_first} is \code{FALSE}.
+of the labels. This cohort corresponds to the open age group
+in age group labels.
+By default, \code{open_first} is \code{FALSE}.
 
 When \code{include_na} is \code{TRUE}, an \code{NA}
 is added to the end of the labels. This can be useful
@@ -73,7 +75,7 @@ make_labels_cohort_quarter(break_min = "2005-04-01",
 To make labels for quarter age groups, use
 \code{\link{make_labels_age_quarter}},
 and to make labels for quarter periods, use
-\code{make_labels_cohort_period}.
+\code{\link{make_labels_period_quarter}}.
 To make labels for cohorts with widths measured in years,
 use function \code{\link{make_labels_cohort}}, and to make
 labels for month cohorts, use \code{\link{make_labels_cohort_month}}.

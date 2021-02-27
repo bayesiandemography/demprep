@@ -47,15 +47,13 @@ one-year periods can be ambiguous.
 If a period starts on 2020-01-01 and ends on 2020-12-31,
 it is clear that the single-year
 label should be \code{"2020"}. However, if a period
-starts on 2020-07-01 and ends on 2021-06-30, it is
-not obvious how the label should be constructed.
-Some authorities use the calendar year at the \emph{start} of
-the period, so that the label is
-\code{"2020"}. Other authorities use the calendar
-year at the \emph{end} of the period, so that the label
+starts on 2020-07-01 and ends on 2021-06-30,
+some people use the calendar year at the
+\emph{start}, so that the label is
+\code{"2020"}, and others use the calendar
+year at the \emph{end}, so that the label
 is \code{"2021"}. (In the latter case,
 periods are often called "years to", eg "years to June".)
-
 \code{make_labels_period} by default uses the start year
 to make single-year labels. To use the end year,
 set \code{label_year_start} to \code{FALSE}.

@@ -1,41 +1,109 @@
 
+#' Reformat age group labels
+#'
+#' Try to parse English-language age group
+#' labels and convert them
+#' to the format used by the dem packages.
+#'
+#' The basic strategy followed by \code{clean_age}
+#' is to strip off redundant words such as "years",
+#' and to translate to formats
+#' used by the dem packages, such as translating
+#' \code{"and over"} to \code{"+"} or "months"
+#' to "m".
+#'
+#' \code{clean_age} also checks for two special
+#' cases: (i) when the labels consist entirely of numbers
+#' \code{0}, \code{5}, \code{10}, \dots,
+#' \code{A}, and (ii) when the labels consist entirely
+#' of the numbers \code{0}, \code{1}, \code{5},
+#' \code{10}, \dots, \code{A}. In case
+#' (i) the labels are converted to the age groups
+#' \code{"0-4"}, \code{"5-9"}, \code{"10-14"},
+#' \dots, \code{"A+"}. In case (ii)
+#' the labels are converted to the life table age groups
+#' \code{"0"}, \code{"1-4"}, \code{"5-9"},
+#' \dots, \code{"A+"}. In both cases, \code{A}
+#' must be at least 50. 
+#'
+#' Function \code{clean_age_df} returns a data frame
+#' showing how each unique element in \code{x} is
+#' interpreted by function \code{clean_age} and whether
+#' the element can be interpreted as a valid
+#' age group label. \code{clean_age_df} can be
+#' used to check whether \code{clean_age} is
+#' giving the desired results.
+#'
+#' @section Warning:
+#' \code{clean_age} is designed for interactive use and
+#' one-off analyses, where a human scrutinises the results.
+#' \code{clean_age} may not be appropriate for
+#' automated production processes where inputs
+#' can change over time. 
+#' 
+#' @param x A numeric or character vector.
+#'
+#' @return
+#' \code{clean_age} returns a character vector with the same
+#' length as \code{x} in which labels that have been
+#' parsed are translated to dem formats.
+#' \code{clean_age_df} returns a data frame with columns
+#' \code{"input"}, \code{"output"}, and \code{"is_valid"}.
+#'
+#' @seealso \code{\link{make_labels_age}} describes the
+#' rules for formating age group labels in the dem packages.
+#'
+#' @examples
+#' x <- c("100 and over",
+#'        "infants",
+#'        "10 to 19 years",
+#'        "infants",
+#'        "untranslatable",
+#'        "10-19",
+#'        "100 quarters or more",
+#'        "also untranslatable",
+#'        "three months")
+#' x
+#' clean_age(x)
+#' clean_age_df(x)
+#'
+#' ## 5-year age groups defined by starting age
+#' x <- sample(seq(0, 80, 5))
+#' x
+#' clean_age(x)
+#' clean_age_df(x)
+#'
+#' ## age groups commonly used by life tables
+#' x <- sample(c(0, 1, seq(5, 80, 5)))
+#' x
+#' clean_age(x)
+#' clean_age_df(x)
+#' @name clean_age
+NULL
 
-
-
-
-
+## HAS_TESTS
+#' @export
+#' @rdname clean_age
 clean_age <- function(x) {
-    ans <- clean_age_5(x)
-    if (!is.null(ans))
-        return(ans)
-    ans <- clean_age_lifetab(x)
-    if (!is.null(ans))
-        return(ans)
-    x <- tolower(x)
-    ## trim leading zeros from any numbers
-    x <- gsub("(?<![0-9])0+(?=[0-9])", "", x, perl = TRUE)
-    ## remove "year" labels
-    x <- gsub("year|years|yr|yrs", "", x)
-    ## translate synonyms for age group "0"
-    x <- gsub("infant|in 1st|less than 1|under 1|less than one", "0", x)
-    ## translate synonyms for "+"
-    x <- gsub("and over|plus|and above|and older", "+", x)
-    ## remove spaces
-    x <- gsub(" ", "", x)
-    ## tranlsate synonyms for "-"
-    x <- gsub("^([0-9]+)to([0-9]+)$", "\\1-\\2", x)
-    x <- gsub("^([0-9]+)[[:punct:]]+([0-9]+)$", "\\1-\\2", x)
-    ## translate English digits
-    x <- gsub("one", "1", x)
-    x <- gsub("two", "2", x)
-    x <- gsub("three", "3", x)
-    x <- gsub("four", "4", x)
-    x <- gsub("five", "5", x)
-    x <- gsub("six", "6", x)
-    x <- gsub("seven", "7", x)
-    x <- gsub("eight", "8", x)
-    x <- gsub("nine", "9", x)
-    x
+    ans <- x
+    x_guess <- clean_age_guess(x)
+    is_valid <- is_valid_age(x_guess)
+    ans[is_valid] <- x_guess[is_valid]
+    ans
+}
+
+## HAS_TESTS
+#' @export
+#' @rdname clean_age
+clean_age_df <- function(x) {
+    x_processed <- clean_age(x)
+    is_duplicated <- duplicated(x)
+    input <- x[!is_duplicated]
+    output <- x_processed[!is_duplicated]
+    is_valid <- is_valid_age(output)
+    data.frame(input = input,
+               output = output,
+               is_valid = is_valid)
 }
 
 

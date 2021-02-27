@@ -14,7 +14,8 @@
 #' and the other starts on 2001-01-01 and ends on 2001-12-31.
 #' However, when \code{open_first} is \code{TRUE}, an 'open' cohort
 #' extending indefinitely into the past is appended to the start
-#' of the series. By default, \code{open_first} is \code{FALSE}.
+#' of the series. This cohort corresponds to the open age group
+#' in age group labels. By default, \code{open_first} is \code{FALSE}.
 #'
 #' If all cohorts have widths of one year,
 #' then the labels consist of a single years, eg
@@ -27,12 +28,11 @@
 #' If a cohort starts on 2020-01-01 and ends on 2020-12-31,
 #' then it is clear that the single-year
 #' label should be \code{"2020"}. However, if a cohort
-#' starts on 2020-07-01 and ends on 2021-06-30, then it is
-#' not obvious how the label should be constructed.
-#' Some authorities use the calendar year at the \emph{start} of
-#' the cohort, so that the label is
-#' \code{"2020"}. Other authorities use the calendar
-#' year at the \emph{end} of the cohort, so that the label
+#' starts on 2020-07-01 and ends on 2021-06-30,
+#' some people use the calendar year at the
+#' \emph{start}, so that the label is
+#' \code{"2020"}, and others use the calendar
+#' year at the \emph{end}, so that the label
 #' is \code{"2021"}. (In the latter case,
 #' cohorts are often called "years to", eg "years to June".)
 #'
@@ -180,7 +180,9 @@ make_labels_cohort <- function(breaks,
 #' be the start dates of quarters.
 #' When \code{open_first} is \code{TRUE}, an 'open' cohort
 #' extending indefinitely into the past is appended to the start
-#' of the labels. By default, \code{open_first} is \code{FALSE}.
+#' of the labels. This cohort corresponds to the open age group
+#' in age group labels.
+#' By default, \code{open_first} is \code{FALSE}.
 #'
 #' When \code{include_na} is \code{TRUE}, an \code{NA}
 #' is added to the end of the labels. This can be useful
@@ -199,7 +201,7 @@ make_labels_cohort <- function(breaks,
 #' @seealso To make labels for quarter age groups, use
 #' \code{\link{make_labels_age_quarter}},
 #' and to make labels for quarter periods, use
-#' \code{make_labels_cohort_period}.
+#' \code{\link{make_labels_period_quarter}}.
 #' To make labels for cohorts with widths measured in years,
 #' use function \code{\link{make_labels_cohort}}, and to make
 #' labels for month cohorts, use \code{\link{make_labels_cohort_month}}.
@@ -253,7 +255,9 @@ make_labels_cohort_quarter <- function(break_min,
 #' be the start dates of months.
 #' When \code{open_first} is \code{TRUE}, an 'open' cohort
 #' extending indefinitely into the past is appended to the start
-#' of the labels. By default, \code{open_first} is \code{FALSE}.
+#' of the labels. This cohort corresponds to the open age group
+#' in age group labels.
+#' By default, \code{open_first} is \code{FALSE}.
 #'
 #' When \code{include_na} is \code{TRUE}, an \code{NA}
 #' is added to the end of the labels. This can be useful
@@ -275,7 +279,8 @@ make_labels_cohort_quarter <- function(break_min,
 #' \code{make_labels_period_month}.
 #' To make labels for cohorts with widths measured in years,
 #' use function \code{\link{make_labels_cohort}}, and to make
-#' labels for quarter cohorts, use \code{\link{make_labels_cohort_quarter}}.
+#' labels for quarter cohorts, use
+#' \code{\link{make_labels_cohort_quarter}}.
 #'
 #' @examples
 #' make_labels_cohort_month(break_min = "2005-01-01",
@@ -314,5 +319,3 @@ make_labels_cohort_month <- function(break_min,
                                          include_na = include_na,
                                          unit = "month")
 }
-
-

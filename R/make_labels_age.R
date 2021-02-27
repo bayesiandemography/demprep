@@ -53,7 +53,7 @@
 #' make_labels_age(breaks = seq(0, 80, 5))
 #'
 #' ## mixed
-#' make_labels_age(breaks = c(0, 1, 4, seq(5, 80, 5)))
+#' make_labels_age(breaks = c(0, 1, seq(5, 80, 5)))
 #'
 #' ## no open age group
 #' make_labels_age(breaks = seq(15, 65, 5))
