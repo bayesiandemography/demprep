@@ -190,7 +190,7 @@ is_lower_within_month <- function(date_ymd, dob_ymd) {
 }
 
 ## HAS_TESTS
-make_breaks_date_month <- function(date, break_min) {
+make_breaks_date_to_date_month <- function(date, break_min) {
     has_date <- sum(!is.na(date)) > 0L
     has_break_min <- !is.null(break_min)
     ## date_from
@@ -203,6 +203,9 @@ make_breaks_date_month <- function(date, break_min) {
         month_first <- date_first_ymd$m
         date_from <- sprintf("%d-%d-01", year_first, month_first)
         date_from <- as.Date(date_from)
+        message(gettextf("'%s' set to %s",
+                         "break_min", date_from),
+                appendLF = TRUE)
     }
     ## date_to
     if (has_date) {
@@ -228,7 +231,7 @@ make_breaks_date_month <- function(date, break_min) {
 }
 
 ## HAS_TESTS
-make_breaks_date_quarter <- function(date, break_min) {
+make_breaks_date_to_date_quarter <- function(date, break_min) {
     has_date <- sum(!is.na(date)) > 0L
     has_break_min <- !is.null(break_min)
     ## date_from
@@ -243,6 +246,9 @@ make_breaks_date_quarter <- function(date, break_min) {
         month_from <- ((month_first - 1L) %/% 3L) * 3L + 1L
         date_from <- sprintf("%d-%d-01", year_from, month_from)
         date_from <- as.Date(date_from)
+        message(gettextf("'%s' set to %s",
+                         "break_min", date_from),
+                appendLF = TRUE)
     }
     ## date_to
     if (has_date) {
@@ -268,11 +274,11 @@ make_breaks_date_quarter <- function(date, break_min) {
 }
 
 ## HAS_TESTS
-make_breaks_date_year <- function(date,
-                                  month_start,
-                                  width,
-                                  origin,
-                                  break_min) {
+make_breaks_date_to_date_year <- function(date,
+                                          month_start,
+                                          width,
+                                          origin,
+                                          break_min) {
     has_date <- sum(!is.na(date)) > 0L
     has_break_min <- !is.null(break_min)
     has_origin <- !is.null(origin)
@@ -359,20 +365,34 @@ make_breaks_date_year <- function(date,
     date_from <- as.Date(date_from, format = "%Y-%m-%d")
     date_to <- as.Date(date_to, format = "%Y-%m-%d")
     by <- paste(width, "year")
+    if (!has_break_min) {
+        message(gettextf("'%s' set to %s",
+                         "break_min", date_from),
+                appendLF = TRUE)
+    }
     seq.Date(from = date_from,
              to = date_to,
              by = by)
 }
 
 ## HAS_TESTS
-make_breaks_integer_births <- function(age, width, break_min, break_max) {
+make_breaks_date_to_integer_births <- function(age,
+                                               width,
+                                               break_min,
+                                               break_max) {
     if (is.null(break_min)) {
         break_min <- min(age, na.rm = TRUE)
         break_min <- (break_min %/% width) * width
+        message(gettextf("'%s' set to %d",
+                         "break_min", break_min),
+                appendLF = TRUE)
     }
     if (is.null(break_max)) {
         break_max <- max(age, na.rm = TRUE)
         break_max <- (break_max %/% width + 1L) * width
+        message(gettextf("'%s' set to %d",
+                         "break_max", break_max),
+                appendLF = TRUE)
     }
     seq.int(from = break_min,
             to = break_max,
@@ -380,7 +400,15 @@ make_breaks_integer_births <- function(age, width, break_min, break_max) {
 }
 
 ## HAS_TESTS
-make_breaks_integer_lifetab <- function(break_max) {
+make_breaks_date_to_integer_lifetab <- function(age,
+                                                break_max) {
+    if (is.null(break_max)) {
+        break_max <- max(age, na.rm = TRUE)
+        break_max <- (break_max %/% 5L + 1L) * 5L
+        message(gettextf("'%s' set to %d",
+                         "break_max", break_max),
+                appendLF = TRUE)
+    }
     c(0L,
       1L,
       seq.int(from = 5L,
@@ -389,25 +417,34 @@ make_breaks_integer_lifetab <- function(break_max) {
 }
 
 ## HAS_TESTS
-make_breaks_integer_month_quarter <- function(age, break_min, break_max, open_last) {
+make_breaks_date_to_integer_month_quarter <- function(age, break_min, break_max, open_last) {
     if (is.null(break_min)) {
         break_min <- min(age, na.rm = TRUE)
+        message(gettextf("'%s' set to %d",
+                         "break_min", break_min),
+                appendLF = TRUE)
     }
     if (is.null(break_max)) {
         break_max <- max(age, na.rm = TRUE)
         if (!open_last)
             break_max <- break_max + 1L
+        message(gettextf("'%s' set to %d",
+                         "break_max", break_max),
+                appendLF = TRUE)
     }
     seq.int(from = break_min,
             to = break_max)
 }
 
 ## HAS_TESTS
-make_breaks_integer_year <- function(age, width, break_min,
-                                     break_max, open_last) {
+make_breaks_date_to_integer_year <- function(age, width, break_min,
+                                             break_max, open_last) {
     if (is.null(break_min)) {
         break_min <- min(age, na.rm = TRUE)
         break_min <- (break_min %/% width) * width
+        message(gettextf("'%s' set to %d",
+                         "break_min", break_min),
+                appendLF = TRUE)
     }
     if (is.null(break_max)) {
         break_max <- max(age, na.rm = TRUE)
@@ -415,11 +452,77 @@ make_breaks_integer_year <- function(age, width, break_min,
             break_max <- (break_max %/% width) * width
         else
             break_max <- (break_max %/% width + 1L) * width
+        message(gettextf("'%s' set to %d",
+                         "break_max", break_max),
+                appendLF = TRUE)
     }
     seq.int(from = break_min,
             to = break_max,
             by = width)
 }
+
+## HAS_TESTS
+make_breaks_label_to_integer_year <- function(age_low,
+                                              age_up,
+                                              labels,
+                                              width,
+                                              is_open,
+                                              break_min,
+                                              break_max,
+                                              open_last) {
+    ## determine 'break_min'
+    if (is.null(break_min)) {
+        break_min <- min(age_low, na.rm = TRUE)
+        break_min <- (break_min %/% width) * width
+        message(gettextf("'%s' set to %d",
+                         "break_min", break_min),
+                appendLF = TRUE)
+    }
+    ## Determine 'break_max'. Formula different from 'date_to_integer'
+    ## equivalent, since age in that case is age in completed years,
+    ## whereas here it is the upper limit of the age group.
+    if (is.null(break_max)) {
+        if (any(is_open))
+            break_max <- min(age_low[is_open])
+        else
+            break_max <- max(age_up, na.rm = TRUE)
+        if (open_last)
+            break_max <- (break_max %/% width) * width
+        else {
+            remainder <- break_max %% width
+            if (remainder > 0L)
+                break_max <- break_max + width - remainder
+        }
+        message(gettextf("'%s' set to %d",
+                         "break_max", break_max),
+                appendLF = TRUE)
+    }
+    ## make breaks
+    breaks <- seq.int(from = break_min,
+                      to = break_max,
+                      by = width)
+    ## check that no intervals cross breaks
+    up_is_break <- age_up %in% breaks
+    i_int_low <- findInterval(age_low, breaks)
+    i_int_up <- findInterval(age_up, breaks)
+    is_valid <- (is.na(age_low)
+        | is.na(age_up)
+        | (!up_is_break & (i_int_up == i_int_low))
+        | (up_is_break & (i_int_up == i_int_low + 1L)))
+    i_invalid <- match(FALSE, is_valid, nomatch = 0L)
+    if (i_invalid > 0L)
+        stop(gettextf("age group \"%s\" intersects two or more of the intervals formed when '%s' is %d, '%s' is %d, and '%s' is %d",
+                      labels[[i_invalid]],
+                      "break_min",
+                      break_min,
+                      "break_max",
+                      break_max,
+                      "width",
+                      width),
+             call. = FALSE)
+    breaks
+}
+
 
 ## HAS_TESTS
 ## Number of days in month containing 'date'. Handles leap years.
@@ -453,7 +556,7 @@ rollback_multi <- function(date, width, origin, month_start) {
         return(as.Date(character()))
     if (all(is.na(date)))
         return(date)
-    breaks <- make_breaks_date_year(date = date,
+    breaks <- make_breaks_date_to_date_year(date = date,
                                     month_start = month_start,
                                     width = width,
                                     origin = origin,

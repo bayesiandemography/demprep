@@ -4,13 +4,7 @@
 \alias{date_to_age_custom}
 \title{Convert dates to customized age groups}
 \usage{
-date_to_age_custom(
-  date,
-  dob,
-  breaks = NULL,
-  open_last = TRUE,
-  as_factor = TRUE
-)
+date_to_age_custom(date, dob, breaks = NULL, open_last = TRUE)
 }
 \arguments{
 \item{date}{Dates of events.
@@ -27,16 +21,11 @@ or a vector that can be coerced to class
 
 \item{open_last}{Whether the final age group
 has no upper limit. Defaults to \code{TRUE}.}
-
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the
-return value is a factor; otherwise it is a character vector.
-The length of the return value equals the length
-of \code{date} or the length of \code{dob}, whichever
-is greater.
+A factor with the same length as
+\code{date} or \code{dob}, whichever
+is longer.
 }
 \description{
 Given the dates when events occurred,
@@ -62,9 +51,9 @@ second-to-last value for \code{breaks} and \code{b}
 is the last value, then the oldest age
 group is \code{[a, b)} years.
 
-When \code{as_factor} is \code{TRUE} the levels of
-the factor include all intermediate age groups,
-including age groups that not appear in the data.
+The return value is a factor. The levels of this
+factor contain all intermediate age groups,
+including ones that do not appear in the data.
 }
 \examples{
 date_to_age_custom(date = c("2024-03-27",

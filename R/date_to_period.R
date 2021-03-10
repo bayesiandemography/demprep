@@ -122,7 +122,7 @@ date_to_period_year <- function(date,
         return(ans)
     }
     ## create sequence of breaks
-    breaks <- make_breaks_date_year(date = date,
+    breaks <- make_breaks_date_to_date_year(date = date,
                                     month_start = month_start,
                                     width = 1L,
                                     origin = NULL,
@@ -254,7 +254,7 @@ date_to_period_multi <- function(date,
         return(ans)
     }
     ## create sequence of breaks
-    breaks <- make_breaks_date_year(date = date,
+    breaks <- make_breaks_date_to_date_year(date = date,
                                     month_start = month_start,
                                     width = width,
                                     origin = origin,
@@ -490,7 +490,7 @@ date_to_period_quarter <- function(date,
         return(ans)
     }
     ## create sequence of breaks
-    breaks <- make_breaks_date_quarter(date = date,
+    breaks <- make_breaks_date_to_date_quarter(date = date,
                                        break_min = NULL)
     ## make labels for these breaks
     n <- length(breaks)
@@ -579,7 +579,7 @@ date_to_period_month <- function(date,
         return(ans)
     }
     ## create sequence of breaks
-    breaks <- make_breaks_date_month(date = date,
+    breaks <- make_breaks_date_to_date_month(date = date,
                                      break_min = NULL)
     ## make labels for these breaks
     n <- length(breaks)

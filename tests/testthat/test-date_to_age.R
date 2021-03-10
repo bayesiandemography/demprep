@@ -37,14 +37,6 @@ test_that("date_to_age_year gives correct answers with infinite values for 'brea
                                       break_max = NULL,
                                       open_last = FALSE),
                      factor(c(0, 10, 4), levels = 0:10))
-    expect_identical(date_to_age_year(date = c("2000-01-01",
-                                               "2010-01-01",
-                                               "2004-12-31"),
-                                      dob = "2000-01-01",
-                                      break_max = NULL,
-                                      open_last = FALSE,
-                                      as_factor = FALSE),
-                     c("0", "10", "4"))
 })
 
 
@@ -55,16 +47,6 @@ test_that("date_to_age_year gives correct answers when 'open_last' is FALSE", {
                                             dob = "2000-01-01",
                                             open_last = FALSE),
                      factor(c(0, 10, 4), levels = 0:99))
-})
-
-test_that("date_to_age_year gives correct answers when 'as_factor' is FALSE", {
-    expect_identical(date_to_age_year(date = c("2000-01-01",
-                                                     "2010-01-01",
-                                                     "2004-12-31"),
-                                            dob = "2000-01-01",
-                                            break_max = 2,
-                                            as_factor = FALSE),
-                     c(0, "2+", "2+"))
 })
 
 test_that("date_to_age_year gives correct answers when 'date' and/or 'dob' has NA", {
@@ -163,18 +145,8 @@ test_that("date_to_age_multi gives correct answers with valid inputs", {
                                                 "2004-12-31"),
                                        dob = NA,
                                        width = 5,
-                                       break_max = NULL,
-                                       open_last = FALSE,
-                                       as_factor = FALSE),
-                     rep(NA_character_, 3))
-    expect_identical(date_to_age_multi(date = c("2000-01-01",
-                                                "2010-01-01",
-                                                "2004-12-31"),
-                                       dob = NA,
-                                       width = 5,
                                        break_max = 10,
-                                       open_last = FALSE,
-                                       as_factor = TRUE),
+                                       open_last = FALSE),
                      factor(rep(NA_character_, 3), levels = c("0-4", "5-9")))
 })
 
@@ -203,13 +175,6 @@ test_that("date_to_age_lifetab gives correct answers with valid inputs", {
                                                break_max = 10),
                      factor(rep(NA_character_, 3),
                             levels = c("0", "1-4", "5-9", "10+")))
-    expect_identical(date_to_age_lifetab(date = c("2000-01-01",
-                                                        "2010-01-01",
-                                                        "2004-12-31"),
-                                               dob = NA,
-                                               break_max = 10,
-                                               as_factor = FALSE),
-                     rep(NA_character_, 3))
 })
 
 ## date_to_age_births --------------------------------------------------
@@ -258,16 +223,6 @@ test_that("date_to_age_births gives correct answers with valid inputs", {
                                             recode_down = TRUE),
                      factor(rep(NA_character_, 3),
                             levels = c("20-24", "25-29", "30-34", "35-39")))
-    expect_identical(date_to_age_births(date = c(NA,
-                                                     NA,
-                                                     "2049-12-31"),
-                                            dob = NA_character_,
-                                            break_min = 20,
-                                            break_max = 40,
-                                            recode_up = TRUE,
-                                            recode_down = TRUE,
-                                            as_factor = FALSE),
-                     rep(NA_character_, 3))
 })
 
 test_that("date_to_age_births throws correct errors with invalid inputs", {

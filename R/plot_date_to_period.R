@@ -50,7 +50,7 @@ plot_date_to_period_year <- function(date,
     demcheck::err_is_logical_flag(x = label_year_start,
                                   name = "label_year_start")
     ## create sequence of breaks
-    breaks <- make_breaks_date_year(date = date,
+    breaks <- make_breaks_date_to_date_year(date = date,
                                     month_start = month_start,
                                     width = 1L,
                                     origin = NULL,
@@ -122,7 +122,7 @@ plot_date_to_period_multi <- function(date,
     month_start <- demcheck::err_tdy_month_start(x = month_start,
                                                  name = "month_start")
     ## create sequence of breaks
-    breaks <- make_breaks_date_year(date = date,
+    breaks <- make_breaks_date_to_date_year(date = date,
                                     month_start = month_start,
                                     width = width,
                                     origin = origin,
@@ -226,7 +226,7 @@ plot_date_to_period_quarter <- function(date) {
     date <- demcheck::err_tdy_date_vector(x = date,
                                           name = "date")
     ## create sequence of breaks
-    breaks <- make_breaks_date_quarter(date = date,
+    breaks <- make_breaks_date_to_date_quarter(date = date,
                                        break_min = NULL)
     ## make labels for these breaks
     n <- length(breaks)
@@ -267,7 +267,7 @@ plot_date_to_period_month <- function(date) {
     date <- demcheck::err_tdy_date_vector(x = date,
                                           name = "date")
     ## create sequence of breaks
-    breaks <- make_breaks_date_month(date = date,
+    breaks <- make_breaks_date_to_date_month(date = date,
                                      break_min = NULL)
     ## make labels for these breaks
     n <- length(breaks)

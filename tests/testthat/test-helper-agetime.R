@@ -385,423 +385,572 @@ test_that("'is_lower_within_month' gives correct answer with valid input", {
 })
                                            
                                            
-## make_breaks_date_month -----------------------------------------------------
+## make_breaks_date_to_date_month ---------------------------------------------
 
-test_that("'make_breaks_date_month' gives correct answer with valid input", {
-    expect_identical(make_breaks_date_month(date = as.Date("2001-01-05"),
-                                              break_min = NULL),
+test_that("'make_breaks_date_to_date_month' gives correct answer with valid input", {
+    expect_identical(make_breaks_date_to_date_month(date = as.Date("2001-01-05"),
+                                                    break_min = NULL),
                      as.Date(c("2001-01-01", "2001-02-01")))
-    expect_identical(make_breaks_date_month(date = as.Date(c("2001-01-05", "2000-02-29")),
-                                              break_min = NULL),
+    expect_identical(make_breaks_date_to_date_month(date = as.Date(c("2001-01-05", "2000-02-29")),
+                                                    break_min = NULL),
                      seq.Date(from = as.Date("2000-02-01"),
                               to = as.Date("2001-02-01"),
                               by = "month"))
-    expect_identical(make_breaks_date_month(date = as.Date(c("2001-01-05", NA, "2000-02-29")),
-                                              break_min = NULL),
+    expect_identical(make_breaks_date_to_date_month(date = as.Date(c("2001-01-05", NA, "2000-02-29")),
+                                                    break_min = NULL),
                      seq.Date(from = as.Date("2000-02-01"),
                               to = as.Date("2001-02-01"),
                               by = "month"))
-    expect_identical(make_breaks_date_month(date = as.Date(c("2001-01-05", NA, "2005-12-29")),
-                                              break_min = NULL),
+    expect_identical(make_breaks_date_to_date_month(date = as.Date(c("2001-01-05", NA, "2005-12-29")),
+                                                    break_min = NULL),
                      seq.Date(from = as.Date("2001-01-01"),
                               to = as.Date("2006-01-01"),
                               by = "month"))
-    expect_identical(make_breaks_date_month(date = as.Date("2001-01-05"),
-                                              break_min = as.Date("2000-01-01")),
+    expect_identical(make_breaks_date_to_date_month(date = as.Date("2001-01-05"),
+                                                    break_min = as.Date("2000-01-01")),
                      seq.Date(from = as.Date("2000-01-01"),
                               to = as.Date("2001-02-01"),
                               by = "month"))
-    expect_identical(make_breaks_date_month(date = as.Date(c("2001-01-05", "2000-02-29")),
-                                              break_min = as.Date("1999-12-01")),
+    expect_identical(make_breaks_date_to_date_month(date = as.Date(c("2001-01-05", "2000-02-29")),
+                                                    break_min = as.Date("1999-12-01")),
                      seq.Date(from = as.Date("1999-12-01"),
                               to = as.Date("2001-02-01"),
                               by = "month"))
-    expect_identical(make_breaks_date_month(date = as.Date(c(NA, NA)),
-                                            break_min = as.Date("1999-12-01")),
+    expect_identical(make_breaks_date_to_date_month(date = as.Date(c(NA, NA)),
+                                                    break_min = as.Date("1999-12-01")),
                      as.Date("1999-12-01"))
-    expect_identical(make_breaks_date_month(date = as.Date(character()),
-                                            break_min = as.Date("1999-12-01")),
+    expect_identical(make_breaks_date_to_date_month(date = as.Date(character()),
+                                                    break_min = as.Date("1999-12-01")),
                      as.Date("1999-12-01"))
 })
 
 
-## make_breaks_date_quarter ---------------------------------------------------
+## make_breaks_date_to_date_quarter -------------------------------------------
 
-test_that("'make_breaks_date_quarter' gives correct answer with valid input", {
-    expect_identical(make_breaks_date_quarter(date = as.Date("2001-01-05"),
-                                              break_min = NULL),
+test_that("'make_breaks_date_to_date_quarter' gives correct answer with valid input", {
+    expect_identical(make_breaks_date_to_date_quarter(date = as.Date("2001-01-05"),
+                                                      break_min = NULL),
                      as.Date(c("2001-01-01", "2001-04-01")))
-    expect_identical(make_breaks_date_quarter(date = as.Date(c("2001-01-05", "2000-02-29")),
-                                              break_min = NULL),
+    expect_identical(make_breaks_date_to_date_quarter(date = as.Date(c("2001-01-05", "2000-02-29")),
+                                                      break_min = NULL),
                      seq.Date(from = as.Date("2000-01-01"),
                               to = as.Date("2001-04-01"),
                               by = "quarter"))
-    expect_identical(make_breaks_date_quarter(date = as.Date(c("2001-01-05", NA, "2000-02-29")),
-                                              break_min = NULL),
+    expect_identical(make_breaks_date_to_date_quarter(date = as.Date(c("2001-01-05", NA, "2000-02-29")),
+                                                      break_min = NULL),
                      seq.Date(from = as.Date("2000-01-01"),
                               to = as.Date("2001-04-01"),
                               by = "quarter"))
-    expect_identical(make_breaks_date_quarter(date = as.Date(c("2001-01-05", NA, "2005-12-29")),
-                                              break_min = NULL),
+    expect_identical(make_breaks_date_to_date_quarter(date = as.Date(c("2001-01-05", NA, "2005-12-29")),
+                                                      break_min = NULL),
                      seq.Date(from = as.Date("2001-01-01"),
                               to = as.Date("2006-01-01"),
                               by = "quarter"))
-    expect_identical(make_breaks_date_quarter(date = as.Date("2001-01-05"),
-                                              break_min = as.Date("2000-01-01")),
+    expect_identical(make_breaks_date_to_date_quarter(date = as.Date("2001-01-05"),
+                                                      break_min = as.Date("2000-01-01")),
                      seq.Date(from = as.Date("2000-01-01"),
                               to = as.Date("2001-04-01"),
                               by = "quarter"))
-    expect_identical(make_breaks_date_quarter(date = as.Date(c("2001-01-05", "2000-02-29")),
-                                              break_min = as.Date("1999-10-01")),
+    expect_identical(make_breaks_date_to_date_quarter(date = as.Date(c("2001-01-05", "2000-02-29")),
+                                                      break_min = as.Date("1999-10-01")),
                      seq.Date(from = as.Date("1999-10-01"),
                               to = as.Date("2001-04-01"),
                               by = "quarter"))
 })
 
 
-## make_breaks_date_year ---------------------------------------------------
+## make_breaks_date_to_date_year ----------------------------------------------
 
-test_that("'make_breaks_date_year' gives correct answer with valid input", {
-    expect_identical(make_breaks_date_year(date = as.Date("2001-01-05"),
-                                           break_min = as.Date("1996-01-01"),
-                                           month_start = "Jan",
-                                           origin = NULL,
-                                           width = 1L),
+test_that("'make_breaks_date_to_date_year' gives correct answer with valid input", {
+    expect_identical(make_breaks_date_to_date_year(date = as.Date("2001-01-05"),
+                                                   break_min = as.Date("1996-01-01"),
+                                                   month_start = "Jan",
+                                                   origin = NULL,
+                                                   width = 1L),
                      seq.Date(from = as.Date("1996-01-01"),
                               to = as.Date("2002-01-01"),
                               by = "1 year"))
-    expect_identical(make_breaks_date_year(date = as.Date("2001-01-05"),
-                                           break_min = NULL,
-                                           month_start = "Jan",
-                                           origin = NULL,
-                                           width = 1L),
+    expect_identical(make_breaks_date_to_date_year(date = as.Date("2001-01-05"),
+                                                   break_min = NULL,
+                                                   month_start = "Jan",
+                                                   origin = NULL,
+                                                   width = 1L),
                      seq.Date(from = as.Date("2001-01-01"),
                               to = as.Date("2002-01-01"),
                               by = "1 year"))
-    expect_identical(make_breaks_date_year(date = as.Date(c("1996-08-03", "2010-12-31")),
-                                           break_min = NULL,
-                                           month_start = "Jul",
-                                           origin = NULL,
-                                           width = 1L),
+    expect_identical(make_breaks_date_to_date_year(date = as.Date(c("1996-08-03", "2010-12-31")),
+                                                   break_min = NULL,
+                                                   month_start = "Jul",
+                                                   origin = NULL,
+                                                   width = 1L),
                      seq.Date(from = as.Date("1996-07-01"),
                               to = as.Date("2011-07-01"),
                               by = "1 year"))
-    expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
-                                           break_min = NULL,
-                                           month_start = "Jul",
-                                           origin = 2001,
-                                           width = 5L),
+    expect_identical(make_breaks_date_to_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
+                                                   break_min = NULL,
+                                                   month_start = "Jul",
+                                                   origin = 2001,
+                                                   width = 5L),
                      seq.Date(from = as.Date("1996-07-01"),
                               to = as.Date("2011-07-01"),
                               by = "5 years"))
-    expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
-                                           break_min = as.Date("1996-07-01"),
-                                           origin = 2000L,
-                                           month_start = "Jul",
-                                           width = 1L),
+    expect_identical(make_breaks_date_to_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
+                                                   break_min = as.Date("1996-07-01"),
+                                                   origin = 2000L,
+                                                   month_start = "Jul",
+                                                   width = 1L),
                      seq.Date(from = as.Date("1996-07-01"),
                               to = as.Date("2011-07-01"),
                               by = "1 years"))
-    expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
-                                           origin = 2000,
-                                           break_min = NULL,
-                                           month_start = "Jul",
-                                           width = 5L),
+    expect_identical(make_breaks_date_to_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
+                                                   origin = 2000,
+                                                   break_min = NULL,
+                                                   month_start = "Jul",
+                                                   width = 5L),
                      seq.Date(from = as.Date("1995-07-01"),
                               to = as.Date("2015-07-01"),
                               by = "5 years"))
-    expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
-                                           break_min = NULL,
-                                           origin = 2011,
-                                           month_start = "Jan",
-                                           width = 1L),
+    expect_identical(make_breaks_date_to_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
+                                                   break_min = NULL,
+                                                   origin = 2011,
+                                                   month_start = "Jan",
+                                                   width = 1L),
                      seq.Date(from = as.Date("1996-01-01"),
                               to = as.Date("2012-01-01"),
                               by = "1 years"))
-    expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
-                                           break_min = NULL,
-                                           month_start = "Jan",
-                                           origin = 2000,
-                                           width = 3L),
+    expect_identical(make_breaks_date_to_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
+                                                   break_min = NULL,
+                                                   month_start = "Jan",
+                                                   origin = 2000,
+                                                   width = 3L),
                      seq.Date(from = as.Date("1994-01-01"),
                               to = as.Date("2012-01-01"),
                               by = "3 years"))
-    expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
-                                           break_min = NULL,
-                                           month_start = "Apr",
-                                           origin = 2020,
-                                           width = 10L),
+    expect_identical(make_breaks_date_to_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
+                                                   break_min = NULL,
+                                                   month_start = "Apr",
+                                                   origin = 2020,
+                                                   width = 10L),
                      seq.Date(from = as.Date("1990-04-01"),
                               to = as.Date("2020-04-01"),
                               by = "10 years"))
-    expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
-                                           origin = 1990,
-                                           month_start = "Apr",
-                                           break_min = NULL,
-                                           width = 10L),
+    expect_identical(make_breaks_date_to_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
+                                                   origin = 1990,
+                                                   month_start = "Apr",
+                                                   break_min = NULL,
+                                                   width = 10L),
                      seq.Date(from = as.Date("1990-04-01"),
                               to = as.Date("2020-04-01"),
                               by = "10 years"))
-    expect_identical(make_breaks_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
-                                           break_min = as.Date("1996-04-01"),
-                                           origin = 2000L,
-                                           month_start = "Apr",
-                                           width = 2L),
+    expect_identical(make_breaks_date_to_date_year(date = as.Date(c("1996-07-03", "2011-05-23", "2001-01-01", NA)),
+                                                   break_min = as.Date("1996-04-01"),
+                                                   origin = 2000L,
+                                                   month_start = "Apr",
+                                                   width = 2L),
                      seq.Date(from = as.Date("1996-04-01"),
                               to = as.Date("2012-04-01"),
                               by = "2 years"))
-    expect_identical(make_breaks_date_year(date = as.Date(character()),
-                                           origin = 2000L,
-                                           month_start = "Apr",
-                                           width = 2L,
-                                           break_min = NULL),
+    expect_identical(make_breaks_date_to_date_year(date = as.Date(character()),
+                                                   origin = 2000L,
+                                                   month_start = "Apr",
+                                                   width = 2L,
+                                                   break_min = NULL),
                      as.Date("2000-04-01"))
-    expect_identical(make_breaks_date_year(date = as.Date(character()),
-                                           origin = 2000L,
-                                           month_start = "Apr",
-                                           width = 2L,
-                                           break_min = as.Date("1996-04-01")),
+    expect_identical(make_breaks_date_to_date_year(date = as.Date(character()),
+                                                   origin = 2000L,
+                                                   month_start = "Apr",
+                                                   width = 2L,
+                                                   break_min = as.Date("1996-04-01")),
                      as.Date("1996-04-01"))
 })
 
 
-## make_breaks_integer_births ---------------------------------------------------
+## make_breaks_date_to_integer_births -----------------------------------------
 
-test_that("'make_breaks_integer_births' gives correct answer when break_max is finite", {
-    expect_identical(make_breaks_integer_births(age = c(17L, 22L, 37L),
-                                              width = 5L,
-                                              break_min = 15L,
-                                              break_max = 50L),
+test_that("'make_breaks_date_to_integer_births' gives correct answer when break_max is finite", {
+    expect_identical(make_breaks_date_to_integer_births(age = c(17L, 22L, 37L),
+                                                        width = 5L,
+                                                        break_min = 15L,
+                                                        break_max = 50L),
                      seq.int(from = 15L, by = 5L, to = 50L))
-    expect_identical(make_breaks_integer_births(age = c(17L, 22L, 37L, NA),
-                                              width = 5L,
-                                              break_min = 15L,
-                                              break_max = 50L),
+    expect_identical(make_breaks_date_to_integer_births(age = c(17L, 22L, 37L, NA),
+                                                        width = 5L,
+                                                        break_min = 15L,
+                                                        break_max = 50L),
                      seq.int(from = 15L, by = 5L, to = 50L))
-    expect_identical(make_breaks_integer_births(age = c(17L, 22L, 37L, NA),
-                                              width = 5L,
-                                              break_min = NULL,
-                                              break_max = NULL),
+    expect_identical(make_breaks_date_to_integer_births(age = c(17L, 22L, 37L, NA),
+                                                        width = 5L,
+                                                        break_min = NULL,
+                                                        break_max = NULL),
                      seq.int(from = 15L, by = 5L, to = 40L))
-    expect_identical(make_breaks_integer_births(age = c(17L, 22L, 37L, NA),
-                                              width = 5L,
-                                              break_min = NULL,
-                                              break_max = 45L),
+    expect_identical(make_breaks_date_to_integer_births(age = c(17L, 22L, 37L, NA),
+                                                        width = 5L,
+                                                        break_min = NULL,
+                                                        break_max = 45L),
                      seq.int(from = 15L, by = 5L, to = 45L))
 })
 
 
-## make_breaks_integer_lifetab ---------------------------------------------------
+## make_breaks_date_to_integer_lifetab ----------------------------------------
 
-test_that("'make_breaks_integer_lifetab' gives correct answer with valid inputs", {
-    expect_identical(make_breaks_integer_lifetab(break_max = 100L),
+test_that("'make_breaks_date_to_integer_lifetab' gives correct answer with valid inputs", {
+    expect_identical(make_breaks_date_to_integer_lifetab(age = 0:100,
+                                                         break_max = 100L),
                      c(0L, 1L, seq.int(from = 5L, by = 5L, to = 100L)))
-    expect_identical(make_breaks_integer_lifetab(break_max = 5L),
+    expect_identical(make_breaks_date_to_integer_lifetab(age = 0:4,
+                                                         break_max = 5L),
+                     c(0L, 1L, 5L))
+    expect_identical(make_breaks_date_to_integer_lifetab(age = 0,
+                                                         break_max = NULL),
                      c(0L, 1L, 5L))
 })
 
 
-## make_breaks_integer_month_quarter ---------------------------------------------------
+## make_breaks_date_to_integer_month_quarter ----------------------------------
 
-test_that("'make_breaks_integer_month_quarter' gives correct answer when break_min, break_max both non-NULL", {
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L),
-                                                       break_min = 0L,
-                                                       break_max = 100L,
-                                                       open_last = TRUE),
+test_that("'make_breaks_date_to_integer_month_quarter' gives correct answer when break_min, break_max both non-NULL", {
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 121L),
+                                                               break_min = 0L,
+                                                               break_max = 100L,
+                                                               open_last = TRUE),
                      seq.int(from = 0L, to = 100L))
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L),
-                                                       break_min = 20L,
-                                                       break_max = 100L,
-                                                       open_last = TRUE),
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 121L),
+                                                               break_min = 20L,
+                                                               break_max = 100L,
+                                                               open_last = TRUE),
                      seq.int(from = 20L, to = 100L))
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L, NA),
-                                                       break_min = 0L,
-                                                       break_max = 100L,
-                                                       open_last = TRUE),
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 121L, NA),
+                                                               break_min = 0L,
+                                                               break_max = 100L,
+                                                               open_last = TRUE),
                      seq.int(from = 0L, to = 100L))
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 21L),
-                                                       break_min = 0L,
-                                                       break_max = 100L,
-                                                       open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 21L),
+                                                               break_min = 0L,
+                                                               break_max = 100L,
+                                                               open_last = FALSE),
                      seq.int(from = 0L, to = 100L))
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 21L, NA),
-                                                       break_min = 0L,
-                                                       break_max = 100L,
-                                                       open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 21L, NA),
+                                                               break_min = 0L,
+                                                               break_max = 100L,
+                                                               open_last = FALSE),
                      seq.int(from = 0L, to = 100L))
 })
 
-test_that("'make_breaks_integer_month_quarter' gives correct answer when break_min is NULL, break_max is non-NULL", {
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L),
-                                                       break_min = NULL,
-                                                       break_max = 100,
-                                                       open_last = TRUE),
+test_that("'make_breaks_date_to_integer_month_quarter' gives correct answer when break_min is NULL, break_max is non-NULL", {
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 121L),
+                                                               break_min = NULL,
+                                                               break_max = 100,
+                                                               open_last = TRUE),
                      seq.int(from = 22L, to = 100L))
 })
 
-test_that("'make_breaks_integer_month_quarter' gives correct answer when break_min is non-NULL, break_max is NULL", {
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L),
-                                                       break_min = 0L,
-                                                       break_max = NULL,
-                                                       open_last = TRUE),
+test_that("'make_breaks_date_to_integer_month_quarter' gives correct answer when break_min is non-NULL, break_max is NULL", {
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 121L),
+                                                               break_min = 0L,
+                                                               break_max = NULL,
+                                                               open_last = TRUE),
                      seq.int(from = 0L, to = 121L))
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L, NA),
-                                                       break_min = 0L,
-                                                       break_max = NULL,
-                                                       open_last = TRUE),
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 121L, NA),
+                                                               break_min = 0L,
+                                                               break_max = NULL,
+                                                               open_last = TRUE),
                      seq.int(from = 0L, to = 121L))
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L),
-                                                       break_min = 0L,
-                                                       break_max = NULL,
-                                                       open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 121L),
+                                                               break_min = 0L,
+                                                               break_max = NULL,
+                                                               open_last = FALSE),
                      seq.int(from = 0L, to = 122L))
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L, NA),
-                                                       break_min = 0L,
-                                                       break_max = NULL,
-                                                       open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 121L, NA),
+                                                               break_min = 0L,
+                                                               break_max = NULL,
+                                                               open_last = FALSE),
                      seq.int(from = 0L, to = 122L))
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 80L),
-                                                       break_min = 0L,
-                                                       break_max = NULL,
-                                                       open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 80L),
+                                                               break_min = 0L,
+                                                               break_max = NULL,
+                                                               open_last = FALSE),
                      seq.int(from = 0L, to = 81L))
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 80L, NA),
-                                                       break_min = 0L,
-                                                       break_max = NULL,
-                                                       open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 80L, NA),
+                                                               break_min = 0L,
+                                                               break_max = NULL,
+                                                               open_last = FALSE),
                      seq.int(from = 0L, to = 81L))
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 84L),
-                                                       break_min = 0L,
-                                                       break_max = NULL,
-                                                       open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 84L),
+                                                               break_min = 0L,
+                                                               break_max = NULL,
+                                                               open_last = FALSE),
                      seq.int(from = 0L, to = 85L))
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 84L, NA),
-                                                       break_min = 0L,
-                                                       break_max = NULL,
-                                                       open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 84L, NA),
+                                                               break_min = 0L,
+                                                               break_max = NULL,
+                                                               open_last = FALSE),
                      seq.int(from = 0L, to = 85L))
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 84L, NA),
-                                                       break_min = 0L,
-                                                       break_max = NULL,
-                                                       open_last = TRUE),
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 84L, NA),
+                                                               break_min = 0L,
+                                                               break_max = NULL,
+                                                               open_last = TRUE),
                      seq.int(from = 0L, to = 84L))
 })
 
-test_that("'make_breaks_integer_month_quarter' gives correct answer when break_min, break_max both NULL", {
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L),
-                                                       break_min = NULL,
-                                                       break_max = NULL,
-                                                       open_last = TRUE),
+test_that("'make_breaks_date_to_integer_month_quarter' gives correct answer when break_min, break_max both NULL", {
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 121L),
+                                                               break_min = NULL,
+                                                               break_max = NULL,
+                                                               open_last = TRUE),
                      seq.int(from = 22L, to = 121L))
-    expect_identical(make_breaks_integer_month_quarter(age = c(50L, 22L, 121L),
-                                                       break_min = NULL,
-                                                       break_max = NULL,
-                                                       open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_month_quarter(age = c(50L, 22L, 121L),
+                                                               break_min = NULL,
+                                                               break_max = NULL,
+                                                               open_last = FALSE),
                      seq.int(from = 22L, to = 122L))
 })
 
 
-## make_breaks_integer_year ---------------------------------------------------
+## make_breaks_date_to_integer_year -------------------------------------------
 
-test_that("'make_breaks_integer_year' gives correct answer when break_max is non-NULL", {
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L),
-                                              width = 5L,
-                                              break_min = 0L,
-                                              break_max = 100L,
-                                              open_last = TRUE),
+test_that("'make_breaks_date_to_integer_year' gives correct answer when break_max is non-NULL", {
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 121L),
+                                                      width = 5L,
+                                                      break_min = 0L,
+                                                      break_max = 100L,
+                                                      open_last = TRUE),
                      seq.int(from = 0L, by = 5L, to = 100L))
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L),
-                                              width = 5L,
-                                              break_min = 50L,
-                                              break_max = 100L,
-                                              open_last = TRUE),
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 121L),
+                                                      width = 5L,
+                                                      break_min = 50L,
+                                                      break_max = 100L,
+                                                      open_last = TRUE),
                      seq.int(from = 50L, by = 5L, to = 100L))
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L, NA),
-                                              width = 5L,
-                                              break_min = 0L,
-                                              break_max = 100L,
-                                              open_last = TRUE),
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 121L, NA),
+                                                      width = 5L,
+                                                      break_min = 0L,
+                                                      break_max = 100L,
+                                                      open_last = TRUE),
                      seq.int(from = 0L, by = 5L, to = 100L))
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 21L),
-                                              width = 5L,
-                                              break_min = 0L,
-                                              break_max = 100L,
-                                              open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 21L),
+                                                      width = 5L,
+                                                      break_min = 0L,
+                                                      break_max = 100L,
+                                                      open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 100L))
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 21L, NA),
-                                              width = 5L,
-                                              break_min = 0L,
-                                              break_max = 100L,
-                                              open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 21L, NA),
+                                                      width = 5L,
+                                                      break_min = 0L,
+                                                      break_max = 100L,
+                                                      open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 100L))
 })
 
 
-test_that("'make_breaks_integer_year' gives correct answer when break_min is NULL", {
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L),
-                                              width = 5L,
-                                              break_min = NULL,
-                                              break_max = 100L,
-                                              open_last = TRUE),
+test_that("'make_breaks_date_to_integer_year' gives correct answer when break_min is NULL", {
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 121L),
+                                                      width = 5L,
+                                                      break_min = NULL,
+                                                      break_max = 100L,
+                                                      open_last = TRUE),
                      seq.int(from = 20L, by = 5L, to = 100L))
 })
 
-test_that("'make_breaks_integer_year' gives correct answer when break_max is NULL", {
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L),
-                                              width = 5L,
-                                              break_min = 0L,
-                                              break_max = NULL,
-                                              open_last = TRUE),
+test_that("'make_breaks_date_to_integer_year' gives correct answer when break_max is NULL", {
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 121L),
+                                                      width = 5L,
+                                                      break_min = 0L,
+                                                      break_max = NULL,
+                                                      open_last = TRUE),
                      seq.int(from = 0L, by = 5L, to = 120L))
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L, NA),
-                                              width = 5L,
-                                              break_min = 0L,
-                                              break_max = NULL,
-                                              open_last = TRUE),
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 121L, NA),
+                                                      width = 5L,
+                                                      break_min = 0L,
+                                                      break_max = NULL,
+                                                      open_last = TRUE),
                      seq.int(from = 0L, by = 5L, to = 120L))
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L),
-                                              width = 5L,
-                                              break_min = 0L,
-                                              break_max = NULL,
-                                              open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 121L),
+                                                      width = 5L,
+                                                      break_min = 0L,
+                                                      break_max = NULL,
+                                                      open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 125L))
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 121L, NA),
-                                              width = 5L,
-                                              break_min = 0L,
-                                              break_max = NULL,
-                                              open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 121L, NA),
+                                                      width = 5L,
+                                                      break_min = 0L,
+                                                      break_max = NULL,
+                                                      open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 125L))
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 80L),
-                                              width = 5L,
-                                              break_min = 0L,
-                                              break_max = NULL,
-                                              open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 80L),
+                                                      width = 5L,
+                                                      break_min = 0L,
+                                                      break_max = NULL,
+                                                      open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 85L))
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 80L, NA),
-                                              width = 5L,
-                                              break_min = 0L,
-                                              break_max = NULL,
-                                              open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 80L, NA),
+                                                      width = 5L,
+                                                      break_min = 0L,
+                                                      break_max = NULL,
+                                                      open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 85L))
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 84L),
-                                              width = 5L,
-                                              break_min = 0L,
-                                              break_max = NULL,
-                                              open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 84L),
+                                                      width = 5L,
+                                                      break_min = 0L,
+                                                      break_max = NULL,
+                                                      open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 85L))
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 84L, NA),
-                                              width = 5L,
-                                              break_min = 0L,
-                                              break_max = NULL,
-                                              open_last = FALSE),
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 84L, NA),
+                                                      width = 5L,
+                                                      break_min = 0L,
+                                                      break_max = NULL,
+                                                      open_last = FALSE),
                      seq.int(from = 0L, by = 5L, to = 85L))
-    expect_identical(make_breaks_integer_year(age = c(50L, 22L, 84L, NA),
-                                              width = 5L,
-                                              break_min = 0L,
-                                              break_max = NULL,
-                                              open_last = TRUE),
+    expect_identical(make_breaks_date_to_integer_year(age = c(50L, 22L, 84L, NA),
+                                                      width = 5L,
+                                                      break_min = 0L,
+                                                      break_max = NULL,
+                                                      open_last = TRUE),
                      seq.int(from = 0L, by = 5L, to = 80L))
 })
+
+
+## make_breaks_labels_to_integer_year -----------------------------------------
+
+test_that("'make_breaks_label_to_integer_year' gives correct answer when break_min and break_max both non-NULL", {
+    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, 5L, 10L, 15L),
+                                                       age_up = c(5L, 10L, 15L, NA),
+                                                       width = 5L,
+                                                       labels = c("0-4", "5-9", "10-14", "15+"),
+                                                       is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                       break_min = 0L,
+                                                       break_max = 15L,
+                                                       open_last = TRUE),
+                     c(0L, 5L, 10L, 15L))
+    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, NA, 10L, 15L),
+                                                       age_up = c(5L, NA, 15L, NA),
+                                                       width = 5L,
+                                                       labels = c("0-4", NA, "10-14", "15+"),
+                                                       is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                       break_min = 0L,
+                                                       break_max = 15L,
+                                                       open_last = TRUE),
+                     c(0L, 5L, 10L, 15L))
+    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, NA, 10L, 15L),
+                                                       age_up = c(5L, NA, 15L, NA),
+                                                       width = 15L,
+                                                       labels = c("0-4", "5-9", "10-14", "15+"),
+                                                       is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                       break_min = 0L,
+                                                       break_max = 15L,
+                                                       open_last = TRUE),
+                     c(0L, 15L))
+    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, 5L, 10L, 15L),
+                                                       age_up = c(5L, 10L, 15L, 20L),
+                                                       width = 5L,
+                                                       labels = c("0-4", "5-9", "10-14", "15-19"),
+                                                       is_open = c(FALSE, FALSE, FALSE, FALSE),
+                                                       break_min = 0L,
+                                                       break_max = 25L,
+                                                       open_last = TRUE),
+                     c(0L, 5L, 10L, 15L, 20L, 25L))
+    expect_identical(make_breaks_label_to_integer_year(age_low = NA,
+                                                       age_up = NA,
+                                                       width = 5L,
+                                                       labels = NA,
+                                                       is_open = FALSE,
+                                                       break_min = 0L,
+                                                       break_max = 25L,
+                                                       open_last = TRUE),
+                     c(0L, 5L, 10L, 15L, 20L, 25L))
+})
+
+test_that("'make_breaks_label_to_integer_year' throws correct error when break_min and break_max both non-NULL", {
+    expect_error(make_breaks_label_to_integer_year(age_low = c(0L, 5L, 10L, 15L),
+                                                   age_up = c(6L, 10L, 15L, NA),
+                                                   width = 5L,
+                                                   labels = c("0-5", "5-9", "10-14", "15+"),
+                                                   is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                   break_min = 0L,
+                                                   break_max = 15L,
+                                                   open_last = TRUE),
+                 paste("age group \"0-5\" intersects two or more of the intervals formed when",
+                       "'break_min' is 0, 'break_max' is 15, and 'width' is 5"))
+})
+
+test_that("'make_breaks_label_to_integer_year' gives correct answer when break_min is NULL and break_max is non-NULL", {
+    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, 5L, 10L, 15L),
+                                                       age_up = c(5L, 10L, 15L, NA),
+                                                       width = 5L,
+                                                       labels = c("0-4", "5-9", "10-14", "15+"),
+                                                       is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                       break_min = NULL,
+                                                       break_max = 15L,
+                                                       open_last = TRUE),
+                     c(0L, 5L, 10L, 15L))
+    expect_identical(make_breaks_label_to_integer_year(age_low = c(NA, 10L, 15L),
+                                                       age_up = c(NA, 15L, NA),
+                                                       width = 5L,
+                                                       labels = c(NA, "10-14", "15+"),
+                                                       is_open = c(FALSE, FALSE, TRUE),
+                                                       break_min = NULL,
+                                                       break_max = 15L,
+                                                       open_last = TRUE),
+                     c(10L, 15L))
+    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, NA, 10L, 15L),
+                                                       age_up = c(5L, NA, 15L, NA),
+                                                       width = 15L,
+                                                       labels = c("0-4", "5-9", "10-14", "15+"),
+                                                       is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                       break_min = NULL,
+                                                       break_max = 15L,
+                                                       open_last = TRUE),
+                     c(0L, 15L))
+    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, 5L, 10L, 15L),
+                                                       age_up = c(5L, 10L, 15L, 20L),
+                                                       width = 5L,
+                                                       labels = c("0-4", "5-9", "10-14", "15-19"),
+                                                       is_open = c(FALSE, FALSE, FALSE, FALSE),
+                                                       break_min = NULL,
+                                                       break_max = 25L,
+                                                       open_last = TRUE),
+                     c(0L, 5L, 10L, 15L, 20L, 25L))
+})
+
+test_that("'make_breaks_label_to_integer_year' gives correct answer when break_min is non-NULL and break_max is NULL", {
+    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, 5L, 10L, 15L),
+                                                       age_up = c(5L, 10L, 15L, NA),
+                                                       width = 5L,
+                                                       labels = c("0-4", "5-9", "10-14", "15+"),
+                                                       is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                       break_min = 0L,
+                                                       break_max = NULL,
+                                                       open_last = TRUE),
+                     c(0L, 5L, 10L, 15L))
+    expect_identical(make_breaks_label_to_integer_year(age_low = c(NA, 10L, 15L),
+                                                       age_up = c(NA, 15L, NA),
+                                                       width = 5L,
+                                                       labels = c(NA, "10-14", "15+"),
+                                                       is_open = c(FALSE, FALSE, TRUE),
+                                                       break_min = 5L,
+                                                       break_max = NULL,
+                                                       open_last = TRUE),
+                     c(5L, 10L, 15L))
+    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, NA, 10L, 15L),
+                                                       age_up = c(5L, NA, 15L, NA),
+                                                       width = 15L,
+                                                       labels = c("0-4", "5-9", "10-14", "15+"),
+                                                       is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                       break_min = 0L,
+                                                       break_max = NULL,
+                                                       open_last = TRUE),
+                     c(0L, 15L))
+    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, 5L, 10L, 15L),
+                                                       age_up = c(5L, 10L, 15L, 20L),
+                                                       width = 5L,
+                                                       labels = c("0-4", "5-9", "10-14", "15-19"),
+                                                       is_open = c(FALSE, FALSE, FALSE, FALSE),
+                                                       break_min = 0L,
+                                                       break_max = NULL,
+                                                       open_last = TRUE),
+                     c(0L, 5L, 10L, 15L, 20L))
+})
+
+
 
 
 ## n_day_month ----------------------------------------------------------------

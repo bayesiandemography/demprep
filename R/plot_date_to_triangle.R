@@ -135,7 +135,7 @@ plot_date_to_triangle_multi <- function(date,
                                        unit = "year")
     ## make time breaks
     dob_date <- sort(unique(c(dob, date)))
-    breaks_time <- make_breaks_date_year(date = dob_date,
+    breaks_time <- make_breaks_date_to_date_year(date = dob_date,
                                          month_start = month_start,
                                          width = width,
                                          origin = origin,
@@ -145,7 +145,7 @@ plot_date_to_triangle_multi <- function(date,
                                       label_year_start = TRUE,
                                       include_na = FALSE)
     ## make age breaks
-    breaks_age <- make_breaks_integer_year(age = age_years,
+    breaks_age <- make_breaks_date_to_integer_year(age = age_years,
                                            width = width,
                                            break_min = 0L,
                                            break_max = break_max,
@@ -250,9 +250,12 @@ plot_date_to_triangle_births <- function(date,
                             x2 = break_min,
                             name1 = "break_max",
                             name2 = "break_min")
-    if ((break_max - break_min) %% width != 0L)
-        stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
-                      "break_max", break_max, "break_min", break_min, "width", width))
+    demcheck::err_difference_divisible(x1 = break_max,
+                                       x2 = break_min,
+                                       y = width,
+                                       name1 = "break_max",
+                                       name2 = "break_min",
+                                       name_y = "width")
     demcheck::err_is_logical_flag(x = recode_up,
                                   name = "recode_up")
     demcheck::err_is_logical_flag(x = recode_down,
@@ -305,7 +308,7 @@ plot_date_to_triangle_births <- function(date,
                              sep = "-"))
     ## make time breaks
     dob_date <- sort(unique(c(dob, date)))
-    breaks_time <- make_breaks_date_year(date = dob_date,
+    breaks_time <- make_breaks_date_to_date_year(date = dob_date,
                                          month_start = month_start,
                                          width = width,
                                          origin = origin,
@@ -315,7 +318,7 @@ plot_date_to_triangle_births <- function(date,
                                       label_year_start = TRUE,
                                       include_na = FALSE)
     ## make age breaks
-    breaks_age <- make_breaks_integer_births(age = age_years,
+    breaks_age <- make_breaks_date_to_integer_births(age = age_years,
                                              width = width,
                                              break_min = break_min,
                                              break_max = break_max)
@@ -391,7 +394,7 @@ plot_date_to_triangle_quarter <- function(date,
     }
     ## make time breaks
     dob_date <- sort(unique(c(dob, date)))
-    breaks_time <- make_breaks_date_quarter(date = dob_date,
+    breaks_time <- make_breaks_date_to_date_quarter(date = dob_date,
                                             break_min = NULL)
     break_min_time <- breaks_time[[1L]]
     break_max_time <- breaks_time[[length(breaks_time)]]
@@ -400,7 +403,7 @@ plot_date_to_triangle_quarter <- function(date,
                                               break_max = break_max_time,
                                               include_na = FALSE)
     ## make age breaks
-    breaks_age <- make_breaks_integer_month_quarter(age = age_quarters,
+    breaks_age <- make_breaks_date_to_integer_month_quarter(age = age_quarters,
                                                     break_min = 0L,
                                                     break_max = break_max,
                                                     open_last = open_last)
@@ -476,7 +479,7 @@ plot_date_to_triangle_month <- function(date,
     }
     ## make time breaks
     dob_date <- sort(unique(c(dob, date)))
-    breaks_time <- make_breaks_date_month(date = dob_date,
+    breaks_time <- make_breaks_date_to_date_month(date = dob_date,
                                           break_min = NULL)
     break_min_time <- breaks_time[[1L]]
     break_max_time <- breaks_time[[length(breaks_time)]]
@@ -485,7 +488,7 @@ plot_date_to_triangle_month <- function(date,
                                             break_max = break_max_time,
                                             include_na = FALSE)
     ## make age breaks
-    breaks_age <- make_breaks_integer_month_quarter(age = age_months,
+    breaks_age <- make_breaks_date_to_integer_month_quarter(age = age_months,
                                                     break_min = 0L,
                                                     break_max = break_max,
                                                     open_last = open_last)

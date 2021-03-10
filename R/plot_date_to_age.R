@@ -90,7 +90,7 @@ plot_date_to_age_year <- function(date,
                                        dob = dob,
                                        unit = "year")
     ## make breaks
-    breaks <- make_breaks_integer_year(age = age_years,
+    breaks <- make_breaks_date_to_integer_year(age = age_years,
                                        width = 1L,
                                        break_min = break_min,
                                        break_max = break_max,
@@ -180,9 +180,12 @@ plot_date_to_age_multi <- function(date,
                                 x2 = break_min,
                                 name1 = "break_max",
                                 name2 = "break_min")
-        if ((break_max - break_min) %% width != 0L)
-            stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
-                          "break_max", break_max, "break_min", break_min, "width", width))
+        demcheck::err_difference_divisible(x1 = break_max,
+                                           x2 = break_min,
+                                           y = width,
+                                           name1 = "break_max",
+                                           name2 = "break_min",
+                                           name_y = "width")
     }
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
@@ -209,7 +212,7 @@ plot_date_to_age_multi <- function(date,
                                        dob = dob,
                                        unit = "year")    
     ## make breaks
-    breaks <- make_breaks_integer_year(age = age_years,
+    breaks <- make_breaks_date_to_integer_year(age = age_years,
                                        width = width,
                                        break_min = break_min,
                                        break_max = break_max,
@@ -279,7 +282,7 @@ plot_date_to_age_lifetab <- function(date,
                                        dob = dob)
     age_years <- age_months %/% 12L
     ## make breaks
-    breaks <- make_breaks_integer_lifetab(break_max)
+    breaks <- make_breaks_date_to_integer_lifetab(break_max)
     ## make labels for breaks
     labels <- make_labels_age(breaks = breaks,
                               open_last = TRUE,
@@ -386,9 +389,12 @@ plot_date_to_age_births <- function(date, dob,
                                 x2 = break_min,
                                 name1 = "break_max",
                                 name2 = "break_min")
-        if ((break_max - break_min) %% width != 0L)
-            stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
-                          "break_max", break_max, "break_min", break_min, "width", width))
+        demcheck::err_difference_divisible(x1 = break_max,
+                                           x2 = break_min,
+                                           y = width,
+                                           name1 = "break_max",
+                                           name2 = "break_min",
+                                           name_y = "width")
     }
     demcheck::err_is_logical_flag(x = recode_up,
                                   name = "recode_up")
@@ -438,7 +444,7 @@ plot_date_to_age_births <- function(date, dob,
         }
     }
     ## make breaks
-    breaks <- make_breaks_integer_births(age = age_years,
+    breaks <- make_breaks_date_to_integer_births(age = age_years,
                                          width = width,
                                          break_min = break_min,
                                          break_max = break_max)
@@ -650,7 +656,7 @@ plot_date_to_age_quarter <- function(date,
                                        dob = dob,
                                        unit = "quarter")
     ## make breaks
-    breaks <- make_breaks_integer_month_quarter(age = age_quarters,
+    breaks <- make_breaks_date_to_integer_month_quarter(age = age_quarters,
                                                 break_min = break_min,
                                                 break_max = break_max,
                                                 open_last = open_last)
@@ -759,7 +765,7 @@ plot_date_to_age_month <- function(date,
                                        dob = dob,
                                        unit = "month")
     ## make breaks
-    breaks <- make_breaks_integer_month_quarter(age = age_months,
+    breaks <- make_breaks_date_to_integer_month_quarter(age = age_months,
                                                 break_min = break_min,
                                                 break_max = break_max,
                                                 open_last = open_last)

@@ -4,7 +4,7 @@
 \alias{date_to_age_lifetab}
 \title{Convert dates to age groups used in abridged life table}
 \usage{
-date_to_age_lifetab(date, dob, break_max = 100, as_factor = TRUE)
+date_to_age_lifetab(date, dob, break_max = 100)
 }
 \arguments{
 \item{date}{Date of death.}
@@ -16,16 +16,11 @@ or a vector that can be coerced to class
 
 \item{break_max}{An integer or \code{NULL}.
 Defaults to 100.}
-
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the return
-value is a factor; otherwise it is a character vector.
-The length of the return value equals the length
-of \code{date} or the length of \code{dob}, whichever
-is greater.
+A factor with the same length as
+\code{date} or \code{dob}, whichever
+is longer.
 }
 \description{
 Given dates of death and dates of birth,
@@ -45,9 +40,9 @@ the oldest age group.
 If \code{break_max} is \code{NULL}, the oldest
 age group is derived from the data.
 
-When \code{as_factor} is \code{TRUE} the levels of
-the factor include all intermediate age groups,
-including age groups that not appear in the data.
+The return value is a factor. The levels of this
+factor contain all intermediate age groups,
+including ones that do not appear in the data.
 }
 \examples{
 date_to_age_lifetab(date = c("2024-03-27",

@@ -516,9 +516,12 @@ date_to_triangle_births <- function(date,
                             x2 = break_min,
                             name1 = "break_max",
                             name2 = "break_min")
-    if ((break_max - break_min) %% width != 0L)
-        stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
-                      "break_max", break_max, "break_min", break_min, "width", width))
+    demcheck::err_difference_divisible(x1 = break_max,
+                                       x2 = break_min,
+                                       y = width,
+                                       name1 = "break_max",
+                                       name2 = "break_min",
+                                       name_y = "width")
     demcheck::err_is_logical_flag(x = recode_up,
                                   name = "recode_up")
     demcheck::err_is_logical_flag(x = recode_down,

@@ -108,7 +108,7 @@ plot_date_to_cohort_year <- function(date,
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
     ## create sequence of breaks
-    breaks <- make_breaks_date_year(date = date,
+    breaks <- make_breaks_date_to_date_year(date = date,
                                     month_start = month_start,
                                     width = 1L,
                                     origin = NULL,
@@ -226,7 +226,7 @@ plot_date_to_cohort_multi <- function(date,
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
     ## create sequence of breaks
-    breaks <- make_breaks_date_year(date = date,
+    breaks <- make_breaks_date_to_date_year(date = date,
                                     month_start = month_start,
                                     width = width,
                                     origin = origin,
@@ -349,7 +349,7 @@ plot_date_to_cohort_quarter <- function(date,
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
     ## create sequence of breaks
-    breaks <- make_breaks_date_quarter(date = date,
+    breaks <- make_breaks_date_to_date_quarter(date = date,
                                        break_min = break_min)
     ## make labels for these breaks
     n <- length(breaks)
@@ -414,7 +414,7 @@ plot_date_to_cohort_month <- function(date,
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
     ## create sequence of breaks
-    breaks <- make_breaks_date_month(date = date,
+    breaks <- make_breaks_date_to_date_month(date = date,
                                      break_min = break_min)
     ## make labels for these breaks
     n <- length(breaks)

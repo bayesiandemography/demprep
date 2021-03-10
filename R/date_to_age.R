@@ -36,11 +36,11 @@
 #' (The definition of an open interval in demography is
 #' is different from the definition of an open interval
 #' in mathematics.)
-#' 
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate age groups,
-#' including age groups that not appear in the data.
 #'
+#' The return value is a factor. The levels of this
+#' factor contain all intermediate age groups,
+#' including ones that do not appear in the data.
+#' 
 #' @param date Dates of events.
 #' A vector of class \code{\link[base]{Date}},
 #' or a vector that can be coerced to class
@@ -55,14 +55,10 @@
 #' Defaults to 100.
 #' @param open_last Whether the final age group
 #' has no upper limit. Defaults to \code{TRUE}.
-#' @param as_factor Whether the return value is a factor.
-#' Defaults to \code{TRUE}.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The length of the return value equals the length
-#' of \code{date} or the length of \code{dob}, whichever
-#' is greater.
+#' @return A factor with the same length as
+#' \code{date} or \code{dob}, whichever
+#' is longer.
 #'
 #' @seealso Other functions for creating age groups are
 #' \code{\link{date_to_age_multi}},
@@ -121,19 +117,12 @@
 #'                  break_min = NULL,
 #'                  break_max = 30,
 #'                  open_last = FALSE)
-#'
-#' ## return non-factor
-#' date_to_age_year(date = c("2024-03-27",
-#'                           "2022-11-09"),
-#'                  dob = "2011-05-18",
-#'                  as_factor = FALSE)
 #' @export 
 date_to_age_year <- function(date,
                              dob,
                              break_min = 0,
                              break_max = 100,
-                             open_last = TRUE,
-                             as_factor = TRUE) {
+                             open_last = TRUE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -154,17 +143,15 @@ date_to_age_year <- function(date,
     }
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
-    ## deal with "empty" case where all date-dob pairs have NA
-    ## and 'break_min' or 'break_max' is missing
-    ## (so cannot construct levels)
+    ## deal with "undefined" case where there are no valid date-dob pairs
+    ## and where 'break_min' or 'break_max' is missing,
+    ## so cannot construct levels
     n_date <- length(date)
-    all_empty <- all(is.na(date) | is.na(dob))
-    if (all_empty && (is.null(break_min) || is.null(break_max))) {
+    is_empty <- all(is.na(date) | is.na(dob))
+    is_unbounded <- is.null(break_min) || is.null(break_max)
+    if (is_empty && is_unbounded) {
         ans <- rep(NA_character_, times = n_date)
-        if (as_factor)
-            ans <- factor(ans)
+        ans <- factor(ans)
         return(ans)
     }
     ## get age in months and years
@@ -188,7 +175,7 @@ date_to_age_year <- function(date,
                                        dob = dob,
                                        unit = "year")
     ## make breaks
-    breaks <- make_breaks_integer_year(age = age_years,
+    breaks <- make_breaks_date_to_integer_year(age = age_years,
                                        width = 1L,
                                        break_min = break_min,
                                        break_max = break_max,
@@ -202,9 +189,8 @@ date_to_age_year <- function(date,
                       vec = breaks)
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans
 }    
 
@@ -232,19 +218,17 @@ date_to_age_year <- function(date,
 #' is different from the definition of an open interval
 #' in mathematics.)
 #' 
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate age groups,
-#' including age groups that not appear in the data.
+#' The return value is a factor. The levels of this
+#' factor contain all intermediate age groups,
+#' including ones that do not appear in the data.
 #'
 #' @inheritParams date_to_age_year
 #' @param width The width in years of the age intervals.
 #' A positive integer. Defaults to 5.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the
-#' return value is a factor; otherwise it is a character vector.
-#' The length of the return value equals the length
-#' of \code{date} or the length of \code{dob}, whichever
-#' is greater.
+#' @return A factor with the same length as
+#' \code{date} or \code{dob}, whichever
+#' is longer.
 #'
 #' @seealso Other functions for creating age groups are
 #' \code{\link{date_to_age_year}},
@@ -294,20 +278,13 @@ date_to_age_year <- function(date,
 #'                           "2000-07-13"),
 #'                   width = 10,
 #'                   break_max = NULL)
-#'
-#' ## return non-factor
-#' date_to_age_multi(date = c("2024-03-27",
-#'                            "2022-11-09"),
-#'                   dob = "2011-05-18",
-#'                   as_factor = FALSE)
 #' @export
 date_to_age_multi <- function(date,
                               dob,
                               width = 5,
                               break_min = 0,
                               break_max = 100,
-                              open_last = TRUE,
-                              as_factor = TRUE) {
+                              open_last = TRUE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -327,23 +304,24 @@ date_to_age_multi <- function(date,
                                 x2 = break_min,
                                 name1 = "break_max",
                                 name2 = "break_min")
-        if ((break_max - break_min) %% width != 0L)
-            stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
-                          "break_max", break_max, "break_min", break_min, "width", width))
+        demcheck::err_difference_divisible(x1 = break_max,
+                                           x2 = break_min,
+                                           y = width,
+                                           name1 = "break_max",
+                                           name2 = "break_min",
+                                           name_y = "width")
     }
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
-    ## deal with "empty" case where all date-dob pairs have NA
-    ## and 'break_min' or 'break_max' is missing
-    ## (so cannot construct levels)
+    ## deal with "undefined" case where there are no valid date-dob pairs
+    ## and where 'break_min' or 'break_max' is missing,
+    ## so cannot construct levels
     n_date <- length(date)
-    all_empty <- all(is.na(date) | is.na(dob))
-    if (all_empty && (is.null(break_min) || is.null(break_max))) {
+    is_empty <- all(is.na(date) | is.na(dob))
+    is_unbounded <- is.null(break_min) || is.null(break_max)
+    if (is_empty && is_unbounded) {
         ans <- rep(NA_character_, times = n_date)
-        if (as_factor)
-            ans <- factor(ans)
+        ans <- factor(ans)
         return(ans)
     }
     ## get age in months and years
@@ -367,7 +345,7 @@ date_to_age_multi <- function(date,
                                        dob = dob,
                                        unit = "year")    
     ## make breaks
-    breaks <- make_breaks_integer_year(age = age_years,
+    breaks <- make_breaks_date_to_integer_year(age = age_years,
                                        width = width,
                                        break_min = break_min,
                                        break_max = break_max,
@@ -380,9 +358,8 @@ date_to_age_multi <- function(date,
                       vec = breaks)
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans
 }
 
@@ -405,18 +382,16 @@ date_to_age_multi <- function(date,
 #' If \code{break_max} is \code{NULL}, the oldest
 #' age group is derived from the data.
 #'
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate age groups,
-#' including age groups that not appear in the data.
+#' The return value is a factor. The levels of this
+#' factor contain all intermediate age groups,
+#' including ones that do not appear in the data.
 #'
 #' @inheritParams date_to_age_year
 #' @param date Date of death.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The length of the return value equals the length
-#' of \code{date} or the length of \code{dob}, whichever
-#' is greater.
+#' @return A factor with the same length as
+#' \code{date} or \code{dob}, whichever
+#' is longer.
 #'
 #' @seealso Other functions for creating age groups are
 #' \code{\link{date_to_age_year}},
@@ -446,8 +421,7 @@ date_to_age_multi <- function(date,
 #' @export
 date_to_age_lifetab <- function(date,
                                 dob,
-                                break_max = 100,
-                                as_factor = TRUE) {
+                                break_max = 100) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -461,15 +435,16 @@ date_to_age_lifetab <- function(date,
                                 name = "break_max",
                                 n = 5L,
                                 null_ok = FALSE)
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
-    ## deal with "empty" case where
-    ## all date-dob pairs have NA, and
-    ## we aren't making factors
+    ## deal with "undefined" case where there
+    ## are no valid date-dob pairs
+    ## and where 'break_max' is missing,
+    ## so cannot construct levels
     n_date <- length(date)
-    all_empty <- all(is.na(date) | is.na(dob))
-    if (all_empty && !as_factor) {
+    is_empty <- all(is.na(date) | is.na(dob))
+    is_unbounded <- is.null(break_max)
+    if (is_empty && is_unbounded) {
         ans <- rep(NA_character_, times = n_date)
+        ans <- factor(ans)
         return(ans)
     }
     ## get age in months and years
@@ -477,19 +452,19 @@ date_to_age_lifetab <- function(date,
                                        dob = dob)
     age_years <- age_months %/% 12L
     ## make breaks
-    breaks <- make_breaks_integer_lifetab(break_max)
+    breaks <- make_breaks_date_to_integer_lifetab(age = age_years,
+                                                  break_max = break_max)
     ## make labels for breaks
     labels <- make_labels_age(breaks = breaks,
-                                    open_last = TRUE,
-                                    include_na = FALSE)
+                              open_last = TRUE,
+                              include_na = FALSE)
     ## assign labels to ages
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans
 }
 
@@ -512,6 +487,9 @@ date_to_age_lifetab <- function(date,
 #' \code{break_min} is \code{15} and \code{break_max}
 #' is \code{50}, all births are assumed to
 #' occur to women aged 15 to 49 (inclusive).
+#' If \code{break_min} or \code{break_max} is set to \code{NULL},
+#' rather than to a specific value, then \code{date_to_age_births}
+#' finds the narrowest range that accommodates the data.
 #'
 #' Datasets sometimes contain a few births to parents
 #' younger than the assumed minimum age of reproduction,
@@ -530,7 +508,10 @@ date_to_age_lifetab <- function(date,
 #' and \code{recode_down}. The default
 #' is for no recoding to occur.
 #'
-#' @inheritParams date_to_age_year
+#' The return value is a factor. The levels of this
+#' factor contain all intermediate age groups,
+#' including ones that do not appear in the data.
+#'
 #' @param date Dates when births being tabulated occur.
 #' @param dob Dates of birth of parents.
 #' @param break_min An integer or \code{NULL}.
@@ -547,11 +528,9 @@ date_to_age_lifetab <- function(date,
 #' occurring to people in the highest reproductive
 #' age group.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The length of the return value equals the length
-#' of \code{date} or the length of \code{dob}, whichever
-#' is greater.
+#' @return A factor with the same length as
+#' \code{date} or \code{dob}, whichever
+#' is longer.
 #'
 #' @seealso Other functions for creating age groups are
 #' \code{\link{date_to_age_year}},
@@ -592,12 +571,6 @@ date_to_age_lifetab <- function(date,
 #'                             "2022-11-09"),
 #'                    dob = "2001-05-18")
 #'
-#' ## return non-factor
-#' date_to_age_births(date = c("2024-03-27",
-#'                             "2022-11-09"),
-#'                    dob = "2001-05-18",
-#'                    as_factor = FALSE)
-#'
 #' ## allow youngest and oldest age groups to be
 #' ## set by the data
 #' date_to_age_births(date = c("2052-01-02",
@@ -624,8 +597,7 @@ date_to_age_births <- function(date, dob,
                                break_max = 50,
                                width = 5,
                                recode_up = FALSE,
-                               recode_down = FALSE,
-                               as_factor = TRUE) {
+                               recode_down = FALSE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -645,23 +617,26 @@ date_to_age_births <- function(date, dob,
                                 x2 = break_min,
                                 name1 = "break_max",
                                 name2 = "break_min")
-        if ((break_max - break_min) %% width != 0L)
-            stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
-                          "break_max", break_max, "break_min", break_min, "width", width))
+        demcheck::err_difference_divisible(x1 = break_max,
+                                           x2 = break_min,
+                                           y = width,
+                                           name1 = "break_max",
+                                           name2 = "break_min",
+                                           name_y = "width")
     }
     demcheck::err_is_logical_flag(x = recode_up,
                                   name = "recode_up")
     demcheck::err_is_logical_flag(x = recode_down,
                                   name = "recode_down")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
-    ## deal with "empty" case where
-    ## all date-dob pairs have NA, and
-    ## we aren't making factors
+    ## deal with "undefined" case where there are no valid date-dob pairs
+    ## and where 'break_min' or 'break_max' is missing,
+    ## so cannot construct levels
     n_date <- length(date)
-    all_empty <- all(is.na(date) | is.na(dob))
-    if (all_empty && !as_factor) {
+    is_empty <- all(is.na(date) | is.na(dob))
+    is_unbounded <- is.null(break_min) || is.null(break_max)
+    if (is_empty && is_unbounded) {
         ans <- rep(NA_character_, times = n_date)
+        ans <- factor(ans)
         return(ans)
     }
     ## get age in months and years
@@ -702,7 +677,7 @@ date_to_age_births <- function(date, dob,
         }
     }
     ## make breaks
-    breaks <- make_breaks_integer_births(age = age_years,
+    breaks <- make_breaks_date_to_integer_births(age = age_years,
                                          width = width,
                                          break_min = break_min,
                                          break_max = break_max)
@@ -714,9 +689,8 @@ date_to_age_births <- function(date, dob,
                       vec = breaks)
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans
 }
 
@@ -745,18 +719,16 @@ date_to_age_births <- function(date, dob,
 #' is the last value, then the oldest age
 #' group is \code{[a, b)} years.
 #'
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate age groups,
-#' including age groups that not appear in the data.
+#' The return value is a factor. The levels of this
+#' factor contain all intermediate age groups,
+#' including ones that do not appear in the data.
 #'
 #' @inheritParams date_to_age_year
 #' @param breaks A vector of strictly increasing integer values.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the
-#' return value is a factor; otherwise it is a character vector.
-#' The length of the return value equals the length
-#' of \code{date} or the length of \code{dob}, whichever
-#' is greater.
+#' @return A factor with the same length as
+#' \code{date} or \code{dob}, whichever
+#' is longer.
 #'
 #' @seealso Other functions for creating age groups are
 #' \code{\link{date_to_age_year}},
@@ -798,10 +770,10 @@ date_to_age_births <- function(date, dob,
 #'                    breaks = c(15, 65, 100),
 #'                    open_last = FALSE)
 #' @export
-date_to_age_custom <- function(date, dob,
-                                     breaks = NULL,
-                                     open_last = TRUE,
-                                     as_factor = TRUE) {
+date_to_age_custom <- function(date,
+                               dob,
+                               breaks = NULL,
+                               open_last = TRUE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -809,11 +781,9 @@ date_to_age_custom <- function(date, dob,
     date <- l$date
     dob <- l$dob
     breaks <- demcheck::err_tdy_breaks_integer_age(breaks = breaks,
-                                               open_last = open_last)
+                                                   open_last = open_last)
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
     ## deal with "empty" case where 'breaks' has length 0
     all_empty <- all(is.na(date) | is.na(dob))
     n_break <- length(breaks)
@@ -821,20 +791,12 @@ date_to_age_custom <- function(date, dob,
     if (n_break == 0L) {
         if (all_empty) {
             ans <- rep(NA_character_, times = n_date)
-            if (as_factor)
-                ans <- factor(ans)
+            ans <- factor(ans)
             return(ans)
         }
         else
             stop(gettextf("'%s' has length %d",
                           "breaks", 0L))
-    }
-    ## deal with "empty" case where
-    ## all date-dob pairs have NA, and
-    ## we aren't making factors
-    if (all_empty && !as_factor) {
-        ans <- rep(NA_character_, times = n_date)
-        return(ans)
     }
     ## get age in months and years
     age_months <- age_completed_months(date = date,
@@ -866,16 +828,15 @@ date_to_age_custom <- function(date, dob,
     }
     ## make labels for breaks
     labels <- make_labels_age(breaks = breaks,
-                                    open_last = open_last,
-                                    include_na = FALSE)
+                              open_last = open_last,
+                              include_na = FALSE)
     ## assign labels to ages
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans
 }
 
@@ -908,19 +869,17 @@ date_to_age_custom <- function(date, dob,
 #' is different from the definition of an open interval
 #' in mathematics.)
 #'
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate age groups,
-#' including age groups that not appear in the data.
+#' The return value is a factor. The levels of this
+#' factor contain all intermediate age groups,
+#' including ones that do not appear in the data.
 #'
 #' @inheritParams date_to_age_year
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 400.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The length of the return value equals the length
-#' of \code{date} or the length of \code{dob}, whichever
-#' is greater.
+#' @return A factor with the same length as
+#' \code{date} or \code{dob}, whichever
+#' is longer.
 #'
 #' @seealso Other functions for creating age groups are
 #' \code{\link{date_to_age_year}},
@@ -970,8 +929,7 @@ date_to_age_quarter <- function(date,
                                 dob,
                                 break_min = 0,
                                 break_max = 400,
-                                open_last = TRUE,
-                                as_factor = TRUE) {
+                                open_last = TRUE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -992,17 +950,15 @@ date_to_age_quarter <- function(date,
     }
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
-    ## deal with "empty" case where all date-dob pairs have NA
-    ## and 'break_min' or 'break_max' is missing
-    ## (so cannot construct levels)
+    ## deal with "undefined" case where there are no valid date-dob pairs
+    ## and where 'break_min' or 'break_max' is missing,
+    ## so cannot construct levels
     n_date <- length(date)
-    all_empty <- all(is.na(date) | is.na(dob))
-    if (all_empty && (is.null(break_min) || is.null(break_max))) {
+    is_empty <- all(is.na(date) | is.na(dob))
+    is_unbounded <- is.null(break_min) || is.null(break_max)
+    if (is_empty && is_unbounded) {
         ans <- rep(NA_character_, times = n_date)
-        if (as_factor)
-            ans <- factor(ans)
+        ans <- factor(ans)
         return(ans)
     }
     ## get age in months and quarters    
@@ -1026,7 +982,7 @@ date_to_age_quarter <- function(date,
                                        dob = dob,
                                        unit = "quarter")
     ## make breaks
-    breaks <- make_breaks_integer_month_quarter(age = age_quarters,
+    breaks <- make_breaks_date_to_integer_month_quarter(age = age_quarters,
                                                 break_min = break_min,
                                                 break_max = break_max,
                                                 open_last = open_last)
@@ -1042,9 +998,8 @@ date_to_age_quarter <- function(date,
                       vec = breaks)
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans
 }
 
@@ -1078,19 +1033,17 @@ date_to_age_quarter <- function(date,
 #' is different from the definition of an open interval
 #' in mathematics.)
 #'
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate age groups,
-#' including age groups that not appear in the data.
+#' The return value is a factor. The levels of this
+#' factor contain all intermediate age groups,
+#' including ones that do not appear in the data.
 #'
 #' @inheritParams date_to_age_year
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 1200.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The length of the return value equals the length
-#' of \code{date} or the length of \code{dob}, whichever
-#' is greater.
+#' @return A factor with the same length as
+#' \code{date} or \code{dob}, whichever
+#' is longer.
 #'
 #' @seealso Other functions for creating age groups are
 #' \code{\link{date_to_age_year}},
@@ -1140,8 +1093,7 @@ date_to_age_month <- function(date,
                               dob,
                               break_min = 0,
                               break_max = 1200,
-                              open_last = TRUE,
-                              as_factor = TRUE) {
+                              open_last = TRUE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -1162,17 +1114,15 @@ date_to_age_month <- function(date,
     }
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
-    ## deal with "empty" case where all date-dob pairs have NA
-    ## and 'break_min' or 'break_max' is missing
-    ## (so cannot construct levels)
+    ## deal with "undefined" case where there are no valid date-dob pairs
+    ## and where 'break_min' or 'break_max' is missing,
+    ## so cannot construct levels
     n_date <- length(date)
-    all_empty <- all(is.na(date) | is.na(dob))
-    if (all_empty && (is.null(break_min) || is.null(break_max))) {
+    is_empty <- all(is.na(date) | is.na(dob))
+    is_unbounded <- is.null(break_min) || is.null(break_max)
+    if (is_empty && is_unbounded) {
         ans <- rep(NA_character_, times = n_date)
-        if (as_factor)
-            ans <- factor(ans)
+        ans <- factor(ans)
         return(ans)
     }
     ## get age in months
@@ -1195,7 +1145,7 @@ date_to_age_month <- function(date,
                                        dob = dob,
                                        unit = "month")
     ## make breaks
-    breaks <- make_breaks_integer_month_quarter(age = age_months,
+    breaks <- make_breaks_date_to_integer_month_quarter(age = age_months,
                                                 break_min = break_min,
                                                 break_max = break_max,
                                                 open_last = open_last)
@@ -1212,9 +1162,8 @@ date_to_age_month <- function(date,
                       vec = breaks)
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans
 }
 

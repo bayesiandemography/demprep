@@ -11,8 +11,7 @@ date_to_age_births(
   break_max = 50,
   width = 5,
   recode_up = FALSE,
-  recode_down = FALSE,
-  as_factor = TRUE
+  recode_down = FALSE
 )
 }
 \arguments{
@@ -37,16 +36,11 @@ people in the lowest repoductive age group.}
 aged \code{break_max} or more are treated as
 occurring to people in the highest reproductive
 age group.}
-
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the return
-value is a factor; otherwise it is a character vector.
-The length of the return value equals the length
-of \code{date} or the length of \code{dob}, whichever
-is greater.
+A factor with the same length as
+\code{date} or \code{dob}, whichever
+is longer.
 }
 \description{
 Given the dates when births occur,
@@ -83,6 +77,10 @@ Recoding of parents' ages outside the expected range
 is controlled by parameters \code{recode_up}
 and \code{recode_down}. The default
 is for no recoding to occur.
+
+The return value is a factor. The levels of this
+factor contain all intermediate age groups,
+including ones that do not appear in the data.
 }
 \examples{
 date_to_age_births(date = c("2024-03-27",
@@ -107,12 +105,6 @@ date_to_age_births(date = c("2024-03-27",
 date_to_age_births(date = c("2024-03-27",
                             "2022-11-09"),
                    dob = "2001-05-18")
-
-## return non-factor
-date_to_age_births(date = c("2024-03-27",
-                            "2022-11-09"),
-                   dob = "2001-05-18",
-                   as_factor = FALSE)
 
 ## allow youngest and oldest age groups to be
 ## set by the data

@@ -10,8 +10,7 @@ date_to_age_multi(
   width = 5,
   break_min = 0,
   break_max = 100,
-  open_last = TRUE,
-  as_factor = TRUE
+  open_last = TRUE
 )
 }
 \arguments{
@@ -36,16 +35,11 @@ Defaults to 100.}
 
 \item{open_last}{Whether the final age group
 has no upper limit. Defaults to \code{TRUE}.}
-
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the
-return value is a factor; otherwise it is a character vector.
-The length of the return value equals the length
-of \code{date} or the length of \code{dob}, whichever
-is greater.
+A factor with the same length as
+\code{date} or \code{dob}, whichever
+is longer.
 }
 \description{
 Given the dates when events occurred,
@@ -70,9 +64,9 @@ is "open", which means that it has no upper limit.
 is different from the definition of an open interval
 in mathematics.)
 
-When \code{as_factor} is \code{TRUE} the levels of
-the factor include all intermediate age groups,
-including age groups that not appear in the data.
+The return value is a factor. The levels of this
+factor contain all intermediate age groups,
+including ones that do not appear in the data.
 }
 \examples{
 date_to_age_multi(date = c("2024-03-27",
@@ -102,12 +96,6 @@ date_to_age_multi(date = c("2024-03-27",
                           "2000-07-13"),
                   width = 10,
                   break_max = NULL)
-
-## return non-factor
-date_to_age_multi(date = c("2024-03-27",
-                           "2022-11-09"),
-                  dob = "2011-05-18",
-                  as_factor = FALSE)
 }
 \seealso{
 Other functions for creating age groups are
