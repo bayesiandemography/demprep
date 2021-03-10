@@ -4,7 +4,7 @@
 \alias{date_to_cohort_custom}
 \title{Convert dates to customized cohorts}
 \usage{
-date_to_cohort_custom(date, breaks, open_first = TRUE, as_factor = TRUE)
+date_to_cohort_custom(date, breaks, open_first = TRUE)
 }
 \arguments{
 \item{date}{Dates of events defining cohorts.
@@ -19,14 +19,9 @@ via function \code{\link[base]{as.Date}}.}
 
 \item{open_first}{Whether the first cohort
 has no lower limit. Defaults to \code{TRUE}.}
-
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the return
-value is a factor; otherwise it is a character vector.
-The return value has the same length as \code{date}.
+A factor with the same length as \code{date}.
 }
 \description{
 Identify cohorts, based on dates of births or other events.
@@ -57,9 +52,9 @@ the same as having no upper limit on the oldest age group.
 If \code{open_first} is \code{FALSE}, then the first cohort
 is defined by the first two dates.
 
-When \code{as_factor} is \code{TRUE} the levels of
-the factor include all intermediate cohorts,
-including cohorts that not appear in the data.
+The return value is a factor. The levels of this
+factor contain all intermediate cohorts,
+including cohorts that do not appear in the data.
 }
 \examples{
 ## cohorts start on 1 January
@@ -89,17 +84,6 @@ date_to_cohort_custom(date = c("2024-03-27",
                                  "2021-01-01",
                                  "2026-01-01"),
                       open_first = FALSE)
-
-
-## return non-factor
-date_to_cohort_custom(date = c("2024-03-27",
-                               "2018-11-09",
-                               "2020-05-13",
-                               "2021-03-02"),
-                      breaks = c("2020-01-01",
-                                 "2021-01-01",
-                                 "2026-01-01"),
-                      as_factor = FALSE)
 }
 \seealso{
 Other functions for creating cohorts are

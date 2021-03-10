@@ -4,13 +4,7 @@
 \alias{date_to_period_multi}
 \title{Convert dates to multi-year periods}
 \usage{
-date_to_period_multi(
-  date,
-  width = 5,
-  origin = 2000,
-  month_start = "Jan",
-  as_factor = TRUE
-)
+date_to_period_multi(date, width = 5, origin = 2000, month_start = "Jan")
 }
 \arguments{
 \item{date}{Dates of events or measurements.}
@@ -23,14 +17,9 @@ Defaults to 5.}
 \item{month_start}{An element of \code{\link[base]{month.name}},
 or \code{\link[base]{month.abb}}. Each period starts on
 the first day of this month.}
-
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the return
-value is a factor; otherwise it is a character vector.
-The return value has the same length as \code{date}.
+A factor with the same length as \code{date}.
 }
 \description{
 Allocate dates to multi-year periods. The periods all have
@@ -52,9 +41,9 @@ full month name or an abbreviation.
 The location of the periods can be shifted
 by using different values for \code{origin}.
 
-When \code{as_factor} is \code{TRUE} the levels of
-the factor include all intermediate periods,
-including periods that not appear in the data.
+The return value is a factor.
+The levels of this factor include all intermediate periods,
+including periods that do not appear in the data.
 }
 \examples{
 date_to_period_multi(date = c("2024-03-27",
@@ -79,12 +68,6 @@ date_to_period_multi(date = c("2024-03-27",
                               "2021-03-02"),
                      origin = 2001,
                      month_start = "Jul")
-
-## return non-factor
-date_to_period_multi(date = c("2024-03-27",
-                              "2018-11-09",
-                              "2021-03-02"),
-                     as_factor = FALSE)
 }
 \seealso{
 Other functions for creating periods are

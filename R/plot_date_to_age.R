@@ -282,7 +282,8 @@ plot_date_to_age_lifetab <- function(date,
                                        dob = dob)
     age_years <- age_months %/% 12L
     ## make breaks
-    breaks <- make_breaks_date_to_integer_lifetab(break_max)
+    breaks <- make_breaks_date_to_integer_lifetab(age = age_years,
+                                                  break_max = break_max)
     ## make labels for breaks
     labels <- make_labels_age(breaks = breaks,
                               open_last = TRUE,

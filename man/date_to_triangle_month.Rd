@@ -4,13 +4,7 @@
 \alias{date_to_triangle_month}
 \title{Convert dates to month-length Lexis triangles}
 \usage{
-date_to_triangle_month(
-  date,
-  dob,
-  break_max = 1200,
-  open_last = TRUE,
-  as_factor = TRUE
-)
+date_to_triangle_month(date, dob, break_max = 1200, open_last = TRUE)
 }
 \arguments{
 \item{date}{Dates of events.}
@@ -22,14 +16,9 @@ Defaults to 1200.}
 
 \item{open_last}{Whether the final age group
 has no upper limit. Defaults to \code{TRUE}.}
-
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the return
-value is a factor; otherwise it is a character vector.
-The return value has the same length as \code{date}.
+A factor with the same length as \code{date}.
 }
 \description{
 Based on an age-time plan where age groups and periods
@@ -101,12 +90,6 @@ date_to_triangle_month(date = c("2017-03-27",
                                 "2024-03-27"),
                        dob = "2010-01-01",
                        break_max = 120)
-
-## return non-factor
-date_to_triangle_month(date = c("2024-03-27",
-                                "2022-11-09"),
-                       dob = "2012-03-01",
-                       as_factor = FALSE)
 }
 \seealso{
 Other functions for creating Lexis triangles are

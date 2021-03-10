@@ -4,20 +4,15 @@
 \alias{date_to_period_custom}
 \title{Convert dates to customized periods}
 \usage{
-date_to_period_custom(date, breaks, as_factor = TRUE)
+date_to_period_custom(date, breaks)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}
 
 \item{breaks}{Dates defining starts and ends of periods.}
-
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the return
-value is a factor; otherwise it is a character vector.
-The return value has the same length as \code{date}.
+A factor with the same length as \code{date}.
 }
 \description{
 Allocate dates to periods with varying widths,
@@ -45,9 +40,9 @@ starts on 1 January 2010 and ends on 31 December 2016,
 and the second period starts on 1 January 2017 and ends
 on 31 December 2020.
 
-When \code{as_factor} is \code{TRUE} the levels of
-the factor include all intermediate periods,
-including periods that not appear in the data.
+The return value is a factor.
+The levels of this factor include all intermediate periods,
+including periods that do not appear in the data.
 }
 \examples{
 ## periods start on 1 January
@@ -65,15 +60,6 @@ date_to_period_custom(date = c("2024-03-27",
                       breaks = c("2000-03-01",
                                  "2019-03-01",
                                  "2026-03-01"))
-
-## return non-factor
-date_to_period_custom(date = c("2024-03-27",
-                               "2018-11-09",
-                               "2021-03-02"),
-                      breaks = c("2000-01-01",
-                                 "2019-01-01",
-                                 "2026-01-01"),
-                      as_factor = FALSE)
 }
 \seealso{
 Other functions for creating periods are

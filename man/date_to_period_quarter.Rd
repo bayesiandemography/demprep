@@ -4,18 +4,13 @@
 \alias{date_to_period_quarter}
 \title{Convert dates to one-quarter periods}
 \usage{
-date_to_period_quarter(date, as_factor = TRUE)
+date_to_period_quarter(date)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}
-
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the return
-value is a factor; otherwise it is a character vector.
-The return value has the same length as \code{date}.
+A factor with the same length as \code{date}.
 }
 \description{
 Allocate dates to periods with periods one quarter long.
@@ -33,19 +28,14 @@ Quarters are defined as follows:
 or can be coerced to class \code{Date}
 via function \code{\link[base]{as.Date}}.
 
-When \code{as_factor} is \code{TRUE} the levels of
-the factor include all intermediate periods,
-including periods that not appear in the data.
+The return value is a factor.
+The levels of this factor include all intermediate periods,
+including periods that do not appear in the data.
 }
 \examples{
 date_to_period_quarter(date = c("2024-03-27",
                                 "2020-01-03",
                                 "2022-11-09"))
-## return non-factor
-date_to_period_quarter(date = c("2024-03-27",
-                                "2020-01-03",
-                                "2022-11-09"),
-                       as_factor = FALSE)
 }
 \seealso{
 Other functions for creating periods are

@@ -4,12 +4,7 @@
 \alias{date_to_period_year}
 \title{Convert dates to one-year periods}
 \usage{
-date_to_period_year(
-  date,
-  month_start = "Jan",
-  label_year_start = TRUE,
-  as_factor = TRUE
-)
+date_to_period_year(date, month_start = "Jan", label_year_start = TRUE)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}
@@ -22,14 +17,9 @@ the first day of this month.}
 by the calendar year at the beginning of the period
 or the calendar year at the end. Not needed for periods
 that start on 1 January. Defaults to \code{TRUE}.}
-
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the return
-value is a factor; otherwise it is a character vector.
-The return value has the same length as \code{date}.
+A factor with the same length as \code{date}.
 }
 \description{
 Allocate dates to one-year periods. The one-year periods are,
@@ -66,9 +56,9 @@ others label it \code{"2001"}. Function
 the start year. To use the end year, set
 \code{label_year_start} to \code{FALSE}.
 
-When \code{as_factor} is \code{TRUE} the levels of
-the factor include all intermediate periods,
-including periods that not appear in the data.
+The return value is a factor.
+The levels of this factor include all intermediate periods,
+including periods that do not appear in the data.
 }
 \examples{
 date_to_period_year(date = c("2024-03-27", "2022-11-09"))
@@ -82,10 +72,6 @@ date_to_period_year(date = c("2024-03-27", "2022-11-09"),
 date_to_period_year(date = c("2024-03-27", "2022-11-09"),
                     month_start = "Jul",
                     label_year_start = FALSE)
-
-## return non-factor
-date_to_period_year(date = c("2024-03-27", "2022-11-09"),
-                    as_factor = FALSE)
 }
 \seealso{
 Other functions for creating periods are

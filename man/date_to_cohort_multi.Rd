@@ -10,8 +10,7 @@ date_to_cohort_multi(
   origin = 2000,
   month_start = "Jan",
   break_min = NULL,
-  open_first = NULL,
-  as_factor = TRUE
+  open_first = NULL
 )
 }
 \arguments{
@@ -43,14 +42,9 @@ a month.}
 has no lower limit. If \code{break_min} is non-\code{NULL},
 then \code{open_first} defaults to \code{TRUE};
 otherwise it defaults to \code{FALSE}.}
-
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the return
-value is a factor; otherwise it is a character vector.
-The return value has the same length as \code{date}.
+A factor with the same length as \code{date}.
 }
 \description{
 Identify cohorts, based on dates of births or other events.
@@ -89,9 +83,9 @@ supplied, in which case \code{origin} is ignored.
 If \code{open_first} can only be \code{TRUE},
 if a value for \code{break_min} is supplied.
 
-When \code{as_factor} is \code{TRUE} the levels of
-the factor include all intermediate cohorts,
-including cohorts that not appear in the data.
+The return value is a factor. The levels of this
+factor contain all intermediate cohorts,
+including cohorts that do not appear in the data.
 }
 \examples{
 date_to_cohort_multi(date = c("2024-03-27",
@@ -131,11 +125,6 @@ date_to_cohort_multi(date = c("2024-03-27",
                               "2022-11-09"),
                      break_min = "2015-07-01",
                      open_first = FALSE)
-
-## return non-factor
-date_to_cohort_multi(date = c("2024-03-27",
-                              "2022-11-09"),
-                     as_factor = FALSE)
 }
 \seealso{
 Other functions for creating cohorts are

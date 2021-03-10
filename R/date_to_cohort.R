@@ -60,9 +60,9 @@
 #' if a value for \code{break_min} is supplied,
 #' and if \code{label_year_start} is \code{TRUE}.
 #'
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate cohorts,
-#' including cohorts that not appear in the data.
+#' The return value is a factor. The levels of this
+#' factor contain all intermediate cohorts,
+#' including cohorts that do not appear in the data.
 #'
 #' @param date Dates of events defining cohorts.
 #' A vector of class \code{\link[base]{Date}},
@@ -88,12 +88,8 @@
 #' and \code{label_year_start} is \code{TRUE},
 #' then \code{open_first} defaults to \code{TRUE};
 #' otherwise it defaults to \code{FALSE}.
-#' @param as_factor Whether the return value is a factor.
-#' Defaults to \code{TRUE}.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating cohorts are
 #' \code{\link{date_to_cohort_multi}},
@@ -139,17 +135,12 @@
 #'                              "2022-11-09"),
 #'                     break_min = "2015-07-01",
 #'                     open_first = FALSE)
-#'
-#' ## return non-factor
-#' date_to_cohort_year(date = c("2024-03-27", "2022-11-09"),
-#'                     as_factor = FALSE)
 #' @export
 date_to_cohort_year <- function(date,
                                 month_start = "Jan",
                                 label_year_start = TRUE,
                                 break_min = NULL,
-                                open_first = NULL,
-                                as_factor = TRUE) {
+                                open_first = NULL) {
     ## see if arguments supplied
     has_date <- sum(!is.na(date)) > 0L
     has_break_min <- !is.null(break_min)
@@ -186,14 +177,11 @@ date_to_cohort_year <- function(date,
     if (!open_first && has_break_min)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
     ## deal with "empty" case where 'date'
     ## has length 0 or is all NA
     if (!has_date) {
         ans <- as.character(date)
-        if (as_factor)
-            ans <- factor(ans)
+        ans <- factor(ans)
         return(ans)
     }
     ## create sequence of breaks
@@ -216,9 +204,8 @@ date_to_cohort_year <- function(date,
         i <- i + 1L
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans
 }
 
@@ -260,9 +247,9 @@ date_to_cohort_year <- function(date,
 #' If \code{open_first} can only be \code{TRUE},
 #' if a value for \code{break_min} is supplied.
 #'
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate cohorts,
-#' including cohorts that not appear in the data.
+#' The return value is a factor. The levels of this
+#' factor contain all intermediate cohorts,
+#' including cohorts that do not appear in the data.
 #'
 #' @inheritParams date_to_cohort_year
 #' @param width The length, in whole years, of the cohorts.
@@ -274,9 +261,7 @@ date_to_cohort_year <- function(date,
 #' then \code{open_first} defaults to \code{TRUE};
 #' otherwise it defaults to \code{FALSE}.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating cohorts are
 #' \code{\link{date_to_cohort_year}},
@@ -335,19 +320,13 @@ date_to_cohort_year <- function(date,
 #'                               "2022-11-09"),
 #'                      break_min = "2015-07-01",
 #'                      open_first = FALSE)
-#'
-#' ## return non-factor
-#' date_to_cohort_multi(date = c("2024-03-27",
-#'                               "2022-11-09"),
-#'                      as_factor = FALSE)
 #' @export
 date_to_cohort_multi <- function(date,
                                  width = 5,
                                  origin = 2000,
                                  month_start = "Jan",
                                  break_min = NULL,
-                                 open_first = NULL,
-                                 as_factor = TRUE) {
+                                 open_first = NULL) {
     ## see if arguments supplied
     has_date <- sum(!is.na(date)) > 0L
     has_break_min <- !is.null(break_min)
@@ -384,15 +363,12 @@ date_to_cohort_multi <- function(date,
     if (!open_first && has_break_min)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
     ## deal with "empty" case where 'date'
     ## has length 0 or is all NA
     ## aren't making factor levels with no data
     if (!has_date) {
         ans <- as.character(date)
-        if (as_factor)
-            ans <- factor(ans)
+        ans <- factor(ans)
         return(ans)
     }
     ## create sequence of breaks
@@ -415,9 +391,8 @@ date_to_cohort_multi <- function(date,
         i <- i + 1L
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans
 }
 
@@ -452,9 +427,9 @@ date_to_cohort_multi <- function(date,
 #' If \code{open_first} is \code{FALSE}, then the first cohort
 #' is defined by the first two dates.
 #'
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate cohorts,
-#' including cohorts that not appear in the data.
+#' The return value is a factor. The levels of this
+#' factor contain all intermediate cohorts,
+#' including cohorts that do not appear in the data.
 #'
 #' @inheritParams date_to_cohort_year
 #' @param breaks Dates defining starts and ends of cohorts.
@@ -464,9 +439,7 @@ date_to_cohort_multi <- function(date,
 #' @param open_first Whether the first cohort
 #' has no lower limit. Defaults to \code{TRUE}.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating cohorts are
 #' \code{\link{date_to_cohort_year}},
@@ -513,22 +486,10 @@ date_to_cohort_multi <- function(date,
 #'                                  "2021-01-01",
 #'                                  "2026-01-01"),
 #'                       open_first = FALSE)
-#'
-#'
-#' ## return non-factor
-#' date_to_cohort_custom(date = c("2024-03-27",
-#'                                "2018-11-09",
-#'                                "2020-05-13",
-#'                                "2021-03-02"),
-#'                       breaks = c("2020-01-01",
-#'                                  "2021-01-01",
-#'                                  "2026-01-01"),
-#'                       as_factor = FALSE)
 #' @export
 date_to_cohort_custom <- function(date,
                                   breaks,
-                                  open_first = TRUE,
-                                  as_factor = TRUE) {
+                                  open_first = TRUE) {
     ## see if arguments supplied
     has_date <- sum(!is.na(date)) > 0L
     ## check arguments and/or apply defaults
@@ -549,8 +510,6 @@ date_to_cohort_custom <- function(date,
         demcheck::err_lt_break_max_date(date = date,
                                         break_max = break_max)
     }
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
     ## deal with "empty" case where 'breaks' has length 0
     if (n_break == 0L) {
         if (has_date) {
@@ -559,17 +518,9 @@ date_to_cohort_custom <- function(date,
         }
         else {
             ans <- as.character(date)
-            if (as_factor)
-                ans <- factor(ans)
+            ans <- factor(ans)
             return(ans)
         }
-    }
-    ## deal with "empty" case where 'date'
-    ## has length 0 or is all NA, and we
-    ## aren't making factor levels
-    if (!has_date && !as_factor) {
-        ans <- as.character(date)
-        return(ans)
     }
     ## make labels for breaks
     labels <- make_labels_cohort(breaks = breaks,
@@ -585,9 +536,8 @@ date_to_cohort_custom <- function(date,
         i <- i + 1L
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans
 }
 
@@ -614,9 +564,9 @@ date_to_cohort_custom <- function(date,
 #' limit. If \code{open_first} is \code{FALSE}, then
 #' \code{break_min} forms the lower limit for the first cohort.
 #'
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate cohorts,
-#' including cohorts that not appear in the data.
+#' The return value is a factor. The levels of this
+#' factor contain all intermediate cohorts,
+#' including cohorts that do not appear in the data.
 #'
 #' @inheritParams date_to_cohort_year
 #' @param break_min The start date of the first cohort,
@@ -628,9 +578,7 @@ date_to_cohort_custom <- function(date,
 #' in either case, it must be the first day of
 #' a quarter.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating cohorts are
 #' \code{\link{date_to_cohort_year}},
@@ -667,15 +615,10 @@ date_to_cohort_custom <- function(date,
 #'                                 "2022-11-09"),
 #'                     break_min = "2015-07-01",
 #'                     open_first = FALSE)
-#'
-#' ## return non-factor
-#' date_to_cohort_quarter(date = c("2024-03-27", "2022-11-09"),
-#'                     as_factor = FALSE)
 #' @export
 date_to_cohort_quarter <- function(date,
                                    break_min = NULL,
-                                   open_first = NULL,
-                                   as_factor = TRUE) {
+                                   open_first = NULL) {
     ## see if arguments supplied
     has_date <- sum(!is.na(date)) > 0L
     has_break_min <- !is.null(break_min)
@@ -698,14 +641,11 @@ date_to_cohort_quarter <- function(date,
     if (!open_first && has_break_min)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
     ## deal with "empty" case where 'date'
     ## has length 0 or is all NA
     if (!has_date) {
         ans <- as.character(date)
-        if (as_factor)
-            ans <- factor(ans)
+        ans <- factor(ans)
         return(ans)
     }
     ## create sequence of breaks
@@ -728,9 +668,8 @@ date_to_cohort_quarter <- function(date,
         i <- i + 1L
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans   
 }
 
@@ -754,15 +693,13 @@ date_to_cohort_quarter <- function(date,
 #' limit. If \code{open_first} is \code{FALSE}, then
 #' \code{break_min} forms the lower limit for the first cohort.
 #'
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate cohorts,
-#' including cohorts that not appear in the data.
+#' The return value is a factor. The levels of this
+#' factor contain all intermediate cohorts,
+#' including cohorts that do not appear in the data.
 #'
 #' @inheritParams date_to_cohort_year
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating cohorts are
 #' \code{\link{date_to_cohort_year}},
@@ -799,16 +736,10 @@ date_to_cohort_quarter <- function(date,
 #'                               "2022-11-09"),
 #'                     break_min = "2015-07-01",
 #'                     open_first = FALSE)
-#'
-#' ## return non-factor
-#' date_to_cohort_month(date = c("2024-03-27",
-#'                               "2022-11-09"),
-#'                     as_factor = FALSE)
 #' @export
 date_to_cohort_month <- function(date,
                                  break_min = NULL,
-                                 open_first = NULL,
-                                 as_factor = TRUE) {
+                                 open_first = NULL) {
     ## see if arguments supplied
     has_date <- sum(!is.na(date)) > 0L
     has_break_min <- !is.null(break_min)
@@ -831,19 +762,16 @@ date_to_cohort_month <- function(date,
     if (!open_first && has_break_min)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
     ## deal with "empty" case where 'date'
     ## has length 0 or is all NA
     if (!has_date) {
         ans <- as.character(date)
-        if (as_factor)
-            ans <- factor(ans)
+        ans <- factor(ans)
         return(ans)
     }
     ## create sequence of breaks
     breaks <- make_breaks_date_to_date_month(date = date,
-                                     break_min = break_min)
+                                             break_min = break_min)
     ## make labels for these breaks
     n_break <- length(breaks)
     break_min <- breaks[[1L]]
@@ -861,8 +789,7 @@ date_to_cohort_month <- function(date,
         i <- i + 1L
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans   
 }

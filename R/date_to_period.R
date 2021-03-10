@@ -5,8 +5,6 @@
 ## (reflecting the fact that the levels are
 ## completely determined by this argument).
 
-
-
 ## HAS_TESTS
 #' Convert dates to one-year periods
 #'
@@ -43,9 +41,9 @@
 #' the start year. To use the end year, set
 #' \code{label_year_start} to \code{FALSE}.
 #'
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate periods,
-#' including periods that not appear in the data.
+#' The return value is a factor.
+#' The levels of this factor include all intermediate periods,
+#' including periods that do not appear in the data.
 #'
 #' @param date Dates of events or measurements.
 #' @param month_start An element of \code{\link[base]{month.name}},
@@ -55,12 +53,8 @@
 #' by the calendar year at the beginning of the period
 #' or the calendar year at the end. Not needed for periods
 #' that start on 1 January. Defaults to \code{TRUE}.
-#' @param as_factor Whether the return value is a factor.
-#' Defaults to \code{TRUE}.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating periods are
 #' \code{\link{date_to_period_multi}},
@@ -92,15 +86,10 @@
 #' date_to_period_year(date = c("2024-03-27", "2022-11-09"),
 #'                     month_start = "Jul",
 #'                     label_year_start = FALSE)
-#'
-#' ## return non-factor
-#' date_to_period_year(date = c("2024-03-27", "2022-11-09"),
-#'                     as_factor = FALSE)
 #' @export
 date_to_period_year <- function(date,
                                 month_start = "Jan",
-                                label_year_start = TRUE,
-                                as_factor = TRUE) {
+                                label_year_start = TRUE) {
     ## see if arguments supplied
     has_date <- sum(!is.na(date)) > 0L
     ## check arguments and/or apply defaults
@@ -111,14 +100,11 @@ date_to_period_year <- function(date,
                                                  name = "month_start")
     demcheck::err_is_logical_flag(x = label_year_start,
                                   name = "label_year_start")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
     ## deal with "empty" case where 'date'
     ## has length 0 or is all NA
     if (!has_date) {
         ans <- as.character(date)
-        if (as_factor)
-            ans <- factor(ans)
+        ans <- factor(ans)
         return(ans)
     }
     ## create sequence of breaks
@@ -138,8 +124,7 @@ date_to_period_year <- function(date,
                       vec = breaks_int)
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
+    ans <- factor(x = ans,
                       levels = labels)
     ans
 }
@@ -165,18 +150,16 @@ date_to_period_year <- function(date,
 #' The location of the periods can be shifted
 #' by using different values for \code{origin}.
 #' 
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate periods,
-#' including periods that not appear in the data.
+#' The return value is a factor.
+#' The levels of this factor include all intermediate periods,
+#' including periods that do not appear in the data.
 #'
 #' @inheritParams date_to_period_year
 #' @param width The length, in whole years, of the periods.
 #' Defaults to 5.
 #' @param origin An integer. Defaults to 2000. 
 #' 
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating periods are
 #' \code{\link{date_to_period_year}},
@@ -219,18 +202,11 @@ date_to_period_year <- function(date,
 #'                               "2021-03-02"),
 #'                      origin = 2001,
 #'                      month_start = "Jul")
-#'
-#' ## return non-factor
-#' date_to_period_multi(date = c("2024-03-27",
-#'                               "2018-11-09",
-#'                               "2021-03-02"),
-#'                      as_factor = FALSE)
 #' @export
 date_to_period_multi <- function(date,
                                  width = 5,
                                  origin = 2000,
-                                 month_start = "Jan",
-                                 as_factor = TRUE) {
+                                 month_start = "Jan") {
     ## see if arguments supplied
     has_date <- sum(!is.na(date)) > 0L
     ## check arguments and/or apply defaults
@@ -243,14 +219,11 @@ date_to_period_multi <- function(date,
                                                name = "origin")
     month_start <- demcheck::err_tdy_month_start(x = month_start,
                                                  name = "month_start")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
     ## deal with "empty" case where 'date'
     ## has length 0 or is all NA
     if (!has_date) {
         ans <- as.character(date)
-        if (as_factor)
-            ans <- factor(ans)
+        ans <- factor(ans)
         return(ans)
     }
     ## create sequence of breaks
@@ -271,9 +244,8 @@ date_to_period_multi <- function(date,
                       vec = breaks_int)
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans
 }
 
@@ -304,16 +276,14 @@ date_to_period_multi <- function(date,
 #' and the second period starts on 1 January 2017 and ends
 #' on 31 December 2020.
 #'
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate periods,
-#' including periods that not appear in the data.
+#' The return value is a factor.
+#' The levels of this factor include all intermediate periods,
+#' including periods that do not appear in the data.
 #'
 #' @inheritParams date_to_period_year
 #' @param breaks Dates defining starts and ends of periods.
 #' 
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating periods are
 #' \code{\link{date_to_period_year}},
@@ -348,19 +318,9 @@ date_to_period_multi <- function(date,
 #'                       breaks = c("2000-03-01",
 #'                                  "2019-03-01",
 #'                                  "2026-03-01"))
-#'
-#' ## return non-factor
-#' date_to_period_custom(date = c("2024-03-27",
-#'                                "2018-11-09",
-#'                                "2021-03-02"),
-#'                       breaks = c("2000-01-01",
-#'                                  "2019-01-01",
-#'                                  "2026-01-01"),
-#'                       as_factor = FALSE)
 #' @export
 date_to_period_custom <- function(date,
-                                  breaks,
-                                  as_factor = TRUE) {
+                                  breaks) {
     ## see if arguments supplied
     has_date <- sum(!is.na(date)) > 0L
     ## check arguments and/or apply defaults
@@ -377,8 +337,6 @@ date_to_period_custom <- function(date,
         demcheck::err_lt_break_max_date(date = date,
                                         break_max = break_max)
     }
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
     ## deal with "empty" case where 'breaks' has length 0
     if (n == 0L) {
         if (has_date) {
@@ -387,17 +345,9 @@ date_to_period_custom <- function(date,
         }
         else {
             ans <- as.character(date)
-            if (as_factor)
-                ans <- factor(ans)
+            ans <- factor(ans)
             return(ans)
         }
-    }
-    ## deal with "empty" case where 'date'
-    ## has length 0 or is all NA, and we
-    ## aren't making factor levels
-    if (!has_date && !as_factor) {
-        ans <- as.character(date)
-        return(ans)
     }
     ## make labels for breaks
     labels <- make_labels_period(breaks = breaks,
@@ -410,9 +360,8 @@ date_to_period_custom <- function(date,
                       vec = breaks_int)
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans
 }
 
@@ -433,15 +382,13 @@ date_to_period_custom <- function(date,
 #' or can be coerced to class \code{Date}
 #' via function \code{\link[base]{as.Date}}.
 #'
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate periods,
-#' including periods that not appear in the data.
+#' The return value is a factor.
+#' The levels of this factor include all intermediate periods,
+#' including periods that do not appear in the data.
 #'
 #' @inheritParams date_to_period_year
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating periods are
 #' \code{\link{date_to_period_year}},
@@ -465,33 +412,24 @@ date_to_period_custom <- function(date,
 #' date_to_period_quarter(date = c("2024-03-27",
 #'                                 "2020-01-03",
 #'                                 "2022-11-09"))
-#' ## return non-factor
-#' date_to_period_quarter(date = c("2024-03-27",
-#'                                 "2020-01-03",
-#'                                 "2022-11-09"),
-#'                        as_factor = FALSE)
 #' @export
-date_to_period_quarter <- function(date,
-                                   as_factor = TRUE) {
+date_to_period_quarter <- function(date) {
     ## see if arguments supplied
     has_date <- sum(!is.na(date)) > 0L
     ## check arguments and/or apply defaults
     if (has_date)
         date <- demcheck::err_tdy_date_vector(x = date,
                                               name = "date")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
     ## deal with "empty" case where 'date' has length 0
     ## or is all NA
     if (!has_date) {
         ans <- as.character(date)
-        if (as_factor)
-            ans <- factor(ans)
+        ans <- factor(ans)
         return(ans)
     }
     ## create sequence of breaks
     breaks <- make_breaks_date_to_date_quarter(date = date,
-                                       break_min = NULL)
+                                               break_min = NULL)
     ## make labels for these breaks
     n <- length(breaks)
     break_min <- breaks[[1L]]
@@ -506,9 +444,8 @@ date_to_period_quarter <- function(date,
                       vec = breaks_int)
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans   
 }
 
@@ -522,15 +459,13 @@ date_to_period_quarter <- function(date,
 #' or can be coerced to class \code{Date}
 #' via function \code{\link[base]{as.Date}}.
 #'
-#' When \code{as_factor} is \code{TRUE} the levels of
-#' the factor include all intermediate periods,
-#' including periods that not appear in the data.
+#' The return value is a factor.
+#' The levels of this factor include all intermediate periods,
+#' including periods that do not appear in the data.
 #'
 #' @inheritParams date_to_period_year
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating periods are
 #' \code{\link{date_to_period_year}},
@@ -554,33 +489,24 @@ date_to_period_quarter <- function(date,
 #' date_to_period_month(date = c("2024-03-27",
 #'                               "2020-01-03",
 #'                               "2022-11-09"))
-#' ## return non-factor
-#' date_to_period_month(date = c("2024-03-27",
-#'                               "2020-01-03",
-#'                               "2022-11-09"),
-#'                      as_factor = FALSE)
 #' @export
-date_to_period_month <- function(date,
-                                 as_factor = TRUE) {
+date_to_period_month <- function(date) {
     ## see if arguments supplied
     has_date <- sum(!is.na(date)) > 0L
     ## check arguments and/or apply defaults
     if (has_date)
         date <- demcheck::err_tdy_date_vector(x = date,
                                               name = "date")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
     ## deal with "empty" case where 'date' has length 0
     ## or all is NA
     if (!has_date) {
         ans <- as.character(date)
-        if (as_factor)
-            ans <- factor(ans)
+        ans <- factor(ans)
         return(ans)
     }
     ## create sequence of breaks
     breaks <- make_breaks_date_to_date_month(date = date,
-                                     break_min = NULL)
+                                             break_min = NULL)
     ## make labels for these breaks
     n <- length(breaks)
     break_min <- breaks[[1L]]
@@ -595,8 +521,7 @@ date_to_period_month <- function(date,
                       vec = breaks_int)
     ans <- labels[i]
     ## return result
-    if (as_factor)
-        ans <- factor(x = ans,
-                      levels = labels)
+    ans <- factor(x = ans,
+                  levels = labels)
     ans   
 }

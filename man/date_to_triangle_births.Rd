@@ -13,8 +13,7 @@ date_to_triangle_births(
   recode_up = FALSE,
   recode_down = FALSE,
   origin = 2000,
-  month_start = "Jan",
-  as_factor = TRUE
+  month_start = "Jan"
 )
 }
 \arguments{
@@ -45,14 +44,9 @@ age group.}
 \item{month_start}{An element of \code{\link[base]{month.name}},
 or \code{\link[base]{month.abb}}. The period starts on
 the first day of this month.}
-
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the return
-value is a factor; otherwise it is a character vector.
-The return value has the same length as \code{date}.
+A factor with the same length as \code{date}.
 }
 \description{
 Use dates when births occurred and dates of birth
@@ -125,8 +119,8 @@ is controlled by parameters \code{recode_up}
 and \code{recode_down}. The default
 is for no recoding to occur.
 
-When \code{as_factor} is \code{TRUE}, the levels of
-the factor includes both \code{"Lower"} and
+The return value is a factor.
+The levels of the factor include \code{"Lower"} and
 \code{"Upper"}, even when \code{"Lower"}
 and \code{"Upper"} do not both appear
 in the data.
@@ -143,12 +137,6 @@ date_to_triangle_births(date = c("2024-03-27", "2022-11-09"),
 date_to_triangle_births(date = c("2024-03-27", "2022-11-09"),
                       dob = c("2001-03-21", "2000-07-13"),
                       width = 1)
-
-## return non-factor
-date_to_triangle_year(date = c("2024-03-27",
-                               "2022-11-09"),
-                      dob = "1996-03-01",
-                      as_factor = FALSE)
 }
 \seealso{
 Other functions for creating Lexis triangles are

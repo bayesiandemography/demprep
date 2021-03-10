@@ -11,8 +11,7 @@ date_to_triangle_multi(
   break_max = 100,
   open_last = TRUE,
   origin = 2000,
-  month_start = "Jan",
-  as_factor = TRUE
+  month_start = "Jan"
 )
 }
 \arguments{
@@ -34,14 +33,9 @@ has no upper limit. Defaults to \code{TRUE}.}
 \item{month_start}{An element of \code{\link[base]{month.name}},
 or \code{\link[base]{month.abb}}. The period starts on
 the first day of this month.}
-
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the return
-value is a factor; otherwise it is a character vector.
-The return value has the same length as \code{date}.
+A factor with the same length as \code{date}.
 }
 \description{
 Based on an age-time plan where age groups and periods have
@@ -104,8 +98,8 @@ end on 31 December.
 The location of the periods can be shifted
 by using different values for \code{origin}.
 
-When \code{as_factor} is \code{TRUE}, the levels of
-the factor includes both \code{"Lower"} and
+The return value is a factor.
+The levels of the factor include \code{"Lower"} and
 \code{"Upper"}, even when \code{"Lower"}
 and \code{"Upper"} do not both appear
 in the data.
@@ -139,12 +133,6 @@ date_to_triangle_multi(date = c("2027-03-27",
                                 "2022-11-09"),
                        dob = "2003-05-12",
                        break_max = 10)
-
-## return non-factor
-date_to_triangle_multi(date = c("2024-03-27",
-                                "2022-11-09"),
-                       dob = "2012-03-01",
-                       as_factor = FALSE)
 }
 \seealso{
 Other functions for creating Lexis triangles are

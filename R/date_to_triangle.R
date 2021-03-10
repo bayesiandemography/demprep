@@ -56,8 +56,8 @@
 #' so periods by default start on 1 January and
 #' end on 31 December.
 #'
-#' When \code{as_factor} is \code{TRUE}, the levels of
-#' the factor includes both \code{"Lower"} and
+#' The return value is a factor.
+#' The levels of the factor include \code{"Lower"} and
 #' \code{"Upper"}, even when \code{"Lower"}
 #' and \code{"Upper"} do not both appear
 #' in the data.
@@ -71,12 +71,8 @@
 #' @param month_start An element of \code{\link[base]{month.name}},
 #' or \code{\link[base]{month.abb}}. The period starts on
 #' the first day of this month.
-#' @param as_factor Whether the return value is a factor.
-#' Defaults to \code{TRUE}.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating Lexis triangles are
 #' \code{\link{date_to_triangle_multi}},
@@ -116,27 +112,19 @@
 #'                                "2020-06-18"),
 #'                       dob = c("2020-03-01",
 #'                               "2020-06-18"))
-#'
-#' ## return non-factor
-#' date_to_triangle_year(date = c("2024-03-27",
-#'                                "2022-11-09"),
-#'                       dob = "2012-03-01",
-#'                       as_factor = FALSE)
 #' @export
 date_to_triangle_year <- function(date,
                                   dob,
                                   break_max = 100,
                                   open_last = TRUE,
-                                  month_start = "Jan",
-                                  as_factor = TRUE) {
+                                  month_start = "Jan") {
     date_to_triangle_multi(date = date,
                            dob = dob,
                            width = 1L,
                            break_max = break_max,
                            open_last = open_last,
                            origin = 2000L,
-                           month_start = month_start,
-                           as_factor = as_factor)
+                           month_start = month_start)
 }
 
 
@@ -202,8 +190,8 @@ date_to_triangle_year <- function(date,
 #' The location of the periods can be shifted
 #' by using different values for \code{origin}.
 #'
-#' When \code{as_factor} is \code{TRUE}, the levels of
-#' the factor includes both \code{"Lower"} and
+#' The return value is a factor.
+#' The levels of the factor include \code{"Lower"} and
 #' \code{"Upper"}, even when \code{"Lower"}
 #' and \code{"Upper"} do not both appear
 #' in the data.
@@ -213,9 +201,7 @@ date_to_triangle_year <- function(date,
 #' age groups. A positive integer defaulting to 5.
 #' @param origin An integer. Defaults to 2000. 
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating Lexis triangles are
 #' \code{\link{date_to_triangle_year}},
@@ -260,12 +246,6 @@ date_to_triangle_year <- function(date,
 #'                                 "2022-11-09"),
 #'                        dob = "2003-05-12",
 #'                        break_max = 10)
-#' 
-#' ## return non-factor
-#' date_to_triangle_multi(date = c("2024-03-27",
-#'                                 "2022-11-09"),
-#'                        dob = "2012-03-01",
-#'                        as_factor = FALSE)
 #' @export
 date_to_triangle_multi <- function(date,
                                    dob,
@@ -273,8 +253,7 @@ date_to_triangle_multi <- function(date,
                                    break_max = 100,
                                    open_last = TRUE,
                                    origin = 2000,
-                                   month_start = "Jan",
-                                   as_factor = TRUE) {
+                                   month_start = "Jan") {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -292,8 +271,6 @@ date_to_triangle_multi <- function(date,
                                                name = "origin")
     month_start <- demcheck::err_tdy_month_start(x = month_start,
                                                  name = "month_start")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
     ## calculate age in months and years
     age_months <- age_completed_months(date = date,
                                        dob = dob)
@@ -346,10 +323,8 @@ date_to_triangle_multi <- function(date,
     ans[is_lower] <- "Lower"
     ans[is_upper] <- "Upper"
     ## return result
-    if (as_factor) {
-        ans <- factor(ans,
-                      levels = c("Lower", "Upper"))
-    }
+    ans <- factor(ans,
+                  levels = c("Lower", "Upper"))
     ans
 }
 
@@ -426,8 +401,8 @@ date_to_triangle_multi <- function(date,
 #' and \code{recode_down}. The default
 #' is for no recoding to occur.
 #'
-#' When \code{as_factor} is \code{TRUE}, the levels of
-#' the factor includes both \code{"Lower"} and
+#' The return value is a factor.
+#' The levels of the factor include \code{"Lower"} and
 #' \code{"Upper"}, even when \code{"Lower"}
 #' and \code{"Upper"} do not both appear
 #' in the data.
@@ -451,9 +426,7 @@ date_to_triangle_multi <- function(date,
 #' @param origin An integer. Defaults to 2000. 
 #'
 #' 
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating Lexis triangles are
 #' \code{\link{date_to_triangle_year}},
@@ -481,12 +454,6 @@ date_to_triangle_multi <- function(date,
 #' date_to_triangle_births(date = c("2024-03-27", "2022-11-09"),
 #'                       dob = c("2001-03-21", "2000-07-13"),
 #'                       width = 1)
-#'
-#' ## return non-factor
-#' date_to_triangle_year(date = c("2024-03-27",
-#'                                "2022-11-09"),
-#'                       dob = "1996-03-01",
-#'                       as_factor = FALSE)
 #' @export
 date_to_triangle_births <- function(date,
                                     dob,
@@ -496,8 +463,7 @@ date_to_triangle_births <- function(date,
                                     recode_up = FALSE,
                                     recode_down = FALSE,
                                     origin = 2000,
-                                    month_start = "Jan",
-                                    as_factor = TRUE) {
+                                    month_start = "Jan") {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -581,8 +547,7 @@ date_to_triangle_births <- function(date,
                            break_max = NULL,
                            open_last = FALSE,
                            origin = origin,
-                           month_start = month_start,
-                           as_factor = as_factor)    
+                           month_start = month_start)    
 }
 
 ## HAS_TESTS
@@ -639,8 +604,8 @@ date_to_triangle_births <- function(date,
 #' based on the highest age in the data,
 #' and the value for \code{open_last}.
 #' 
-#' When \code{as_factor} is \code{TRUE}, the levels of
-#' the factor includes both \code{"Lower"} and
+#' The return value is a factor.
+#' The levels of the factor include \code{"Lower"} and
 #' \code{"Upper"}, even when \code{"Lower"}
 #' and \code{"Upper"} do not both appear
 #' in the data.
@@ -649,9 +614,7 @@ date_to_triangle_births <- function(date,
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 400.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating Lexis triangles are
 #' \code{\link{date_to_triangle_year}},
@@ -678,18 +641,11 @@ date_to_triangle_births <- function(date,
 #'                                   "2024-03-27"),
 #'                          dob = "2010-01-01",
 #'                          break_max = 40)
-#' 
-#' ## return non-factor
-#' date_to_triangle_quarter(date = c("2024-03-27",
-#'                                   "2022-11-09"),
-#'                          dob = "2012-03-01",
-#'                          as_factor = FALSE)
 #' @export
 date_to_triangle_quarter <- function(date,
                                      dob,
                                      break_max = 400,
-                                     open_last = TRUE,
-                                     as_factor = TRUE) {
+                                     open_last = TRUE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -701,8 +657,6 @@ date_to_triangle_quarter <- function(date,
                                                            null_ok = TRUE)
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
     ## calculate age in months and quarters
     age_months <- age_completed_months(date = date,
                                        dob = dob)
@@ -751,10 +705,8 @@ date_to_triangle_quarter <- function(date,
     ans[is_lower] <- "Lower"
     ans[is_upper] <- "Upper"
     ## return result
-    if (as_factor) {
-        ans <- factor(ans,
-                      levels = c("Lower", "Upper"))
-    }
+    ans <- factor(ans,
+                  levels = c("Lower", "Upper"))
     ans
 }
 
@@ -822,9 +774,7 @@ date_to_triangle_quarter <- function(date,
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 1200.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The return value has the same length as \code{date}.
+#' @return A factor with the same length as \code{date}.
 #'
 #' @seealso Other functions for creating Lexis triangles are
 #' \code{\link{date_to_triangle_year}},
@@ -851,17 +801,10 @@ date_to_triangle_quarter <- function(date,
 #'                                 "2024-03-27"),
 #'                        dob = "2010-01-01",
 #'                        break_max = 120)
-#' 
-#' ## return non-factor
-#' date_to_triangle_month(date = c("2024-03-27",
-#'                                 "2022-11-09"),
-#'                        dob = "2012-03-01",
-#'                        as_factor = FALSE)
 #' @export
 date_to_triangle_month <- function(date, dob,
                                    break_max = 1200,
-                                   open_last = TRUE,
-                                   as_factor = TRUE) {
+                                   open_last = TRUE) {
     ## Check arguments and/or apply defaults.
     ## Note that 'err_tdy_date_dob' enforces length >= 1
     l <- demcheck::err_tdy_date_dob(date = date,
@@ -873,8 +816,6 @@ date_to_triangle_month <- function(date, dob,
                                                            null_ok = TRUE)
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
-    demcheck::err_is_logical_flag(x = as_factor,
-                                  name = "as_factor")
     ## calculate age in months
     age_months <- age_completed_months(date = date,
                                        dob = dob)
@@ -921,9 +862,7 @@ date_to_triangle_month <- function(date, dob,
     ans[is_lower] <- "Lower"
     ans[is_upper] <- "Upper"
     ## return result
-    if (as_factor) {
-        ans <- factor(ans,
-                      levels = c("Lower", "Upper"))
-    }
+    ans <- factor(ans,
+                  levels = c("Lower", "Upper"))
     ans
 }

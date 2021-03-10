@@ -225,20 +225,6 @@ Tabulation functions such as `table` make use of the levels attribute of factors
 table(deaths_temp$period)
 ```
 
-In most cases, keeping track of intermediate years, and including them in tabulations even when no events occur, is exactly what we want. If we are tracking annual deaths, we want to know that there were no deaths in 2018.
-
-In some cases, however, we only want to keep track of periods with non-zero counts. In these cases, we can set the `as_factor` argument to `FALSE`:
-```{r}
-deaths_temp$period_nonfac <- date_to_period_year(date = deaths_temp$date_death,
-                                                 as_factor = FALSE)
-deaths_temp
-```
-
-Tabulations of the resulting output will omit the periods with zero counts:
-```{r}
-table(deaths_temp$period_nonfac)
-```
-
 
 ## Multi-year periods with equal lengths
 

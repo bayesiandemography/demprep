@@ -4,13 +4,7 @@
 \alias{date_to_triangle_quarter}
 \title{Convert dates to quarter-length Lexis triangles}
 \usage{
-date_to_triangle_quarter(
-  date,
-  dob,
-  break_max = 400,
-  open_last = TRUE,
-  as_factor = TRUE
-)
+date_to_triangle_quarter(date, dob, break_max = 400, open_last = TRUE)
 }
 \arguments{
 \item{date}{Dates of events.}
@@ -22,14 +16,9 @@ Defaults to 400.}
 
 \item{open_last}{Whether the final age group
 has no upper limit. Defaults to \code{TRUE}.}
-
-\item{as_factor}{Whether the return value is a factor.
-Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the return
-value is a factor; otherwise it is a character vector.
-The return value has the same length as \code{date}.
+A factor with the same length as \code{date}.
 }
 \description{
 Based on an age-time plan where age groups and periods both have
@@ -84,8 +73,8 @@ derives a value for \code{break_max}
 based on the highest age in the data,
 and the value for \code{open_last}.
 
-When \code{as_factor} is \code{TRUE}, the levels of
-the factor includes both \code{"Lower"} and
+The return value is a factor.
+The levels of the factor include \code{"Lower"} and
 \code{"Upper"}, even when \code{"Lower"}
 and \code{"Upper"} do not both appear
 in the data.
@@ -101,12 +90,6 @@ date_to_triangle_quarter(date = c("2017-03-27",
                                   "2024-03-27"),
                          dob = "2010-01-01",
                          break_max = 40)
-
-## return non-factor
-date_to_triangle_quarter(date = c("2024-03-27",
-                                  "2022-11-09"),
-                         dob = "2012-03-01",
-                         as_factor = FALSE)
 }
 \seealso{
 Other functions for creating Lexis triangles are
