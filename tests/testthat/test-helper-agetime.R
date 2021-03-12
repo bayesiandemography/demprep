@@ -809,6 +809,23 @@ test_that("'make_breaks_date_to_integer_year' gives correct answer when break_ma
 })
 
 
+## make_breaks_labels_to_integer_lifetab --------------------------------------
+
+test_that("'make_breaks_label_to_integer_lifetab' gives correct answer when break_max non-NULL", {
+    expect_identical(make_breaks_label_to_integer_lifetab(age_low = c(0L, 5L, NA, 10L, 15L),
+                                                       is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                       break_max = 15L),
+                     c(0L, 1L, 5L, 10L, 15L))
+})
+
+test_that("'make_breaks_label_to_integer_lifetab' gives correct answer when break_max NULL", {
+    expect_identical(make_breaks_label_to_integer_lifetab(age_low = c(0L, 5L, NA, 10L, 15L),
+                                                       is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                       break_max = NULL),
+                     c(0L, 1L, 5L, 10L, 15L))
+})
+
+
 ## make_breaks_labels_to_integer_year -----------------------------------------
 
 test_that("'make_breaks_label_to_integer_year' gives correct answer when break_min and break_max both non-NULL", {

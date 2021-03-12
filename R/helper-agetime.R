@@ -461,6 +461,26 @@ make_breaks_date_to_integer_year <- function(age, width, break_min,
             by = width)
 }
 
+
+## HAS_TESTS
+make_breaks_label_to_integer_lifetab <- function(age_low,
+                                                 is_open,
+                                                 break_max) {
+    if (is.null(break_max)) {
+        break_max <- max(age_low[is_open], na.rm = TRUE)
+        break_max <- (break_max %/% 5L + 1L) * 5L
+        message(gettextf("'%s' set to %d",
+                         "break_max", break_max),
+                appendLF = TRUE)
+    }
+    c(0L,
+      1L,
+      seq.int(from = 5L,
+              to = break_max,
+              by = 5L))
+}
+
+
 ## HAS_TESTS
 make_breaks_label_to_integer_year <- function(age_low,
                                               age_up,

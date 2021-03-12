@@ -2,7 +2,7 @@
 % Please edit documentation in R/date_to_triangle.R
 \name{date_to_triangle_births}
 \alias{date_to_triangle_births}
-\title{Convert dates to Lexis triangles used when measuring fertility}
+\title{Convert dates to Lexis triangles used when tabulating births}
 \usage{
 date_to_triangle_births(
   date,

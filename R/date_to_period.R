@@ -103,20 +103,25 @@ date_to_period_year <- function(date,
     ## deal with "empty" case where 'date'
     ## has length 0 or is all NA
     if (!has_date) {
-        ans <- as.character(date)
-        ans <- factor(ans)
+        if (length(date) > 0L)
+            ans <- factor(date,
+                          levels = NA_character_,
+                          exclude = NULL)
+        else
+            ans <- factor()
         return(ans)
     }
     ## create sequence of breaks
     breaks <- make_breaks_date_to_date_year(date = date,
-                                    month_start = month_start,
-                                    width = 1L,
-                                    origin = NULL,
-                                    break_min = NULL)
+                                            month_start = month_start,
+                                            width = 1L,
+                                            origin = NULL,
+                                            break_min = NULL)
     ## create labels
+    include_na <- anyNA(date)
     labels <- make_labels_period(breaks = breaks,
                                  label_year_start = label_year_start,
-                                 include_na = FALSE)
+                                 include_na = include_na)
     ## assign labels to dates
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
@@ -125,7 +130,8 @@ date_to_period_year <- function(date,
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
-                      levels = labels)
+                  levels = labels,
+                  exclude = NULL)
     ans
 }
 
@@ -222,8 +228,12 @@ date_to_period_multi <- function(date,
     ## deal with "empty" case where 'date'
     ## has length 0 or is all NA
     if (!has_date) {
-        ans <- as.character(date)
-        ans <- factor(ans)
+        if (length(date) > 0L)
+            ans <- factor(date,
+                          levels = NA_character_,
+                          exclude = NULL)
+        else
+            ans <- factor()
         return(ans)
     }
     ## create sequence of breaks
@@ -233,10 +243,11 @@ date_to_period_multi <- function(date,
                                     origin = origin,
                                     break_min = NULL)
     ## make labels for these breaks
+    include_na <- anyNA(date)
     labels <- make_labels_cohort(breaks = breaks,
                                  open_first = FALSE,
                                  label_year_start = NULL,
-                                 include_na = FALSE)
+                                 include_na = include_na)
     ## assign labels to dates
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
@@ -245,7 +256,8 @@ date_to_period_multi <- function(date,
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
-                  levels = labels)
+                  levels = labels,
+                  exclude = NULL)
     ans
 }
 
@@ -344,15 +356,20 @@ date_to_period_custom <- function(date,
                           "breaks", 0L))
         }
         else {
-            ans <- as.character(date)
-            ans <- factor(ans)
+            if (length(date) > 0L)
+                ans <- factor(date,
+                              levels = NA_character_,
+                              exclude = NULL)
+            else
+                ans <- factor()
             return(ans)
         }
     }
     ## make labels for breaks
+    include_na <- anyNA(date)
     labels <- make_labels_period(breaks = breaks,
                                  label_year_start = NULL,
-                                 include_na = FALSE)
+                                 include_na = include_na)
     ## assign labels to dates
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
@@ -361,7 +378,8 @@ date_to_period_custom <- function(date,
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
-                  levels = labels)
+                  levels = labels,
+                  exclude = NULL)
     ans
 }
 
@@ -423,8 +441,12 @@ date_to_period_quarter <- function(date) {
     ## deal with "empty" case where 'date' has length 0
     ## or is all NA
     if (!has_date) {
-        ans <- as.character(date)
-        ans <- factor(ans)
+            if (length(date) > 0L)
+                ans <- factor(date,
+                              levels = NA_character_,
+                              exclude = NULL)
+            else
+                ans <- factor()
         return(ans)
     }
     ## create sequence of breaks
@@ -434,9 +456,10 @@ date_to_period_quarter <- function(date) {
     n <- length(breaks)
     break_min <- breaks[[1L]]
     break_max <- breaks[[n]]
+    include_na <- anyNA(date)
     labels <- make_labels_period_quarter(break_min = break_min,
                                          break_max = break_max,
-                                         include_na = FALSE)
+                                         include_na = include_na)
     ## assign labels to dates
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
@@ -445,7 +468,8 @@ date_to_period_quarter <- function(date) {
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
-                  levels = labels)
+                  levels = labels,
+                  exclude = NULL)
     ans   
 }
 
@@ -500,8 +524,12 @@ date_to_period_month <- function(date) {
     ## deal with "empty" case where 'date' has length 0
     ## or all is NA
     if (!has_date) {
-        ans <- as.character(date)
-        ans <- factor(ans)
+            if (length(date) > 0L)
+                ans <- factor(date,
+                              levels = NA_character_,
+                              exclude = NULL)
+            else
+                ans <- factor()
         return(ans)
     }
     ## create sequence of breaks
@@ -511,9 +539,10 @@ date_to_period_month <- function(date) {
     n <- length(breaks)
     break_min <- breaks[[1L]]
     break_max <- breaks[[n]]
+    include_na <- anyNA(date)
     labels <- make_labels_period_month(break_min = break_min,
                                        break_max = break_max,
-                                       include_na = FALSE)
+                                       include_na = include_na)
     ## assign labels to dates
     date_int <- as.integer(date)
     breaks_int <- as.integer(breaks)
@@ -522,6 +551,7 @@ date_to_period_month <- function(date) {
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
-                  levels = labels)
+                  levels = labels,
+                  exclude = NULL)
     ans   
 }

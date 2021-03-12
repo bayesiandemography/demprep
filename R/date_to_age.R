@@ -151,7 +151,9 @@ date_to_age_year <- function(date,
     is_unbounded <- is.null(break_min) || is.null(break_max)
     if (is_empty && is_unbounded) {
         ans <- rep(NA_character_, times = n_date)
-        ans <- factor(ans)
+        ans <- factor(ans,
+                      levels = NA_character_,
+                      exclude = NULL)
         return(ans)
     }
     ## get age in months and years
@@ -181,16 +183,18 @@ date_to_age_year <- function(date,
                                        break_max = break_max,
                                        open_last = open_last)
     ## make labels for these breaks
+    include_na <- anyNA(date) || anyNA(dob)
     labels <- make_labels_age(breaks = breaks,
                               open_last = open_last,
-                              include_na = FALSE)
+                              include_na = include_na)
     ## assign labels to ages
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
-                  levels = labels)
+                  levels = labels,
+                  exclude = NULL)
     ans
 }    
 
@@ -321,7 +325,9 @@ date_to_age_multi <- function(date,
     is_unbounded <- is.null(break_min) || is.null(break_max)
     if (is_empty && is_unbounded) {
         ans <- rep(NA_character_, times = n_date)
-        ans <- factor(ans)
+        ans <- factor(ans,
+                      levels = NA_character_,
+                      exclude = NULL)
         return(ans)
     }
     ## get age in months and years
@@ -346,20 +352,23 @@ date_to_age_multi <- function(date,
                                        unit = "year")    
     ## make breaks
     breaks <- make_breaks_date_to_integer_year(age = age_years,
-                                       width = width,
-                                       break_min = break_min,
-                                       break_max = break_max,
-                                       open_last = open_last)
+                                               width = width,
+                                               break_min = break_min,
+                                               break_max = break_max,
+                                               open_last = open_last)
     ## make labels for these breaks
+    include_na <- anyNA(date) || anyNA(dob)
     labels <- make_labels_age(breaks = breaks,
-                              open_last = open_last)
+                              open_last = open_last,
+                              include_na = include_na)
     ## assign labels to ages
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
-                  levels = labels)
+                  levels = labels,
+                  exclude = NULL)
     ans
 }
 
@@ -430,11 +439,13 @@ date_to_age_lifetab <- function(date,
     dob <- l$dob
     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
                                                            name = "break_max",
-                                                           null_ok = FALSE)
-    demcheck::err_multiple_of_n(x = break_max,
-                                name = "break_max",
-                                n = 5L,
-                                null_ok = FALSE)
+                                                           null_ok = TRUE)
+    if (!is.null(break_max)) {
+        demcheck::err_multiple_of_n(x = break_max,
+                                    name = "break_max",
+                                    n = 5L,
+                                    null_ok = FALSE)
+    }
     ## deal with "undefined" case where there
     ## are no valid date-dob pairs
     ## and where 'break_max' is missing,
@@ -444,7 +455,9 @@ date_to_age_lifetab <- function(date,
     is_unbounded <- is.null(break_max)
     if (is_empty && is_unbounded) {
         ans <- rep(NA_character_, times = n_date)
-        ans <- factor(ans)
+        ans <- factor(ans,
+                      levels = NA_character_,
+                      exclude = NULL)
         return(ans)
     }
     ## get age in months and years
@@ -455,21 +468,23 @@ date_to_age_lifetab <- function(date,
     breaks <- make_breaks_date_to_integer_lifetab(age = age_years,
                                                   break_max = break_max)
     ## make labels for breaks
+    include_na <- anyNA(date) || anyNA(dob)
     labels <- make_labels_age(breaks = breaks,
                               open_last = TRUE,
-                              include_na = FALSE)
+                              include_na = include_na)
     ## assign labels to ages
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
-                  levels = labels)
+                  levels = labels,
+                  exclude = NULL)
     ans
 }
 
 ## HAS_TESTS
-#' Convert dates to age groups when measuring fertility 
+#' Convert dates to age groups when tabulating births 
 #'
 #' Given the dates when births occur,
 #' and the dates of birth of the parents (typically mothers),
@@ -636,7 +651,9 @@ date_to_age_births <- function(date, dob,
     is_unbounded <- is.null(break_min) || is.null(break_max)
     if (is_empty && is_unbounded) {
         ans <- rep(NA_character_, times = n_date)
-        ans <- factor(ans)
+        ans <- factor(ans,
+                      levels = NA_character_,
+                      exclude = NULL)
         return(ans)
     }
     ## get age in months and years
@@ -682,15 +699,18 @@ date_to_age_births <- function(date, dob,
                                          break_min = break_min,
                                          break_max = break_max)
     ## make labels for breaks
+    include_na <- anyNA(date) || anyNA(dob)
     labels <- make_labels_age(breaks = breaks,
-                              open_last = FALSE)
+                              open_last = FALSE,
+                              include_na = include_na)
     ## assign labels to ages
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
-                  levels = labels)
+                  levels = labels,
+                  exclude = NULL)
     ans
 }
 
@@ -791,7 +811,9 @@ date_to_age_custom <- function(date,
     if (n_break == 0L) {
         if (all_empty) {
             ans <- rep(NA_character_, times = n_date)
-            ans <- factor(ans)
+            ans <- factor(ans,
+                          levels = NA_character_,
+                          exclude = NULL)
             return(ans)
         }
         else
@@ -827,16 +849,18 @@ date_to_age_custom <- function(date,
         }
     }
     ## make labels for breaks
+    include_na <- anyNA(date) || anyNA(dob)
     labels <- make_labels_age(breaks = breaks,
                               open_last = open_last,
-                              include_na = FALSE)
+                              include_na = include_na)
     ## assign labels to ages
     i <- findInterval(x = age_years,
                       vec = breaks)
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
-                  levels = labels)
+                  levels = labels,
+                  exclude = NULL)
     ans
 }
 
@@ -958,7 +982,9 @@ date_to_age_quarter <- function(date,
     is_unbounded <- is.null(break_min) || is.null(break_max)
     if (is_empty && is_unbounded) {
         ans <- rep(NA_character_, times = n_date)
-        ans <- factor(ans)
+        ans <- factor(ans,
+                      levels = NA_character_,
+                      exclude = NULL)
         return(ans)
     }
     ## get age in months and quarters    
@@ -983,23 +1009,26 @@ date_to_age_quarter <- function(date,
                                        unit = "quarter")
     ## make breaks
     breaks <- make_breaks_date_to_integer_month_quarter(age = age_quarters,
-                                                break_min = break_min,
-                                                break_max = break_max,
-                                                open_last = open_last)
+                                                        break_min = break_min,
+                                                        break_max = break_max,
+                                                        open_last = open_last)
     ## make labels for these breaks
     n_break <- length(breaks)
     break_min <- breaks[[1L]]
     break_max <- breaks[[n_break]]
+    include_na <- anyNA(date) || anyNA(dob)
     labels <- make_labels_age_quarter(break_min = break_min,
                                       break_max = break_max,
-                                      open_last = open_last)
+                                      open_last = open_last,
+                                      include_na = include_na)
     ## assign labels to ages
     i <- findInterval(x = age_quarters,
                       vec = breaks)
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
-                  levels = labels)
+                  levels = labels,
+                  exclude = NULL)
     ans
 }
 
@@ -1122,7 +1151,9 @@ date_to_age_month <- function(date,
     is_unbounded <- is.null(break_min) || is.null(break_max)
     if (is_empty && is_unbounded) {
         ans <- rep(NA_character_, times = n_date)
-        ans <- factor(ans)
+        ans <- factor(ans,
+                      levels = NA_character_,
+                      exclude = NULL)
         return(ans)
     }
     ## get age in months
@@ -1153,17 +1184,19 @@ date_to_age_month <- function(date,
     n_break <- length(breaks)
     break_min <- breaks[[1L]]
     break_max <- breaks[[n_break]]
+    include_na <- anyNA(date) || anyNA(dob)
     labels <- make_labels_age_month(break_min = break_min,
                                     break_max = break_max,
                                     open_last = open_last,
-                                    include_na = FALSE)
+                                    include_na = include_na)
     ## assign labels to ages
     i <- findInterval(x = age_months,
                       vec = breaks)
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
-                  levels = labels)
+                  levels = labels,
+                  exclude = NULL)
     ans
 }
 

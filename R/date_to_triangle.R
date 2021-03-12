@@ -323,14 +323,18 @@ date_to_triangle_multi <- function(date,
     ans[is_lower] <- "Lower"
     ans[is_upper] <- "Upper"
     ## return result
+    levels <- c("Lower", "Upper")
+    if (anyNA(ans))
+        levels <- c(levels, NA)
     ans <- factor(ans,
-                  levels = c("Lower", "Upper"))
+                  levels = levels,
+                  exclude = NULL)
     ans
 }
 
 
 ## HAS_TESTS
-#' Convert dates to Lexis triangles used when measuring fertility
+#' Convert dates to Lexis triangles used when tabulating births
 #'
 #' Use dates when births occurred and dates of birth
 #' of parents to allocate births to Lexis triangles.
@@ -705,8 +709,12 @@ date_to_triangle_quarter <- function(date,
     ans[is_lower] <- "Lower"
     ans[is_upper] <- "Upper"
     ## return result
+    levels <- c("Lower", "Upper")
+    if (anyNA(ans))
+        levels <- c(levels, NA)
     ans <- factor(ans,
-                  levels = c("Lower", "Upper"))
+                  levels = levels,
+                  exclude = NULL)
     ans
 }
 
@@ -862,7 +870,11 @@ date_to_triangle_month <- function(date, dob,
     ans[is_lower] <- "Lower"
     ans[is_upper] <- "Upper"
     ## return result
+    levels <- c("Lower", "Upper")
+    if (anyNA(ans))
+        levels <- c(levels, NA)
     ans <- factor(ans,
-                  levels = c("Lower", "Upper"))
+                  levels = levels,
+                  exclude = NULL)
     ans
 }
