@@ -809,19 +809,48 @@ test_that("'make_breaks_date_to_integer_year' gives correct answer when break_ma
 })
 
 
+## make_breaks_labels_to_integer_births --------------------------------------
+
+test_that("'make_breaks_label_to_integer_births' gives correct answer when break_max non-NULL", {
+    expect_identical(make_breaks_label_to_integer_births(age_low = c(20L, 22L, 30L, 17L, NA, 43L),
+                                                         age_up = c(25L, 25L, 35L, 20L, NA, 44L),
+                                                         labels = c("20-24", "22-24", "30-34",
+                                                                    "17-19", NA, "43"),
+                                                         width = 5L,
+                                                         break_min = 15L,
+                                                         break_max = 50L),
+                     seq.int(15L, 50L, 5L))
+})
+
+test_that("'make_breaks_label_to_integer_births' gives correct answer when break_min and break_max NULL", {
+    expect_identical(make_breaks_label_to_integer_births(age_low = c(20L, 22L, 30L, 17L, NA, 43L),
+                                                         age_up = c(25L, 25L, 35L, 20L, NA, 44L),
+                                                         labels = c("20-24", "22-24", "30-34",
+                                                                    "17-19", NA, "43"),
+                                                         width = 5L,
+                                                         break_min = NULL,
+                                                         break_max = NULL),
+                     seq.int(15L, 45L, 5L))
+})
+
+
 ## make_breaks_labels_to_integer_lifetab --------------------------------------
 
 test_that("'make_breaks_label_to_integer_lifetab' gives correct answer when break_max non-NULL", {
     expect_identical(make_breaks_label_to_integer_lifetab(age_low = c(0L, 5L, NA, 10L, 15L),
-                                                       is_open = c(FALSE, FALSE, FALSE, TRUE),
-                                                       break_max = 15L),
+                                                          age_up = c(1L, 10L, NA, 15L, NA),
+                                                          labels = c("0", "5-9", NA, "10-14", "15+"),
+                                                          is_open = c(FALSE, FALSE, FALSE, FALSE, TRUE),
+                                                          break_max = 15L),
                      c(0L, 1L, 5L, 10L, 15L))
 })
 
 test_that("'make_breaks_label_to_integer_lifetab' gives correct answer when break_max NULL", {
     expect_identical(make_breaks_label_to_integer_lifetab(age_low = c(0L, 5L, NA, 10L, 15L),
-                                                       is_open = c(FALSE, FALSE, FALSE, TRUE),
-                                                       break_max = NULL),
+                                                          age_up = c(1L, 10L, NA, 15L, NA),
+                                                          labels = c("0", "5-9", NA, "10-14", "15+"),
+                                                          is_open = c(FALSE, FALSE, FALSE, FALSE, TRUE),
+                                                          break_max = NULL),
                      c(0L, 1L, 5L, 10L, 15L))
 })
 
@@ -874,19 +903,6 @@ test_that("'make_breaks_label_to_integer_year' gives correct answer when break_m
                                                        break_max = 25L,
                                                        open_last = TRUE),
                      c(0L, 5L, 10L, 15L, 20L, 25L))
-})
-
-test_that("'make_breaks_label_to_integer_year' throws correct error when break_min and break_max both non-NULL", {
-    expect_error(make_breaks_label_to_integer_year(age_low = c(0L, 5L, 10L, 15L),
-                                                   age_up = c(6L, 10L, 15L, NA),
-                                                   width = 5L,
-                                                   labels = c("0-5", "5-9", "10-14", "15+"),
-                                                   is_open = c(FALSE, FALSE, FALSE, TRUE),
-                                                   break_min = 0L,
-                                                   break_max = 15L,
-                                                   open_last = TRUE),
-                 paste("age group \"0-5\" intersects two or more of the intervals formed when",
-                       "'break_min' is 0, 'break_max' is 15, and 'width' is 5"))
 })
 
 test_that("'make_breaks_label_to_integer_year' gives correct answer when break_min is NULL and break_max is non-NULL", {

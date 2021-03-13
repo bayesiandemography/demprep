@@ -463,21 +463,64 @@ make_breaks_date_to_integer_year <- function(age, width, break_min,
 
 
 ## HAS_TESTS
-make_breaks_label_to_integer_lifetab <- function(age_low,
-                                                 is_open,
-                                                 break_max) {
+make_breaks_label_to_integer_births <- function(age_low,
+                                                age_up,
+                                                labels,
+                                                width,
+                                                break_min,
+                                                break_max) {
+    if (is.null(break_min)) {
+        break_min <- min(age_low, na.rm = TRUE)
+        break_min <- (break_min %/% width) * width
+        message(gettextf("'%s' set to %d",
+                         "break_min", break_min),
+                appendLF = TRUE)
+    }
     if (is.null(break_max)) {
-        break_max <- max(age_low[is_open], na.rm = TRUE)
-        break_max <- (break_max %/% 5L + 1L) * 5L
+        break_max <- max(age_up, na.rm = TRUE)
+        remainder <- break_max %% width
+        if (remainder > 0L)
+            break_max <- break_max + width - remainder
         message(gettextf("'%s' set to %d",
                          "break_max", break_max),
                 appendLF = TRUE)
     }
-    c(0L,
-      1L,
-      seq.int(from = 5L,
-              to = break_max,
-              by = 5L))
+    breaks <- seq.int(from = break_min,
+                      to = break_max,
+                      by = width)
+    demcheck::err_intervals_inside_breaks(age_low = age_low,
+                                          age_up = age_up,
+                                          breaks = breaks,
+                                          labels = labels)
+    breaks
+}
+
+
+## HAS_TESTS
+make_breaks_label_to_integer_lifetab <- function(age_low,
+                                                 age_up,
+                                                 labels,
+                                                 is_open,
+                                                 break_max) {
+    if (is.null(break_max)) {
+        break_max <- max(age_low[is_open], na.rm = TRUE)
+        remainder <- break_max %% 5L
+        if (remainder > 0L)
+            break_max <- break_max + 5L - remainder
+        message(gettextf("'%s' set to %d",
+                         "break_max", break_max),
+                appendLF = TRUE)
+    }
+    breaks <- c(0L,
+                1L,
+                seq.int(from = 5L,
+                        to = break_max,
+                        by = 5L))
+    demcheck::err_intervals_inside_breaks(age_low = age_low,
+                                          age_up = age_up,
+                                          breaks = breaks,
+                                          labels = labels)
+    breaks
 }
 
 
@@ -522,24 +565,11 @@ make_breaks_label_to_integer_year <- function(age_low,
                       to = break_max,
                       by = width)
     ## check that no intervals cross breaks
-    up_is_break <- age_up %in% breaks
-    i_int_low <- findInterval(age_low, breaks)
-    i_int_up <- findInterval(age_up, breaks)
-    is_valid <- (is.na(age_low)
-        | is.na(age_up)
-        | (!up_is_break & (i_int_up == i_int_low))
-        | (up_is_break & (i_int_up == i_int_low + 1L)))
-    i_invalid <- match(FALSE, is_valid, nomatch = 0L)
-    if (i_invalid > 0L)
-        stop(gettextf("age group \"%s\" intersects two or more of the intervals formed when '%s' is %d, '%s' is %d, and '%s' is %d",
-                      labels[[i_invalid]],
-                      "break_min",
-                      break_min,
-                      "break_max",
-                      break_max,
-                      "width",
-                      width),
-             call. = FALSE)
+    demcheck::err_intervals_inside_breaks(age_low = age_low,
+                                          age_up = age_up,
+                                          breaks = breaks,
+                                          labels = labels)
+    ## return value
     breaks
 }
 

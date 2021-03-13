@@ -365,18 +365,16 @@ test_that("date_to_age_custom gives correct answers with valid inputs", {
                      factor(c(NA_character_, NA_character_),
                             levels = c("0-9", "10-19", NA),
                             exclude = NULL))
-    expect_identical(date_to_age_custom(date = c("2000-03-11",
+})
+
+test_that("date_to_age_custom gives correct error with invalid inputs", {
+    expect_error(date_to_age_custom(date = c("2000-03-11",
                                                  NA),
                                         dob = c(NA,
                                                 "2000-01-01"),
                                         breaks = integer(),
-                                        open_last = FALSE),
-                     factor(c(NA_character_, NA_character_),
-                            levels = NA_character_,
-                            exclude = NULL))
-})
-
-test_that("date_to_age_custom gives correct error with invalid inputs", {
+                                    open_last = FALSE),
+                 "'breaks' has length 0") 
     expect_error(date_to_age_custom(date = c("2000-03-11",
                                              "2000-03-12"),
                                     dob = c(NA,

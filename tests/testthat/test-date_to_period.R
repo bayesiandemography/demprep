@@ -192,11 +192,6 @@ test_that("date_to_period_custom gives correct answers with valid inputs", {
                      factor(c(NA, NA),
                             levels = c("2001-2003", NA),
                             exclude = NULL))
-    expect_identical(date_to_period_custom(date = c(NA, NA),
-                                           breaks = character()),
-                     factor(c(NA, NA),
-                            levels = NA_character_,
-                            exclude = NULL))
     expect_identical(date_to_period_custom(date = character(),
                                             breaks = c("2001-04-01",
                                                        "2003-04-01")),
@@ -204,6 +199,9 @@ test_that("date_to_period_custom gives correct answers with valid inputs", {
 })
 
 test_that("date_to_period_custom throws expected error with invalid inputs", {
+    expect_error(date_to_period_custom(date = c(NA, NA),
+                                       breaks = character()),
+                 "'breaks' has length 0")
     expect_error(date_to_period_custom(date = "2000-01-01",
                                        breaks = character()),
                  "'breaks' has length 0")

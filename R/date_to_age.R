@@ -489,8 +489,7 @@ date_to_age_lifetab <- function(date,
 #' Given the dates when births occur,
 #' and the dates of birth of the parents (typically mothers),
 #' allocate the births to age groups. These age groups all
-#' have the same width, which is measured in years,
-#' and in an integer.
+#' have the same width, which is measured in whole years.
 #'
 #' \code{date} and \code{dob} must have the same length,
 #' unless one of them has length 1, in which case the
@@ -568,13 +567,13 @@ date_to_age_lifetab <- function(date,
 #'                    dob = c("2001-03-21",
 #'                            "2000-07-13"))
 #'
-#' ## alternative values for 'width'
 #' date_to_age_births(date = c("2024-03-27",
 #'                             "2022-11-09"),
 #'                    dob = c("2001-03-21",
 #'                            "2000-07-13"),
 #'                    width = 10,
 #'                    break_min = 20)
+#'
 #' date_to_age_births(date = c("2024-03-27",
 #'                             "2022-11-09"),
 #'                    dob = c("2001-03-21",
@@ -673,7 +672,8 @@ date_to_age_births <- function(date, dob,
                               date[[i_lt_min]],
                               dob[[i_lt_min]],
                               age_years[[i_lt_min]],
-                              break_min))
+                              break_min),
+                     call. = FALSE)
             }
         }
     }
@@ -689,7 +689,8 @@ date_to_age_births <- function(date, dob,
                               date[[i_ge_max]],
                               dob[[i_ge_max]],
                               age_years[[i_ge_max]],
-                              break_max))
+                              break_max),
+                     call. = FALSE)
             }
         }
     }
@@ -804,21 +805,18 @@ date_to_age_custom <- function(date,
                                                    open_last = open_last)
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
-    ## deal with "empty" case where 'breaks' has length 0
-    all_empty <- all(is.na(date) | is.na(dob))
+    ## deal with case where 'breaks' has length 0
     n_break <- length(breaks)
     n_date <- length(date)
     if (n_break == 0L) {
-        if (all_empty) {
-            ans <- rep(NA_character_, times = n_date)
-            ans <- factor(ans,
-                          levels = NA_character_,
-                          exclude = NULL)
+        if (n_date == 0L) {
+            ans <- factor()
             return(ans)
         }
         else
             stop(gettextf("'%s' has length %d",
-                          "breaks", 0L))
+                          "breaks", 0L),
+                 call. = FALSE)
     }
     ## get age in months and years
     age_months <- age_completed_months(date = date,
@@ -834,7 +832,8 @@ date_to_age_custom <- function(date,
                       dob[[i_lt_min]],
                       age_years[[i_lt_min]],
                       "breaks",
-                      breaks[[1L]]))
+                      breaks[[1L]]),
+             call. = FALSE)
     }
     if (!open_last) {
         is_ge_max <- age_years >= breaks[[n_break]]
@@ -845,7 +844,8 @@ date_to_age_custom <- function(date,
                           date[[i_ge_max]],
                           dob[[i_ge_max]],
                           age_years[[i_ge_max]],
-                          breaks[[n_break]]))
+                          breaks[[n_break]]),
+                 call. = FALSE)
         }
     }
     ## make labels for breaks

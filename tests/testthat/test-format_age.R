@@ -124,146 +124,100 @@ test_that("format_age_lifetab gives correct answers with valid inputs", {
                             exclude = NULL))
 })
 
-## ## format_age_births --------------------------------------------------
+## format_age_births --------------------------------------------------
 
-## test_that("format_age_births gives correct answers with valid inputs", {
-##     expect_identical(format_age_births(date = c("2015-01-01",
-##                                                      "2025-01-01",
-##                                                      "2029-12-31"),
-##                                             dob = "2000-01-01"),
-##                      factor(c("15-19", "25-29", "25-29"),
-##                             levels = c("15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49")))
-##     expect_identical(format_age_births(date = c("2015-01-01",
-##                                                      "2025-01-01",
-##                                                      "2029-12-31"),
-##                                             dob = "2000-01-01",
-##                                             break_min = 10,
-##                                             break_max = 55),
-##                      factor(c("15-19", "25-29", "25-29"),
-##                             levels = c("10-14", "15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54")))
-##     expect_identical(format_age_births(date = c("2015-01-01",
-##                                                      "2025-01-01",
-##                                                      "2029-12-31"),
-##                                             dob = "2000-01-01",
-##                                             break_min = 15,
-##                                             break_max = 50,
-##                                             width = 1),
-##                      factor(c("15", "25", "29"),
-##                             levels = 15:49))
-##     expect_identical(format_age_births(date = c("2015-01-01",
-##                                                      "2025-01-01",
-##                                                      "2049-12-31"),
-##                                             dob = "2000-01-01",
-##                                             break_min = 20,
-##                                             break_max = 40,
-##                                             recode_up = TRUE,
-##                                             recode_down = TRUE),
-##                      factor(c("20-24", "25-29", "35-39"),
-##                             levels = c("20-24", "25-29", "30-34", "35-39")))
-##     expect_identical(format_age_births(date = c(NA,
-##                                                      NA,
-##                                                      "2049-12-31"),
-##                                             dob = NA_character_,
-##                                             break_min = 20,
-##                                             break_max = 40,
-##                                             recode_up = TRUE,
-##                                             recode_down = TRUE),
-##                      factor(rep(NA_character_, 3),
-##                             levels = c("20-24", "25-29", "30-34", "35-39")))
-## })
+test_that("format_age_births gives correct answers with valid inputs", {
+    expect_identical(format_age_births(x = c("18-19", "25-29", NA, "29")),
+                     factor(c("15-19", "25-29", NA, "25-29"),
+                            levels = c("15-19", "20-24", "25-29", "30-34",
+                                       "35-39", "40-44", "45-49", NA),
+                            exclude = NULL))
+    expect_identical(format_age_births(x = c("18-19", "25-29", "29"),
+                                       break_min = 10,
+                                       break_max = 55),
+                     factor(c("15-19", "25-29", "25-29"),
+                            levels = c("10-14", "15-19", "20-24", "25-29", "30-34",
+                                       "35-39", "40-44", "45-49", "50-54")))
+    expect_identical(format_age_births(x = c("15", "25", "29"),
+                                       break_min = 15,
+                                       break_max = 50,
+                                       width = 1),
+                     factor(c("15", "25", "29"),
+                            levels = 15:49))
+    expect_identical(format_age_births(x = c("15-19", "29", "46"),
+                                       break_min = 20,
+                                       break_max = 40,
+                                       recode_up = TRUE,
+                                       recode_down = TRUE),
+                     factor(c("20-24", "25-29", "35-39"),
+                            levels = c("20-24", "25-29", "30-34", "35-39")))
+    expect_identical(format_age_births(x = c(NA, NA, NA),
+                                       break_min = 20,
+                                       break_max = 40,
+                                       recode_up = TRUE,
+                                       recode_down = TRUE),
+                     factor(rep(NA_character_, 3),
+                            levels = c("20-24", "25-29", "30-34", "35-39", NA),
+                            exclude = NULL))
+})
 
-## test_that("format_age_births throws correct errors with invalid inputs", {
-##     expect_error(format_age_births(date = c("2015-01-01",
-##                                                  "2025-01-01",
-##                                                  "2029-12-31"),
-##                                         dob = "2000-01-01",
-##                                         width = 3),
-##                  "difference between 'break_max' \\[50\\] and 'break_min' \\[15\\] not divisible by 'width' \\[3\\]")
-##     expect_error(format_age_births(date = c("2015-01-01",
-##                                                  "2025-01-01",
-##                                                  "2029-12-31"),
-##                                         dob = "2000-01-01",
-##                                         break_min = 20),
-##                  paste("'date' of \"2015-01-01\" and 'dob' of \"2000-01-01\" imply age of 15,",
-##                        "but 'break_min' is 20 and 'recode_up' is FALSE"))
-##     expect_error(format_age_births(date = c("2045-01-01",
-##                                                  "2025-01-01",
-##                                                  "2029-12-31"),
-##                                         dob = "2000-01-01",
-##                                         break_max = 45),
-##                  paste("'date' of \"2045-01-01\" and 'dob' of \"2000-01-01\" imply age of 45,",
-##                        "but 'break_max' is 45 and 'recode_down' is FALSE"))
-## })
-
-## test_that("format_age_births throws correct errors with invalid inputs", {
-##     expect_error(format_age_custom(date = c("2001-06-01",
-##                                                        "2015-01-01",
-##                                                        "2016-12-31"),
-##                                               dob = "2000-01-01",
-##                                           breaks = c(5, 10, 30)),
-##                  "'date' of \"2001-06-01\" and 'dob' of \"2000-01-01\" imply age of 1, but minimum value for 'breaks' is 5")
-##     expect_error(format_age_custom(date = c("2001-06-01",
-##                                                        "2015-01-01",
-##                                                        "2026-12-31"),
-##                                               dob = "2000-01-01",
-##                                           breaks = c(0, 10, 20),
-##                                           open_last = FALSE),
-##                  "'date' of \"2026-12-31\" and 'dob' of \"2000-01-01\" imply age of 26, but 'open_last' is FALSE and maximum value for 'breaks' is 20")
-## })
+test_that("format_age_births throws correct errors with invalid inputs", {
+    expect_error(format_age_births(x = "22",
+                                   width = 3),
+                 "difference between 'break_max' \\[50\\] and 'break_min' \\[15\\] not divisible by 'width' \\[3\\]")
+    expect_error(format_age_births(x = "15",
+                                   break_min = 20),
+                 "age group \"15\" less than 'break_min' \\[20\\] and 'recode_up' is FALSE")
+    expect_error(format_age_births(x = c("20", "50-54"),
+                                   break_max = 45),
+                 paste("age group \"50-54\" greater than 'break_max' \\[45\\] and 'recode_down' is FALSE"))
+})
 
 
-## ## format_age_custom ---------------------------------------------------
+## format_age_custom ---------------------------------------------------
 
-## test_that("format_age_custom gives correct answers with valid inputs", {
-##     expect_identical(format_age_custom(date = c("2003-01-01",
-##                                                        "2025-01-01",
-##                                                        "2039-12-31"),
-##                                               dob = "2000-01-01",
-##                                               breaks = c(0, 10, 30)),
-##                      factor(c("0-9", "10-29", "30+"),
-##                             levels = c("0-9", "10-29", "30+")))
-##     expect_identical(format_age_custom(date = c("2000-06-01",
-##                                                        "2015-01-01",
-##                                                        "2016-12-31"),
-##                                               dob = "2000-01-01",
-##                                               breaks = c(0, 1, 30),
-##                                               open_last = FALSE),
-##                      factor(c("0", "1-29", "1-29"),
-##                             levels = c("0", "1-29")))
-##     expect_identical(format_age_custom(date = c("2005-06-01",
-##                                                        "2015-01-01",
-##                                                        "2016-12-31"),
-##                                               dob = "2000-01-01",
-##                                               breaks = c(5, 10, 30),
-##                                               open_last = FALSE),
-##                      factor(c("5-9", "10-29", "10-29"),
-##                             levels = c("5-9", "10-29")))
-##     expect_identical(format_age_custom(date = c("2000-03-11",
-##                                                        NA),
-##                                               dob = c(NA,
-##                                                       "2000-01-01"),
-##                                               breaks = c(0, 10, 20),
-##                                               open_last = FALSE),
-##                      factor(c(NA, NA),
-##                             levels = c("0-9", "10-19")))
-##     expect_identical(format_age_custom(date = c("2000-03-11",
-##                                                        NA),
-##                                               dob = c(NA,
-##                                                       "2000-01-01"),
-##                                               breaks = integer(),
-##                                               open_last = FALSE),
-##                      factor(c(NA, NA)))
-## })
+test_that("format_age_custom gives correct answers with valid inputs", {
+    expect_identical(format_age_custom(x = c(NA, "0", "23-24", "100+"),
+                                       breaks = c(0, 10, 30)),
+                     factor(c(NA, "0-9", "10-29", "30+"),
+                            levels = c("0-9", "10-29", "30+", NA),
+                            exclude = NULL))
+    expect_identical(format_age_custom(x = c("0", "1", "5-29"),
+                                       breaks = c(0, 1, 30),
+                                       open_last = FALSE),
+                     factor(c("0", "1-29", "1-29"),
+                            levels = c("0", "1-29")))
+    expect_identical(format_age_custom(x = c("8", "11", NA, "20-29"),
+                                       breaks = c(5, 10, 30),
+                                       open_last = FALSE),
+                     factor(c("5-9", "10-29", NA, "10-29"),
+                            levels = c("5-9", "10-29", NA),
+                            exclude = NULL))
+    expect_identical(format_age_custom(x = c(NA, NA),
+                                       breaks = c(0, 10, 20),
+                                       open_last = FALSE),
+                     factor(c(NA, NA),
+                            levels = c("0-9", "10-19", NA),
+                            exclude = NULL))
+})
 
-## test_that("format_age_custom gives correct error with invalid inputs", {
-##     expect_error(format_age_custom(date = c("2000-03-11",
-##                                                        "2000-03-12"),
-##                                                dob = c(NA,
-##                                                        "2000-01-01"),
-##                                                breaks = integer(),
-##                                                open_last = FALSE),
-##                  "'breaks' has length 0")
-## })
+test_that("format_age_custom throws correct errors with invalid inputs", {
+    expect_error(format_age_custom(x = c(NA, NA),
+                                   breaks = integer(),
+                                   open_last = FALSE),
+                 "'breaks' has length 0")
+    expect_error(format_age_custom(x = "1-4",
+                                   breaks = c(5, 10, 30)),
+                 "age group \"1-4\" is below minimum value for 'breaks' \\[5\\]")
+    expect_error(format_age_custom(x = "15-29",
+                                   breaks = c(0, 10, 20),
+                                   open_last = FALSE),
+                 "age group \"15-29\" is above maximum value for 'breaks' \\[20\\]")
+    expect_error(format_age_custom(x = "1",
+                                   breaks = integer(),
+                                   open_last = FALSE),
+                 "'breaks' has length 0")
+})
 
 
 ## ## format_age_quarter ---------------------------------------------------

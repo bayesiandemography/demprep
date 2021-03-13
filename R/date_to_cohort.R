@@ -523,17 +523,13 @@ date_to_cohort_custom <- function(date,
     }
     ## deal with "empty" case where 'breaks' has length 0
     if (n_break == 0L) {
-        if (has_date) {
+        if (length(date) > 0L) {
             stop(gettextf("'%s' has length %d",
-                          "breaks", 0L))
+                          "breaks", 0L),
+                 call. = FALSE)
         }
         else {
-            if (length(date) > 0L)
-                ans <- factor(date,
-                              levels = NA_character_,
-                              exclude = NULL)
-            else
-                ans <- factor()
+            ans <- factor()
             return(ans)
         }
     }

@@ -245,6 +245,10 @@ format_age_multi <- function(x,
     age_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
     age_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up])) + 1L
     age_low[is_open] <- as.integer(sub("\\+", "", labels_old[is_open]))
+    demcheck::err_age_diff_gt_one(age_low = age_low,
+                                  age_up = age_up,
+                                  is_low_up = is_low_up,
+                                  labels = labels_old)
     ## if 'break_min' is supplied, make sure no
     ## intervals less than 'break_min'
     if (!is.null(break_min)) {
@@ -326,6 +330,9 @@ format_age_multi <- function(x,
 #' \code{\link{format_age_quarter}},
 #' and \code{\link{format_age_month}}.
 #'
+#' \code{\link{date_to_age_lifetab}} creates
+#' lifetable age groups from dates.
+#'
 #' \code{\link{make_labels_age}} describes the rules
 #' for constructing labels for age groups.
 #' 
@@ -384,8 +391,14 @@ format_age_lifetab <- function(x, break_max = 100) {
     age_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
     age_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up])) + 1L
     age_low[is_open] <- as.integer(sub("\\+", "", labels_old[is_open]))
+    demcheck::err_age_diff_gt_one(age_low = age_low,
+                                  age_up = age_up,
+                                  is_low_up = is_low_up,
+                                  labels = labels_old)
     ## make breaks
     breaks <- make_breaks_label_to_integer_lifetab(age_low = age_low,
+                                                   age_up = age_up,
+                                                   labels = labels,
                                                    is_open = is_open,
                                                    break_max = break_max)
     ## make labels for breaks
@@ -407,17 +420,11 @@ format_age_lifetab <- function(x, break_max = 100) {
 }
 
 ## HAS_TESTS
-#' Convert dates to age groups when measuring fertility 
+#' Put age groups labels into format
+#' required for tabulating births
 #'
-#' Given the dates when births occur,
-#' and the dates of birth of the parents (typically mothers),
-#' allocate the births to age groups. These age groups all
-#' have the same width, which is measured in years,
-#' and in an integer.
-#'
-#' \code{date} and \code{dob} must have the same length,
-#' unless one of them has length 1, in which case the
-#' length-1 argument is recycled.
+#' Given a vector of age group labels, create a factor that contains
+#' levels for all ages between \code{break_min} and \code{break_max}.
 #'
 #' \code{break_min} and \code{break_max} specify
 #' the range of ages over which reproduction
@@ -425,6 +432,10 @@ format_age_lifetab <- function(x, break_max = 100) {
 #' \code{break_min} is \code{15} and \code{break_max}
 #' is \code{50}, all births are assumed to
 #' occur to women aged 15 to 49 (inclusive).
+#' If \code{break_min} or \code{break_max} is set to \code{NULL},
+#' rather than to a specific value, then \code{date_to_age_births}
+#' finds the narrowest range that accommodates the values
+#' in \code{x}.
 #'
 #' Datasets sometimes contain a few births to parents
 #' younger than the assumed minimum age of reproduction,
@@ -443,9 +454,9 @@ format_age_lifetab <- function(x, break_max = 100) {
 #' and \code{recode_down}. The default
 #' is for no recoding to occur.
 #'
-#' @inheritParams format_age_year
-#' @param date Dates when births being tabulated occur.
-#' @param dob Dates of birth of parents.
+#' @param x A vector of age group labels. The
+#' age of the parent at the time of the birth of
+#' the child.
 #' @param break_min An integer or \code{NULL}.
 #' Defaults to 15.
 #' @param break_max An integer or \code{NULL}.
@@ -460,11 +471,7 @@ format_age_lifetab <- function(x, break_max = 100) {
 #' occurring to people in the highest reproductive
 #' age group.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The length of the return value equals the length
-#' of \code{date} or the length of \code{dob}, whichever
-#' is greater.
+#' @return A factor with the same length as \code{x}.
 #'
 #' @seealso Other functions for creating age groups are
 #' \code{\link{format_age_year}},
@@ -474,323 +481,307 @@ format_age_lifetab <- function(x, break_max = 100) {
 #' \code{\link{format_age_quarter}},
 #' and \code{\link{format_age_month}}.
 #'
+#' \code{\link{date_to_age_births}} creates
+#' reproductive age groups from dates.
+#'
 #' \code{\link{make_labels_age}} describes the rules
 #' for constructing labels for age groups.
 #'
-#' \code{\link{plot_format_age_births}} creates plots
-#' that illustrate how \code{format_age_births}
-#' works.
-#' 
 #' @examples
-#' format_age_births(date = c("2024-03-27",
-#'                             "2022-11-09"),
-#'                    dob = c("2001-03-21",
-#'                            "2000-07-13"))
+#' format_age_births(x = c("20-24", "37", NA, "32", "21-24"))
+#' 
+#' format_age_births(x = c("20-24", "37", "32", "21-24"),
+#'                   width = 10,
+#'                   break_min = 20)
 #'
-#' ## alternative values for 'width'
-#' format_age_births(date = c("2024-03-27",
-#'                             "2022-11-09"),
-#'                    dob = c("2001-03-21",
-#'                            "2000-07-13"),
-#'                    width = 10,
-#'                    break_min = 20)
-#' format_age_births(date = c("2024-03-27",
-#'                             "2022-11-09"),
-#'                    dob = c("2001-03-21",
-#'                            "2000-07-13"),
-#'                    width = 1)
-#'
-#' ## replicate date of birth
-#' format_age_births(date = c("2024-03-27",
-#'                             "2022-11-09"),
-#'                    dob = "2001-05-18")
-#'
-#' ## return non-factor
-#' format_age_births(date = c("2024-03-27",
-#'                             "2022-11-09"),
-#'                    dob = "2001-05-18",
-#'                    as_factor = FALSE)
+#' format_age_births(x = c("20", "37", "15"),
+#'                   width = 1,
+#'                   break_max = 45)
 #'
 #' ## allow youngest and oldest age groups to be
 #' ## set by the data
-#' format_age_births(date = c("2052-01-02",
-#'                             "2019-09-22",
-#'                             "2022-10-08"),
-#'                    dob = c("2000-01-01",
-#'                            "2001-03-17",
-#'                            "2010-07-05"),
-#'                    break_min = NULL,
-#'                    break_max = NULL)
+#' format_age_births(x = c("21", "33", "22-24"),
+#'                   break_min = NULL,
+#'                   break_max = NULL)
 #'
 #' ## recode ages outside the expected range
-#' format_age_births(date = c("2052-01-02",
-#'                             "2019-09-22",
-#'                             "2022-10-08"),
-#'                    dob = c("2000-01-01",
-#'                            "2001-03-17",
-#'                            "2010-07-05"),
-#'                    recode_up = TRUE,
-#'                    recode_down = TRUE)
+#' format_age_births(x = c("22", "13", "54"),
+#'                   recode_up = TRUE,
+#'                   recode_down = TRUE)
 #' @export
-## format_age_births <- function(date, dob,
-##                                break_min = 15,
-##                                break_max = 50,
-##                                width = 5,
-##                                recode_up = FALSE,
-##                                recode_down = FALSE,
-##                                as_factor = TRUE) {
-##     ## Check arguments and/or apply defaults.
-##     ## Note that 'err_tdy_date_dob' enforces length >= 1
-##     l <- demcheck::err_tdy_date_dob(date = date,
-##                                     dob = dob)
-##     date <- l$date
-##     dob <- l$dob
-##     break_min <- demcheck::err_tdy_positive_integer_scalar(x = break_min,
-##                                                            name = "break_min",
-##                                                            null_ok = TRUE)
-##     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
-##                                                            name = "break_max",
-##                                                            null_ok = TRUE)
-##     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
-##                                                        name = "width")
-##     if (!is.null(break_min) && !is.null(break_max)) {
-##         demcheck::err_gt_scalar(x1 = break_max,
-##                                 x2 = break_min,
-##                                 name1 = "break_max",
-##                                 name2 = "break_min")
-##         if ((break_max - break_min) %% width != 0L)
-##             stop(gettextf("difference between '%s' [%d] and '%s' [%d] not divisible by '%s' [%d]",
-##                           "break_max", break_max, "break_min", break_min, "width", width))
-##     }
-##     demcheck::err_is_logical_flag(x = recode_up,
-##                                   name = "recode_up")
-##     demcheck::err_is_logical_flag(x = recode_down,
-##                                   name = "recode_down")
-##     demcheck::err_is_logical_flag(x = as_factor,
-##                                   name = "as_factor")
-##     ## deal with "empty" case where
-##     ## all date-dob pairs have NA, and
-##     ## we aren't making factors
-##     n_date <- length(date)
-##     all_empty <- all(is.na(date) | is.na(dob))
-##     if (all_empty && !as_factor) {
-##         ans <- rep(NA_character_, times = n_date)
-##         return(ans)
-##     }
-##     ## get age in months and years
-##     age_months <- age_completed_months(date = date,
-##                                        dob = dob)
-##     age_years <- age_months %/% 12L
-##     ## check that ages lie within limits implied by 'break_min' and 'break_max'
-##     if (!is.null(break_min)) {
-##         is_lt_min <- age_years < break_min
-##         i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
-##         if (i_lt_min > 0L) {
-##             if (recode_up)
-##                 age_years[is_lt_min] <- break_min
-##             else {
-##                 stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
-##                                     "but 'break_min' is %d and 'recode_up' is FALSE"),
-##                               date[[i_lt_min]],
-##                               dob[[i_lt_min]],
-##                               age_years[[i_lt_min]],
-##                               break_min))
-##             }
-##         }
-##     }
-##     if (!is.null(break_max)) {
-##         is_ge_max <- age_years >= break_max
-##         i_ge_max <- match(TRUE, is_ge_max, nomatch = 0L)
-##         if (i_ge_max > 0L) {
-##             if (recode_down)
-##                 age_years[is_ge_max] <- break_max - 1L
-##             else {
-##                 stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
-##                                     "but 'break_max' is %d and 'recode_down' is FALSE"),
-##                               date[[i_ge_max]],
-##                               dob[[i_ge_max]],
-##                               age_years[[i_ge_max]],
-##                               break_max))
-##             }
-##         }
-##     }
-##     ## make breaks
-##     breaks <- make_breaks_integer_births(age = age_years,
-##                                          width = width,
-##                                          break_min = break_min,
-##                                          break_max = break_max)
-##     ## make labels for breaks
-##     labels <- make_labels_age(breaks = breaks,
-##                               open_last = FALSE)
-##     ## assign labels to ages
-##     i <- findInterval(x = age_years,
-##                       vec = breaks)
-##     ans <- labels[i]
-##     ## return result
-##     if (as_factor)
-##         ans <- factor(x = ans,
-##                       levels = labels)
-##     ans
-## }
+format_age_births <- function(x,
+                              break_min = 15,
+                              break_max = 50,
+                              width = 5,
+                              recode_up = FALSE,
+                              recode_down = FALSE) {
+    ## regexp patterns
+    p_single <- "^[0-9]+$"
+    p_low_up <- "^([0-9]+)-([0-9]+)$"
+    ## check arguments
+    width <- demcheck::err_tdy_positive_integer_scalar(x = width,
+                                                       name = "width",
+                                                       null_ok = TRUE)
+    break_min <- demcheck::err_tdy_non_negative_integer_scalar(x = break_min,
+                                                               name = "break_min",
+                                                               null_ok = TRUE)
+    break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
+                                                           name = "break_max",
+                                                           null_ok = TRUE)
+    if (!is.null(break_min) && !is.null(break_max)) {
+        demcheck::err_lt_scalar(x1 = break_min,
+                                x2 = break_max,
+                                name1 = "break_min",
+                                name2 = "break_max")
+        demcheck::err_difference_divisible(x1 = break_max,
+                                           x2 = break_min,
+                                           y = width,
+                                           name1 = "break_max",
+                                           name2 = "break_min",
+                                           name_y = "width")
+    }
+    demcheck::err_is_logical_flag(x = recode_up,
+                                  name = "recode_up")
+    demcheck::err_is_logical_flag(x = recode_down,
+                                  name = "recode_down")
+    ## deal with "empty" case where 'x' has no non-NA values
+    ## and 'break_min' or 'break_max' is missing
+    ## (so cannot construct levels)
+    n <- length(x)
+    all_empty <- (n == 0L) || all(is.na(x))
+    is_unbounded <- is.null(break_min) || is.null(break_max)
+    if (all_empty && is_unbounded) {
+        ans <- rep(NA_character_, times = n)
+        ans <- factor(ans,
+                      levels = NA_character_,
+                      exclude = NULL)
+        return(ans)
+    }
+    ## put unique values in 'labels_old' vector
+    labels_old <- unique(x)
+    ## classify labels_old, raising error for any invalid ones
+    is_na <- is.na(labels_old)
+    is_single <- grepl(p_single, labels_old)
+    is_low_up <- grepl(p_low_up, labels_old)
+    is_valid <- is_na | is_single | is_low_up
+    i_invalid <- match(FALSE, is_valid, nomatch = 0L)
+    if (i_invalid > 0L)
+        stop(gettextf("\"%s\" is not a valid label for an age group",
+                      labels_old[[i_invalid]]),
+             call. = FALSE)
+    ## extract lower and upper ages
+    age_low <- rep(NA_integer_, times = length(labels_old))
+    age_up <- age_low
+    age_low[is_single] <- as.integer(labels_old[is_single])
+    age_up[is_single] <- age_low[is_single] + 1L
+    age_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
+    age_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up])) + 1L
+    demcheck::err_age_diff_gt_one(age_low = age_low,
+                                  age_up = age_up,
+                                  is_low_up = is_low_up,
+                                  labels = labels_old)
+    ## check that ages lie within limits implied by 'break_min' and 'break_max'
+    if (!is.null(break_min)) {
+        is_lt_min <- age_low < break_min
+        i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
+        if (i_lt_min > 0L) {
+            if (recode_up) {
+                age_low[is_lt_min] <- break_min
+                age_up[is_lt_min] <- pmax(age_up[is_lt_min], age_low[is_lt_min] + 1L)
+            }
+            else {
+                stop(gettextf("age group \"%s\" less than 'break_min' [%d] and 'recode_up' is FALSE",
+                              labels_old[[i_lt_min]],
+                              break_min),
+                     call. = FALSE)
+            }
+        }
+    }
+    if (!is.null(break_max)) {
+        is_gt_max <- age_up > break_max
+        i_gt_max <- match(TRUE, is_gt_max, nomatch = 0L)
+        if (i_gt_max > 0L) {
+            if (recode_down) {
+                age_up[is_gt_max] <- break_max
+                age_low[is_gt_max] <- pmin(age_low[is_gt_max], age_up[is_gt_max] - 1L)
+            }
+            else {
+                stop(gettextf("age group \"%s\" greater than 'break_max' [%d] and 'recode_down' is FALSE",
+                              labels_old[[i_gt_max]],
+                              break_max),
+                     call. = FALSE)
+            }
+        }
+    }
+    ## make breaks
+    breaks <- make_breaks_label_to_integer_births(age_low = age_low,
+                                                  age_up = age_up,
+                                                  labels = labels,
+                                                  width = width,
+                                                  break_min = break_min,
+                                                  break_max = break_max)
+    ## make labels for breaks
+    include_na <- any(is_na)
+    labels_new <- make_labels_age(breaks = breaks,
+                                  open_last = FALSE,
+                                  include_na = include_na)
+    ## assign new labels to x
+    i_label_old <- match(x, labels_old)
+    age <- age_low[i_label_old]
+    i_intervals_new <- findInterval(x = age,
+                                    vec = breaks)
+    ans <- labels_new[i_intervals_new]
+    ## return result
+    ans <- factor(x = ans,
+                  levels = labels_new,
+                  exclude = NULL)
+    ans
+}
 
-## ## HAS_TESTS
-## #' Convert dates to customized age groups
-## #'
-## #' Given the dates when events occurred,
-## #' and the dates of birth of the people experiencing the events,
-## #' allocate the events to age groups.
-## #' \code{format_age_custom} is the most flexible
-## #' of the \code{format_age} functions
-## #' in that the age groups can have any combination of widths,
-## #' though the widths must be defined in whole numbers of years.
-## #'
-## #' \code{date} and \code{dob} must have the same length,
-## #' unless one of them has length 1, in which case the
-## #' length-1 argument is recycled.
-## #'
-## #' \code{breaks} is used to specify the points at which
-## #' each age group starts and finishes. If 
-## #' \code{open_last} is \code{TRUE}, and \code{b} is
-## #' the last value for \code{breaks}, then the oldest
-## #' age group is \code{[b, Inf)} years. 
-## #' If \code{open_last} is \code{FALSE}, \code{a} is the
-## #' second-to-last value for \code{breaks} and \code{b}
-## #' is the last value, then the oldest age
-## #' group is \code{[a, b)} years.
-## #'
-## #' When \code{as_factor} is \code{TRUE} the levels of
-## #' the factor include all intermediate age groups,
-## #' including age groups that not appear in the data.
-## #'
-## #' @inheritParams format_age_year
-## #' @param breaks A vector of strictly increasing integer values.
-## #'
-## #' @return If \code{as_factor} is \code{TRUE}, then the
-## #' return value is a factor; otherwise it is a character vector.
-## #' The length of the return value equals the length
-## #' of \code{date} or the length of \code{dob}, whichever
-## #' is greater.
-## #'
-## #' @seealso Other functions for creating age groups are
-## #' \code{\link{format_age_year}},
-## #' \code{\link{format_age_multi}},
-## #' \code{\link{format_age_lifetab}},
-## #' \code{\link{format_age_births}},
-## #' \code{\link{format_age_quarter}},
-## #' and \code{\link{format_age_month}}.
-## #'
-## #' \code{\link{make_labels_age}} describes the rules
-## #' for constructing labels for age groups.
-## #'
-## #' \code{\link{plot_format_age_custom}} creates plots
-## #' that illustrate how \code{format_age_custom}
-## #' works.
-## #' 
-## #' @examples
-## #' format_age_custom(date = c("2024-03-27",
-## #'                             "2022-11-09"),
-## #'                    dob = c("2001-03-21",
-## #'                            "2000-07-13"),
-## #'                    breaks = c(0, 15, 60))
-## #' format_age_custom(date = c("2024-03-27",
-## #'                             "2022-11-09"),
-## #'                    dob = c("2001-03-21",
-## #'                            "2000-07-13"),
-## #'                    breaks = c(15, 40, 65))
-## #'
-## #' ## alternative specifications for oldest age group
-## #' format_age_custom(date = c("2024-03-27",
-## #'                             "2022-11-09"),
-## #'                    dob = c("2001-03-21",
-## #'                            "2000-07-13"),
-## #'                    breaks = c(15, 65, 100))
-## #' format_age_custom(date = c("2024-03-27",
-## #'                             "2022-11-09"),
-## #'                    dob = c("2001-03-21",
-## #'                            "2000-07-13"),
-## #'                    breaks = c(15, 65, 100),
-## #'                    open_last = FALSE)
-## #' @export
-## format_age_custom <- function(date, dob,
-##                                      breaks = NULL,
-##                                      open_last = TRUE,
-##                                      as_factor = TRUE) {
-##     ## Check arguments and/or apply defaults.
-##     ## Note that 'err_tdy_date_dob' enforces length >= 1
-##     l <- demcheck::err_tdy_date_dob(date = date,
-##                                     dob = dob)
-##     date <- l$date
-##     dob <- l$dob
-##     breaks <- demcheck::err_tdy_breaks_integer_age(breaks = breaks,
-##                                                open_last = open_last)
-##     demcheck::err_is_logical_flag(x = open_last,
-##                                   name = "open_last")
-##     demcheck::err_is_logical_flag(x = as_factor,
-##                                   name = "as_factor")
-##     ## deal with "empty" case where 'breaks' has length 0
-##     all_empty <- all(is.na(date) | is.na(dob))
-##     n_break <- length(breaks)
-##     n_date <- length(date)
-##     if (n_break == 0L) {
-##         if (all_empty) {
-##             ans <- rep(NA_character_, times = n_date)
-##             if (as_factor)
-##                 ans <- factor(ans)
-##             return(ans)
-##         }
-##         else
-##             stop(gettextf("'%s' has length %d",
-##                           "breaks", 0L))
-##     }
-##     ## deal with "empty" case where
-##     ## all date-dob pairs have NA, and
-##     ## we aren't making factors
-##     if (all_empty && !as_factor) {
-##         ans <- rep(NA_character_, times = n_date)
-##         return(ans)
-##     }
-##     ## get age in months and years
-##     age_months <- age_completed_months(date = date,
-##                                        dob = dob)
-##     age_years <- age_months %/% 12L
-##     ## check that ages lie within limits implied by 'breaks' and 'open_last'
-##     is_lt_min <- age_years < breaks[[1L]]
-##     i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
-##     if (i_lt_min > 0L) {
-##         stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
-##                             "but minimum value for '%s' is %d"),
-##                       date[[i_lt_min]],
-##                       dob[[i_lt_min]],
-##                       age_years[[i_lt_min]],
-##                       "breaks",
-##                       breaks[[1L]]))
-##     }
-##     if (!open_last) {
-##         is_ge_max <- age_years >= breaks[[n_break]]
-##         i_ge_max <- match(TRUE, is_ge_max, nomatch = 0L)
-##         if (i_ge_max > 0L) {
-##             stop(gettextf(paste("'date' of \"%s\" and 'dob' of \"%s\" imply age of %d,",
-##                                 "but 'open_last' is FALSE and maximum value for 'breaks' is %d"),
-##                           date[[i_ge_max]],
-##                           dob[[i_ge_max]],
-##                           age_years[[i_ge_max]],
-##                           breaks[[n_break]]))
-##         }
-##     }
-##     ## make labels for breaks
-##     labels <- make_labels_age(breaks = breaks,
-##                                     open_last = open_last,
-##                                     include_na = FALSE)
-##     ## assign labels to ages
-##     i <- findInterval(x = age_years,
-##                       vec = breaks)
-##     ans <- labels[i]
-##     ## return result
-##     if (as_factor)
-##         ans <- factor(x = ans,
-##                       levels = labels)
-##     ans
-## }
+
+## HAS_TESTS
+#' Put age group labels into format required
+#' for customized age groups
+#'
+#' Given a vector of age group labels, create a factor
+#' that contains levels for all age groups
+#' defined by \code{breaks}, including, possibly,
+#' and open age group.\code{format_age_custom} is the most flexible
+#' of the \code{format_age} functions
+#' in that the age groups can have any combination of widths,
+#' though the widths must be defined in whole numbers of years.
+#'
+#' \code{breaks} is used to specify the points at which
+#' each age group starts and finishes. If 
+#' \code{open_last} is \code{TRUE}, and \code{b} is
+#' the last value for \code{breaks}, then the oldest
+#' age group is \code{[b, Inf)} years. 
+#' If \code{open_last} is \code{FALSE}, \code{a} is the
+#' second-to-last value for \code{breaks} and \code{b}
+#' is the last value, then the oldest age
+#' group is \code{[a, b)} years.
+#'
+#' @inheritParams format_age_year
+#' @param breaks A vector of strictly increasing integer values.
+#'
+#' @return A factor with length equal to \code{x}.
+#'
+#' @seealso Other functions for creating age groups are
+#' \code{\link{format_age_year}},
+#' \code{\link{format_age_multi}},
+#' \code{\link{format_age_lifetab}},
+#' \code{\link{format_age_births}},
+#' \code{\link{format_age_quarter}},
+#' and \code{\link{format_age_month}}.
+#'
+#' \code{\link{date_to_age_custom}} creates
+#' customized age groups from dates.
+#'
+#' \code{\link{make_labels_age}} describes the rules
+#' for constructing labels for age groups.
+#'
+#' @examples
+#' format_age_custom(x = c("90+", "19-40", "22", NA),
+#'                   breaks = c(0, 15, 60))
+#' format_age_custom(x = c("50-59", "19-40", "31"),
+#'                   breaks = c(15, 45, 60),
+#'                   open_last = FALSE)
+#' @export
+format_age_custom <- function(x,
+                              breaks = NULL,
+                              open_last = TRUE) {
+    ## regexp patterns
+    p_single <- "^[0-9]+$"
+    p_low_up <- "^([0-9]+)-([0-9]+)$"
+    p_open <- "[0-9]+\\+$"
+    ## check arguments
+    breaks <- demcheck::err_tdy_breaks_integer_age(breaks = breaks,
+                                                   open_last = open_last)
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
+    ## deal with "empty" case where 'breaks' has length 0
+    n_break <- length(breaks)
+    n_x <- length(x)
+    if (n_break == 0L) {
+        if (n_x > 0L) {
+            stop(gettextf("'%s' has length %d",
+                          "breaks", 0L),
+                 call. = FALSE)
+        }
+        else {
+            ans <- factor()
+            return(ans)
+        }
+    }
+    ## put unique values in 'labels_old' vector
+    labels_old <- unique(x)
+    ## classify labels_old, raising error for any invalid ones
+    is_na <- is.na(labels_old)
+    is_single <- grepl(p_single, labels_old)
+    is_low_up <- grepl(p_low_up, labels_old)
+    is_open <- grepl(p_open, labels_old)
+    is_valid <- is_na | is_single | is_low_up | is_open
+    i_invalid <- match(FALSE, is_valid, nomatch = 0L)
+    if (i_invalid > 0L)
+        stop(gettextf("\"%s\" is not a valid label for an age group",
+                      labels_old[[i_invalid]]),
+             call. = FALSE)
+    ## extract lower and upper ages
+    age_low <- rep(NA_integer_, times = length(labels_old))
+    age_up <- age_low
+    age_low[is_single] <- as.integer(labels_old[is_single])
+    age_up[is_single] <- age_low[is_single] + 1L
+    age_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
+    age_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up])) + 1L
+    age_low[is_open] <- as.integer(sub("\\+", "", labels_old[is_open]))
+    demcheck::err_age_diff_gt_one(age_low = age_low,
+                                  age_up = age_up,
+                                  is_low_up = is_low_up,
+                                  labels = labels_old)
+    ## check that ages lie within limits implied by 'breaks' and 'open_last'
+    is_lt_min <- age_low < breaks[[1L]]
+    i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
+    if (i_lt_min > 0L) {
+        stop(gettextf("age group \"%s\" is below minimum value for '%s' [%d]",
+                      labels_old[[i_lt_min]],
+                      "breaks",
+                      breaks[[1L]]),
+             call. = FALSE)
+    }
+    if (!open_last) {
+        is_gt_max <- age_up > breaks[[n_break]]
+        i_gt_max <- match(TRUE, is_gt_max, nomatch = 0L)
+        if (i_gt_max > 0L) {
+            stop(gettextf("age group \"%s\" is above maximum value for '%s' [%d]",
+                          labels_old[[i_gt_max]],
+                          "breaks",
+                          breaks[[n_break]]),
+                 call. = FALSE)
+        }
+    }
+    ## check that age groups do not cross breaks
+    demcheck::err_intervals_inside_breaks(age_low = age_low,
+                                          age_up = age_up,
+                                          breaks = breaks,
+                                          labels = labels_old)
+    ## make labels for breaks
+    include_na <- any(is_na)
+    labels_new <- make_labels_age(breaks = breaks,
+                                  open_last = open_last,
+                                  include_na = include_na)
+    ## assign new labels to x
+    i_label_old <- match(x, labels_old)
+    age <- age_low[i_label_old]
+    i_intervals_new <- findInterval(x = age,
+                                    vec = breaks)
+    ans <- labels_new[i_intervals_new]
+    ## return result
+    ans <- factor(x = ans,
+                  levels = labels_new,
+                  exclude = NULL)
+    ans
+}
+
 
 ## ## HAS_TESTS
 ## #' Convert dates to one-quarter age groups

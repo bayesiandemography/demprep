@@ -46,8 +46,7 @@ is longer.
 Given the dates when births occur,
 and the dates of birth of the parents (typically mothers),
 allocate the births to age groups. These age groups all
-have the same width, which is measured in years,
-and in an integer.
+have the same width, which is measured in whole years.
 }
 \details{
 \code{date} and \code{dob} must have the same length,
@@ -91,13 +90,13 @@ date_to_age_births(date = c("2024-03-27",
                    dob = c("2001-03-21",
                            "2000-07-13"))
 
-## alternative values for 'width'
 date_to_age_births(date = c("2024-03-27",
                             "2022-11-09"),
                    dob = c("2001-03-21",
                            "2000-07-13"),
                    width = 10,
                    break_min = 20)
+
 date_to_age_births(date = c("2024-03-27",
                             "2022-11-09"),
                    dob = c("2001-03-21",
