@@ -50,14 +50,9 @@ is not included in the data \code{x}, \code{factor_age_year}
 still creates a level for it.
 }
 \details{
-If \code{break_min} or \code{break_max} are \code{NULL},
-then \code{factor_age_year} supplies values for them, 
-based on the data. \code{break_min} is set to the lowest
-multiple of \code{width} that contains the data,
-and \code{break_max} is set to the highest multiple,
-except when the data contains an open age group,
-in which case \code{break_max} is determined
-by that.
+If \code{break_min} or \code{break_max} is set to \code{NULL},
+rather than to a specific value, then \code{format_age_year}
+finds the narrowest range that accommodates the data.
 
 All age groups in \code{x} must fall within the intervals
 determined by \code{break_min} and \code{width},
@@ -100,10 +95,6 @@ age group labels are
 \code{\link{format_age_custom}},
 \code{\link{format_age_quarter}},
 and \code{\link{format_age_month}}.
-
-Other functions for reformatting multi-year
-labels are \code{\link{format_period_multi}} and
-\code{\link{format_cohort_multi}},
 
 \code{\link{date_to_age_multi}} creates
 multi-year age groups from dates.

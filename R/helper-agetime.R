@@ -525,6 +525,39 @@ make_breaks_label_to_integer_lifetab <- function(age_low,
 
 
 ## HAS_TESTS
+make_breaks_label_to_integer_month_quarter <- function(age_low,
+                                                       age_up,
+                                                       labels,
+                                                       is_open,
+                                                       break_min,
+                                                       break_max,
+                                                       open_last) {
+    ## determine 'break_min'
+    if (is.null(break_min)) {
+        break_min <- min(age_low, na.rm = TRUE)
+        message(gettextf("'%s' set to %d",
+                         "break_min", break_min),
+                appendLF = TRUE)
+    }
+    ## Determine 'break_max'. 
+    if (is.null(break_max)) {
+        if (any(is_open))
+            break_max <- min(age_low[is_open])
+        else
+            break_max <- max(age_up, na.rm = TRUE)
+        message(gettextf("'%s' set to %d",
+                         "break_max", break_max),
+                appendLF = TRUE)
+    }
+    ## make breaks
+    breaks <- seq.int(from = break_min,
+                      to = break_max)
+    ## return value
+    breaks
+}
+
+
+## HAS_TESTS
 make_breaks_label_to_integer_year <- function(age_low,
                                               age_up,
                                               labels,

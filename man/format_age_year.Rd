@@ -38,13 +38,9 @@ is not included in the data \code{x}, \code{factor_age_year}
 still creates a level for it.
 }
 \details{
-If \code{break_min} or \code{break_max} are \code{NULL},
-then \code{factor_age_year} supplies values for them, 
-based on the data. \code{break_min} is set to the lowest value
-in the data, and \code{break_max} is set to the highest value,
-except when the data contains an open age group,
-in which case \code{break_max} is set to the lower limit
-of the open age group.
+If \code{break_min} or \code{break_max} is set to \code{NULL},
+rather than to a specific value, then \code{format_age_year}
+finds the narrowest range that accommodates the data.
 
 All age groups in \code{x} must be single-year age groups,
 except for age groups above \code{break_max}.
@@ -82,10 +78,6 @@ age group labels are
 \code{\link{format_age_custom}},
 \code{\link{format_age_quarter}},
 and \code{\link{format_age_month}}.
-
-Other functions for reformatting one-year
-labels are \code{\link{format_period_year}} and
-\code{\link{format_cohort_year}},
 
 \code{\link{date_to_age_year}} creates
 one-year age groups from dates.

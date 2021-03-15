@@ -51,6 +51,7 @@ is assumed to occur. If, for instance,
 \code{break_min} is \code{15} and \code{break_max}
 is \code{50}, all births are assumed to
 occur to women aged 15 to 49 (inclusive).
+
 If \code{break_min} or \code{break_max} is set to \code{NULL},
 rather than to a specific value, then \code{date_to_age_births}
 finds the narrowest range that accommodates the values
@@ -85,7 +86,7 @@ format_age_births(x = c("20", "37", "15"),
                   break_max = 45)
 
 ## allow youngest and oldest age groups to be
-## set by the data
+## determined by the data
 format_age_births(x = c("21", "33", "22-24"),
                   break_min = NULL,
                   break_max = NULL)

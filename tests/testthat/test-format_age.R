@@ -220,84 +220,63 @@ test_that("format_age_custom throws correct errors with invalid inputs", {
 })
 
 
-## ## format_age_quarter ---------------------------------------------------
+## format_age_quarter ---------------------------------------------------
 
-## test_that("format_age_quarter gives correct answers with valid inputs", {
-##     expect_identical(format_age_quarter(date = c("2000-01-01",
-##                                                         "2000-05-11",
-##                                                         "2001-02-28"),
-##                                                dob = "2000-01-01"),
-##                      factor(c("0q", "1q", "4q"),
-##                             levels = c(paste0(0:399, "q"), "400q+")))
-##     expect_identical(format_age_quarter(date = c("2000-01-01",
-##                                                         "2000-05-11",
-##                                                         "2001-04-28"),
-##                                                dob = "2000-01-01",
-##                                                break_max = 5L),
-##                      factor(c("0q", "1q", "5q+"),
-##                             levels = c(paste0(0:4, "q"), "5q+")))
-##     expect_identical(format_age_quarter(date = c("2000-01-01",
-##                                                         "2000-05-11",
-##                                                         NA,
-##                                                         "2001-04-28"),
-##                                                dob = "2000-01-01",
-##                                                break_max = 6,
-##                                                open_last = FALSE),
-##                      factor(c("0q", "1q", NA, "5q"),
-##                             levels = c("0q", "1q", "2q", "3q", "4q", "5q")))
-##     expect_identical(format_age_quarter(date = c("2000-03-11",
-##                                                         NA),
-##                                                dob = c(NA,
-##                                                        "2000-01-01"),
-##                                                break_max = NULL,
-##                                                open_last = FALSE),
-##                      factor(c(NA, NA)))
-##     expect_identical(format_age_quarter(date = c("2000-03-11",
-##                                                         NA),
-##                                                dob = c(NA,
-##                                                        "2000-01-01"),
-##                                                break_max = 3,
-##                                                open_last = FALSE),
-##                      factor(c(NA, NA), levels = c("0q", "1q", "2q")))
-## })
+test_that("format_age_quarter gives correct answers with valid inputs", {
+    expect_identical(format_age_quarter(x = c("0q", "1q", "4q")),
+                     factor(c("0q", "1q", "4q"),
+                            levels = c(paste0(0:399, "q"), "400q+")))
+    expect_identical(format_age_quarter(c("0q", "1q", "100q"),
+                                        break_max = 5L),
+                     factor(c("0q", "1q", "5q+"),
+                            levels = c(paste0(0:4, "q"), "5q+")))
+    expect_identical(format_age_quarter(x = c("0q", "1q", NA, "5q"),
+                                               break_max = 6,
+                                               open_last = FALSE),
+                     factor(c("0q", "1q", NA, "5q"),
+                            levels = c("0q", "1q", "2q", "3q", "4q", "5q", NA),
+                            exclude = NULL))
+    expect_identical(format_age_quarter(x = c(NA, NA),
+                                        break_max = NULL,
+                                        open_last = FALSE),
+                     factor(c(NA, NA),
+                            levels = NA_character_,
+                            exclude = NULL))
+    expect_identical(format_age_quarter(x = c(NA, NA),
+                                               break_max = 3,
+                                               open_last = FALSE),
+                     factor(c(NA, NA),
+                            levels = c("0q", "1q", "2q", NA),
+                            exclude = NULL))
+})
 
-## ## format_age_month ---------------------------------------------------
+## format_age_month ---------------------------------------------------
 
-## test_that("format_age_month gives correct answers with valid inputs", {
-##     expect_identical(format_age_month(date = c("2000-01-01",
-##                                                       "2000-03-11",
-##                                                       "2000-02-29"),
-##                                              dob = "2000-01-01"),
-##                      factor(c("0m", "2m", "1m"),
-##                             levels = c(paste0(0:1199, "m"), "1200m+")))
-##     expect_identical(format_age_month(date = c("2000-01-01",
-##                                                       "2000-03-11",
-##                                                       "2000-02-29"),
-##                                              dob = "2000-01-01",
-##                                              break_max = 3),
-##                      factor(c("0m", "2m", "1m"),
-##                             levels = c("0m", "1m", "2m", "3m+")))
-##     expect_identical(format_age_month(date = c("2000-01-01",
-##                                                       "2000-03-11",
-##                                                       NA,
-##                                                       "2000-02-29"),
-##                                              dob = "2000-01-01",
-##                                              break_max = 3,
-##                                              open_last = FALSE),
-##                      factor(c("0m", "2m", NA, "1m"),
-##                             levels = c("0m", "1m", "2m")))
-##     expect_identical(format_age_month(date = c("2000-03-11",
-##                                                       NA),
-##                                              dob = c(NA,
-##                                                      "2000-01-01"),
-##                                              break_max = 3,
-##                                              open_last = FALSE),
-##                      factor(c(NA, NA), levels = c("0m", "1m", "2m")))
-##     expect_identical(format_age_month(date = c("2000-03-11",
-##                                                       NA),
-##                                              dob = c(NA,
-##                                                      "2000-01-01"),
-##                                              break_max = NULL,
-##                                              open_last = FALSE),
-##                      factor(c(NA, NA)))
-## })
+test_that("format_age_month gives correct answers with valid inputs", {
+    expect_identical(format_age_month(x = c("0m", "1m", "4m")),
+                     factor(c("0m", "1m", "4m"),
+                            levels = c(paste0(0:1199, "m"), "1200m+")))
+    expect_identical(format_age_month(c("0m", "1m", "100m"),
+                                        break_max = 5L),
+                     factor(c("0m", "1m", "5m+"),
+                            levels = c(paste0(0:4, "m"), "5m+")))
+    expect_identical(format_age_month(x = c("0m", "1m", NA, "5m"),
+                                               break_max = 6,
+                                               open_last = FALSE),
+                     factor(c("0m", "1m", NA, "5m"),
+                            levels = c("0m", "1m", "2m", "3m", "4m", "5m", NA),
+                            exclude = NULL))
+    expect_identical(format_age_month(x = c(NA, NA),
+                                        break_max = NULL,
+                                        open_last = FALSE),
+                     factor(c(NA, NA),
+                            levels = NA_character_,
+                            exclude = NULL))
+    expect_identical(format_age_month(x = c(NA, NA),
+                                               break_max = 3,
+                                               open_last = FALSE),
+                     factor(c(NA, NA),
+                            levels = c("0m", "1m", "2m", NA),
+                            exclude = NULL))
+})
+

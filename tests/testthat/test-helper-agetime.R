@@ -855,6 +855,67 @@ test_that("'make_breaks_label_to_integer_lifetab' gives correct answer when brea
 })
 
 
+
+## make_breaks_labels_to_integer_month_quarter -------------------------------
+
+test_that("'make_breaks_label_to_integer_month_quarter' gives correct answer when break_min and break_max both non-NULL", {
+    expect_identical(make_breaks_label_to_integer_month_quarter(age_low = c(0L, 5L, 10L, 15L),
+                                                                age_up = c(1L, 6L, 11L, NA),
+                                                                labels = c("0q", "5q", "10q", "15q+"),
+                                                                is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                                break_min = 0L,
+                                                                break_max = 15L,
+                                                                open_last = TRUE),
+                     0:15)
+    expect_identical(make_breaks_label_to_integer_month_quarter(age_low = c(0L, NA, 10L, 15L),
+                                                                age_up = c(1L, NA, 11L, NA),
+                                                                labels = c("0q", NA, "10q", "15q+"),
+                                                                is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                                break_min = 0L,
+                                                                break_max = 15L,
+                                                                open_last = TRUE),
+                     0:15)
+    expect_identical(make_breaks_label_to_integer_month_quarter(age_low = NA,
+                                                                age_up = NA,
+                                                                labels = NA,
+                                                                is_open = FALSE,
+                                                                break_min = 0L,
+                                                                break_max = 25L,
+                                                                open_last = TRUE),
+                     0:25)
+})
+
+test_that("'make_breaks_label_to_integer_month_quarter' gives correct answer when break_min is NULL and break_max is non-NULL", {
+    expect_identical(make_breaks_label_to_integer_month_quarter(age_low = c(0L, 5L, 10L, 15L),
+                                                                age_up = c(1L, 6L, 11L, NA),
+                                                                labels = c("0q", "5q", "10q", "15q+"),
+                                                                is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                                break_min = NULL,
+                                                                break_max = 15L,
+                                                                open_last = TRUE),
+                     0:15)
+    expect_identical(make_breaks_label_to_integer_month_quarter(age_low = c(NA, 10L, 15L),
+                                                                age_up = c(NA, 11L, NA),
+                                                                labels = c(NA, "10q", "15q+"),
+                                                                is_open = c(FALSE, FALSE, TRUE),
+                                                                break_min = NULL,
+                                                                break_max = 15L,
+                                                                open_last = TRUE),
+                     10:15)
+})
+
+test_that("'make_breaks_label_to_integer_month_quarter' gives correct answer when break_min is non-NULL and break_max is NULL", {
+    expect_identical(make_breaks_label_to_integer_month_quarter(age_low = c(0L, 5L, 10L, 15L),
+                                                       age_up = c(1L, 6L, 11L, NA),
+                                                       labels = c("0q", "5q", "10q", "15q+"),
+                                                       is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                       break_min = 0L,
+                                                       break_max = NULL,
+                                                       open_last = TRUE),
+                     0:15)
+})
+
+
 ## make_breaks_labels_to_integer_year -----------------------------------------
 
 test_that("'make_breaks_label_to_integer_year' gives correct answer when break_min and break_max both non-NULL", {
