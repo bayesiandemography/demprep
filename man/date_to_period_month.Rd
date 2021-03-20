@@ -24,6 +24,10 @@ via function \code{\link[base]{as.Date}}.
 The return value is a factor.
 The levels of this factor include all intermediate periods,
 including periods that do not appear in the data.
+
+If \code{date} contains \code{NA}, then the
+levels of the factor created by \code{date_to_period_month}
+also contain \code{NA}.
 }
 \examples{
 date_to_period_month(date = c("2024-03-27",

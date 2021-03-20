@@ -63,6 +63,10 @@ in mathematics.)
 The return value is a factor. The levels of this
 factor contain all intermediate age groups,
 including ones that do not appear in the data.
+
+If \code{date} or \code{dob} contain \code{NA}, then the
+levels of the factor created by \code{date_to_age_custom}
+will also contain \code{NA}.
 }
 \examples{
 date_to_age_month(date = c("2024-03-27",

@@ -41,6 +41,10 @@
 #' factor contain all intermediate age groups,
 #' including ones that do not appear in the data.
 #' 
+#' If \code{date} or \code{dob} contain \code{NA}, then the
+#' levels of the factor created by \code{date_to_age_year}
+#' will also contain \code{NA}.
+#'
 #' @param date Dates of events.
 #' A vector of class \code{\link[base]{Date}},
 #' or a vector that can be coerced to class
@@ -226,6 +230,10 @@ date_to_age_year <- function(date,
 #' factor contain all intermediate age groups,
 #' including ones that do not appear in the data.
 #'
+#' If \code{date} or \code{dob} contain \code{NA}, then the
+#' levels of the factor created by \code{date_to_age_multi}
+#' will also contain \code{NA}.
+#'
 #' @inheritParams date_to_age_year
 #' @param width The width in years of the age intervals.
 #' A positive integer. Defaults to 5.
@@ -395,6 +403,10 @@ date_to_age_multi <- function(date,
 #' factor contain all intermediate age groups,
 #' including ones that do not appear in the data.
 #'
+#' If \code{date} or \code{dob} contain \code{NA}, then the
+#' levels of the factor created by \code{date_to_age_lifetab}
+#' will also contain \code{NA}.
+#'
 #' @inheritParams date_to_age_year
 #' @param date Date of death.
 #'
@@ -525,6 +537,10 @@ date_to_age_lifetab <- function(date,
 #' The return value is a factor. The levels of this
 #' factor contain all intermediate age groups,
 #' including ones that do not appear in the data.
+#'
+#' If \code{date} or \code{dob} contain \code{NA}, then the
+#' levels of the factor created by \code{date_to_age_births}
+#' will also contain \code{NA}.
 #'
 #' @param date Dates when births being tabulated occur.
 #' @param dob Dates of birth of parents.
@@ -744,6 +760,10 @@ date_to_age_births <- function(date, dob,
 #' factor contain all intermediate age groups,
 #' including ones that do not appear in the data.
 #'
+#' If \code{date} or \code{dob} contain \code{NA}, then the
+#' levels of the factor created by \code{date_to_age_custom}
+#' will also contain \code{NA}.
+#' 
 #' @inheritParams date_to_age_year
 #' @param breaks A vector of strictly increasing integer values.
 #'
@@ -865,7 +885,7 @@ date_to_age_custom <- function(date,
 }
 
 ## HAS_TESTS
-#' Convert dates to one-quarter age groups
+#' Convert dates to quarter (three-month) age groups
 #'
 #' Given the dates when events occurred,
 #' and the dates of birth of the people experiencing the events,
@@ -897,6 +917,10 @@ date_to_age_custom <- function(date,
 #' factor contain all intermediate age groups,
 #' including ones that do not appear in the data.
 #'
+#' If \code{date} or \code{dob} contain \code{NA}, then the
+#' levels of the factor created by \code{date_to_age_quarter}
+#' will also contain \code{NA}.
+#' 
 #' @inheritParams date_to_age_year
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 400.
@@ -1066,6 +1090,10 @@ date_to_age_quarter <- function(date,
 #' factor contain all intermediate age groups,
 #' including ones that do not appear in the data.
 #'
+#' If \code{date} or \code{dob} contain \code{NA}, then the
+#' levels of the factor created by \code{date_to_age_custom}
+#' will also contain \code{NA}.
+#' 
 #' @inheritParams date_to_age_year
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 1200.

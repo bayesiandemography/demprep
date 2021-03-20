@@ -86,6 +86,10 @@ if a value for \code{break_min} is supplied.
 The return value is a factor. The levels of this
 factor contain all intermediate cohorts,
 including cohorts that do not appear in the data.
+
+If \code{date} contains \code{NA}, then the
+levels of the factor created by \code{date_to_cohort_multi}
+also contain \code{NA}.
 }
 \examples{
 date_to_cohort_multi(date = c("2024-03-27",

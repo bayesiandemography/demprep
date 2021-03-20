@@ -238,6 +238,66 @@ test_that("'as_ymd' gives correct answer with valid inputs", {
 })
 
 
+## date_start_month ---------------------------------------------------------
+
+test_that("'date_start_month' gives correct answer with valid inputs", {
+    date_start_month <- demprep:::date_start_month
+    expect_identical(date_start_month(c("2000 Jan",
+                                        "2000 Feb",
+                                        "2000 Mar",
+                                        "2000 Apr",
+                                        "2000 May",
+                                        "2000 Jun",
+                                        "2000 Jul",
+                                        "2000 Aug",
+                                        "2000 Sep",
+                                        "2000 Oct",
+                                        "2000 Nov",
+                                        "2000 Dec",
+                                        NA,
+                                        "2000 Jan+")),
+                     as.Date(c("2000-01-01",
+                               "2000-02-01",
+                               "2000-03-01",
+                               "2000-04-01",
+                               "2000-05-01",
+                               "2000-06-01",
+                               "2000-07-01",
+                               "2000-08-01",
+                               "2000-09-01",
+                               "2000-10-01",
+                               "2000-11-01",
+                               "2000-12-01",
+                               NA,
+                               "2000-01-01")))
+})
+
+
+## date_start_quarter ---------------------------------------------------------
+
+test_that("'date_start_quarter' gives correct answer with valid inputs", {
+    date_start_quarter <- demprep:::date_start_quarter
+    expect_identical(date_start_quarter(c("2000 Q1",
+                                          "2000 Q2",
+                                          "2000 Q3",
+                                          "2000 Q4",
+                                          NA,
+                                          "2000 Q1+",
+                                          "2000 Q2+",
+                                          "2000 Q3+",
+                                          "2000 Q4+")),
+                     as.Date(c("2000-01-01",
+                               "2000-04-01",
+                               "2000-07-01",
+                               "2000-10-01",
+                               NA,
+                               "2000-01-01",
+                               "2000-04-01",
+                               "2000-07-01",
+                               "2000-10-01")))
+})
+
+
 ## date_ymd_ge ----------------------------------------------------------------
 
 test_that("'date_ymd_ge' gives correct answer with valid inputs", {
@@ -919,46 +979,51 @@ test_that("'make_breaks_label_to_integer_month_quarter' gives correct answer whe
 ## make_breaks_labels_to_integer_year -----------------------------------------
 
 test_that("'make_breaks_label_to_integer_year' gives correct answer when break_min and break_max both non-NULL", {
-    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, 5L, 10L, 15L),
-                                                       age_up = c(5L, 10L, 15L, NA),
+    expect_identical(make_breaks_label_to_integer_year(int_low = c(0L, 5L, 10L, 15L),
+                                                       int_up = c(5L, 10L, 15L, NA),
                                                        width = 5L,
                                                        labels = c("0-4", "5-9", "10-14", "15+"),
+                                                       origin = 0L,
                                                        is_open = c(FALSE, FALSE, FALSE, TRUE),
                                                        break_min = 0L,
                                                        break_max = 15L,
                                                        open_last = TRUE),
                      c(0L, 5L, 10L, 15L))
-    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, NA, 10L, 15L),
-                                                       age_up = c(5L, NA, 15L, NA),
+    expect_identical(make_breaks_label_to_integer_year(int_low = c(0L, NA, 10L, 15L),
+                                                       int_up = c(5L, NA, 15L, NA),
                                                        width = 5L,
                                                        labels = c("0-4", NA, "10-14", "15+"),
+                                                       origin = 0L,
                                                        is_open = c(FALSE, FALSE, FALSE, TRUE),
                                                        break_min = 0L,
                                                        break_max = 15L,
                                                        open_last = TRUE),
                      c(0L, 5L, 10L, 15L))
-    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, NA, 10L, 15L),
-                                                       age_up = c(5L, NA, 15L, NA),
+    expect_identical(make_breaks_label_to_integer_year(int_low = c(0L, NA, 10L, 15L),
+                                                       int_up = c(5L, NA, 15L, NA),
                                                        width = 15L,
                                                        labels = c("0-4", "5-9", "10-14", "15+"),
                                                        is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                       origin = 0L,
                                                        break_min = 0L,
                                                        break_max = 15L,
                                                        open_last = TRUE),
                      c(0L, 15L))
-    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, 5L, 10L, 15L),
-                                                       age_up = c(5L, 10L, 15L, 20L),
+    expect_identical(make_breaks_label_to_integer_year(int_low = c(0L, 5L, 10L, 15L),
+                                                       int_up = c(5L, 10L, 15L, 20L),
                                                        width = 5L,
                                                        labels = c("0-4", "5-9", "10-14", "15-19"),
+                                                       origin = 0L,
                                                        is_open = c(FALSE, FALSE, FALSE, FALSE),
                                                        break_min = 0L,
                                                        break_max = 25L,
                                                        open_last = TRUE),
                      c(0L, 5L, 10L, 15L, 20L, 25L))
-    expect_identical(make_breaks_label_to_integer_year(age_low = NA,
-                                                       age_up = NA,
+    expect_identical(make_breaks_label_to_integer_year(int_low = NA,
+                                                       int_up = NA,
                                                        width = 5L,
                                                        labels = NA,
+                                                       origin = 0L,
                                                        is_open = FALSE,
                                                        break_min = 0L,
                                                        break_max = 25L,
@@ -967,37 +1032,41 @@ test_that("'make_breaks_label_to_integer_year' gives correct answer when break_m
 })
 
 test_that("'make_breaks_label_to_integer_year' gives correct answer when break_min is NULL and break_max is non-NULL", {
-    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, 5L, 10L, 15L),
-                                                       age_up = c(5L, 10L, 15L, NA),
+    expect_identical(make_breaks_label_to_integer_year(int_low = c(0L, 5L, 10L, 15L),
+                                                       int_up = c(5L, 10L, 15L, NA),
                                                        width = 5L,
                                                        labels = c("0-4", "5-9", "10-14", "15+"),
+                                                       origin = 0L,
                                                        is_open = c(FALSE, FALSE, FALSE, TRUE),
                                                        break_min = NULL,
                                                        break_max = 15L,
                                                        open_last = TRUE),
                      c(0L, 5L, 10L, 15L))
-    expect_identical(make_breaks_label_to_integer_year(age_low = c(NA, 10L, 15L),
-                                                       age_up = c(NA, 15L, NA),
+    expect_identical(make_breaks_label_to_integer_year(int_low = c(NA, 10L, 15L),
+                                                       int_up = c(NA, 15L, NA),
                                                        width = 5L,
                                                        labels = c(NA, "10-14", "15+"),
+                                                       origin = 0L,
                                                        is_open = c(FALSE, FALSE, TRUE),
                                                        break_min = NULL,
                                                        break_max = 15L,
                                                        open_last = TRUE),
                      c(10L, 15L))
-    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, NA, 10L, 15L),
-                                                       age_up = c(5L, NA, 15L, NA),
+    expect_identical(make_breaks_label_to_integer_year(int_low = c(0L, NA, 10L, 15L),
+                                                       int_up = c(5L, NA, 15L, NA),
                                                        width = 15L,
                                                        labels = c("0-4", "5-9", "10-14", "15+"),
+                                                       origin = 0L,
                                                        is_open = c(FALSE, FALSE, FALSE, TRUE),
                                                        break_min = NULL,
                                                        break_max = 15L,
                                                        open_last = TRUE),
                      c(0L, 15L))
-    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, 5L, 10L, 15L),
-                                                       age_up = c(5L, 10L, 15L, 20L),
+    expect_identical(make_breaks_label_to_integer_year(int_low = c(0L, 5L, 10L, 15L),
+                                                       int_up = c(5L, 10L, 15L, 20L),
                                                        width = 5L,
                                                        labels = c("0-4", "5-9", "10-14", "15-19"),
+                                                       origin = 0L,
                                                        is_open = c(FALSE, FALSE, FALSE, FALSE),
                                                        break_min = NULL,
                                                        break_max = 25L,
@@ -1006,45 +1075,60 @@ test_that("'make_breaks_label_to_integer_year' gives correct answer when break_m
 })
 
 test_that("'make_breaks_label_to_integer_year' gives correct answer when break_min is non-NULL and break_max is NULL", {
-    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, 5L, 10L, 15L),
-                                                       age_up = c(5L, 10L, 15L, NA),
+    expect_identical(make_breaks_label_to_integer_year(int_low = c(0L, 5L, 10L, 15L),
+                                                       int_up = c(5L, 10L, 15L, NA),
                                                        width = 5L,
                                                        labels = c("0-4", "5-9", "10-14", "15+"),
+                                                       origin = 0L,
                                                        is_open = c(FALSE, FALSE, FALSE, TRUE),
                                                        break_min = 0L,
                                                        break_max = NULL,
                                                        open_last = TRUE),
                      c(0L, 5L, 10L, 15L))
-    expect_identical(make_breaks_label_to_integer_year(age_low = c(NA, 10L, 15L),
-                                                       age_up = c(NA, 15L, NA),
+    expect_identical(make_breaks_label_to_integer_year(int_low = c(NA, 10L, 15L),
+                                                       int_up = c(NA, 15L, NA),
                                                        width = 5L,
                                                        labels = c(NA, "10-14", "15+"),
+                                                       origin = 0L,
                                                        is_open = c(FALSE, FALSE, TRUE),
                                                        break_min = 5L,
                                                        break_max = NULL,
                                                        open_last = TRUE),
                      c(5L, 10L, 15L))
-    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, NA, 10L, 15L),
-                                                       age_up = c(5L, NA, 15L, NA),
+    expect_identical(make_breaks_label_to_integer_year(int_low = c(0L, NA, 10L, 15L),
+                                                       int_up = c(5L, NA, 15L, NA),
                                                        width = 15L,
                                                        labels = c("0-4", "5-9", "10-14", "15+"),
                                                        is_open = c(FALSE, FALSE, FALSE, TRUE),
+                                                       origin = 0L,
                                                        break_min = 0L,
                                                        break_max = NULL,
                                                        open_last = TRUE),
                      c(0L, 15L))
-    expect_identical(make_breaks_label_to_integer_year(age_low = c(0L, 5L, 10L, 15L),
-                                                       age_up = c(5L, 10L, 15L, 20L),
+    expect_identical(make_breaks_label_to_integer_year(int_low = c(0L, 5L, 10L, 15L),
+                                                       int_up = c(5L, 10L, 15L, 20L),
                                                        width = 5L,
                                                        labels = c("0-4", "5-9", "10-14", "15-19"),
                                                        is_open = c(FALSE, FALSE, FALSE, FALSE),
+                                                       origin = 0L,
                                                        break_min = 0L,
                                                        break_max = NULL,
                                                        open_last = TRUE),
                      c(0L, 5L, 10L, 15L, 20L))
 })
 
-
+test_that("'make_breaks_label_to_integer_year' gives correct answer when origin is not 0", {
+    expect_identical(make_breaks_label_to_integer_year(int_low = c(2001L, 2006L, NA),
+                                                       int_up = c(2006L, 2011L, NA),
+                                                       width = 5L,
+                                                       labels = c("2001-2006", "2006-2011", NA),
+                                                       origin = 2001L,
+                                                       is_open = c(FALSE, FALSE, FALSE),
+                                                       break_min = NULL,
+                                                       break_max = NULL,
+                                                       open_last = FALSE),
+                     c(2001L, 2006L, 2011L))
+})
 
 
 ## n_day_month ----------------------------------------------------------------

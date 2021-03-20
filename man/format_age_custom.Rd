@@ -22,7 +22,7 @@ A factor with length equal to \code{x}.
 Given a vector of age group labels, create a factor
 that contains levels for all age groups
 defined by \code{breaks}, including, possibly,
-and open age group.\code{format_age_custom} is the most flexible
+an open age group.\code{format_age_custom} is the most flexible
 of the \code{format_age} functions
 in that the age groups can have any combination of widths,
 though the widths must be defined in whole numbers of years.

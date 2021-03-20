@@ -43,6 +43,10 @@ on 31 December 2020.
 The return value is a factor.
 The levels of this factor include all intermediate periods,
 including periods that do not appear in the data.
+
+If \code{date} contains \code{NA}, then the
+levels of the factor created by \code{date_to_period_custom}
+also contain \code{NA}.
 }
 \examples{
 ## periods start on 1 January

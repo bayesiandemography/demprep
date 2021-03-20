@@ -59,6 +59,10 @@ the start year. To use the end year, set
 The return value is a factor.
 The levels of this factor include all intermediate periods,
 including periods that do not appear in the data.
+
+If \code{date} contains \code{NA}, then the
+levels of the factor created by \code{date_to_period_year}
+also contain \code{NA}.
 }
 \examples{
 date_to_period_year(date = c("2024-03-27", "2022-11-09"))

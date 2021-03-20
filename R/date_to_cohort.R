@@ -64,6 +64,10 @@
 #' factor contain all intermediate cohorts,
 #' including cohorts that do not appear in the data.
 #'
+#' If \code{date} contains \code{NA}, then the
+#' levels of the factor created by \code{date_to_cohort_year}
+#' also contain \code{NA}.
+#' 
 #' @param date Dates of events defining cohorts.
 #' A vector of class \code{\link[base]{Date}},
 #' or a vector that can be coerced to class \code{Date}
@@ -257,6 +261,10 @@ date_to_cohort_year <- function(date,
 #' factor contain all intermediate cohorts,
 #' including cohorts that do not appear in the data.
 #'
+#' If \code{date} contains \code{NA}, then the
+#' levels of the factor created by \code{date_to_cohort_multi}
+#' also contain \code{NA}.
+#' 
 #' @inheritParams date_to_cohort_year
 #' @param width The length, in whole years, of the cohorts.
 #' Defaults to 5.
@@ -442,6 +450,10 @@ date_to_cohort_multi <- function(date,
 #' factor contain all intermediate cohorts,
 #' including cohorts that do not appear in the data.
 #'
+#' If \code{date} contains \code{NA}, then the
+#' levels of the factor created by \code{date_to_cohort_custom}
+#' also contain \code{NA}.
+#' 
 #' @inheritParams date_to_cohort_year
 #' @param breaks Dates defining starts and ends of cohorts.
 #' A vector of class \code{\link[base]{Date}},
@@ -555,7 +567,7 @@ date_to_cohort_custom <- function(date,
 }
 
 ## HAS_TESTS
-#' Convert dates to one-quarter cohorts
+#' Convert dates to quarter (three-month) cohorts
 #'
 #' Identify cohorts, based on dates of births or other events.
 #' Q1 (the first quarter) starts on 1 January
@@ -581,6 +593,10 @@ date_to_cohort_custom <- function(date,
 #' factor contain all intermediate cohorts,
 #' including cohorts that do not appear in the data.
 #'
+#' If \code{date} contains \code{NA}, then the
+#' levels of the factor created by \code{date_to_cohort_quarter}
+#' also contain \code{NA}.
+#' 
 #' @inheritParams date_to_cohort_year
 #' @param break_min The start date of the first cohort,
 #' or \code{NULL} (the default.)
@@ -716,6 +732,10 @@ date_to_cohort_quarter <- function(date,
 #' factor contain all intermediate cohorts,
 #' including cohorts that do not appear in the data.
 #'
+#' If \code{date} contains \code{NA}, then the
+#' levels of the factor created by \code{date_to_cohort_month}
+#' also contain \code{NA}.
+#' 
 #' @inheritParams date_to_cohort_year
 #'
 #' @return A factor with the same length as \code{date}.

@@ -55,6 +55,10 @@ is defined by the first two dates.
 The return value is a factor. The levels of this
 factor contain all intermediate cohorts,
 including cohorts that do not appear in the data.
+
+If \code{date} contains \code{NA}, then the
+levels of the factor created by \code{date_to_cohort_custom}
+also contain \code{NA}.
 }
 \examples{
 ## cohorts start on 1 January

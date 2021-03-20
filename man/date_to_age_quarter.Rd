@@ -2,7 +2,7 @@
 % Please edit documentation in R/date_to_age.R
 \name{date_to_age_quarter}
 \alias{date_to_age_quarter}
-\title{Convert dates to one-quarter age groups}
+\title{Convert dates to quarter (three-month) age groups}
 \usage{
 date_to_age_quarter(
   date,
@@ -68,6 +68,10 @@ in mathematics.)
 The return value is a factor. The levels of this
 factor contain all intermediate age groups,
 including ones that do not appear in the data.
+
+If \code{date} or \code{dob} contain \code{NA}, then the
+levels of the factor created by \code{date_to_age_quarter}
+will also contain \code{NA}.
 }
 \examples{
 date_to_age_quarter(date = c("2024-03-27",

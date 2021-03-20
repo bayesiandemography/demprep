@@ -137,6 +137,29 @@ as_ymd <- function(date) {
 }
 
 ## HAS_TESTS
+date_start_month <- function(labels) {
+    p_single <- "^([0-9]+) ([A-z]{3})\\+?$"
+    year <- sub(p_single, "\\1", labels)
+    month <- sub(p_single, "\\2", labels)
+    year <- as.integer(year)
+    month <- match(month, month.abb)
+    date <- paste(year, month, 1, sep = "-")
+    date[is.na(labels)] <- NA
+    as.Date(date)
+}
+
+## HAS_TESTS
+date_start_quarter <- function(labels) {
+    ans <- sub("\\+$", "", labels)
+    ans <- sub(" Q1$", "-01-01", ans)
+    ans <- sub(" Q2$", "-04-01", ans)
+    ans <- sub(" Q3$", "-07-01", ans)
+    ans <- sub(" Q4$", "-10-01", ans)
+    ans <- as.Date(ans)
+    ans
+}
+
+## HAS_TESTS
 date_ymd_ge <- function(y1, m1, d1, y2, m2, d2) {
     (y1 > y2) ||
         ((y1 == y2) && (m1 > m2)) ||
@@ -488,8 +511,8 @@ make_breaks_label_to_integer_births <- function(age_low,
     breaks <- seq.int(from = break_min,
                       to = break_max,
                       by = width)
-    demcheck::err_intervals_inside_breaks(age_low = age_low,
-                                          age_up = age_up,
+    demcheck::err_intervals_inside_breaks(int_low = age_low,
+                                          int_up = age_up,
                                           breaks = breaks,
                                           labels = labels)
     breaks
@@ -516,8 +539,8 @@ make_breaks_label_to_integer_lifetab <- function(age_low,
                 seq.int(from = 5L,
                         to = break_max,
                         by = 5L))
-    demcheck::err_intervals_inside_breaks(age_low = age_low,
-                                          age_up = age_up,
+    demcheck::err_intervals_inside_breaks(int_low = age_low,
+                                          int_up = age_up,
                                           breaks = breaks,
                                           labels = labels)
     breaks
@@ -558,18 +581,21 @@ make_breaks_label_to_integer_month_quarter <- function(age_low,
 
 
 ## HAS_TESTS
-make_breaks_label_to_integer_year <- function(age_low,
-                                              age_up,
+make_breaks_label_to_integer_year <- function(int_low,
+                                              int_up,
                                               labels,
                                               width,
+                                              origin,
                                               is_open,
                                               break_min,
                                               break_max,
                                               open_last) {
     ## determine 'break_min'
     if (is.null(break_min)) {
-        break_min <- min(age_low, na.rm = TRUE)
+        break_min <- min(int_low, na.rm = TRUE)
+        break_min <- break_min - origin
         break_min <- (break_min %/% width) * width
+        break_min <- break_min + origin
         message(gettextf("'%s' set to %d",
                          "break_min", break_min),
                 appendLF = TRUE)
@@ -579,9 +605,10 @@ make_breaks_label_to_integer_year <- function(age_low,
     ## whereas here it is the upper limit of the age group.
     if (is.null(break_max)) {
         if (any(is_open))
-            break_max <- min(age_low[is_open])
+            break_max <- min(int_low[is_open])
         else
-            break_max <- max(age_up, na.rm = TRUE)
+            break_max <- max(int_up, na.rm = TRUE)
+        break_max <- break_max - origin
         if (open_last)
             break_max <- (break_max %/% width) * width
         else {
@@ -589,6 +616,7 @@ make_breaks_label_to_integer_year <- function(age_low,
             if (remainder > 0L)
                 break_max <- break_max + width - remainder
         }
+        break_max <- break_max + origin
         message(gettextf("'%s' set to %d",
                          "break_max", break_max),
                 appendLF = TRUE)
@@ -598,8 +626,8 @@ make_breaks_label_to_integer_year <- function(age_low,
                       to = break_max,
                       by = width)
     ## check that no intervals cross breaks
-    demcheck::err_intervals_inside_breaks(age_low = age_low,
-                                          age_up = age_up,
+    demcheck::err_intervals_inside_breaks(int_low = int_low,
+                                          int_up = int_up,
                                           breaks = breaks,
                                           labels = labels)
     ## return value

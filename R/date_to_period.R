@@ -45,6 +45,10 @@
 #' The levels of this factor include all intermediate periods,
 #' including periods that do not appear in the data.
 #'
+#' If \code{date} contains \code{NA}, then the
+#' levels of the factor created by \code{date_to_period_year}
+#' also contain \code{NA}.
+#'
 #' @param date Dates of events or measurements.
 #' @param month_start An element of \code{\link[base]{month.name}},
 #' or \code{\link[base]{month.abb}}. Each period starts on
@@ -160,6 +164,10 @@ date_to_period_year <- function(date,
 #' The levels of this factor include all intermediate periods,
 #' including periods that do not appear in the data.
 #'
+#' If \code{date} contains \code{NA}, then the
+#' levels of the factor created by \code{date_to_period_multi}
+#' also contain \code{NA}.
+#' 
 #' @inheritParams date_to_period_year
 #' @param width The length, in whole years, of the periods.
 #' Defaults to 5.
@@ -292,6 +300,10 @@ date_to_period_multi <- function(date,
 #' The levels of this factor include all intermediate periods,
 #' including periods that do not appear in the data.
 #'
+#' If \code{date} contains \code{NA}, then the
+#' levels of the factor created by \code{date_to_period_custom}
+#' also contain \code{NA}.
+#'
 #' @inheritParams date_to_period_year
 #' @param breaks Dates defining starts and ends of periods.
 #' 
@@ -379,7 +391,7 @@ date_to_period_custom <- function(date,
 }
 
 ## HAS_TESTS
-#' Convert dates to one-quarter periods
+#' Convert dates to quarter (three-month) periods
 #'
 #' Allocate dates to periods with periods one quarter long.
 #' Quarters are defined as follows:
@@ -398,6 +410,10 @@ date_to_period_custom <- function(date,
 #' The return value is a factor.
 #' The levels of this factor include all intermediate periods,
 #' including periods that do not appear in the data.
+#'
+#' If \code{date} contains \code{NA}, then the
+#' levels of the factor created by \code{date_to_period_quarter}
+#' also contain \code{NA}.
 #'
 #' @inheritParams date_to_period_year
 #'
@@ -482,6 +498,10 @@ date_to_period_quarter <- function(date) {
 #' The levels of this factor include all intermediate periods,
 #' including periods that do not appear in the data.
 #'
+#' If \code{date} contains \code{NA}, then the
+#' levels of the factor created by \code{date_to_period_month}
+#' also contain \code{NA}.
+#' 
 #' @inheritParams date_to_period_year
 #'
 #' @return A factor with the same length as \code{date}.

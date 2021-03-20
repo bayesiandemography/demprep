@@ -2,7 +2,7 @@
 % Please edit documentation in R/date_to_period.R
 \name{date_to_period_quarter}
 \alias{date_to_period_quarter}
-\title{Convert dates to one-quarter periods}
+\title{Convert dates to quarter (three-month) periods}
 \usage{
 date_to_period_quarter(date)
 }
@@ -31,6 +31,10 @@ via function \code{\link[base]{as.Date}}.
 The return value is a factor.
 The levels of this factor include all intermediate periods,
 including periods that do not appear in the data.
+
+If \code{date} contains \code{NA}, then the
+levels of the factor created by \code{date_to_period_quarter}
+also contain \code{NA}.
 }
 \examples{
 date_to_period_quarter(date = c("2024-03-27",

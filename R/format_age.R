@@ -228,16 +228,16 @@ format_age_multi <- function(x,
     age_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
     age_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up])) + 1L
     age_low[is_open] <- as.integer(sub("\\+", "", labels_old[is_open]))
-    demcheck::err_age_diff_gt_one(age_low = age_low,
-                                  age_up = age_up,
-                                  is_low_up = is_low_up,
-                                  labels = labels_old)
+    demcheck::err_interval_diff_gt_one(int_low = age_low,
+                                       int_up = age_up,
+                                       is_low_up = is_low_up,
+                                       labels = labels_old)
     ## if 'break_min' is supplied, make sure no
     ## intervals less than 'break_min'
     if (!is.null(break_min)) {
-        demcheck::chk_age_label_ge_break_min(labels = labels_old,
-                                       age_low = age_low,
-                                       break_min = break_min)
+        demcheck::err_interval_label_ge_break_min(labels = labels_old,
+                                                  int_low = age_low,
+                                                  break_min = break_min)
     }
     ## if 'open_last' is FALSE, check that there
     ## are no open age groups
@@ -247,15 +247,16 @@ format_age_multi <- function(x,
     ## if 'open_last' is FALSE, and 'break_max' is supplied,
     ## make sure that all intervals less than 'break_max'
     if (!open_last && !is.null(break_max)) {
-        demcheck::chk_age_label_le_break_max(labels = labels_old,
-                                       age_up = age_up,
-                                       break_max = break_max)
+        demcheck::err_interval_label_le_break_max(labels = labels_old,
+                                                  int_up = age_up,
+                                                  break_max = break_max)
     }
     ## make breaks
-    breaks <- make_breaks_label_to_integer_year(age_low = age_low,
-                                                age_up = age_up,
+    breaks <- make_breaks_label_to_integer_year(int_low = age_low,
+                                                int_up = age_up,
                                                 labels = labels,
                                                 width = width,
+                                                origin = 0L,
                                                 is_open = is_open,
                                                 break_min = break_min,
                                                 break_max = break_max,
@@ -374,10 +375,10 @@ format_age_lifetab <- function(x, break_max = 100) {
     age_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
     age_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up])) + 1L
     age_low[is_open] <- as.integer(sub("\\+", "", labels_old[is_open]))
-    demcheck::err_age_diff_gt_one(age_low = age_low,
-                                  age_up = age_up,
-                                  is_low_up = is_low_up,
-                                  labels = labels_old)
+    demcheck::err_interval_diff_gt_one(int_low = age_low,
+                                       int_up = age_up,
+                                       is_low_up = is_low_up,
+                                       labels = labels_old)
     ## make breaks
     breaks <- make_breaks_label_to_integer_lifetab(age_low = age_low,
                                                    age_up = age_up,
@@ -560,10 +561,10 @@ format_age_births <- function(x,
     age_up[is_single] <- age_low[is_single] + 1L
     age_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
     age_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up])) + 1L
-    demcheck::err_age_diff_gt_one(age_low = age_low,
-                                  age_up = age_up,
-                                  is_low_up = is_low_up,
-                                  labels = labels_old)
+    demcheck::err_interval_diff_gt_one(int_low = age_low,
+                                       int_up = age_up,
+                                       is_low_up = is_low_up,
+                                       labels = labels_old)
     ## check that ages lie within limits implied by 'break_min' and 'break_max'
     if (!is.null(break_min)) {
         is_lt_min <- age_low < break_min
@@ -630,7 +631,7 @@ format_age_births <- function(x,
 #' Given a vector of age group labels, create a factor
 #' that contains levels for all age groups
 #' defined by \code{breaks}, including, possibly,
-#' and open age group.\code{format_age_custom} is the most flexible
+#' an open age group.\code{format_age_custom} is the most flexible
 #' of the \code{format_age} functions
 #' in that the age groups can have any combination of widths,
 #' though the widths must be defined in whole numbers of years.
@@ -718,10 +719,10 @@ format_age_custom <- function(x,
     age_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
     age_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up])) + 1L
     age_low[is_open] <- as.integer(sub("\\+", "", labels_old[is_open]))
-    demcheck::err_age_diff_gt_one(age_low = age_low,
-                                  age_up = age_up,
-                                  is_low_up = is_low_up,
-                                  labels = labels_old)
+    demcheck::err_interval_diff_gt_one(int_low = age_low,
+                                       int_up = age_up,
+                                       is_low_up = is_low_up,
+                                       labels = labels_old)
     ## check that ages lie within limits implied by 'breaks' and 'open_last'
     is_lt_min <- age_low < breaks[[1L]]
     i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
@@ -744,8 +745,8 @@ format_age_custom <- function(x,
         }
     }
     ## check that age groups do not cross breaks
-    demcheck::err_intervals_inside_breaks(age_low = age_low,
-                                          age_up = age_up,
+    demcheck::err_intervals_inside_breaks(int_low = age_low,
+                                          int_up = age_up,
                                           breaks = breaks,
                                           labels = labels_old)
     ## make labels for breaks
@@ -889,9 +890,9 @@ format_age_quarter <- function(x,
     ## if 'break_min' is supplied, make sure no
     ## intervals less than 'break_min'
     if (!is.null(break_min)) {
-        demcheck::chk_age_label_ge_break_min(labels = labels_old,
-                                             age_low = age_low,
-                                             break_min = break_min)
+        demcheck::err_interval_label_ge_break_min(labels = labels_old,
+                                                  int_low = age_low,
+                                                  break_min = break_min)
     }
     ## if 'open_last' is FALSE, check that there
     ## are no open age groups
@@ -901,9 +902,9 @@ format_age_quarter <- function(x,
     ## if 'open_last' is FALSE, and 'break_max' is supplied,
     ## make sure that all intervals less than 'break_max'
     if (!open_last && !is.null(break_max)) {
-        demcheck::chk_age_label_le_break_max(labels = labels_old,
-                                             age_up = age_up,
-                                             break_max = break_max)
+        demcheck::err_interval_label_le_break_max(labels = labels_old,
+                                                  int_up = age_up,
+                                                  break_max = break_max)
     }
     ## make breaks
     breaks <- make_breaks_label_to_integer_month_quarter(age_low = age_low,
@@ -1062,9 +1063,9 @@ format_age_month <- function(x,
     ## if 'break_min' is supplied, make sure no
     ## intervals less than 'break_min'
     if (!is.null(break_min)) {
-        demcheck::chk_age_label_ge_break_min(labels = labels_old,
-                                             age_low = age_low,
-                                             break_min = break_min)
+        demcheck::err_interval_label_ge_break_min(labels = labels_old,
+                                                  int_low = age_low,
+                                                  break_min = break_min)
     }
     ## if 'open_last' is FALSE, check that there
     ## are no open age groups
@@ -1074,9 +1075,9 @@ format_age_month <- function(x,
     ## if 'open_last' is FALSE, and 'break_max' is supplied,
     ## make sure that all intervals less than 'break_max'
     if (!open_last && !is.null(break_max)) {
-        demcheck::chk_age_label_le_break_max(labels = labels_old,
-                                             age_up = age_up,
-                                             break_max = break_max)
+        demcheck::err_interval_label_le_break_max(labels = labels_old,
+                                                  int_up = age_up,
+                                                  break_max = break_max)
     }
     ## make breaks
     breaks <- make_breaks_label_to_integer_month_quarter(age_low = age_low,

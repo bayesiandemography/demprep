@@ -52,6 +52,10 @@ limit. If \code{open_first} is \code{FALSE}, then
 The return value is a factor. The levels of this
 factor contain all intermediate cohorts,
 including cohorts that do not appear in the data.
+
+If \code{date} contains \code{NA}, then the
+levels of the factor created by \code{date_to_cohort_month}
+also contain \code{NA}.
 }
 \examples{
 date_to_cohort_month(date = c("2024-03-27",
