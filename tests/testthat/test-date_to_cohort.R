@@ -91,14 +91,15 @@ test_that("date_to_cohort_year gives correct answers with valid inputs", {
     expect_identical(date_to_cohort_year(date = character(),
                                          break_min = "2001-04-01"),
                      factor(character(), levels = character()))
+    expect_identical(date_to_cohort_year(date = c("2000-01-01",
+                                                  "2010-01-01",
+                                                  "2004-12-31"),
+                                         open_first = TRUE),
+                     factor(c("2000", "2010", "2004"),
+                            levels = c("<2000", 2000:2010)))
 })
 
 test_that("'date_to_cohort_year' throws correct error with invalid inputs", {
-    expect_error(date_to_cohort_year(date = c("2000-01-01",
-                                              "2010-01-01",
-                                              "2004-12-31"),
-                                     open_first = TRUE),
-                 "'open_first' is TRUE but 'break_min' is NULL")
     expect_error(date_to_cohort_year(date = c("2003-03-20",
                                               "2001-02-11",
                                               "2004-12-30"),
@@ -217,16 +218,14 @@ test_that("date_to_cohort_multi gives correct answers with valid inputs", {
     expect_identical(date_to_cohort_multi(date = character(),
                                           break_min = "2001-04-01"),
                      factor())
-})
-
-test_that("'date_to_cohort_multi' throws correct error with invalid inputs", {
-    expect_error(date_to_cohort_multi(date = c("2000-03-20", "2001-02-11", "2010-12-30"),
+    expect_identical(date_to_cohort_multi(date = c("2000-03-20", "2001-02-11", "2010-12-30"),
                                       width = 5,
                                       origin = 2001,
                                       month_start = "Apr",
                                       break_min = NULL,
                                       open_first = TRUE),
-                 "'open_first' is TRUE but 'break_min' is NULL")
+                     factor(c("1996-2001", "1996-2001", "2006-2011"),
+                            levels = c("<1996", "1996-2001", "2001-2006", "2006-2011")))
 })
 
 

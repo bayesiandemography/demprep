@@ -440,7 +440,7 @@ make_breaks_date_to_integer_lifetab <- function(age,
 }
 
 ## HAS_TESTS
-make_breaks_date_to_integer_month_quarter <- function(age, break_min, break_max, open_last) {
+make_breaks_date_to_integer_month_quarter <- function(age, break_min, break_max) {
     if (is.null(break_min)) {
         break_min <- min(age, na.rm = TRUE)
         message(gettextf("'%s' set to %d",
@@ -448,9 +448,7 @@ make_breaks_date_to_integer_month_quarter <- function(age, break_min, break_max,
                 appendLF = TRUE)
     }
     if (is.null(break_max)) {
-        break_max <- max(age, na.rm = TRUE)
-        if (!open_last)
-            break_max <- break_max + 1L
+        break_max <- max(age, na.rm = TRUE) + 1L
         message(gettextf("'%s' set to %d",
                          "break_max", break_max),
                 appendLF = TRUE)
@@ -460,8 +458,7 @@ make_breaks_date_to_integer_month_quarter <- function(age, break_min, break_max,
 }
 
 ## HAS_TESTS
-make_breaks_date_to_integer_year <- function(age, width, break_min,
-                                             break_max, open_last) {
+make_breaks_date_to_integer_year <- function(age, width, break_min, break_max) {
     if (is.null(break_min)) {
         break_min <- min(age, na.rm = TRUE)
         break_min <- (break_min %/% width) * width
@@ -471,10 +468,7 @@ make_breaks_date_to_integer_year <- function(age, width, break_min,
     }
     if (is.null(break_max)) {
         break_max <- max(age, na.rm = TRUE)
-        if (open_last)
-            break_max <- (break_max %/% width) * width
-        else
-            break_max <- (break_max %/% width + 1L) * width
+        break_max <- (break_max %/% width + 1L) * width
         message(gettextf("'%s' set to %d",
                          "break_max", break_max),
                 appendLF = TRUE)
@@ -589,12 +583,26 @@ make_breaks_label_to_integer_year <- function(int_low,
                                               is_open,
                                               break_min,
                                               break_max,
+                                              open_first,
                                               open_last) {
+    if (open_first && open_last)
+        stop(gettextf("'%s' and '%s' both %s",
+                      "open_first", "open_last", "TRUE"),
+             call. = FALSE)
     ## determine 'break_min'
     if (is.null(break_min)) {
-        break_min <- min(int_low, na.rm = TRUE)
+        if (open_first && any(is_open))
+            break_min <- max(int_up[is_open])
+        else
+            break_min <- min(int_low, na.rm = TRUE)
         break_min <- break_min - origin
-        break_min <- (break_min %/% width) * width
+        if (open_first) {
+            remainder <- break_min %% width
+            if (remainder > 0L)
+                break_min <- break_min + width - remainder
+        }
+        else
+            break_min <- (break_min %/% width) * width
         break_min <- break_min + origin
         message(gettextf("'%s' set to %d",
                          "break_min", break_min),
@@ -604,7 +612,7 @@ make_breaks_label_to_integer_year <- function(int_low,
     ## equivalent, since age in that case is age in completed years,
     ## whereas here it is the upper limit of the age group.
     if (is.null(break_max)) {
-        if (any(is_open))
+        if (open_last && any(is_open))
             break_max <- min(int_low[is_open])
         else
             break_max <- max(int_up, na.rm = TRUE)

@@ -38,7 +38,7 @@ test_that("date_to_age_year gives correct answers with infinite values for 'brea
                                                "2004-12-31"),
                                       dob = "2000-01-01",
                                       break_max = NULL),
-                     factor(c(0, "10+", 4), levels = c(0:9, "10+")))
+                     factor(c(0, "10", 4), levels = c(0:10, "11+")))
     expect_identical(date_to_age_year(date = c("2000-01-01",
                                                "2010-01-01",
                                                "2004-12-31"),
@@ -90,7 +90,6 @@ test_that("date_to_age_year gives correct answers when 'date' and 'dob' both NA"
                             exclude = NULL))
 })
 
-
 test_that("date_to_age_year gives correct answers with leap years", {
     expect_identical(date_to_age_year(date = c("2001-02-27",
                                                "2001-02-28",
@@ -135,8 +134,8 @@ test_that("date_to_age_multi gives correct answers with valid inputs", {
                                        dob = "2000-01-01",
                                        width = 5,
                                        break_max = NULL),
-                     factor(c("0-4", "10+", "0-4"),
-                            levels = c("0-4", "5-9", "10+")))
+                     factor(c("0-4", "10-14", "0-4"),
+                            levels = c("0-4", "5-9", "10-14", "15+")))
     expect_identical(date_to_age_multi(date = c("2000-01-01",
                                                 "2010-01-01",
                                                 "2004-12-31"),

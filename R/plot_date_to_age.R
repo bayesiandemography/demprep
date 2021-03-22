@@ -91,10 +91,9 @@ plot_date_to_age_year <- function(date,
                                        unit = "year")
     ## make breaks
     breaks <- make_breaks_date_to_integer_year(age = age_years,
-                                       width = 1L,
-                                       break_min = break_min,
-                                       break_max = break_max,
-                                       open_last = open_last)
+                                               width = 1L,
+                                               break_min = break_min,
+                                               break_max = break_max)
     ## make labels for these breaks
     labels <- make_labels_age(breaks = breaks,
                               open_last = open_last,
@@ -213,10 +212,9 @@ plot_date_to_age_multi <- function(date,
                                        unit = "year")    
     ## make breaks
     breaks <- make_breaks_date_to_integer_year(age = age_years,
-                                       width = width,
-                                       break_min = break_min,
-                                       break_max = break_max,
-                                       open_last = open_last)
+                                               width = width,
+                                               break_min = break_min,
+                                               break_max = break_max)
     ## make labels for these breaks
     labels <- make_labels_age(breaks = breaks,
                               open_last = open_last)

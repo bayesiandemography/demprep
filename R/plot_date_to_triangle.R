@@ -136,20 +136,19 @@ plot_date_to_triangle_multi <- function(date,
     ## make time breaks
     dob_date <- sort(unique(c(dob, date)))
     breaks_time <- make_breaks_date_to_date_year(date = dob_date,
-                                         month_start = month_start,
-                                         width = width,
-                                         origin = origin,
-                                         break_min = NULL)
+                                                 month_start = month_start,
+                                                 width = width,
+                                                 origin = origin,
+                                                 break_min = NULL)
     ## make labels for time breaks
     labels_time <- make_labels_period(breaks = breaks_time,
                                       label_year_start = TRUE,
                                       include_na = FALSE)
     ## make age breaks
     breaks_age <- make_breaks_date_to_integer_year(age = age_years,
-                                           width = width,
-                                           break_min = 0L,
-                                           break_max = break_max,
-                                           open_last = open_last)
+                                                   width = width,
+                                                   break_min = 0L,
+                                                   break_max = break_max)
     ## make labels for age breaks
     labels_age <- make_labels_age(breaks = breaks_age,
                                   open_last = open_last)

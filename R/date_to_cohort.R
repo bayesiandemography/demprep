@@ -17,15 +17,17 @@
 #' to that of \code{\link{date_to_period_year}}, except that
 #' \code{date_to_cohort_year} also has arguments \code{break_min}
 #' and \code{open_first}.
-#' 
-#' Supplying a date for \code{break_min} defines
-#' the first cohort, and is similar to
-#' to supplying a value for \code{break_max} in
-#' \code{\link{date_to_age_year}}. If
-#' \code{open_first} is \code{TRUE}, then \code{break_min}
-#' forms the upper limit for the first cohort, and there is no lower
-#' limit. If \code{open_first} is \code{FALSE}, then
-#' \code{break_min} forms the lower limit for the first cohort.
+#'
+#' \code{break_min} sets the limits of the first cohort,
+#' and is similar to \code{break_max} with function
+#' \code{\link{date_to_age_year}}. If no value for \code{break_min}
+#' is supplied, then the limits of the first cohort are
+#' determined by the data.
+#'
+#' If \code{open_first} is \code{TRUE}, then the first cohort
+#' has no lower limit, which is similar to having \code{open_last}
+#' equal to \code{TRUE}  with function
+#' \code{\link{date_to_age_year}}
 #'
 #' If a value for \code{break_min} is supplied, then
 #' cohorts start on the day and month specified by \code{break_min};
@@ -55,10 +57,8 @@
 #' \code{date_to_cohort_year} by default uses
 #' the start year. To use the end year, set
 #' \code{label_year_start} to \code{FALSE}.
-#'
-#' If \code{open_first} can only be \code{TRUE},
-#' if a value for \code{break_min} is supplied,
-#' and if \code{label_year_start} is \code{TRUE}.
+#' If \code{open_first} is \code{TRUE}, then
+#' \code{label_year_start} must be \cdoe{TRUE}.
 #'
 #' The return value is a factor. The levels of this
 #' factor contain all intermediate cohorts,
@@ -169,9 +169,6 @@ date_to_cohort_year <- function(date,
     if (has_open_first) {
         demcheck::err_is_logical_flag(x = open_first,
                                       name = "open_first")
-        if (open_first && !has_break_min)
-            stop(gettextf("'%s' is %s but '%s' is %s",
-                          "open_first", "TRUE", "break_min", "NULL"))
         if (open_first && !isTRUE(label_year_start))
             stop(gettextf("'%s' is %s but '%s' is %s",
                           "open_first", "TRUE", "label_year_start", "FALSE"))
@@ -194,10 +191,10 @@ date_to_cohort_year <- function(date,
     }
     ## create sequence of breaks
     breaks <- make_breaks_date_to_date_year(date = date,
-                                    month_start = month_start,
-                                    width = 1L,
-                                    origin = NULL,
-                                    break_min = break_min)
+                                            month_start = month_start,
+                                            width = 1L,
+                                            origin = NULL,
+                                            break_min = break_min)
     ## make labels for these breaks
     include_na <- anyNA(date)
     labels <- make_labels_cohort(breaks = breaks,
@@ -238,6 +235,9 @@ date_to_cohort_year <- function(date,
 #' forms the upper limit for the first cohort, and there is no lower
 #' limit. If \code{open_first} is \code{FALSE}, then
 #' \code{break_min} forms the lower limit for the first cohort.
+#' \code{open_first} defaults to \code{TRUE}
+#' if a value for \code{break_min} is supplied,
+#' and to \code{FALSE} otherwise.
 #'
 #' If \code{break_min} is specified, then
 #' cohorts start on the day and month supplied;
@@ -253,9 +253,6 @@ date_to_cohort_year <- function(date,
 #' by using different values for \code{origin},
 #' unless a value for \code{break_min} has been
 #' supplied, in which case \code{origin} is ignored.
-#' 
-#' If \code{open_first} can only be \code{TRUE},
-#' if a value for \code{break_min} is supplied.
 #'
 #' The return value is a factor. The levels of this
 #' factor contain all intermediate cohorts,
@@ -368,9 +365,6 @@ date_to_cohort_multi <- function(date,
     if (has_open_first) {
         demcheck::err_is_logical_flag(x = open_first,
                                       name = "open_first")
-        if (open_first && !has_break_min)
-            stop(gettextf("'%s' is %s but '%s' is %s",
-                          "open_first", "TRUE", "break_min", "NULL"))
     }
     else
         open_first <- has_break_min

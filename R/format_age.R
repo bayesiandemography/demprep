@@ -169,7 +169,7 @@ format_age_multi <- function(x,
     ## regexp patterns
     p_single <- "^[0-9]+$"
     p_low_up <- "^([0-9]+)-([0-9]+)$"
-    p_open <- "[0-9]+\\+$"
+    p_open <- "^[0-9]+\\+$"
     ## check arguments
     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
                                                        name = "width",
@@ -260,6 +260,7 @@ format_age_multi <- function(x,
                                                 is_open = is_open,
                                                 break_min = break_min,
                                                 break_max = break_max,
+                                                open_first = FALSE,
                                                 open_last = open_last)
     ## make labels for these breaks
     include_na <- any(is_na)

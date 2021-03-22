@@ -42,7 +42,7 @@
 #' @export 
 format_period_year <- function(x) {
     ## regexp patterns
-    p_single <- "^[0-9]+$"
+    p_single <- "^-?[0-9]+$"
     ## deal with "empty" cases where 'x'
     ## has length 0 or is all NA
     if (length(x) == 0L) {
@@ -79,6 +79,7 @@ format_period_year <- function(x) {
                                                 is_open = FALSE,
                                                 break_min = NULL,
                                                 break_max = NULL,
+                                                open_first = FALSE,
                                                 open_last = FALSE)
     ## make labels for these breaks
     include_na <- any(is_na)
@@ -158,7 +159,7 @@ format_period_multi <- function(x,
                                 width = 5, 
                                 origin = 2000) {
     ## regexp patterns
-    p_low_up <- "^([0-9]+)-([0-9]+)$"
+    p_low_up <- "^(-?[0-9]+)-(-?[0-9]+)$"
     ## check arguments
     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
                                                        name = "width",
@@ -205,6 +206,7 @@ format_period_multi <- function(x,
                                                 is_open = FALSE,
                                                 break_min = NULL,
                                                 break_max = NULL,
+                                                open_first = FALSE,
                                                 open_last = FALSE)
     ## make labels for these breaks
     include_na <- any(is_na)
@@ -274,7 +276,7 @@ format_period_multi <- function(x,
 format_period_custom <- function(x,
                                  breaks) {
     ## regexp patterns
-    p_low_up <- "^([0-9]+)-([0-9]+)$"
+    p_low_up <- "^(-?[0-9]+)-(-?[0-9]+)$"
     ## check arguments
     breaks <- demcheck::err_tdy_breaks_integer_period(breaks = breaks)
     ## deal with "empty" case where 'breaks' has length 0
@@ -390,7 +392,7 @@ format_period_custom <- function(x,
 #' @export 
 format_period_quarter <- function(x) {
     ## regexp patterns
-    p_single <- "^[0-9]+ Q[1-4]$"
+    p_single <- "^-?[0-9]+ Q[1-4]$"
     ## deal with "empty" cases where 'x'
     ## has length 0 or is all NA
     if (length(x) == 0L) {
@@ -481,7 +483,7 @@ format_period_quarter <- function(x) {
 #' @export 
 format_period_month <- function(x) {
     ## regexp patterns
-    p_single <- paste(sprintf("^[0-9]+ %s$", month.abb), collapse = "|")
+    p_single <- paste(sprintf("^-?[0-9]+ %s$", month.abb), collapse = "|")
     ## deal with "empty" cases where 'x'
     ## has length 0 or is all NA
     if (length(x) == 0L) {

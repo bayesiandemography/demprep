@@ -32,10 +32,7 @@
 #' finds the narrowest range that accommodates the data.
 #'
 #' When \code{open_last} is \code{TRUE}, the final age group
-#' is "open", which means that it has no upper limit.
-#' (The definition of an open interval in demography is
-#' is different from the definition of an open interval
-#' in mathematics.)
+#' is "open", meaining that it has no upper limit.
 #'
 #' The return value is a factor. The levels of this
 #' factor contain all intermediate age groups,
@@ -182,10 +179,9 @@ date_to_age_year <- function(date,
                                        unit = "year")
     ## make breaks
     breaks <- make_breaks_date_to_integer_year(age = age_years,
-                                       width = 1L,
-                                       break_min = break_min,
-                                       break_max = break_max,
-                                       open_last = open_last)
+                                               width = 1L,
+                                               break_min = break_min,
+                                               break_max = break_max)
     ## make labels for these breaks
     include_na <- anyNA(date) || anyNA(dob)
     labels <- make_labels_age(breaks = breaks,
@@ -221,10 +217,7 @@ date_to_age_year <- function(date,
 #' finds the narrowest range that accommodates the data.
 #'
 #' When \code{open_last} is \code{TRUE}, the final age group
-#' is "open", which means that it has no upper limit.
-#' (The definition of an open interval in demography is
-#' is different from the definition of an open interval
-#' in mathematics.)
+#' is "open", meaning that it has no upper limit.
 #' 
 #' The return value is a factor. The levels of this
 #' factor contain all intermediate age groups,
@@ -362,8 +355,7 @@ date_to_age_multi <- function(date,
     breaks <- make_breaks_date_to_integer_year(age = age_years,
                                                width = width,
                                                break_min = break_min,
-                                               break_max = break_max,
-                                               open_last = open_last)
+                                               break_max = break_max)
     ## make labels for these breaks
     include_na <- anyNA(date) || anyNA(dob)
     labels <- make_labels_age(breaks = breaks,
@@ -908,10 +900,7 @@ date_to_age_custom <- function(date,
 #' finds the narrowest range that accommodates the data.
 #'
 #' When \code{open_last} is \code{TRUE}, the final age group
-#' is "open", which means that it has no upper limit.
-#' (The definition of an open interval in demography is
-#' is different from the definition of an open interval
-#' in mathematics.)
+#' is "open", meaning that it has no upper limit.
 #'
 #' The return value is a factor. The levels of this
 #' factor contain all intermediate age groups,
@@ -1034,8 +1023,7 @@ date_to_age_quarter <- function(date,
     ## make breaks
     breaks <- make_breaks_date_to_integer_month_quarter(age = age_quarters,
                                                         break_min = break_min,
-                                                        break_max = break_max,
-                                                        open_last = open_last)
+                                                        break_max = break_max)
     ## make labels for these breaks
     n_break <- length(breaks)
     break_min <- breaks[[1L]]
@@ -1081,10 +1069,7 @@ date_to_age_quarter <- function(date,
 #' finds the narrowest range that accommodates the data.
 #'
 #' When \code{open_last} is \code{TRUE}, the final age group
-#' is "open", which means that it has no upper limit.
-#' (The definition of an open interval in demography is
-#' is different from the definition of an open interval
-#' in mathematics.)
+#' is "open", meaning that it has no upper limit.
 #'
 #' The return value is a factor. The levels of this
 #' factor contain all intermediate age groups,
@@ -1205,9 +1190,8 @@ date_to_age_month <- function(date,
                                        unit = "month")
     ## make breaks
     breaks <- make_breaks_date_to_integer_month_quarter(age = age_months,
-                                                break_min = break_min,
-                                                break_max = break_max,
-                                                open_last = open_last)
+                                                        break_min = break_min,
+                                                        break_max = break_max)
     ## make labels for these breaks
     n_break <- length(breaks)
     break_min <- breaks[[1L]]
