@@ -58,7 +58,7 @@
 #' the start year. To use the end year, set
 #' \code{label_year_start} to \code{FALSE}.
 #' If \code{open_first} is \code{TRUE}, then
-#' \code{label_year_start} must be \cdoe{TRUE}.
+#' \code{label_year_start} must be \code{TRUE}.
 #'
 #' The return value is a factor. The levels of this
 #' factor contain all intermediate cohorts,
@@ -202,10 +202,8 @@ date_to_cohort_year <- function(date,
                                  label_year_start = label_year_start,
                                  include_na = include_na)
     ## assign labels to dates
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
+    i <- findInterval(x = date,
+                      vec = breaks)
     if (open_first)
         i <- i + 1L
     ans <- labels[i]
@@ -395,10 +393,8 @@ date_to_cohort_multi <- function(date,
                                  label_year_start = NULL,
                                  include_na = include_na)
     ## assign labels to dates
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
+    i <- findInterval(x = date,
+                      vec = breaks)
     if (open_first)
         i <- i + 1L
     ans <- labels[i]
@@ -546,10 +542,8 @@ date_to_cohort_custom <- function(date,
                                  label_year_start = NULL,
                                  include_na = include_na)
     ## assign labels to dates
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
+    i <- findInterval(x = date,
+                      vec = breaks)
     if (open_first)
         i <- i + 1L
     ans <- labels[i]
@@ -688,10 +682,8 @@ date_to_cohort_quarter <- function(date,
                                          open_first = open_first,
                                          include_na = include_na)
     ## assign labels to dates
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
+    i <- findInterval(x = date,
+                      vec = breaks)
     if (open_first)
         i <- i + 1L
     ans <- labels[i]
@@ -819,10 +811,8 @@ date_to_cohort_month <- function(date,
                                        open_first = open_first,
                                        include_na = include_na)
     ## assign labels to dates
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
+    i <- findInterval(x = date,
+                      vec = breaks)
     if (open_first)
         i <- i + 1L
     ans <- labels[i]

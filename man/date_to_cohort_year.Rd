@@ -55,14 +55,16 @@ to that of \code{\link{date_to_period_year}}, except that
 \code{date_to_cohort_year} also has arguments \code{break_min}
 and \code{open_first}.
 
-Supplying a date for \code{break_min} defines
-the first cohort, and is similar to
-to supplying a value for \code{break_max} in
-\code{\link{date_to_age_year}}. If
-\code{open_first} is \code{TRUE}, then \code{break_min}
-forms the upper limit for the first cohort, and there is no lower
-limit. If \code{open_first} is \code{FALSE}, then
-\code{break_min} forms the lower limit for the first cohort.
+\code{break_min} sets the limits of the first cohort,
+and is similar to \code{break_max} with function
+\code{\link{date_to_age_year}}. If no value for \code{break_min}
+is supplied, then the limits of the first cohort are
+determined by the data.
+
+If \code{open_first} is \code{TRUE}, then the first cohort
+has no lower limit, which is similar to having \code{open_last}
+equal to \code{TRUE}  with function
+\code{\link{date_to_age_year}}
 
 If a value for \code{break_min} is supplied, then
 cohorts start on the day and month specified by \code{break_min};
@@ -92,10 +94,8 @@ others label it \code{"2001"}. Function
 \code{date_to_cohort_year} by default uses
 the start year. To use the end year, set
 \code{label_year_start} to \code{FALSE}.
-
-If \code{open_first} can only be \code{TRUE},
-if a value for \code{break_min} is supplied,
-and if \code{label_year_start} is \code{TRUE}.
+If \code{open_first} is \code{TRUE}, then
+\code{label_year_start} must be \code{TRUE}.
 
 The return value is a factor. The levels of this
 factor contain all intermediate cohorts,

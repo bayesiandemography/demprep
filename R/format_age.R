@@ -217,7 +217,7 @@ format_age_multi <- function(x,
     is_valid <- is_na | is_single | is_low_up | is_open
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
-        stop(gettextf("\"%s\" is not a valid label for an age group",
+        stop(gettextf("\"%s\" is not a valid label",
                       labels_old[[i_invalid]]),
              call. = FALSE)
     ## extract lower and upper ages
@@ -244,6 +244,14 @@ format_age_multi <- function(x,
     if (!open_last) {
         demcheck::err_no_open_age(labels_old)
     }
+    ## if 'open_last' is TRUE and 'break_max' is supplied, check that
+    ## all open intervals start at or above 'break_max'
+    if (open_last && !is.null(break_max)) {
+        demcheck::err_open_right_ge_break_max(labels = labels_old,
+                                              int_low = age_low,
+                                              is_open = is_open,
+                                              break_max = break_max)
+    }                                              
     ## if 'open_last' is FALSE, and 'break_max' is supplied,
     ## make sure that all intervals less than 'break_max'
     if (!open_last && !is.null(break_max)) {
@@ -365,7 +373,7 @@ format_age_lifetab <- function(x, break_max = 100) {
     is_valid <- is_na | is_single | is_low_up | is_open
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
-        stop(gettextf("\"%s\" is not a valid label for an age group",
+        stop(gettextf("\"%s\" is not a valid label",
                       labels_old[[i_invalid]]),
              call. = FALSE)
     ## extract lower and upper ages
@@ -380,6 +388,14 @@ format_age_lifetab <- function(x, break_max = 100) {
                                        int_up = age_up,
                                        is_low_up = is_low_up,
                                        labels = labels_old)
+    ## if 'break_max' is supplied, check that
+    ## all open intervals start at or above 'break_max'
+    if (!is.null(break_max)) {
+        demcheck::err_open_right_ge_break_max(labels = labels_old,
+                                              int_low = age_low,
+                                              is_open = is_open,
+                                              break_max = break_max)
+    }                                              
     ## make breaks
     breaks <- make_breaks_label_to_integer_lifetab(age_low = age_low,
                                                    age_up = age_up,
@@ -552,7 +568,7 @@ format_age_births <- function(x,
     is_valid <- is_na | is_single | is_low_up
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
-        stop(gettextf("\"%s\" is not a valid label for an age group",
+        stop(gettextf("\"%s\" is not a valid label",
                       labels_old[[i_invalid]]),
              call. = FALSE)
     ## extract lower and upper ages
@@ -709,7 +725,7 @@ format_age_custom <- function(x,
     is_valid <- is_na | is_single | is_low_up | is_open
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
-        stop(gettextf("\"%s\" is not a valid label for an age group",
+        stop(gettextf("\"%s\" is not a valid label",
                       labels_old[[i_invalid]]),
              call. = FALSE)
     ## extract lower and upper ages
@@ -879,7 +895,7 @@ format_age_quarter <- function(x,
     is_valid <- is_na | is_single | is_open
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
-        stop(gettextf("\"%s\" is not a valid label for an age group",
+        stop(gettextf("\"%s\" is not a valid label",
                       labels_old[[i_invalid]]),
              call. = FALSE)
     ## extract lower and upper ages
@@ -895,6 +911,14 @@ format_age_quarter <- function(x,
                                                   int_low = age_low,
                                                   break_min = break_min)
     }
+    ## if 'open_last' is TRUE and 'break_max' is supplied, check that
+    ## all open intervals start at or above 'break_max'
+    if (open_last && !is.null(break_max)) {
+        demcheck::err_open_right_ge_break_max(labels = labels_old,
+                                              int_low = age_low,
+                                              is_open = is_open,
+                                              break_max = break_max)
+    }                                              
     ## if 'open_last' is FALSE, check that there
     ## are no open age groups
     if (!open_last) {
@@ -1052,7 +1076,7 @@ format_age_month <- function(x,
     is_valid <- is_na | is_single | is_open
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
-        stop(gettextf("\"%s\" is not a valid label for an age group",
+        stop(gettextf("\"%s\" is not a valid label",
                       labels_old[[i_invalid]]),
              call. = FALSE)
     ## extract lower and upper ages
@@ -1068,6 +1092,14 @@ format_age_month <- function(x,
                                                   int_low = age_low,
                                                   break_min = break_min)
     }
+    ## if 'open_last' is TRUE and 'break_max' is supplied, check that
+    ## all open intervals start at or above 'break_max'
+    if (open_last && !is.null(break_max)) {
+        demcheck::err_open_right_ge_break_max(labels = labels_old,
+                                              int_low = age_low,
+                                              is_open = is_open,
+                                              break_max = break_max)
+    }                                              
     ## if 'open_last' is FALSE, check that there
     ## are no open age groups
     if (!open_last) {

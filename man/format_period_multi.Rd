@@ -31,21 +31,23 @@ with levels \code{"1990-1995"}, \code{"1995-2000"},
 \code{"2000-2005"},and \code{"2005-2010"}.
 }
 \details{
-The elements of \code{x} must be labels with
-the same format as \code{"2001-2011"} or \code{"2055-2070"},
-ie a start year and an end year, separated by a dash.
+The elements of \code{x} are typically multi-year
+intervals such as \code{"1950-1960"},
+\code{"2020-2025"}. However, \code{x} can
+also contain single-year labels, such as
+\code{"2018"} or \code{"1974"}.
 
 If \code{x} contains \code{NA}, then the
 levels of the factor created by \code{format_period_year}
 also contain \code{NA}.
 }
 \examples{
-format_period_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"))
+format_period_multi(x = c("2000-2001", "2005-2010", NA, "1999"))
 
-format_period_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
+format_period_multi(x = c("2000-2001", "2005-2010", NA, "1999"),
                     width = 10)
 
-format_period_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
+format_period_multi(x = c("2000-2001", "2005-2010", NA, "1999"),
                     width = 10,
                     origin = 2001)
 }

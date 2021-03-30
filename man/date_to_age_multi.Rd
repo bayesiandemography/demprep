@@ -59,10 +59,7 @@ rather than to a specific value, then \code{date_to_age_year}
 finds the narrowest range that accommodates the data.
 
 When \code{open_last} is \code{TRUE}, the final age group
-is "open", which means that it has no upper limit.
-(The definition of an open interval in demography is
-is different from the definition of an open interval
-in mathematics.)
+is "open", meaning that it has no upper limit.
 
 The return value is a factor. The levels of this
 factor contain all intermediate age groups,

@@ -657,8 +657,7 @@ plot_date_to_age_quarter <- function(date,
     ## make breaks
     breaks <- make_breaks_date_to_integer_month_quarter(age = age_quarters,
                                                 break_min = break_min,
-                                                break_max = break_max,
-                                                open_last = open_last)
+                                                break_max = break_max)
     ## make labels for these breaks
     n_break <- length(breaks)
     break_min <- breaks[[1L]]
@@ -765,9 +764,8 @@ plot_date_to_age_month <- function(date,
                                        unit = "month")
     ## make breaks
     breaks <- make_breaks_date_to_integer_month_quarter(age = age_months,
-                                                break_min = break_min,
-                                                break_max = break_max,
-                                                open_last = open_last)
+                                                        break_min = break_min,
+                                                        break_max = break_max)
     ## make labels for these breaks
     n_break <- length(breaks)
     break_min <- breaks[[1L]]

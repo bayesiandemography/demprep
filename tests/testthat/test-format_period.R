@@ -18,7 +18,7 @@ test_that("format_period_year works with valid input", {
 
 test_that("format_period_year gives correct error with invalid inputs", {
     expect_error(format_period_year(x = c("2000", "2010", NA, "wrong")),
-                 "\"wrong\" is not a valid label for a single-year period")
+                 "\"wrong\" is not a valid label")
 })
 
 
@@ -45,7 +45,7 @@ test_that("format_period_multi works with valid input", {
 
 test_that("format_period_multi gives correct error with invalid inputs", {
     expect_error(format_period_multi(x = c("2000-2001", "2010-2005", NA, "wrong")),
-                 "\"wrong\" is not a valid label for a multi-year period")
+                 "\"wrong\" is not a valid label")
 })
 
 
@@ -66,7 +66,7 @@ test_that("format_period_multi gives correct error with invalid inputs", {
                  "'breaks' has length 0")
     expect_error(format_period_custom(x = c("2000-2001", "2010-2005", NA, "wrong"),
                                       breaks = c(2000, 2020)),
-                 "\"wrong\" is not a valid label for a custom period")
+                 "\"wrong\" is not a valid label")
 })
 
 
@@ -91,9 +91,9 @@ test_that("format_period_quarter works with valid input", {
 
 test_that("format_period_quarter gives correct error with invalid inputs", {
     expect_error(format_period_quarter(x = c("2000 Q4", "2010 Q3", NA, "wrong")),
-                 "\"wrong\" is not a valid label for a quarter period")
+                 "\"wrong\" is not a valid label")
     expect_error(format_period_quarter(x = c("2000 Q5", "2010 Q3", NA)),
-                 "\"2000 Q5\" is not a valid label for a quarter period")
+                 "\"2000 Q5\" is not a valid label")
 })
 
 
@@ -116,7 +116,7 @@ test_that("format_period_month works with valid input", {
 
 test_that("format_period_month gives correct error with invalid inputs", {
     expect_error(format_period_month(x = c("2000 Jan", "2010 Feb", NA, "wrong")),
-                 "\"wrong\" is not a valid label for a month period")
+                 "\"wrong\" is not a valid label")
     expect_error(format_period_month(x = c("2000 JAN", "2010 Q3", NA)),
-                 "\"2000 JAN\" is not a valid label for a month period")
+                 "\"2000 JAN\" is not a valid label")
 })

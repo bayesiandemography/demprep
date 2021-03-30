@@ -64,6 +64,9 @@ to supplying a value for \code{break_max} in
 forms the upper limit for the first cohort, and there is no lower
 limit. If \code{open_first} is \code{FALSE}, then
 \code{break_min} forms the lower limit for the first cohort.
+\code{open_first} defaults to \code{TRUE}
+if a value for \code{break_min} is supplied,
+and to \code{FALSE} otherwise.
 
 If \code{break_min} is specified, then
 cohorts start on the day and month supplied;
@@ -79,9 +82,6 @@ The location of the periods can be shifted
 by using different values for \code{origin},
 unless a value for \code{break_min} has been
 supplied, in which case \code{origin} is ignored.
-
-If \code{open_first} can only be \code{TRUE},
-if a value for \code{break_min} is supplied.
 
 The return value is a factor. The levels of this
 factor contain all intermediate cohorts,

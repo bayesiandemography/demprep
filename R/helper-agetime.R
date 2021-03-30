@@ -137,20 +137,24 @@ as_ymd <- function(date) {
 }
 
 ## HAS_TESTS
+## returns the date equivalent of -Inf if
+## an interval is open on the left
 date_start_month <- function(labels) {
-    p_single <- "^([0-9]+) ([A-z]{3})\\+?$"
-    year <- sub(p_single, "\\1", labels)
-    month <- sub(p_single, "\\2", labels)
-    year <- as.integer(year)
-    month <- match(month, month.abb)
-    date <- paste(year, month, 1, sep = "-")
-    date[is.na(labels)] <- NA
-    as.Date(date)
+    is_na <- is.na(labels)
+    ans <- rep(as.Date(NA), times = length(labels))
+    labels_obs <- labels[!is_na]
+    labels_obs <- sub("^<|\\+$", "", labels_obs)
+    date_obs <- paste(labels_obs, "1")
+    date_obs <- as.Date(date_obs, format = "%Y %b %d")
+    ans[!is_na] <- date_obs
+    ans
 }
 
 ## HAS_TESTS
+## If interval is open on the left, return the
+## upper of limit of the interval
 date_start_quarter <- function(labels) {
-    ans <- sub("\\+$", "", labels)
+    ans <- sub("^<|\\+$", "", labels)
     ans <- sub(" Q1$", "-01-01", ans)
     ans <- sub(" Q2$", "-04-01", ans)
     ans <- sub(" Q3$", "-07-01", ans)
@@ -478,6 +482,35 @@ make_breaks_date_to_integer_year <- function(age, width, break_min, break_max) {
             by = width)
 }
 
+
+## HAS_TESTS
+## In places where 'is_open' is TRUE, the intervals
+## are open on the left. 'unit' must be "month"
+## or "quarter"
+make_breaks_label_to_date_month_quarter <- function(date_low,
+                                                    date_up,
+                                                    break_min,
+                                                    is_open,
+                                                    unit) {
+    ## determine 'break_min'
+    if (is.null(break_min)) {
+        if (any(is_open))
+            break_min <- max(date_up[is_open])
+        else
+            break_min <- min(date_low, na.rm = TRUE)
+        message(gettextf("'%s' set to \"%s\"",
+                         "break_min", break_min),
+                appendLF = TRUE)
+    }
+    ## Determine 'break_max'. 
+    break_max <- max(date_up, na.rm = TRUE)
+    ## make breaks
+    breaks <- seq.Date(from = break_min,
+                       to = break_max,
+                       by = unit)
+    ## return value
+    breaks
+}
 
 ## HAS_TESTS
 make_breaks_label_to_integer_births <- function(age_low,

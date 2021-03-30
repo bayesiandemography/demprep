@@ -394,7 +394,7 @@ plot_date_to_triangle_quarter <- function(date,
     ## make time breaks
     dob_date <- sort(unique(c(dob, date)))
     breaks_time <- make_breaks_date_to_date_quarter(date = dob_date,
-                                            break_min = NULL)
+                                                    break_min = NULL)
     break_min_time <- breaks_time[[1L]]
     break_max_time <- breaks_time[[length(breaks_time)]]
     ## make labels for time breaks
@@ -403,9 +403,8 @@ plot_date_to_triangle_quarter <- function(date,
                                               include_na = FALSE)
     ## make age breaks
     breaks_age <- make_breaks_date_to_integer_month_quarter(age = age_quarters,
-                                                    break_min = 0L,
-                                                    break_max = break_max,
-                                                    open_last = open_last)
+                                                            break_min = 0L,
+                                                            break_max = break_max)
     break_min_age <- breaks_age[[1L]]
     break_max_age <- breaks_age[[length(breaks_age)]]
     ## make labels for age breaks
@@ -479,7 +478,7 @@ plot_date_to_triangle_month <- function(date,
     ## make time breaks
     dob_date <- sort(unique(c(dob, date)))
     breaks_time <- make_breaks_date_to_date_month(date = dob_date,
-                                          break_min = NULL)
+                                                  break_min = NULL)
     break_min_time <- breaks_time[[1L]]
     break_max_time <- breaks_time[[length(breaks_time)]]
     ## make labels for time breaks
@@ -488,9 +487,8 @@ plot_date_to_triangle_month <- function(date,
                                             include_na = FALSE)
     ## make age breaks
     breaks_age <- make_breaks_date_to_integer_month_quarter(age = age_months,
-                                                    break_min = 0L,
-                                                    break_max = break_max,
-                                                    open_last = open_last)
+                                                            break_min = 0L,
+                                                            break_max = break_max)
     break_min_age <- breaks_age[[1L]]
     break_max_age <- breaks_age[[length(breaks_age)]]
     ## make labels for age breaks

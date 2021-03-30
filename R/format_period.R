@@ -63,7 +63,7 @@ format_period_year <- function(x) {
     is_valid <- is_na | is_single
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
-        stop(gettextf("\"%s\" is not a valid label for a single-year period",
+        stop(gettextf("\"%s\" is not a valid label",
                       labels_old[[i_invalid]]),
              call. = FALSE)
     ## extract lower and upper ages
@@ -116,9 +116,11 @@ format_period_year <- function(x) {
 #' with levels \code{"1990-1995"}, \code{"1995-2000"},
 #' \code{"2000-2005"},and \code{"2005-2010"}.
 #'
-#' The elements of \code{x} must be labels with
-#' the same format as \code{"2001-2011"} or \code{"2055-2070"},
-#' ie a start year and an end year, separated by a dash.
+#' The elements of \code{x} are typically multi-year
+#' intervals such as \code{"1950-1960"},
+#' \code{"2020-2025"}. However, \code{x} can
+#' also contain single-year labels, such as
+#' \code{"2018"} or \code{"1974"}.
 #'
 #' If \code{x} contains \code{NA}, then the
 #' levels of the factor created by \code{format_period_year}
@@ -146,12 +148,12 @@ format_period_year <- function(x) {
 #' for constructing labels for periods.
 #'
 #' @examples
-#' format_period_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"))
+#' format_period_multi(x = c("2000-2001", "2005-2010", NA, "1999"))
 #'
-#' format_period_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
+#' format_period_multi(x = c("2000-2001", "2005-2010", NA, "1999"),
 #'                     width = 10)
 #'
-#' format_period_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
+#' format_period_multi(x = c("2000-2001", "2005-2010", NA, "1999"),
 #'                     width = 10,
 #'                     origin = 2001)
 #' @export 
@@ -159,6 +161,7 @@ format_period_multi <- function(x,
                                 width = 5, 
                                 origin = 2000) {
     ## regexp patterns
+    p_single <- "^-?[0-9]+$"
     p_low_up <- "^(-?[0-9]+)-(-?[0-9]+)$"
     ## check arguments
     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
@@ -182,16 +185,19 @@ format_period_multi <- function(x,
     labels_old <- unique(x)
     ## classify labels_old, raising error for any invalid ones
     is_na <- is.na(labels_old)
+    is_single <- grepl(p_single, labels_old)
     is_low_up <- grepl(p_low_up, labels_old)
-    is_valid <- is_na | is_low_up
+    is_valid <- is_na | is_single | is_low_up
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
-        stop(gettextf("\"%s\" is not a valid label for a multi-year period",
+        stop(gettextf("\"%s\" is not a valid label",
                       labels_old[[i_invalid]]),
              call. = FALSE)
     ## extract lower and upper ages
     year_low <- rep(NA_integer_, times = length(labels_old))
     year_up <- year_low
+    year_low[is_single] <- as.integer(labels_old[is_single])
+    year_up[is_single] <- year_low[is_single] + 1L
     year_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
     year_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up]))
     demcheck::err_interval_diff_ge_one(int_low = year_low,
@@ -210,10 +216,17 @@ format_period_multi <- function(x,
                                                 open_last = FALSE)
     ## make labels for these breaks
     include_na <- any(is_na)
-    labels_new <- make_labels_grouped_int_endpoints(breaks = breaks,
-                                                    open_first = FALSE,
-                                                    open_last = FALSE,
-                                                    include_na = include_na)
+    all_single <- (length(breaks) > 1L) && all(diff(breaks) == 1L)
+    if (all_single)
+        labels_new <- make_labels_grouped_int_enumerations(breaks = breaks,
+                                                           open_first = FALSE,
+                                                           open_last = FALSE,
+                                                           include_na = include_na)
+    else
+        labels_new <- make_labels_grouped_int_endpoints(breaks = breaks,
+                                                        open_first = FALSE,
+                                                        open_last = FALSE,
+                                                        include_na = include_na)
     ## assign new labels to x
     i_label_old <- match(x, labels_old)
     i_intervals_new <- findInterval(x = year_low,
@@ -240,9 +253,11 @@ format_period_multi <- function(x,
 #' in that the periods can have any combination of widths,
 #' though the widths must be defined in whole numbers of years.
 #'
-#' The elements of \code{x} must all be labels with a
-#' start year and an end year, separated by a dash,
-#' eg \code{"2001-2011"} or \code{"2055-2070"}.
+#' The elements of \code{x} are typically multi-year
+#' intervals such as \code{"1950-1960"},
+#' \code{"2020-2025"}. However, \code{x} can
+#' also contain single-year labels, such as
+#' \code{"2018"} or \code{"1974"}.
 #'
 #' If \code{x} contains \code{NA}, then the
 #' levels of the factor created by \code{format_period_year}
@@ -267,15 +282,16 @@ format_period_multi <- function(x,
 #' \code{\link{make_labels_period}} describes the rules
 #' for constructing labels for periods.
 #' @examples
-#' format_period_custom(x = c("2000-2001", "2005-2010", "1995-1999"),
+#' format_period_custom(x = c("2000-2001", "2005-2010", "1999"),
 #'                      breaks = c(1990, 2000, 2020))
 #'
-#' format_period_custom(x = c("2000-2001", "2005-2010", "1995-1999"),
+#' format_period_custom(x = c("2000-2001", "2005-2010", "1999"),
 #'                      breaks = c(1995, 2005, 2010, 2020))
 #' @export 
 format_period_custom <- function(x,
                                  breaks) {
     ## regexp patterns
+    p_single <- "^-?[0-9]+$"
     p_low_up <- "^(-?[0-9]+)-(-?[0-9]+)$"
     ## check arguments
     breaks <- demcheck::err_tdy_breaks_integer_period(breaks = breaks)
@@ -297,19 +313,22 @@ format_period_custom <- function(x,
     labels_old <- unique(x)
     ## classify labels_old, raising error for any invalid ones
     is_na <- is.na(labels_old)
+    is_single <- grepl(p_single, labels_old)
     is_low_up <- grepl(p_low_up, labels_old)
-    is_valid <- is_na | is_low_up
+    is_valid <- is_na | is_single | is_low_up
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
-        stop(gettextf("\"%s\" is not a valid label for a custom period",
+        stop(gettextf("\"%s\" is not a valid label",
                       labels_old[[i_invalid]]),
              call. = FALSE)
     ## extract lower and upper ages
     year_low <- rep(NA_integer_, times = length(labels_old))
     year_up <- year_low
+    year_low[is_single] <- as.integer(labels_old[is_single])
+    year_up[is_single] <- year_low[is_single] + 1L
     year_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
     year_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up])) + 1L
-    demcheck::err_interval_diff_gt_one(int_low = year_low,
+    demcheck::err_interval_diff_ge_one(int_low = year_low,
                                        int_up = year_up,
                                        is_low_up = is_low_up,
                                        labels = labels_old)
@@ -324,10 +343,17 @@ format_period_custom <- function(x,
                                               break_max = break_max)
     ## make labels for these breaks
     include_na <- any(is_na)
-    labels_new <- make_labels_grouped_int_endpoints(breaks = breaks,
-                                                    open_first = FALSE,
-                                                    open_last = FALSE,
-                                                    include_na = include_na)
+    all_single <- (length(breaks) > 1L) && all(diff(breaks) == 1L)
+    if (all_single)
+        labels_new <- make_labels_grouped_int_enumerations(breaks = breaks,
+                                                           open_first = FALSE,
+                                                           open_last = FALSE,
+                                                           include_na = include_na)
+    else
+        labels_new <- make_labels_grouped_int_endpoints(breaks = breaks,
+                                                        open_first = FALSE,
+                                                        open_last = FALSE,
+                                                        include_na = include_na)
     ## assign new labels to x
     i_label_old <- match(x, labels_old)
     year <- year_low[i_label_old]
@@ -392,7 +418,7 @@ format_period_custom <- function(x,
 #' @export 
 format_period_quarter <- function(x) {
     ## regexp patterns
-    p_single <- "^-?[0-9]+ Q[1-4]$"
+    p_single <- "^[0-9]+ Q[1-4]$"
     ## deal with "empty" cases where 'x'
     ## has length 0 or is all NA
     if (length(x) == 0L) {
@@ -413,7 +439,7 @@ format_period_quarter <- function(x) {
     is_valid <- is_na | is_single
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
-        stop(gettextf("\"%s\" is not a valid label for a quarter period",
+        stop(gettextf("\"%s\" is not a valid label",
                       labels_old[[i_invalid]]),
              call. = FALSE)
     ## convert labels to dates
@@ -483,7 +509,7 @@ format_period_quarter <- function(x) {
 #' @export 
 format_period_month <- function(x) {
     ## regexp patterns
-    p_single <- paste(sprintf("^-?[0-9]+ %s$", month.abb), collapse = "|")
+    p_single <- paste(sprintf("^[0-9]+ %s$", month.abb), collapse = "|")
     ## deal with "empty" cases where 'x'
     ## has length 0 or is all NA
     if (length(x) == 0L) {
@@ -504,7 +530,7 @@ format_period_month <- function(x) {
     is_valid <- is_na | is_single
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
-        stop(gettextf("\"%s\" is not a valid label for a month period",
+        stop(gettextf("\"%s\" is not a valid label",
                       labels_old[[i_invalid]]),
              call. = FALSE)
     ## convert labels to dates

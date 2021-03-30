@@ -255,7 +255,8 @@ test_that("'date_start_month' gives correct answer with valid inputs", {
                                         "2000 Nov",
                                         "2000 Dec",
                                         NA,
-                                        "2000 Jan+")),
+                                        "2000 Jan+",
+                                        "<2000 Jan")),
                      as.Date(c("2000-01-01",
                                "2000-02-01",
                                "2000-03-01",
@@ -269,6 +270,7 @@ test_that("'date_start_month' gives correct answer with valid inputs", {
                                "2000-11-01",
                                "2000-12-01",
                                NA,
+                               "2000-01-01",
                                "2000-01-01")))
 })
 
@@ -285,7 +287,8 @@ test_that("'date_start_quarter' gives correct answer with valid inputs", {
                                           "2000 Q1+",
                                           "2000 Q2+",
                                           "2000 Q3+",
-                                          "2000 Q4+")),
+                                          "2000 Q4+",
+                                          "<2000 Q1")),
                      as.Date(c("2000-01-01",
                                "2000-04-01",
                                "2000-07-01",
@@ -294,7 +297,8 @@ test_that("'date_start_quarter' gives correct answer with valid inputs", {
                                "2000-01-01",
                                "2000-04-01",
                                "2000-07-01",
-                               "2000-10-01")))
+                               "2000-10-01",
+                               "2000-01-01")))
 })
 
 
@@ -793,6 +797,112 @@ test_that("'make_breaks_date_to_integer_year' gives correct answer when break_ma
                                                       break_max = NULL),
                      seq.int(from = 0L, by = 5L, to = 85L))
 })
+
+
+## make_breaks_labels_to_date_month_quarter -----------------------------------------
+
+test_that("'make_breaks_label_to_date_month_quarter' gives correct answer with 'break_min' equal to NULL", {
+    make_breaks_label_to_date_month_quarter <- demprep:::make_breaks_label_to_date_month_quarter
+    expect_identical(make_breaks_label_to_date_month_quarter(date_low = as.Date(c("2000-01-01",
+                                                                                  "2002-10-01",
+                                                                                  "2001-04-01")),
+                                                             date_up = as.Date(c("2000-04-01",
+                                                                                 "2003-01-01",
+                                                                                 "2001-07-01")),
+                                                             break_min = NULL,
+                                                             is_open = c(FALSE,
+                                                                         FALSE,
+                                                                         FALSE),
+                                                             unit = "quarter"),
+                     seq.Date(from = as.Date("2000-01-01"),
+                              to = as.Date("2003-01-01"),
+                              by = "quarter"))
+    expect_identical(make_breaks_label_to_date_month_quarter(date_low = as.Date(c("2000-01-01",
+                                                                                  "2002-10-01",
+                                                                                  "2001-04-01")),
+                                                             date_up = as.Date(c("2000-02-01",
+                                                                                 "2002-11-01",
+                                                                                 "2001-05-01")),
+                                                             break_min = NULL,
+                                                             is_open = c(FALSE,
+                                                                         FALSE,
+                                                                         FALSE),
+                                                             unit = "month"),
+                     seq.Date(from = as.Date("2000-01-01"),
+                              to = as.Date("2002-11-01"),
+                              by = "month"))
+    expect_identical(make_breaks_label_to_date_month_quarter(date_low = as.Date(c("2000-01-01",
+                                                                                  NA,
+                                                                                  "2001-04-01")),
+                                                             date_up = as.Date(c("2000-04-01",
+                                                                                 "2003-01-01",
+                                                                                 "2001-07-01")),
+                                                             break_min = NULL,
+                                                             is_open = c(FALSE,
+                                                                         TRUE,
+                                                                         FALSE),
+                                                             unit = "quarter"),
+                     as.Date("2003-01-01"))
+    expect_identical(make_breaks_label_to_date_month_quarter(date_low = as.Date(c("2000-01-01",
+                                                                                  "2002-10-01",
+                                                                                  NA)),
+                                                             date_up = as.Date(c("2000-04-01",
+                                                                                 "2003-01-01",
+                                                                                 "2001-07-01")),
+                                                             break_min = NULL,
+                                                             is_open = c(FALSE,
+                                                                         FALSE,
+                                                                         TRUE),
+                                                             unit = "quarter"),
+                     seq.Date(from = as.Date("2001-07-01"),
+                              to = as.Date("2003-01-01"),
+                              by = "quarter"))
+})
+
+test_that("'make_breaks_label_to_date_month_quarter' gives correct answer with 'break_min' non-NULL", {
+    make_breaks_label_to_date_month_quarter <- demprep:::make_breaks_label_to_date_month_quarter
+    expect_identical(make_breaks_label_to_date_month_quarter(date_low = as.Date(c("2000-01-01",
+                                                                                  "2002-10-01",
+                                                                                  "2001-04-01")),
+                                                             date_up = as.Date(c("2000-04-01",
+                                                                                 "2003-01-01",
+                                                                                 "2001-07-01")),
+                                                             break_min = as.Date("1999-10-01"),
+                                                             is_open = c(FALSE,
+                                                                         FALSE,
+                                                                         FALSE),
+                                                             unit = "quarter"),
+                     seq.Date(from = as.Date("1999-10-01"),
+                              to = as.Date("2003-01-01"),
+                              by = "quarter"))
+    expect_identical(make_breaks_label_to_date_month_quarter(date_low = as.Date(c("2000-01-01",
+                                                                                  NA,
+                                                                                  "2001-04-01")),
+                                                             date_up = as.Date(c("2000-04-01",
+                                                                                 "2003-01-01",
+                                                                                 "2001-07-01")),
+                                                             break_min = as.Date("2003-01-01"),
+                                                             is_open = c(FALSE,
+                                                                         TRUE,
+                                                                         FALSE),
+                                                             unit = "quarter"),
+                     as.Date("2003-01-01"))
+    expect_identical(make_breaks_label_to_date_month_quarter(date_low = as.Date(c("2000-01-01",
+                                                                                  "2002-10-01",
+                                                                                  NA)),
+                                                             date_up = as.Date(c("2000-04-01",
+                                                                                 "2003-01-01",
+                                                                                 "2001-07-01")),
+                                                             break_min = NULL,
+                                                             is_open = c(FALSE,
+                                                                         FALSE,
+                                                                         TRUE),
+                                                             unit = "quarter"),
+                     seq.Date(from = as.Date("2001-07-01"),
+                              to = as.Date("2003-01-01"),
+                              by = "quarter"))
+})
+
 
 
 ## make_breaks_labels_to_integer_births --------------------------------------

@@ -54,6 +54,12 @@ test_that("format_age_year gives correct answers when 'x' has length 0", {
                      factor(character(), levels = c(0:99, "100+")))
 })
 
+test_that("format_age_year gives expected errors when given invalid inputs", {
+    expect_error(format_age_year(x = c("0", "10", "5+"),
+                                 break_max = 10),
+                 "lower limit of open interval \"5\\+\" is less than 'break_max' \\[10\\]")
+})
+
 
 ## format_age_multi --------------------------------------------------
 

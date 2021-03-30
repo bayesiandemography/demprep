@@ -27,19 +27,21 @@ in that the periods can have any combination of widths,
 though the widths must be defined in whole numbers of years.
 }
 \details{
-The elements of \code{x} must all be labels with a
-start year and an end year, separated by a dash,
-eg \code{"2001-2011"} or \code{"2055-2070"}.
+The elements of \code{x} are typically multi-year
+intervals such as \code{"1950-1960"},
+\code{"2020-2025"}. However, \code{x} can
+also contain single-year labels, such as
+\code{"2018"} or \code{"1974"}.
 
 If \code{x} contains \code{NA}, then the
 levels of the factor created by \code{format_period_year}
 also contain \code{NA}.
 }
 \examples{
-format_period_custom(x = c("2000-2001", "2005-2010", "1995-1999"),
+format_period_custom(x = c("2000-2001", "2005-2010", "1999"),
                      breaks = c(1990, 2000, 2020))
 
-format_period_custom(x = c("2000-2001", "2005-2010", "1995-1999"),
+format_period_custom(x = c("2000-2001", "2005-2010", "1999"),
                      breaks = c(1995, 2005, 2010, 2020))
 }
 \seealso{
