@@ -12,6 +12,7 @@ test_that("'is_valid_age' codes valid age groups as TRUE", {
     expect_true(is_valid_age("5+"))
     expect_true(is_valid_age("5q+"))
     expect_true(is_valid_age("5m+"))
+    expect_true(is_valid_age(NA))
 })
 
 test_that("'is_valid_age' codes invalid age groups as TRUE", {
@@ -21,7 +22,6 @@ test_that("'is_valid_age' codes invalid age groups as TRUE", {
     expect_false(is_valid_age("wrong"))
     expect_false(is_valid_age("0qm"))
     expect_false(is_valid_age("0-4m"))
-    expect_false(is_valid_age(NA))
 })
 
 test_that("'is_valid_age' works with vectors with length > 1", {

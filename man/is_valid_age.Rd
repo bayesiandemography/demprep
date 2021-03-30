@@ -18,28 +18,22 @@ valid labels for age groups. Each element is assessed
 independently, so the labels are not necessarily
 consistent with each other.
 }
+\details{
+\code{NA}s are treated as valid age groups.
+}
 \examples{
 ## years
-x <- c("1-4", "12-10", "100+", "old")
+x <- c("1-4", "12-10", "100+", "old", NA)
 is_valid_age(x)
 
-## quarters
-x <- c("44q", "100q+")
-is_valid_age(x)
-
-## months
-x <- c("3m", "12m+")
-is_valid_age(x)
-
-## NAs are not valid age groups
-x <- c("10-14", NA)
+## mix of years, quarters, and months
+x <- c("2000-2010", "44q", "100q+", "0m")
 is_valid_age(x)
 
 ## age groups are allowed to overlap,
-## and to mix years, quarters, and months,
 ## provided that each individual
 ## label is valid
-x <- c("10-19", "15-19", "3q", "0m")
+x <- c("10-19", "15-19", "5+")
 is_valid_age(x)
 }
 \seealso{

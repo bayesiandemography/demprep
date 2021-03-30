@@ -1,11 +1,13 @@
 
-## NO_TESTS
+## HAS_TESTS
 #' Check for valid age group labels
 #'
 #' Identify the elements of a vector that are
 #' valid labels for age groups. Each element is assessed
 #' independently, so the labels are not necessarily
 #' consistent with each other.
+#'
+#' \code{NA}s are treated as valid age groups.
 #'
 #' @param x A vector.
 #'
@@ -16,26 +18,17 @@
 #'
 #' @examples
 #' ## years
-#' x <- c("1-4", "12-10", "100+", "old")
+#' x <- c("1-4", "12-10", "100+", "old", NA)
 #' is_valid_age(x)
 #'
-#' ## quarters
-#' x <- c("44q", "100q+")
-#' is_valid_age(x)
-#'
-#' ## months
-#' x <- c("3m", "12m+")
-#' is_valid_age(x)
-#'
-#' ## NAs are not valid age groups
-#' x <- c("10-14", NA)
+#' ## mix of years, quarters, and months
+#' x <- c("2000-2010", "44q", "100q+", "0m")
 #' is_valid_age(x)
 #'
 #' ## age groups are allowed to overlap,
-#' ## and to mix years, quarters, and months,
 #' ## provided that each individual
 #' ## label is valid
-#' x <- c("10-19", "15-19", "3q", "0m")
+#' x <- c("10-19", "15-19", "5+")
 #' is_valid_age(x)
 #' @export
 is_valid_age <- function(x) {
@@ -55,7 +48,8 @@ is_valid_age <- function(x) {
     is_low_up[is_low_up] <- is_valid_low_up
     ## check for remaining possibilities
     is_other <- grepl(p_other, x)
-    ## return TRUE if consistent with any pattern
-    is_low_up | is_other
+    is_na <- is.na(x)
+    ## return TRUE if consistent with any pattern or is NA
+    is_low_up | is_other | is_na
 }
 
