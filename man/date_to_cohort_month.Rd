@@ -76,21 +76,20 @@ date_to_cohort_month(date = c("2024-03-27",
                     open_first = FALSE)
 }
 \seealso{
-Other functions for creating cohorts are
+Other functions for creating cohorts
+from dates are
 \code{\link{date_to_cohort_year}},
 \code{\link{date_to_cohort_multi}},
 \code{\link{date_to_cohort_custom}},
 and \code{\link{date_to_cohort_quarter}}.
 
-Other functions for working with one-month intervals are
+Other functions for creating one-month
+intervals from dates are
 \code{\link{date_to_age_month}},
 \code{\link{date_to_period_month}},
 and \code{\link{date_to_triangle_month}}.
 
-See \code{\link{make_labels_period_month}} for the rules
-on constructing labels for periods and cohorts.
-
-\code{\link{plot_date_to_cohort_month}} creates plots
-that illustrate how \code{date_to_cohort_month}
-works.
+Existing labels for month cohorts
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_cohort_month}}.
 }

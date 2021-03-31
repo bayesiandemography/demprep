@@ -23,6 +23,10 @@ A character vector.
 }
 \description{
 Make labels for periods that are all one quarter long.
+The function would not normally be
+called directly by end users.
+}
+\details{
 Quarters are defined as follows:
 \tabular{lll}{
   \strong{Quarter} \tab \strong{Start} \tab \strong{End} \cr
@@ -31,8 +35,7 @@ Quarters are defined as follows:
   Q3 \tab 1 July \tab 30 September \cr
   Q4 \tab 1 October \tab 31 December
 }
-}
-\details{
+
 \code{break_min} and \code{break_max}
 define the lower and upper limits of the periods.
 \code{break_min} and \code{break_max} must both
@@ -59,3 +62,4 @@ To make labels for periods with widths measured in years,
 use function \code{\link{make_labels_period}}, and to make
 labels for month periods, use \code{\link{make_labels_period_month}}.
 }
+\keyword{internal}

@@ -35,21 +35,20 @@ date_to_period_month(date = c("2024-03-27",
                               "2022-11-09"))
 }
 \seealso{
-Other functions for creating periods are
+Other functions for creating
+periods from dates are
 \code{\link{date_to_period_year}},
 \code{\link{date_to_period_multi}},
 \code{\link{date_to_period_custom}},
 and \code{\link{date_to_period_quarter}}.
 
-Other functions for working with month intervals are
+Other functions for creating month
+intervals from dates are
 \code{\link{date_to_age_month}},
 and \code{\link{date_to_cohort_month}},
 and \code{\link{date_to_triangle_month}}.
 
-\code{\link{make_labels_period_month}} describes the rules
-for constructing labels for month periods.
-
-\code{\link{plot_date_to_period_month}} creates plots
-that illustrate how \code{date_to_period_month}
-works.
+Existing labels for month periods
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_period_month}}.
 }

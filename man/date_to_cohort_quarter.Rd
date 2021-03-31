@@ -79,21 +79,20 @@ date_to_cohort_quarter(date = c("2024-03-27",
                     open_first = FALSE)
 }
 \seealso{
-Other functions for creating cohorts are
+Other functions for creating cohorts
+from dates are
 \code{\link{date_to_cohort_year}},
 \code{\link{date_to_cohort_multi}},
 \code{\link{date_to_cohort_custom}},
 and \code{\link{date_to_cohort_month}}.
 
-Other functions for working with one-quarter intervals are
+Other functions for creating quarter
+intervals from dates are
 \code{\link{date_to_age_quarter}},
 \code{\link{date_to_period_quarter}},
 and \code{\link{date_to_triangle_quarter}}.
 
-See \code{\link{make_labels_period_quarter}} for the rules
-on constructing labels for periods and cohorts.
-
-\code{\link{plot_date_to_cohort_quarter}} creates plots
-that illustrate how \code{date_to_cohort_quarter}
-works.
+Existing labels for quarter cohorts
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_cohort_quarter}}.
 }

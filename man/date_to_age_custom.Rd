@@ -2,7 +2,7 @@
 % Please edit documentation in R/date_to_age.R
 \name{date_to_age_custom}
 \alias{date_to_age_custom}
-\title{Convert dates to customized age groups}
+\title{Convert dates to customised age groups}
 \usage{
 date_to_age_custom(date, dob, breaks = NULL, open_last = TRUE)
 }
@@ -85,7 +85,8 @@ date_to_age_custom(date = c("2024-03-27",
                    open_last = FALSE)
 }
 \seealso{
-Other functions for creating age groups are
+Other functions for creating age groups
+from dates are
 \code{\link{date_to_age_year}},
 \code{\link{date_to_age_multi}},
 \code{\link{date_to_age_lifetab}},
@@ -93,10 +94,7 @@ Other functions for creating age groups are
 \code{\link{date_to_age_quarter}},
 and \code{\link{date_to_age_month}}.
 
-\code{\link{make_labels_age}} describes the rules
-for constructing labels for age groups.
-
-\code{\link{plot_date_to_age_custom}} creates plots
-that illustrate how \code{date_to_age_custom}
-works.
+Existing labels for customised age groups
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_age_custom}}.
 }

@@ -25,8 +25,8 @@ A character vector.
 }
 \description{
 Make labels for periods with lengths measured in whole years.
-The labels follow standard demographic conventions, though
-these conventions are sometimes ambiguous.
+The function would not normally be
+called directly by end users.
 }
 \details{
 Periods are defined by the dates specified in \code{breaks}.
@@ -100,3 +100,4 @@ To make labels for periods with widths of one quarter or one month,
 use functions \code{\link{make_labels_period_quarter}} or
 \code{\link{make_labels_period_month}}.
 }
+\keyword{internal}

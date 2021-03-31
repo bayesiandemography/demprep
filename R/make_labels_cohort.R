@@ -3,9 +3,9 @@
 #' Make labels for cohorts measured in years
 #'
 #' Make labels for cohorts with lengths measured in whole years.
-#' The labels follow standard demographic conventions, though
-#' these conventions are sometimes ambiguous.
-#' 
+#' The function would not normally be
+#' called directly by end users.
+#'  
 #' Cohorts are defined by the dates specified in \code{breaks}.
 #' A cohort ordinarily starts at one date in \code{breaks} and ends
 #' the day before the next date. For instance, if \code{breaks} is
@@ -106,6 +106,7 @@
 #'                               "2006-07-01",
 #'                               "2007-07-01"),
 #'                    include_na = TRUE)
+#' @keywords internal
 #' @export
 make_labels_cohort <- function(breaks,
                                open_first = FALSE,
@@ -164,6 +165,9 @@ make_labels_cohort <- function(breaks,
 #' Make labels for cohorts with lengths of one quarter
 #'
 #' Make labels for cohorts that are all one quarter long.
+#' The function would not normally be
+#' called directly by end users.
+#'
 #' Quarters are defined as follows:
 #' \tabular{lll}{
 #'   \strong{Quarter} \tab \strong{Start} \tab \strong{End} \cr
@@ -219,6 +223,7 @@ make_labels_cohort <- function(breaks,
 #' make_labels_cohort_quarter(break_min = "2005-04-01",
 #'                            break_max = "2006-04-01",
 #'                            include_na = TRUE)
+#' @keywords internal
 #' @export
 make_labels_cohort_quarter <- function(break_min,
                                        break_max,
@@ -247,6 +252,8 @@ make_labels_cohort_quarter <- function(break_min,
 #' Make labels for cohorts lengths of one month
 #'
 #' Make labels for cohorts that are all one month long.
+#' The function would not normally be
+#' called directly by end users.
 #'
 #' \code{break_min} and \code{break_max},
 #' together with \code{open_first},
@@ -296,6 +303,7 @@ make_labels_cohort_quarter <- function(break_min,
 #' make_labels_cohort_month(break_min = "2005-03-01",
 #'                          break_max = "2006-04-01",
 #'                          include_na = TRUE)
+#' @keywords internal
 #' @export
 make_labels_cohort_month <- function(break_min,
                                      break_max,

@@ -61,7 +61,8 @@
 #' \code{date} or \code{dob}, whichever
 #' is longer.
 #'
-#' @seealso Other functions for creating age groups are
+#' @seealso Other functions for creating
+#' age groups from dates are
 #' \code{\link{date_to_age_multi}},
 #' \code{\link{date_to_age_lifetab}},
 #' \code{\link{date_to_age_births}},
@@ -69,18 +70,16 @@
 #' \code{\link{date_to_age_quarter}},
 #' and \code{\link{date_to_age_month}}.
 #'
-#' Other functions for working with one-year intervals are
+#' Other functions for creating one-year
+#' intervals from dates are
 #' \code{\link{date_to_period_year}},
 #' \code{\link{date_to_cohort_year}},
 #' and \code{\link{date_to_triangle_year}}.
 #'
-#' \code{\link{make_labels_age}} describes the rules
-#' for constructing labels for age groups.
-#'
-#' \code{\link{plot_date_to_age_year}} creates plots
-#' that illustrate how \code{\link{date_to_age_year}}
-#' works.
-#'
+#' Existing labels for one-year age groups
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_age_year}}.
+#' 
 #' @examples
 #' date_to_age_year(date = c("2024-03-27",
 #'                           "2022-11-09"),
@@ -235,7 +234,8 @@ date_to_age_year <- function(date,
 #' \code{date} or \code{dob}, whichever
 #' is longer.
 #'
-#' @seealso Other functions for creating age groups are
+#' @seealso Other functions for creating
+#' age groups from dates are
 #' \code{\link{date_to_age_year}},
 #' \code{\link{date_to_age_lifetab}},
 #' \code{\link{date_to_age_births}},
@@ -243,18 +243,16 @@ date_to_age_year <- function(date,
 #' \code{\link{date_to_age_quarter}},
 #' and \code{\link{date_to_age_month}}.
 #'
-#' Other functions for working with multi-year intervals are
+#' Other functions for creating multi-year
+#' intervals from dates are
 #' \code{\link{date_to_period_multi}},
 #' \code{\link{date_to_cohort_multi}},
 #' and \code{\link{date_to_triangle_multi}}.
 #'
-#' \code{\link{make_labels_age}} describes the rules
-#' for constructing labels for age groups.
-#'
-#' \code{\link{plot_date_to_age_multi}} creates plots
-#' that illustrate how \code{date_to_age_multi}
-#' works.
-#'
+#' Existing labels for multi-year age groups
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_age_multi}}.
+#' 
 #' @examples
 #' date_to_age_multi(date = c("2024-03-27",
 #'                            "2022-11-09"),
@@ -406,7 +404,8 @@ date_to_age_multi <- function(date,
 #' \code{date} or \code{dob}, whichever
 #' is longer.
 #'
-#' @seealso Other functions for creating age groups are
+#' @seealso Other functions for creating
+#' age groups from dates are
 #' \code{\link{date_to_age_year}},
 #' \code{\link{date_to_age_multi}},
 #' \code{\link{date_to_age_births}},
@@ -414,12 +413,9 @@ date_to_age_multi <- function(date,
 #' \code{\link{date_to_age_quarter}},
 #' and \code{\link{date_to_age_month}}.
 #'
-#' \code{\link{make_labels_age}} describes the rules
-#' for constructing labels for age groups.
-#'
-#' \code{\link{plot_date_to_age_lifetab}} creates plots
-#' that illustrate how \code{date_to_age_lifetab}
-#' works.
+#' Existing labels for life table age groups
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_age_lifetab}}.
 #' 
 #' @examples
 #' date_to_age_lifetab(date = c("2024-03-27",
@@ -554,7 +550,8 @@ date_to_age_lifetab <- function(date,
 #' \code{date} or \code{dob}, whichever
 #' is longer.
 #'
-#' @seealso Other functions for creating age groups are
+#' @seealso Other functions for creating
+#' age groups from dates are
 #' \code{\link{date_to_age_year}},
 #' \code{\link{date_to_age_multi}},
 #' \code{\link{date_to_age_lifetab}},
@@ -562,12 +559,9 @@ date_to_age_lifetab <- function(date,
 #' \code{\link{date_to_age_quarter}},
 #' and \code{\link{date_to_age_month}}.
 #'
-#' \code{\link{make_labels_age}} describes the rules
-#' for constructing labels for age groups.
-#'
-#' \code{\link{plot_date_to_age_births}} creates plots
-#' that illustrate how \code{date_to_age_births}
-#' works.
+#' Existing labels for age groups from births
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_age_births}}.
 #' 
 #' @examples
 #' date_to_age_births(date = c("2024-03-27",
@@ -724,7 +718,7 @@ date_to_age_births <- function(date, dob,
 }
 
 ## HAS_TESTS
-#' Convert dates to customized age groups
+#' Convert dates to customised age groups
 #'
 #' Given the dates when events occurred,
 #' and the dates of birth of the people experiencing the events,
@@ -763,7 +757,8 @@ date_to_age_births <- function(date, dob,
 #' \code{date} or \code{dob}, whichever
 #' is longer.
 #'
-#' @seealso Other functions for creating age groups are
+#' @seealso Other functions for creating age groups
+#' from dates are
 #' \code{\link{date_to_age_year}},
 #' \code{\link{date_to_age_multi}},
 #' \code{\link{date_to_age_lifetab}},
@@ -771,12 +766,9 @@ date_to_age_births <- function(date, dob,
 #' \code{\link{date_to_age_quarter}},
 #' and \code{\link{date_to_age_month}}.
 #'
-#' \code{\link{make_labels_age}} describes the rules
-#' for constructing labels for age groups.
-#'
-#' \code{\link{plot_date_to_age_custom}} creates plots
-#' that illustrate how \code{date_to_age_custom}
-#' works.
+#' Existing labels for customised age groups
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_age_custom}}.
 #' 
 #' @examples
 #' date_to_age_custom(date = c("2024-03-27",
@@ -918,7 +910,8 @@ date_to_age_custom <- function(date,
 #' \code{date} or \code{dob}, whichever
 #' is longer.
 #'
-#' @seealso Other functions for creating age groups are
+#' @seealso Other functions for creating
+#' age groups from dates are
 #' \code{\link{date_to_age_year}},
 #' \code{\link{date_to_age_multi}},
 #' \code{\link{date_to_age_lifetab}},
@@ -926,18 +919,16 @@ date_to_age_custom <- function(date,
 #' \code{\link{date_to_age_custom}},
 #' and \code{\link{date_to_age_month}}.
 #'
-#' Other functions for working with one-quarter intervals are
+#' Other functions for creating one-quarter
+#' intervals from dates are
 #' \code{\link{date_to_period_quarter}},
 #' \code{\link{date_to_cohort_quarter}},
 #' and \code{\link{date_to_triangle_quarter}}.
 #'
-#' \code{\link{make_labels_age_quarter}} describes the rules
-#' for constructing labels for quarter age groups.
-#'
-#' \code{\link{plot_date_to_age_quarter}} creates plots
-#' that illustrate how \code{date_to_age_quarter}
-#' works.
-#'
+#' Existing labels for quarter age groups
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_age_quarter}}.
+#' 
 #' @examples
 #' date_to_age_quarter(date = c("2024-03-27",
 #'                              "2022-11-09"),
@@ -1087,7 +1078,8 @@ date_to_age_quarter <- function(date,
 #' \code{date} or \code{dob}, whichever
 #' is longer.
 #'
-#' @seealso Other functions for creating age groups are
+#' @seealso Other functions for creating
+#' age groups from dates are
 #' \code{\link{date_to_age_year}},
 #' \code{\link{date_to_age_multi}},
 #' \code{\link{date_to_age_lifetab}},
@@ -1095,17 +1087,15 @@ date_to_age_quarter <- function(date,
 #' \code{\link{date_to_age_custom}},
 #' \code{\link{date_to_age_quarter}}.
 #'
-#' Other functions for working with one-month intervals are
+#' Other functions for creating one-month
+#' intervals from dates are
 #' \code{\link{date_to_period_month}},
 #' \code{\link{date_to_cohort_month}},
 #' and \code{\link{date_to_triangle_month}}.
 #'
-#' \code{\link{make_labels_age_month}} describes the rules
-#' for constructing labels for month age groups.
-#'
-#' \code{\link{plot_date_to_age_custom}} creates plots
-#' that illustrate how \code{date_to_age_custom}
-#' works.
+#' Existing labels for month age groups
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_age_month}}.
 #'
 #' @examples
 #' date_to_age_month(date = c("2024-03-27",

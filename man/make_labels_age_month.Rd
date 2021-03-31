@@ -32,7 +32,8 @@ A character vector.
 }
 \description{
 Make labels for age groups with lengths measured in
-months.
+months. The function would not normally be
+called directly by end users.
 }
 \details{
 A person's age group, measured in months, is the
@@ -84,3 +85,4 @@ use function \code{\link{make_labels_age}}, and
 to make labels for age groups measured in quarters,
 use function \code{\link{make_labels_age_quarter}}.
 }
+\keyword{internal}

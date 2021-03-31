@@ -32,6 +32,8 @@ A character vector.
 }
 \description{
 Make labels for cohorts that are all one month long.
+The function would not normally be
+called directly by end users.
 }
 \details{
 \code{break_min} and \code{break_max},
@@ -74,3 +76,4 @@ use function \code{\link{make_labels_cohort}}, and to make
 labels for quarter cohorts, use
 \code{\link{make_labels_cohort_quarter}}.
 }
+\keyword{internal}

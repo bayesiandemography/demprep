@@ -34,10 +34,9 @@ A character vector.
 }
 \description{
 Make labels for cohorts with lengths measured in whole years.
-The labels follow standard demographic conventions, though
-these conventions are sometimes ambiguous.
-}
-\details{
+The function would not normally be
+called directly by end users.
+ 
 Cohorts are defined by the dates specified in \code{breaks}.
 A cohort ordinarily starts at one date in \code{breaks} and ends
 the day before the next date. For instance, if \code{breaks} is
@@ -48,7 +47,8 @@ However, when \code{open_first} is \code{TRUE}, an 'open' cohort
 extending indefinitely into the past is appended to the start
 of the series. This cohort corresponds to the open age group
 in age group labels. By default, \code{open_first} is \code{FALSE}.
-
+}
+\details{
 If all cohorts have widths of one year,
 then the labels consist of a single years, eg
 \code{"2020", "2021", "2020"}. Otherwise, the
@@ -124,3 +124,4 @@ To make labels for cohorts with widths of one quarter or one month,
 use functions \code{\link{make_labels_cohort_quarter}} or
 \code{\link{make_labels_cohort_month}}.
 }
+\keyword{internal}

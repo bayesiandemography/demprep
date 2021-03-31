@@ -133,21 +133,20 @@ date_to_cohort_year(date = c("2024-03-27",
                     open_first = FALSE)
 }
 \seealso{
-Other functions for creating cohorts are
+Other functions for creating
+cohorts from dates are
 \code{\link{date_to_cohort_multi}},
 \code{\link{date_to_cohort_custom}},
 \code{\link{date_to_cohort_quarter}},
 and \code{\link{date_to_cohort_month}}.
 
-Other functions for working with one-year intervals are
+Other functions for creating one-year
+intervals from dates are
 \code{\link{date_to_age_year}},
 \code{\link{date_to_period_year}},
 and \code{\link{date_to_triangle_year}}.
 
-See \code{\link{make_labels_period}} for the rules
-on constructing labels for periods and cohorts.
-
-\code{\link{plot_date_to_cohort_year}} creates plots
-that illustrate how \code{date_to_cohort_year}
-works.
+Existing labels for one-year cohorts
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_cohort_year}}.
 }

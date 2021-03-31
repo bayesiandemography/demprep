@@ -66,20 +66,19 @@ date_to_period_custom(date = c("2024-03-27",
                                  "2026-03-01"))
 }
 \seealso{
-Other functions for creating periods are
+Other functions for creating periods
+from dates are
 \code{\link{date_to_period_year}},
 \code{\link{date_to_period_multi}},
 \code{\link{date_to_period_quarter}},
 and \code{\link{date_to_period_month}}.
 
-Other functions for working with customized intervals are
+Other functions for creating customised
+intervals from dates are
 \code{\link{date_to_age_custom}},
 and \code{\link{date_to_cohort_custom}}.
 
-\code{\link{make_labels_period}} describes the rules
-for constructing labels for periods.
-
-\code{\link{plot_date_to_period_custom}} creates plots
-that illustrate how \code{date_to_period_custom}
-works.
+Existing labels for customised periods
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_period_custom}}.
 }

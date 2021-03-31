@@ -1,11 +1,8 @@
-
-
 ## Note - all functions return empty factor when supplied with
 ## empty inputs, except for 'date_to_cohort_custom', which
 ## returns factor with levels implied by 'breaks' and
 ## 'open_first' (reflecting the fact that the levels are
 ## completely determined by these two arguments).
-
 
 ## HAS_TESTS
 #' Convert dates to one-year cohorts
@@ -95,23 +92,22 @@
 #'
 #' @return A factor with the same length as \code{date}.
 #'
-#' @seealso Other functions for creating cohorts are
+#' @seealso Other functions for creating
+#' cohorts from dates are
 #' \code{\link{date_to_cohort_multi}},
 #' \code{\link{date_to_cohort_custom}},
 #' \code{\link{date_to_cohort_quarter}},
 #' and \code{\link{date_to_cohort_month}}.
 #'
-#' Other functions for working with one-year intervals are
+#' Other functions for creating one-year
+#' intervals from dates are
 #' \code{\link{date_to_age_year}},
 #' \code{\link{date_to_period_year}},
 #' and \code{\link{date_to_triangle_year}}.
 #'
-#' See \code{\link{make_labels_period}} for the rules
-#' on constructing labels for periods and cohorts.
-#'
-#' \code{\link{plot_date_to_cohort_year}} creates plots
-#' that illustrate how \code{date_to_cohort_year}
-#' works.
+#' Existing labels for one-year cohorts
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_cohort_year}}.
 #'
 #' @examples
 #' date_to_cohort_year(date = c("2024-03-27", "2022-11-09"))
@@ -272,24 +268,22 @@ date_to_cohort_year <- function(date,
 #'
 #' @return A factor with the same length as \code{date}.
 #'
-#' @seealso Other functions for creating cohorts are
+#' @seealso Other functions for creating
+#' cohorts from dates are
 #' \code{\link{date_to_cohort_year}},
 #' \code{\link{date_to_cohort_custom}},
 #' \code{\link{date_to_cohort_quarter}},
 #' and \code{\link{date_to_cohort_month}}.
 #' 
-#' Other functions for working with multi-year intervals are
+#' Other functions for creating multi-year
+#' intervals from dates are
 #' \code{\link{date_to_age_multi}},
 #' \code{\link{date_to_period_multi}},
 #' and \code{\link{date_to_triangle_multi}}.
 #'
-#' See \code{\link{make_labels_period}} for the rules
-#' on constructing labels for periods and cohorts.
-#'
-#' \code{\link{plot_date_to_cohort_multi}} creates plots
-#' that illustrate how \code{date_to_cohort_multi}
-#' works.
-#'
+#' Existing labels for multi-year cohorts
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_cohort_multi}}.
 #' 
 #' @examples
 #' date_to_cohort_multi(date = c("2024-03-27",
@@ -454,23 +448,22 @@ date_to_cohort_multi <- function(date,
 #'
 #' @return A factor with the same length as \code{date}.
 #'
-#' @seealso Other functions for creating cohorts are
+#' @seealso Other functions for creating cohorts
+#' from dates are
 #' \code{\link{date_to_cohort_year}},
 #' \code{\link{date_to_cohort_multi}},
 #' \code{\link{date_to_cohort_quarter}},
 #' and \code{\link{date_to_cohort_month}}.
 #'
-#' Other functions for working with customised intervals are
+#' Other functions for creating customised intervals
+#' from dates are
 #' \code{\link{date_to_age_custom}},
 #' and \code{\link{date_to_period_custom}}.
 #'
-#' See \code{\link{make_labels_period}} for the rules
-#' on constructing labels for periods and cohorts.
-#'
-#' \code{\link{plot_date_to_cohort_custom}} creates plots
-#' that illustrate how \code{date_to_cohort_custom}
-#' works.
-#'
+#' Existing labels for customised cohorts
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_cohort_custom}}.
+#' 
 #' @examples
 #' ## cohorts start on 1 January
 #' date_to_cohort_custom(date = c("2024-03-27",
@@ -597,23 +590,22 @@ date_to_cohort_custom <- function(date,
 #'
 #' @return A factor with the same length as \code{date}.
 #'
-#' @seealso Other functions for creating cohorts are
+#' @seealso Other functions for creating cohorts
+#' from dates are
 #' \code{\link{date_to_cohort_year}},
 #' \code{\link{date_to_cohort_multi}},
 #' \code{\link{date_to_cohort_custom}},
 #' and \code{\link{date_to_cohort_month}}.
 #'
-#' Other functions for working with one-quarter intervals are
+#' Other functions for creating quarter
+#' intervals from dates are
 #' \code{\link{date_to_age_quarter}},
 #' \code{\link{date_to_period_quarter}},
 #' and \code{\link{date_to_triangle_quarter}}.
 #'
-#' See \code{\link{make_labels_period_quarter}} for the rules
-#' on constructing labels for periods and cohorts.
-#'
-#' \code{\link{plot_date_to_cohort_quarter}} creates plots
-#' that illustrate how \code{date_to_cohort_quarter}
-#' works.
+#' Existing labels for quarter cohorts
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_cohort_quarter}}.
 #' 
 #' @examples
 #' date_to_cohort_quarter(date = c("2024-03-27",
@@ -726,23 +718,22 @@ date_to_cohort_quarter <- function(date,
 #'
 #' @return A factor with the same length as \code{date}.
 #'
-#' @seealso Other functions for creating cohorts are
+#' @seealso Other functions for creating cohorts
+#' from dates are
 #' \code{\link{date_to_cohort_year}},
 #' \code{\link{date_to_cohort_multi}},
 #' \code{\link{date_to_cohort_custom}},
 #' and \code{\link{date_to_cohort_quarter}}.
 #'
-#' Other functions for working with one-month intervals are
+#' Other functions for creating one-month
+#' intervals from dates are
 #' \code{\link{date_to_age_month}},
 #' \code{\link{date_to_period_month}},
 #' and \code{\link{date_to_triangle_month}}.
 #'
-#' See \code{\link{make_labels_period_month}} for the rules
-#' on constructing labels for periods and cohorts.
-#'
-#' \code{\link{plot_date_to_cohort_month}} creates plots
-#' that illustrate how \code{date_to_cohort_month}
-#' works.
+#' Existing labels for month cohorts
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_cohort_month}}.
 #' 
 #' @examples
 #' date_to_cohort_month(date = c("2024-03-27",

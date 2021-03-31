@@ -53,10 +53,7 @@ Other functions for working with quarter intervals are
 and \code{\link{date_to_cohort_quarter}},
 and \code{\link{date_to_triangle_quarter}}.
 
-\code{\link{make_labels_period_quarter}} describes the rules
-for constructing labels for quarter periods.
-
-\code{\link{plot_date_to_period_quarter}} creates plots
-that illustrate how \code{date_to_period_quarter}
-works.
+Existing labels for quarter periods
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_period_quarter}}.
 }

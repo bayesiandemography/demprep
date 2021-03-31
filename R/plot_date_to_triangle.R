@@ -1,51 +1,51 @@
 
 ## NO_TESTS
-#' Depict the Lexis triangles created by
-#' function 'date_to_triangle_year'
-#'
-#' Create plot illustrating how function
-#' \code{\link{date_to_triangle_year}} works.
-#' 
-#' \code{plot_date_to_triangle_year} is typically used for
-#' instruction or documentation, rather than for
-#' actual data analysis.
-#'
-#' @param date Dates of events.
-#' @param dob Dates of birth.
-#' @param break_max An integer or \code{NULL}.
-#' Defaults to 100.
-#' @param open_last Whether the final age group
-#' has no upper limit. Defaults to \code{TRUE}.
-#' @param month_start An element of \code{\link[base]{month.name}},
-#' or \code{\link[base]{month.abb}}. The period starts on
-#' the first day of this month.
-#' @param show_months Whether to include vertical
-#' lines showing boundaries between months.
-#' Defaults to \code{FALSE}.
-#'
-#' @examples
-#' plot_date_to_triangle_year(date = c("2024-05-27",
-#'                                     "2024-11-09"),
-#'                            dob = c("2020-03-13",
-#'                                    "2021-08-24"),
-#'                            break_max = 5)
-#'
-#' ## final age group closed
-#' plot_date_to_triangle_year(date = c("2024-05-27",
-#'                                     "2024-11-09"),
-#'                            dob = c("2020-03-13",
-#'                                    "2021-08-24"),
-#'                            break_max = 5,
-#'                            open_last = FALSE)
-#'
-#' ## start on 1 July, rather than 1 January
-#' plot_date_to_triangle_year(date = c("2024-05-27",
-#'                                     "2024-11-09"),
-#'                            dob = c("2020-03-13",
-#'                                    "2021-08-24"),
-#'                            break_max = 5,
-#'                            month_start = "July")
-#' @export
+## Depict the Lexis triangles created by
+## function 'date_to_triangle_year'
+##
+## Create plot illustrating how function
+## \code{\link{date_to_triangle_year}} works.
+## 
+## \code{plot_date_to_triangle_year} is typically used for
+## instruction or documentation, rather than for
+## actual data analysis.
+##
+## @param date Dates of events.
+## @param dob Dates of birth.
+## @param break_max An integer or \code{NULL}.
+## Defaults to 100.
+## @param open_last Whether the final age group
+## has no upper limit. Defaults to \code{TRUE}.
+## @param month_start An element of \code{\link[base]{month.name}},
+## or \code{\link[base]{month.abb}}. The period starts on
+## the first day of this month.
+## @param show_months Whether to include vertical
+## lines showing boundaries between months.
+## Defaults to \code{FALSE}.
+##
+## @examples
+## plot_date_to_triangle_year(date = c("2024-05-27",
+##                                     "2024-11-09"),
+##                            dob = c("2020-03-13",
+##                                    "2021-08-24"),
+##                            break_max = 5)
+##
+## ## final age group closed
+## plot_date_to_triangle_year(date = c("2024-05-27",
+##                                     "2024-11-09"),
+##                            dob = c("2020-03-13",
+##                                    "2021-08-24"),
+##                            break_max = 5,
+##                            open_last = FALSE)
+##
+## ## start on 1 July, rather than 1 January
+## plot_date_to_triangle_year(date = c("2024-05-27",
+##                                     "2024-11-09"),
+##                            dob = c("2020-03-13",
+##                                    "2021-08-24"),
+##                            break_max = 5,
+##                            month_start = "July")
+## @export
 plot_date_to_triangle_year <- function(date,
                                        dob,
                                        break_max = 100,
@@ -64,36 +64,36 @@ plot_date_to_triangle_year <- function(date,
 
 
 ## NO_TESTS
-#' Depict the Lexis triangles created by
-#' function 'date_to_triangle_multi'
-#'
-#' Create plot illustrating how function
-#' \code{\link{date_to_triangle_multi}} works.
-#' 
-#' \code{plot_date_to_triangle_multi} is typically used for
-#' instruction or documentation, rather than for
-#' actual data analysis.
-#'
-#' @inheritParams plot_date_to_triangle_year
-#' @param width The width in years of the periods and
-#' age groups. A positive integer defaulting to 5.
-#' @param origin An integer. Defaults to 2000. 
-#'
-#' @examples
-#' plot_date_to_triangle_multi(date = c("2027-03-27",
-#'                                      "2022-11-09"),
-#'                             dob = c("2012-05-12",
-#'                                     "2016-02-29"),
-#'                             break_max = 20)
-#'
-#' ## width is 10
-#' plot_date_to_triangle_multi(date = c("2027-03-27",
-#'                                      "2022-11-09"),
-#'                             dob = c("2012-05-12",
-#'                                     "2016-02-29"),
-#'                             width = 10,
-#'                             break_max = 20)
-#' @export
+## Depict the Lexis triangles created by
+## function 'date_to_triangle_multi'
+##
+## Create plot illustrating how function
+## \code{\link{date_to_triangle_multi}} works.
+## 
+## \code{plot_date_to_triangle_multi} is typically used for
+## instruction or documentation, rather than for
+## actual data analysis.
+##
+## @inheritParams plot_date_to_triangle_year
+## @param width The width in years of the periods and
+## age groups. A positive integer defaulting to 5.
+## @param origin An integer. Defaults to 2000. 
+##
+## @examples
+## plot_date_to_triangle_multi(date = c("2027-03-27",
+##                                      "2022-11-09"),
+##                             dob = c("2012-05-12",
+##                                     "2016-02-29"),
+##                             break_max = 20)
+##
+## ## width is 10
+## plot_date_to_triangle_multi(date = c("2027-03-27",
+##                                      "2022-11-09"),
+##                             dob = c("2012-05-12",
+##                                     "2016-02-29"),
+##                             width = 10,
+##                             break_max = 20)
+## @export
 plot_date_to_triangle_multi <- function(date,
                                         dob,
                                         width = 5,
@@ -167,54 +167,54 @@ plot_date_to_triangle_multi <- function(date,
 }
 
 ## NO_TESTS
-#' Depict the Lexis triangles created by
-#' function 'date_to_triangle_births'
-#'
-#' Create plot illustrating how function
-#' \code{\link{date_to_triangle_births}} works.
-#' 
-#' \code{plot_date_to_triangle_births} is typically used for
-#' instruction or documentation, rather than for
-#' actual data analysis.
-#'
-#' @inheritParams plot_date_to_triangle_year
-#' @param date Dates when births being measured occur.
-#' @param dob Dates of birth of parents.
-#' @param width The width in years of the periods and
-#' age groups. A positive integer defaulting to 5.
-#' @param break_min An integer or \code{NULL}.
-#' Defaults to 15.
-#' @param break_max An integer or \code{NULL}.
-#' Defaults to 50.
-#' @param recode_up If \code{TRUE}, births to people
-#' aged less than \code{break_min} are treated as occurring to
-#' people in the lowest repoductive age group.
-#' @param recode_down If \code{TRUE}, births to people
-#' aged \code{break_max} or more are treated as
-#' occurring to people in the highest reproductive
-#' age group.
-#' @param origin An integer. Defaults to 2000. 
-#'
-#' @examples
-#' plot_date_to_triangle_births(date = c("2020-01-27",
-#'                                       "2022-11-09"),
-#'                              dob = c("2001-03-21",
-#'                                      "2000-07-13"))
-#'
-#' ## alternative values for 'width'
-#' plot_date_to_triangle_births(date = c("2024-01-27",
-#'                                       "2022-11-09"),
-#'                              dob = c("2001-03-21",
-#'                                      "2000-07-13"),
-#'                              width = 10,
-#'                              break_min = 20)
-#' plot_date_to_triangle_births(date = c("2024-01-27",
-#'                                       "2022-11-09"),
-#'                              dob = c("2001-03-21",
-#'                                      "2000-07-13"),
-#'                              width = 1,
-#'                              break_max = 45)
-#' @export
+## Depict the Lexis triangles created by
+## function 'date_to_triangle_births'
+##
+## Create plot illustrating how function
+## \code{\link{date_to_triangle_births}} works.
+## 
+## \code{plot_date_to_triangle_births} is typically used for
+## instruction or documentation, rather than for
+## actual data analysis.
+##
+## @inheritParams plot_date_to_triangle_year
+## @param date Dates when births being measured occur.
+## @param dob Dates of birth of parents.
+## @param width The width in years of the periods and
+## age groups. A positive integer defaulting to 5.
+## @param break_min An integer or \code{NULL}.
+## Defaults to 15.
+## @param break_max An integer or \code{NULL}.
+## Defaults to 50.
+## @param recode_up If \code{TRUE}, births to people
+## aged less than \code{break_min} are treated as occurring to
+## people in the lowest repoductive age group.
+## @param recode_down If \code{TRUE}, births to people
+## aged \code{break_max} or more are treated as
+## occurring to people in the highest reproductive
+## age group.
+## @param origin An integer. Defaults to 2000. 
+##
+## @examples
+## plot_date_to_triangle_births(date = c("2020-01-27",
+##                                       "2022-11-09"),
+##                              dob = c("2001-03-21",
+##                                      "2000-07-13"))
+##
+## ## alternative values for 'width'
+## plot_date_to_triangle_births(date = c("2024-01-27",
+##                                       "2022-11-09"),
+##                              dob = c("2001-03-21",
+##                                      "2000-07-13"),
+##                              width = 10,
+##                              break_min = 20)
+## plot_date_to_triangle_births(date = c("2024-01-27",
+##                                       "2022-11-09"),
+##                              dob = c("2001-03-21",
+##                                      "2000-07-13"),
+##                              width = 1,
+##                              break_max = 45)
+## @export
 plot_date_to_triangle_births <- function(date,
                                          dob,
                                          width = 5,
@@ -339,27 +339,27 @@ plot_date_to_triangle_births <- function(date,
 }
 
 ## NO_TESTS
-#' Depict the Lexis triangles created by
-#' function 'date_to_triangle_quarter'
-#'
-#' Create plot illustrating how function
-#' \code{\link{date_to_triangle_quarter}} works.
-#' 
-#' \code{plot_date_to_triangle_quarter} is typically used for
-#' instruction or documentation, rather than for
-#' actual data analysis.
-#'
-#' @inheritParams plot_date_to_triangle_year
-#' @param break_max An integer or \code{NULL}.
-#' Defaults to 400.
-#'
-#' @examples
-#' plot_date_to_triangle_quarter(date = c("2024-03-27",
-#'                                        "2022-11-09"),
-#'                               dob = c("2020-05-01",
-#'                                       "2021-06-22"),
-#'                               break_max = 20)
-#' @export
+## Depict the Lexis triangles created by
+## function 'date_to_triangle_quarter'
+##
+## Create plot illustrating how function
+## \code{\link{date_to_triangle_quarter}} works.
+## 
+## \code{plot_date_to_triangle_quarter} is typically used for
+## instruction or documentation, rather than for
+## actual data analysis.
+##
+## @inheritParams plot_date_to_triangle_year
+## @param break_max An integer or \code{NULL}.
+## Defaults to 400.
+##
+## @examples
+## plot_date_to_triangle_quarter(date = c("2024-03-27",
+##                                        "2022-11-09"),
+##                               dob = c("2020-05-01",
+##                                       "2021-06-22"),
+##                               break_max = 20)
+## @export
 plot_date_to_triangle_quarter <- function(date,
                                           dob,
                                           break_max = 400,
@@ -427,27 +427,27 @@ plot_date_to_triangle_quarter <- function(date,
 }
 
 ## NO_TESTS
-#' Depict the Lexis triangles created by
-#' function 'date_to_triangle_month'
-#'
-#' Create plot illustrating how function
-#' \code{\link{date_to_triangle_month}} works.
-#' 
-#' \code{plot_date_to_triangle_month} is typically used for
-#' instruction or documentation, rather than for
-#' actual data analysis.
-#'
-#' @inheritParams plot_date_to_triangle_year
-#' @param break_max An integer or \code{NULL}.
-#' Defaults to 1200.
-#'
-#' @examples
-#' plot_date_to_triangle_month(date = c("2024-03-27",
-#'                                      "2024-11-09"),
-#'                             dob = c("2023-10-05",
-#'                                     "2024-03-11"),
-#'                             break_max = 12)
-#' @export
+## Depict the Lexis triangles created by
+## function 'date_to_triangle_month'
+##
+## Create plot illustrating how function
+## \code{\link{date_to_triangle_month}} works.
+## 
+## \code{plot_date_to_triangle_month} is typically used for
+## instruction or documentation, rather than for
+## actual data analysis.
+##
+## @inheritParams plot_date_to_triangle_year
+## @param break_max An integer or \code{NULL}.
+## Defaults to 1200.
+##
+## @examples
+## plot_date_to_triangle_month(date = c("2024-03-27",
+##                                      "2024-11-09"),
+##                             dob = c("2023-10-05",
+##                                     "2024-03-11"),
+##                             break_max = 12)
+## @export
 plot_date_to_triangle_month <- function(date,
                                         dob,
                                         break_max = 1200,

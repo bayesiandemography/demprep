@@ -22,8 +22,8 @@ A character vector.
 }
 \description{
 Make labels for age groups with lengths measured in
-whole years. The labels follow standard
-demographic conventions.
+whole years. The function would not normally be
+called directly by end users.
 }
 \details{
 Age groups are defined via the \code{breaks} argument.
@@ -73,3 +73,4 @@ To make labels for age groups with widths of one quarter or one month,
 use functions \code{\link{make_labels_age_quarter}} or
 \code{\link{make_labels_age_month}}.
 }
+\keyword{internal}

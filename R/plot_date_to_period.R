@@ -1,40 +1,40 @@
 
 ## NO_TESTS
-#' Depict the intervals created by
-#' function 'date_to_period_year'
-#' 
-#' Create plot illustrating how function
-#' \code{\link{date_to_period_year}} works.
-#' 
-#' \code{plot_date_to_period_year} is typically used for
-#' learning or documentation, rather than for
-#' actual data analysis.
-#'
-#' @param date Dates of events or measurements.
-#' @param month_start An element of \code{\link[base]{month.name}},
-#' or \code{\link[base]{month.abb}}. Each period starts on
-#' the first day of this month.
-#' @param label_year_start Whether to label a period
-#' by the calendar year at the beginning of the period
-#' or the calendar year at the end. Not needed for periods
-#' that start on 1 January. Defaults to \code{TRUE}.
-#'
-#' @examples
-#' plot_date_to_period_year(date = c("2024-03-27",
-#'                                   "2022-11-09"))
-#'
-#' ## July to June
-#' plot_date_to_period_year(date = c("2024-03-27",
-#'                                   "2022-11-09"),
-#'                          month_start = "Jul")
-#'
-#' ## July to June, using the calendar year at
-#' ## the end for the label
-#' plot_date_to_period_year(date = c("2024-03-27",
-#'                                   "2022-11-09"),
-#'                          month_start = "Jul",
-#'                          label_year_start = FALSE)
-#' @export
+## Depict the intervals created by
+## function 'date_to_period_year'
+## 
+## Create plot illustrating how function
+## \code{\link{date_to_period_year}} works.
+## 
+## \code{plot_date_to_period_year} is typically used for
+## learning or documentation, rather than for
+## actual data analysis.
+##
+## @param date Dates of events or measurements.
+## @param month_start An element of \code{\link[base]{month.name}},
+## or \code{\link[base]{month.abb}}. Each period starts on
+## the first day of this month.
+## @param label_year_start Whether to label a period
+## by the calendar year at the beginning of the period
+## or the calendar year at the end. Not needed for periods
+## that start on 1 January. Defaults to \code{TRUE}.
+##
+## @examples
+## plot_date_to_period_year(date = c("2024-03-27",
+##                                   "2022-11-09"))
+##
+## ## July to June
+## plot_date_to_period_year(date = c("2024-03-27",
+##                                   "2022-11-09"),
+##                          month_start = "Jul")
+##
+## ## July to June, using the calendar year at
+## ## the end for the label
+## plot_date_to_period_year(date = c("2024-03-27",
+##                                   "2022-11-09"),
+##                          month_start = "Jul",
+##                          label_year_start = FALSE)
+## @export
 plot_date_to_period_year <- function(date,
                                      month_start = "Jan",
                                      label_year_start = TRUE) {
@@ -66,44 +66,44 @@ plot_date_to_period_year <- function(date,
 }
 
 ## NO_TESTS
-#' Depict the intervals created by
-#' function 'date_to_period_multi'
-#'
-#' Create plot illustrating how function
-#' \code{\link{date_to_period_multi}} works.
-#' 
-#' \code{plot_date_to_period_multi} is typically used for
-#' learning or documentation, rather than for
-#' actual data analysis.
-#'
-#' @inheritParams plot_date_to_period_year
-#' @param width The length, in whole years, of the periods.
-#' Defaults to 5.
-#' @param origin An integer. Defaults to 2000.
-#'
-#' @examples
-#' plot_date_to_period_multi(date = c("2024-03-27",
-#'                                    "2018-11-09",
-#'                                    "2021-03-02"))
-#'
-#' ## width is 10
-#' plot_date_to_period_multi(date = c("2024-03-27",
-#'                                    "2018-11-09",
-#'                                    "2021-03-02"),
-#'                           width = 10)
-#'
-#' ## origin is 2001
-#' plot_date_to_period_multi(date = c("2024-03-27",
-#'                                    "2018-11-09",
-#'                                    "2021-03-02"),
-#'                           origin = 2001)
-#'
-#' ## start on 1 July, rather than 1 January
-#' plot_date_to_period_multi(date = c("2024-03-27",
-#'                                    "2018-11-09",
-#'                                    "2021-03-02"),
-#'                           month_start = "Jul")
-#' @export
+## Depict the intervals created by
+## function 'date_to_period_multi'
+##
+## Create plot illustrating how function
+## \code{\link{date_to_period_multi}} works.
+## 
+## \code{plot_date_to_period_multi} is typically used for
+## learning or documentation, rather than for
+## actual data analysis.
+##
+## @inheritParams plot_date_to_period_year
+## @param width The length, in whole years, of the periods.
+## Defaults to 5.
+## @param origin An integer. Defaults to 2000.
+##
+## @examples
+## plot_date_to_period_multi(date = c("2024-03-27",
+##                                    "2018-11-09",
+##                                    "2021-03-02"))
+##
+## ## width is 10
+## plot_date_to_period_multi(date = c("2024-03-27",
+##                                    "2018-11-09",
+##                                    "2021-03-02"),
+##                           width = 10)
+##
+## ## origin is 2001
+## plot_date_to_period_multi(date = c("2024-03-27",
+##                                    "2018-11-09",
+##                                    "2021-03-02"),
+##                           origin = 2001)
+##
+## ## start on 1 July, rather than 1 January
+## plot_date_to_period_multi(date = c("2024-03-27",
+##                                    "2018-11-09",
+##                                    "2021-03-02"),
+##                           month_start = "Jul")
+## @export
 plot_date_to_period_multi <- function(date,
                                       width = 5,
                                       origin = 2000,
@@ -139,36 +139,36 @@ plot_date_to_period_multi <- function(date,
 }
 
 ## NO_TESTS
-#' Depict the intervals created by
-#' function 'date_to_period_custom'
-#'
-#' Create plot illustrating how function
-#' \code{\link{date_to_period_custom}} works.
-#' 
-#' \code{plot_date_to_period_custom} is typically used for
-#' learning or documentation, rather than for
-#' actual data analysis.
-#'
-#' @inheritParams plot_date_to_period_year
-#' @param breaks Dates defining starts and ends of periods.
-#'
-#' @examples
-#' ## periods start on 1 January
-#' plot_date_to_period_custom(date = c("2024-03-27",
-#'                                     "2018-11-09",
-#'                                     "2021-03-02"),
-#'                            breaks = c("2000-01-01",
-#'                                       "2019-01-01",
-#'                                       "2026-01-01"))
-#'
-#' ## periods start on 1 March
-#' plot_date_to_period_custom(date = c("2024-03-27",
-#'                                     "2018-11-09",
-#'                                     "2021-03-02"),
-#'                            breaks = c("2000-03-01",
-#'                                       "2019-03-01",
-#'                                       "2026-03-01"))
-#' @export
+## Depict the intervals created by
+## function 'date_to_period_custom'
+##
+## Create plot illustrating how function
+## \code{\link{date_to_period_custom}} works.
+## 
+## \code{plot_date_to_period_custom} is typically used for
+## learning or documentation, rather than for
+## actual data analysis.
+##
+## @inheritParams plot_date_to_period_year
+## @param breaks Dates defining starts and ends of periods.
+##
+## @examples
+## ## periods start on 1 January
+## plot_date_to_period_custom(date = c("2024-03-27",
+##                                     "2018-11-09",
+##                                     "2021-03-02"),
+##                            breaks = c("2000-01-01",
+##                                       "2019-01-01",
+##                                       "2026-01-01"))
+##
+## ## periods start on 1 March
+## plot_date_to_period_custom(date = c("2024-03-27",
+##                                     "2018-11-09",
+##                                     "2021-03-02"),
+##                            breaks = c("2000-03-01",
+##                                       "2019-03-01",
+##                                       "2026-03-01"))
+## @export
 plot_date_to_period_custom <- function(date = NULL, breaks) {
     has_date <- !is.null(date) && (length(date) > 0L)
     ## check arguments and/or apply defaults
@@ -201,22 +201,22 @@ plot_date_to_period_custom <- function(date = NULL, breaks) {
 }
 
 ## NO_TESTS
-#' Depict the intervals created by
-#' function 'date_to_period_quarter'
-#'
-#' Create plot illustrating how function
-#' \code{\link{date_to_period_quarter}} works.
-#' 
-#' \code{plot_date_to_period_quarter} is typically used for
-#' learning or documentation, rather than for
-#' actual data analysis.
-#'
-#' @inheritParams plot_date_to_period_year
-#'
-#' @examples
-#' plot_date_to_period_quarter(date = c("2021-11-24",
-#'                                      "2022-04-09"))
-#' @export
+## Depict the intervals created by
+## function 'date_to_period_quarter'
+##
+## Create plot illustrating how function
+## \code{\link{date_to_period_quarter}} works.
+## 
+## \code{plot_date_to_period_quarter} is typically used for
+## learning or documentation, rather than for
+## actual data analysis.
+##
+## @inheritParams plot_date_to_period_year
+##
+## @examples
+## plot_date_to_period_quarter(date = c("2021-11-24",
+##                                      "2022-04-09"))
+## @export
 plot_date_to_period_quarter <- function(date) {
     ## check arguments and/or apply defaults
     demcheck::err_positive_length(x = date,
@@ -242,22 +242,22 @@ plot_date_to_period_quarter <- function(date) {
 }
 
 ## NO_TESTS
-#' Depict the intervals created by
-#' function 'date_to_period_month'
-#'
-#' Create plot illustrating how function
-#' \code{\link{date_to_period_month}} works.
-#' 
-#' \code{plot_date_to_period_month} is typically used for
-#' learning or documentation, rather than for
-#' actual data analysis.
-#'
-#' @inheritParams plot_date_to_period_year
-#'
-#' @examples
-#' plot_date_to_period_month(date = c("2021-11-24",
-#'                                    "2022-04-09"))
-#' @export
+## Depict the intervals created by
+## function 'date_to_period_month'
+##
+## Create plot illustrating how function
+## \code{\link{date_to_period_month}} works.
+## 
+## \code{plot_date_to_period_month} is typically used for
+## learning or documentation, rather than for
+## actual data analysis.
+##
+## @inheritParams plot_date_to_period_year
+##
+## @examples
+## plot_date_to_period_month(date = c("2021-11-24",
+##                                    "2022-04-09"))
+## @export
 plot_date_to_period_month <- function(date) {
     ## check arguments and/or apply defaults
     demcheck::err_positive_length(x = date,

@@ -5,12 +5,15 @@
 \alias{clean_age_df}
 \title{Reformat age group labels}
 \usage{
-clean_age(x)
+clean_age(x, language = "English")
 
-clean_age_df(x)
+clean_age_df(x, language = "English")
 }
 \arguments{
 \item{x}{A numeric or character vector.}
+
+\item{language}{The language in which text
+labels are written. Defaults to English.}
 }
 \value{
 \code{clean_age} returns a character vector with the same
@@ -20,7 +23,7 @@ parsed are translated to dem formats.
 \code{"input"}, \code{"output"}, and \code{"is_valid"}.
 }
 \description{
-Try to parse English-language age group
+Try to parse age group
 labels and convert them
 to the format used by the dem packages.
 }
@@ -32,7 +35,13 @@ used by the dem packages, such as translating
 \code{"and over"} to \code{"+"} or "months"
 to "m".
 
-\code{clean_age} also checks for two special
+By default, \code{clean_age} assumes that any
+text labels are written in English. However,
+other languages can be specified using
+the \code{language} argument. Current choices are
+ADD OVER TIME.
+
+\code{clean_age} checks for two special
 cases: (i) when the labels consist entirely of numbers
 \code{0}, \code{5}, \code{10}, \dots,
 \code{A}, and (ii) when the labels consist entirely
@@ -54,15 +63,6 @@ age group label. \code{clean_age_df} can be
 used to check whether \code{clean_age} is
 giving the desired results.
 }
-\section{Warning}{
-
-\code{clean_age} is designed for interactive use and
-one-off analyses, where a human scrutinises the results.
-\code{clean_age} may not be appropriate for
-automated production processes where inputs
-can change over time.
-}
-
 \examples{
 x <- c("100 and over",
        "infants",

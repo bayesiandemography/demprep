@@ -23,6 +23,8 @@ A character vector.
 }
 \description{
 Make labels for periods that are all one month long.
+The function would not normally be
+called directly by end users.
 }
 \details{
 \code{break_min} and \code{break_max}
@@ -52,3 +54,4 @@ To make labels for periods with widths measured in years,
 use function \code{\link{make_labels_period}}, and to make
 labels for quarter periods, use \code{\link{make_labels_period_quarter}}.
 }
+\keyword{internal}

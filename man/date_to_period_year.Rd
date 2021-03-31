@@ -78,21 +78,19 @@ date_to_period_year(date = c("2024-03-27", "2022-11-09"),
                     label_year_start = FALSE)
 }
 \seealso{
-Other functions for creating periods are
+Other functions for creating periods from dates are
 \code{\link{date_to_period_multi}},
 \code{\link{date_to_period_custom}},
 \code{\link{date_to_period_quarter}},
 and \code{\link{date_to_period_month}}.
 
-Other functions for working with one-year intervals are
+Other functions for creating one-year intervals
+from dates are
 \code{\link{date_to_age_year}},
 \code{\link{date_to_cohort_year}},
 and \code{\link{date_to_triangle_year}}.
 
-\code{\link{make_labels_period}} describes the rules
-for constructing labels for periods.
-
-\code{\link{plot_date_to_period_year}} creates plots
-that illustrate how \code{date_to_period_year}
-works.
+Existing labels for one-year periods
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_period_year}}.
 }

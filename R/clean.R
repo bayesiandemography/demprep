@@ -1,7 +1,7 @@
 
 #' Reformat age group labels
 #'
-#' Try to parse English-language age group
+#' Try to parse age group
 #' labels and convert them
 #' to the format used by the dem packages.
 #'
@@ -12,7 +12,13 @@
 #' \code{"and over"} to \code{"+"} or "months"
 #' to "m".
 #'
-#' \code{clean_age} also checks for two special
+#' By default, \code{clean_age} assumes that any
+#' text labels are written in English. However,
+#' other languages can be specified using
+#' the \code{language} argument. Current choices are
+#' ADD OVER TIME.
+#'
+#' \code{clean_age} checks for two special
 #' cases: (i) when the labels consist entirely of numbers
 #' \code{0}, \code{5}, \code{10}, \dots,
 #' \code{A}, and (ii) when the labels consist entirely
@@ -34,14 +40,9 @@
 #' used to check whether \code{clean_age} is
 #' giving the desired results.
 #'
-#' @section Warning:
-#' \code{clean_age} is designed for interactive use and
-#' one-off analyses, where a human scrutinises the results.
-#' \code{clean_age} may not be appropriate for
-#' automated production processes where inputs
-#' can change over time. 
-#' 
 #' @param x A numeric or character vector.
+#' @param language The language in which text
+#' labels are written. Defaults to English.
 #'
 #' @return
 #' \code{clean_age} returns a character vector with the same
@@ -84,9 +85,11 @@ NULL
 ## HAS_TESTS
 #' @export
 #' @rdname clean_age
-clean_age <- function(x) {
+clean_age <- function(x, language = "English") {
+    language <- match.arg(language)
     ans <- x
-    x_guess <- clean_age_guess(x)
+    x_guess <- clean_age_guess(x = x,
+                               language = language)
     is_valid <- is_valid_age(x_guess)
     ans[is_valid] <- x_guess[is_valid]
     ans
@@ -95,8 +98,9 @@ clean_age <- function(x) {
 ## HAS_TESTS
 #' @export
 #' @rdname clean_age
-clean_age_df <- function(x) {
-    x_processed <- clean_age(x)
+clean_age_df <- function(x, language = "English") {
+    x_processed <- clean_age(x = x,
+                             language = language)
     is_duplicated <- duplicated(x)
     input <- x[!is_duplicated]
     output <- x_processed[!is_duplicated]

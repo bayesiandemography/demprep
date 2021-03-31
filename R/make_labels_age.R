@@ -3,9 +3,9 @@
 #' Make labels for age groups measured in years
 #'
 #' Make labels for age groups with lengths measured in
-#' whole years. The labels follow standard
-#' demographic conventions.
-#' 
+#' whole years. The function would not normally be
+#' called directly by end users.
+#'
 #' Age groups are defined via the \code{breaks} argument.
 #' The elements of \code{breaks} must be non-negative integers,
 #' and must be strictly increasing.  
@@ -61,6 +61,7 @@
 #' ## allow for missing
 #' make_labels_age(breaks = seq(15, 65, 5),
 #'                       include_na = TRUE)
+#' @keywords internal
 #' @export
 make_labels_age <- function(breaks,
                             open_last = TRUE,
@@ -81,7 +82,8 @@ make_labels_age <- function(breaks,
 #' Make labels for age groups measured in quarters
 #'
 #' Make labels for age groups with lengths measured in
-#' quarters (ie three months).
+#' quarters (ie three months). The function would not normally be
+#' called directly by end users.
 #' 
 #' A person's age group, measured in quarters, is the
 #' number of quarters that have elapsed since that person was
@@ -140,6 +142,7 @@ make_labels_age <- function(breaks,
 #'                               open_last = FALSE)
 #' make_labels_age_quarter(break_max = 10,
 #'                               include_na = TRUE)
+#' @keywords internal
 #' @export
 make_labels_age_quarter <- function(break_min = 0,
                                     break_max = 400,
@@ -166,7 +169,8 @@ make_labels_age_quarter <- function(break_min = 0,
 #' Make labels for age groups measured in months
 #'
 #' Make labels for age groups with lengths measured in
-#' months.
+#' months. The function would not normally be
+#' called directly by end users.
 #' 
 #' A person's age group, measured in months, is the
 #' number of months that have elapsed since that person was
@@ -225,6 +229,7 @@ make_labels_age_quarter <- function(break_min = 0,
 #'                             open_last = FALSE)
 #' make_labels_age_month(break_max = 10,
 #'                             include_na = TRUE)
+#' @keywords internal
 #' @export
 make_labels_age_month <- function(break_min = 0,
                                   break_max = 1200,

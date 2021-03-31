@@ -90,20 +90,19 @@ date_to_cohort_custom(date = c("2024-03-27",
                       open_first = FALSE)
 }
 \seealso{
-Other functions for creating cohorts are
+Other functions for creating cohorts
+from dates are
 \code{\link{date_to_cohort_year}},
 \code{\link{date_to_cohort_multi}},
 \code{\link{date_to_cohort_quarter}},
 and \code{\link{date_to_cohort_month}}.
 
-Other functions for working with customised intervals are
+Other functions for creating customised intervals
+from dates are
 \code{\link{date_to_age_custom}},
 and \code{\link{date_to_period_custom}}.
 
-See \code{\link{make_labels_period}} for the rules
-on constructing labels for periods and cohorts.
-
-\code{\link{plot_date_to_cohort_custom}} creates plots
-that illustrate how \code{date_to_cohort_custom}
-works.
+Existing labels for customised cohorts
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_cohort_custom}}.
 }

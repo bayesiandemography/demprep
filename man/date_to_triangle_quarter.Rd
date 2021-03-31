@@ -101,8 +101,4 @@ and \code{\link{date_to_triangle_month}}.
 \code{date_to_triangle_quarter} is typically used in combination with
 \code{\link{date_to_age_quarter}}
 and \code{\link{date_to_period_quarter}}.
-
-\code{\link{plot_date_to_triangle_quarter}} creates plots
-that illustrate how \code{date_to_triangle_quarter}
-works.
 }

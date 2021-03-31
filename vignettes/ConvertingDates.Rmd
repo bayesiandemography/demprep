@@ -172,7 +172,7 @@ deaths_temp
 ```
 The two periods created by `date_to_period_year` are depicted below. 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_year(date = deaths$date_death)
+demprep:::plot_date_to_period_year(date = deaths$date_death)
 ```
 The first starts on 1 January 2019, and the second starts on 1 January 2020.
 
@@ -184,7 +184,7 @@ deaths_temp
 ```
 The resulting periods start on 1 July 2019 and 1 July 2020:
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_year(date = deaths_temp$date_death,
+demprep:::plot_date_to_period_year(date = deaths_temp$date_death,
                          month_start = "Jul")
 ```
 
@@ -198,7 +198,7 @@ deaths_temp
 
 The resulting periods are defined by exactly the same dates as the previous ones, but have different labels.
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_year(date = deaths_temp$date_death,
+demprep:::plot_date_to_period_year(date = deaths_temp$date_death,
                          month_start = "Jul",
                          label_year_start = FALSE)
 ```
@@ -262,7 +262,7 @@ deaths_temp
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_custom(date = deaths_temp$date_death,
+demprep:::plot_date_to_period_custom(date = deaths_temp$date_death,
                            breaks = c("2018-12-01",
                                       "2019-12-01",
                                       "2024-12-01"))
@@ -279,7 +279,7 @@ deaths_temp
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_quarter(deaths_temp$date_death)
+demprep:::plot_date_to_period_quarter(deaths_temp$date_death)
 ```
 
 ## Month-length periods
@@ -292,7 +292,7 @@ deaths_temp
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_period_month(deaths_temp$date_death[1:2])
+demprep:::plot_date_to_period_month(deaths_temp$date_death[1:2])
 ```
 
 
@@ -325,7 +325,7 @@ plot_date_to_period_month(deaths_temp$date_death[1:2])
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
 <!-- date <- as.Date(c("2021-03-30", "2021-03-10")) -->
 <!-- dob <- as.Date(c("2021-01-30", "2021-01-10")) -->
-<!-- plot_date_to_age_month(date = date, -->
+<!-- demprep:::plot_date_to_age_month(date = date, -->
 <!--                        dob = dob, -->
 <!--                        break_max = 2, -->
 <!--                        show_months = TRUE) -->
@@ -362,7 +362,7 @@ plot_date_to_period_month(deaths_temp$date_death[1:2])
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
-<!-- plot_date_to_age_year(date = dth_age_yr$date_death, -->
+<!-- demprep:::plot_date_to_age_year(date = dth_age_yr$date_death, -->
 <!--                       dob = dth_age_yr$dob, -->
 <!--                       break_max = 10) -->
 <!-- ``` -->
@@ -377,7 +377,7 @@ plot_date_to_period_month(deaths_temp$date_death[1:2])
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_age_year(date = dth_age_yr$date_death, -->
+<!-- demprep:::plot_date_to_age_year(date = dth_age_yr$date_death, -->
 <!--                       dob = dth_age_yr$dob, -->
 <!--                       break_max = 6) -->
 <!-- ``` -->
@@ -395,7 +395,7 @@ plot_date_to_period_month(deaths_temp$date_death[1:2])
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_age_multi(date = dth_age_multi$date_death, -->
+<!-- demprep:::plot_date_to_age_multi(date = dth_age_multi$date_death, -->
 <!--                        dob = dth_age_multi$dob, -->
 <!--                        break_max = 10) -->
 <!-- ``` -->
@@ -414,7 +414,7 @@ plot_date_to_period_month(deaths_temp$date_death[1:2])
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_age_custom(date = dth_age_custom$date_death, -->
+<!-- demprep:::plot_date_to_age_custom(date = dth_age_custom$date_death, -->
 <!--                         dob = dth_age_custom$dob, -->
 <!--                         breaks = c(0, 2, 5, 8, 14), -->
 <!--                         open_last = FALSE) -->
@@ -434,7 +434,7 @@ plot_date_to_period_month(deaths_temp$date_death[1:2])
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_age_lifetab(date = dth_age_lifetab$date_death, -->
+<!-- demprep:::plot_date_to_age_lifetab(date = dth_age_lifetab$date_death, -->
 <!--                          dob = dth_age_lifetab$dob, -->
 <!--                          break_max = 10) -->
 <!-- ``` -->
@@ -450,7 +450,7 @@ plot_date_to_period_month(deaths_temp$date_death[1:2])
 
 
 <!-- ```{r, fig.width = 5, fig.height = 6} -->
-<!-- plot_date_to_age_births(date = bth_in_age$date_death, -->
+<!-- demprep:::plot_date_to_age_births(date = bth_in_age$date_death, -->
 <!--                         dob = bth_in_age$dob) -->
 <!-- ``` -->
 
@@ -465,7 +465,7 @@ plot_date_to_period_month(deaths_temp$date_death[1:2])
 
 
 <!-- ```{r, fig.width = 8, fig.height = 6} -->
-<!-- plot_date_to_age_births(date = bth_out_age$date_death, -->
+<!-- demprep:::plot_date_to_age_births(date = bth_out_age$date_death, -->
 <!--                         dob = bth_out_age$dob, -->
 <!--                         break_min = 10, -->
 <!--                         break_max = 55) -->
@@ -482,7 +482,7 @@ plot_date_to_period_month(deaths_temp$date_death[1:2])
 
 
 <!-- ```{r, fig.width = 8, fig.height = 6} -->
-<!-- plot_date_to_age_births(date = bth_out_age$date_death, -->
+<!-- demprep:::plot_date_to_age_births(date = bth_out_age$date_death, -->
 <!--                         dob = bth_out_age$dob, -->
 <!--                         recode_up = TRUE, -->
 <!--                         recode_down = TRUE) -->
@@ -501,7 +501,7 @@ plot_date_to_period_month(deaths_temp$date_death[1:2])
 
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_age_month(date = dth_age_month$date_death[3], -->
+<!-- demprep:::plot_date_to_age_month(date = dth_age_month$date_death[3], -->
 <!--                        dob = dth_age_month$dob[3], -->
 <!--                        break_max = 20) -->
 <!-- ``` -->
@@ -519,7 +519,7 @@ plot_date_to_period_month(deaths_temp$date_death[1:2])
 
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_age_quarter(date = dth_age_quarter$date_death[3], -->
+<!-- demprep:::plot_date_to_age_quarter(date = dth_age_quarter$date_death[3], -->
 <!--                        dob = dth_age_quarter$dob[3], -->
 <!--                        break_max = 4) -->
 <!-- ``` -->
@@ -539,7 +539,7 @@ deaths_temp
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_cohort_multi(date = deaths_temp$date_birth)
+demprep:::plot_date_to_cohort_multi(date = deaths_temp$date_birth)
 ```
 
 
@@ -554,7 +554,7 @@ levels(deaths_temp$cohort_open)
 ```
 
 ```{r, echo = FALSE, fig.height = 1.75}
-plot_date_to_cohort_multi(date = deaths_temp$date_birth,
+demprep:::plot_date_to_cohort_multi(date = deaths_temp$date_birth,
                           break_min = "2015-01-01")
 ```
 
@@ -593,7 +593,7 @@ plot_date_to_cohort_multi(date = deaths_temp$date_birth,
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
-<!-- plot_date_to_triangle_year(date = dth_tri_yr$date_death, -->
+<!-- demprep:::plot_date_to_triangle_year(date = dth_tri_yr$date_death, -->
 <!--                            dob = dth_tri_yr$dob, -->
 <!--                            break_max = 10) -->
 <!-- ``` -->
@@ -609,7 +609,7 @@ plot_date_to_cohort_multi(date = deaths_temp$date_birth,
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
-<!-- plot_date_to_triangle_year(date = dth_tri_yr$date_death, -->
+<!-- demprep:::plot_date_to_triangle_year(date = dth_tri_yr$date_death, -->
 <!--                            dob = dth_tri_yr$dob, -->
 <!--                            month_start = "Jul", -->
 <!--                            break_max = 10) -->
@@ -625,7 +625,7 @@ plot_date_to_cohort_multi(date = deaths_temp$date_birth,
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_triangle_year(date = dth_tri_yr$date_death, -->
+<!-- demprep:::plot_date_to_triangle_year(date = dth_tri_yr$date_death, -->
 <!--                            dob = dth_tri_yr$dob, -->
 <!--                            break_max = 6) -->
 <!-- ``` -->
@@ -643,7 +643,7 @@ plot_date_to_cohort_multi(date = deaths_temp$date_birth,
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
-<!-- plot_date_to_triangle_multi(date = dth_tri_multi$date_death, -->
+<!-- demprep:::plot_date_to_triangle_multi(date = dth_tri_multi$date_death, -->
 <!--                            dob = dth_tri_multi$dob, -->
 <!--                            break_max = 30) -->
 <!-- ``` -->
@@ -661,7 +661,7 @@ plot_date_to_cohort_multi(date = deaths_temp$date_birth,
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
-<!-- plot_date_to_triangle_multi(date = dth_tri_multi$date_death, -->
+<!-- demprep:::plot_date_to_triangle_multi(date = dth_tri_multi$date_death, -->
 <!--                             dob = dth_tri_multi$dob, -->
 <!--                             width = 10, -->
 <!--                             break_max = 30) -->
@@ -681,7 +681,7 @@ plot_date_to_cohort_multi(date = deaths_temp$date_birth,
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
-<!-- plot_date_to_triangle_births(date = births_in_tri$date_death, -->
+<!-- demprep:::plot_date_to_triangle_births(date = births_in_tri$date_death, -->
 <!--                              dob = births_in_tri$dob) -->
 <!-- ``` -->
 
@@ -700,7 +700,7 @@ plot_date_to_cohort_multi(date = deaths_temp$date_birth,
 <!-- ``` -->
 
 <!-- ```{r, echo = FALSE, fig.height = 6.5} -->
-<!-- plot_date_to_triangle_quarter(date = dth_tri_qu$date_death, -->
+<!-- demprep:::plot_date_to_triangle_quarter(date = dth_tri_qu$date_death, -->
 <!--                               dob = dth_tri_qu$dob, -->
 <!--                               break_max = 24) -->
 <!-- ``` -->
@@ -718,7 +718,7 @@ plot_date_to_cohort_multi(date = deaths_temp$date_birth,
 
 
 <!-- ```{r, echo = FALSE, fig.height = 6} -->
-<!-- plot_date_to_triangle_month(date = dth_tri_month$date_death[3], -->
+<!-- demprep:::plot_date_to_triangle_month(date = dth_tri_month$date_death[3], -->
 <!--                             dob = dth_tri_month$dob[3], -->
 <!--                             break_max = 20) -->
 <!-- ``` -->

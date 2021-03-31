@@ -131,21 +131,20 @@ date_to_cohort_multi(date = c("2024-03-27",
                      open_first = FALSE)
 }
 \seealso{
-Other functions for creating cohorts are
+Other functions for creating
+cohorts from dates are
 \code{\link{date_to_cohort_year}},
 \code{\link{date_to_cohort_custom}},
 \code{\link{date_to_cohort_quarter}},
 and \code{\link{date_to_cohort_month}}.
 
-Other functions for working with multi-year intervals are
+Other functions for creating multi-year
+intervals from dates are
 \code{\link{date_to_age_multi}},
 \code{\link{date_to_period_multi}},
 and \code{\link{date_to_triangle_multi}}.
 
-See \code{\link{make_labels_period}} for the rules
-on constructing labels for periods and cohorts.
-
-\code{\link{plot_date_to_cohort_multi}} creates plots
-that illustrate how \code{date_to_cohort_multi}
-works.
+Existing labels for multi-year cohorts
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_cohort_multi}}.
 }

@@ -3,8 +3,8 @@
 #' Make labels for periods measured in years
 #'
 #' Make labels for periods with lengths measured in whole years.
-#' The labels follow standard demographic conventions, though
-#' these conventions are sometimes ambiguous.
+#' The function would not normally be
+#' called directly by end users.
 #' 
 #' Periods are defined by the dates specified in \code{breaks}.
 #' A period ordinarily starts at one date in \code{breaks} and ends
@@ -88,6 +88,7 @@
 #'                               "2006-07-01",
 #'                               "2007-07-01"),
 #'                    include_na = TRUE)
+#' @keywords internal
 #' @export
 make_labels_period <- function(breaks,
                                label_year_start = TRUE,
@@ -130,6 +131,9 @@ make_labels_period <- function(breaks,
 #' Make labels for periods with lengths of one quarter
 #'
 #' Make labels for periods that are all one quarter long.
+#' The function would not normally be
+#' called directly by end users.
+#'
 #' Quarters are defined as follows:
 #' \tabular{lll}{
 #'   \strong{Quarter} \tab \strong{Start} \tab \strong{End} \cr
@@ -173,6 +177,7 @@ make_labels_period <- function(breaks,
 #' make_labels_period_quarter(break_min = "2005-04-01",
 #'                            break_max = "2006-04-01",
 #'                            include_na = TRUE)
+#' @keywords internal
 #' @export
 make_labels_period_quarter <- function(break_min,
                                        break_max,
@@ -198,6 +203,8 @@ make_labels_period_quarter <- function(break_min,
 #' Make labels for periods lengths of one month
 #'
 #' Make labels for periods that are all one month long.
+#' The function would not normally be
+#' called directly by end users.
 #'
 #' \code{break_min} and \code{break_max}
 #' define the lower and upper limits of the periods.
@@ -234,6 +241,7 @@ make_labels_period_quarter <- function(break_min,
 #' make_labels_period_month(break_min = "2005-03-01",
 #'                          break_max = "2006-04-01",
 #'                          include_na = TRUE)
+#' @keywords internal
 #' @export
 make_labels_period_month <- function(break_min,
                                      break_max,

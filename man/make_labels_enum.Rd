@@ -37,6 +37,9 @@ no upper limit. Negative values are allowed,
 but fractions are not.
 }
 \details{
+The function would not normally be
+called directly by end users. 
+
 The labels for intervals follow the same conventions
 as age groups. Single-value intervals are represented
 by single integers. Multiple-value intervals are
@@ -78,3 +81,4 @@ or cohorts, it is generally better to use
 use specialist functions such as \code{\link{make_labels_age}}
 or \code{\link{make_labels_period}}.
 }
+\keyword{internal}

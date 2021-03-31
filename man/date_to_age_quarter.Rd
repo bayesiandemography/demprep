@@ -95,7 +95,8 @@ date_to_age_quarter(date = "2019-09-22",
                     open_last = FALSE)
 }
 \seealso{
-Other functions for creating age groups are
+Other functions for creating
+age groups from dates are
 \code{\link{date_to_age_year}},
 \code{\link{date_to_age_multi}},
 \code{\link{date_to_age_lifetab}},
@@ -103,15 +104,13 @@ Other functions for creating age groups are
 \code{\link{date_to_age_custom}},
 and \code{\link{date_to_age_month}}.
 
-Other functions for working with one-quarter intervals are
+Other functions for creating one-quarter
+intervals from dates are
 \code{\link{date_to_period_quarter}},
 \code{\link{date_to_cohort_quarter}},
 and \code{\link{date_to_triangle_quarter}}.
 
-\code{\link{make_labels_age_quarter}} describes the rules
-for constructing labels for quarter age groups.
-
-\code{\link{plot_date_to_age_quarter}} creates plots
-that illustrate how \code{date_to_age_quarter}
-works.
+Existing labels for quarter age groups
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_age_quarter}}.
 }

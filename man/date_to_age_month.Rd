@@ -90,7 +90,8 @@ date_to_age_month(date = "2019-10-22",
                   open_last = FALSE)
 }
 \seealso{
-Other functions for creating age groups are
+Other functions for creating
+age groups from dates are
 \code{\link{date_to_age_year}},
 \code{\link{date_to_age_multi}},
 \code{\link{date_to_age_lifetab}},
@@ -98,15 +99,13 @@ Other functions for creating age groups are
 \code{\link{date_to_age_custom}},
 \code{\link{date_to_age_quarter}}.
 
-Other functions for working with one-month intervals are
+Other functions for creating one-month
+intervals from dates are
 \code{\link{date_to_period_month}},
 \code{\link{date_to_cohort_month}},
 and \code{\link{date_to_triangle_month}}.
 
-\code{\link{make_labels_age_month}} describes the rules
-for constructing labels for month age groups.
-
-\code{\link{plot_date_to_age_custom}} creates plots
-that illustrate how \code{date_to_age_custom}
-works.
+Existing labels for month age groups
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_age_month}}.
 }

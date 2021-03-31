@@ -60,7 +60,8 @@ date_to_age_lifetab(date = "2019-09-22",
                     break_max = 80)
 }
 \seealso{
-Other functions for creating age groups are
+Other functions for creating
+age groups from dates are
 \code{\link{date_to_age_year}},
 \code{\link{date_to_age_multi}},
 \code{\link{date_to_age_births}},
@@ -68,10 +69,7 @@ Other functions for creating age groups are
 \code{\link{date_to_age_quarter}},
 and \code{\link{date_to_age_month}}.
 
-\code{\link{make_labels_age}} describes the rules
-for constructing labels for age groups.
-
-\code{\link{plot_date_to_age_lifetab}} creates plots
-that illustrate how \code{date_to_age_lifetab}
-works.
+Existing labels for life table age groups
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_age_lifetab}}.
 }

@@ -134,7 +134,8 @@ date_to_age_births(date = c("2052-01-02",
                    recode_down = TRUE)
 }
 \seealso{
-Other functions for creating age groups are
+Other functions for creating
+age groups from dates are
 \code{\link{date_to_age_year}},
 \code{\link{date_to_age_multi}},
 \code{\link{date_to_age_lifetab}},
@@ -142,10 +143,7 @@ Other functions for creating age groups are
 \code{\link{date_to_age_quarter}},
 and \code{\link{date_to_age_month}}.
 
-\code{\link{make_labels_age}} describes the rules
-for constructing labels for age groups.
-
-\code{\link{plot_date_to_age_births}} creates plots
-that illustrate how \code{date_to_age_births}
-works.
+Existing labels for age groups from births
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_age_births}}.
 }

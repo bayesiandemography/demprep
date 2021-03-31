@@ -105,7 +105,8 @@ date_to_age_year(date = c("2024-03-27",
                  open_last = FALSE)
 }
 \seealso{
-Other functions for creating age groups are
+Other functions for creating
+age groups from dates are
 \code{\link{date_to_age_multi}},
 \code{\link{date_to_age_lifetab}},
 \code{\link{date_to_age_births}},
@@ -113,15 +114,13 @@ Other functions for creating age groups are
 \code{\link{date_to_age_quarter}},
 and \code{\link{date_to_age_month}}.
 
-Other functions for working with one-year intervals are
+Other functions for creating one-year
+intervals from dates are
 \code{\link{date_to_period_year}},
 \code{\link{date_to_cohort_year}},
 and \code{\link{date_to_triangle_year}}.
 
-\code{\link{make_labels_age}} describes the rules
-for constructing labels for age groups.
-
-\code{\link{plot_date_to_age_year}} creates plots
-that illustrate how \code{\link{date_to_age_year}}
-works.
+Existing labels for one-year age groups
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_age_year}}.
 }

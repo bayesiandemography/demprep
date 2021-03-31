@@ -60,23 +60,21 @@
 #'
 #' @return A factor with the same length as \code{date}.
 #'
-#' @seealso Other functions for creating periods are
+#' @seealso Other functions for creating periods from dates are
 #' \code{\link{date_to_period_multi}},
 #' \code{\link{date_to_period_custom}},
 #' \code{\link{date_to_period_quarter}},
 #' and \code{\link{date_to_period_month}}.
 #'
-#' Other functions for working with one-year intervals are
+#' Other functions for creating one-year intervals
+#' from dates are
 #' \code{\link{date_to_age_year}},
 #' \code{\link{date_to_cohort_year}},
 #' and \code{\link{date_to_triangle_year}}.
 #'
-#' \code{\link{make_labels_period}} describes the rules
-#' for constructing labels for periods.
-#'
-#' \code{\link{plot_date_to_period_year}} creates plots
-#' that illustrate how \code{date_to_period_year}
-#' works.
+#' Existing labels for one-year periods
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_period_year}}.
 #'
 #' @examples
 #' date_to_period_year(date = c("2024-03-27", "2022-11-09"))
@@ -127,10 +125,8 @@ date_to_period_year <- function(date,
                                  label_year_start = label_year_start,
                                  include_na = include_na)
     ## assign labels to dates
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
+    i <- findInterval(x = date,
+                      vec = breaks)
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
@@ -175,24 +171,23 @@ date_to_period_year <- function(date,
 #' 
 #' @return A factor with the same length as \code{date}.
 #'
-#' @seealso Other functions for creating periods are
+#' @seealso Other functions for creating
+#' periods from dates are
 #' \code{\link{date_to_period_year}},
 #' \code{\link{date_to_period_custom}},
 #' \code{\link{date_to_period_quarter}},
 #' and \code{\link{date_to_period_month}}.
 #'
-#' Other functions for working with multi-year intervals are
+#' Other functions for creating multi-year
+#' intervals from dates are
 #' \code{\link{date_to_age_multi}},
 #' \code{\link{date_to_cohort_multi}},
 #' and \code{\link{date_to_triangle_multi}}.
 #'
-#' \code{\link{make_labels_period}} describes the rules
-#' for constructing labels for periods.
-#'
-#' \code{\link{plot_date_to_period_multi}} creates plots
-#' that illustrate how \code{date_to_period_multi}
-#' works.
-#'
+#' Existing labels for multi-year periods
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_period_multi}}.
+#' 
 #' @examples
 #' date_to_period_multi(date = c("2024-03-27",
 #'                               "2018-11-09",
@@ -257,10 +252,8 @@ date_to_period_multi <- function(date,
                                  label_year_start = NULL,
                                  include_na = include_na)
     ## assign labels to dates
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
+    i <- findInterval(x = date,
+                      vec = breaks)
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
@@ -309,23 +302,22 @@ date_to_period_multi <- function(date,
 #' 
 #' @return A factor with the same length as \code{date}.
 #'
-#' @seealso Other functions for creating periods are
+#' @seealso Other functions for creating periods
+#' from dates are
 #' \code{\link{date_to_period_year}},
 #' \code{\link{date_to_period_multi}},
 #' \code{\link{date_to_period_quarter}},
 #' and \code{\link{date_to_period_month}}.
 #'
-#' Other functions for working with customized intervals are
+#' Other functions for creating customised
+#' intervals from dates are
 #' \code{\link{date_to_age_custom}},
 #' and \code{\link{date_to_cohort_custom}}.
 #'
-#' \code{\link{make_labels_period}} describes the rules
-#' for constructing labels for periods.
-#'
-#' \code{\link{plot_date_to_period_custom}} creates plots
-#' that illustrate how \code{date_to_period_custom}
-#' works.
-#'
+#' Existing labels for customised periods
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_period_custom}}.
+#' 
 #' @examples
 #' ## periods start on 1 January
 #' date_to_period_custom(date = c("2024-03-27",
@@ -378,10 +370,8 @@ date_to_period_custom <- function(date,
                                  label_year_start = NULL,
                                  include_na = include_na)
     ## assign labels to dates
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
+    i <- findInterval(x = date,
+                      vec = breaks)
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
@@ -430,12 +420,9 @@ date_to_period_custom <- function(date,
 #' and \code{\link{date_to_cohort_quarter}},
 #' and \code{\link{date_to_triangle_quarter}}.
 #'
-#' \code{\link{make_labels_period_quarter}} describes the rules
-#' for constructing labels for quarter periods.
-#'
-#' \code{\link{plot_date_to_period_quarter}} creates plots
-#' that illustrate how \code{date_to_period_quarter}
-#' works.
+#' Existing labels for quarter periods
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_period_quarter}}.
 #' 
 #' @examples
 #' date_to_period_quarter(date = c("2024-03-27",
@@ -472,10 +459,8 @@ date_to_period_quarter <- function(date) {
                                          break_max = break_max,
                                          include_na = include_na)
     ## assign labels to dates
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
+    i <- findInterval(x = date,
+                      vec = breaks)
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,
@@ -506,23 +491,22 @@ date_to_period_quarter <- function(date) {
 #'
 #' @return A factor with the same length as \code{date}.
 #'
-#' @seealso Other functions for creating periods are
+#' @seealso Other functions for creating
+#' periods from dates are
 #' \code{\link{date_to_period_year}},
 #' \code{\link{date_to_period_multi}},
 #' \code{\link{date_to_period_custom}},
 #' and \code{\link{date_to_period_quarter}}.
 #'
-#' Other functions for working with month intervals are
+#' Other functions for creating month
+#' intervals from dates are
 #' \code{\link{date_to_age_month}},
 #' and \code{\link{date_to_cohort_month}},
 #' and \code{\link{date_to_triangle_month}}.
 #'
-#' \code{\link{make_labels_period_month}} describes the rules
-#' for constructing labels for month periods.
-#'
-#' \code{\link{plot_date_to_period_month}} creates plots
-#' that illustrate how \code{date_to_period_month}
-#' works.
+#' Existing labels for month periods
+#' can be processed using \code{\link{clean_age}}
+#' and \code{\link{format_period_month}}.
 #'
 #' @examples
 #' date_to_period_month(date = c("2024-03-27",
@@ -559,10 +543,8 @@ date_to_period_month <- function(date) {
                                        break_max = break_max,
                                        include_na = include_na)
     ## assign labels to dates
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
+    i <- findInterval(x = date,
+                      vec = breaks)
     ans <- labels[i]
     ## return result
     ans <- factor(x = ans,

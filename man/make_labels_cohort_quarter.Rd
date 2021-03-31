@@ -32,6 +32,10 @@ A character vector.
 }
 \description{
 Make labels for cohorts that are all one quarter long.
+The function would not normally be
+called directly by end users.
+}
+\details{
 Quarters are defined as follows:
 \tabular{lll}{
   \strong{Quarter} \tab \strong{Start} \tab \strong{End} \cr
@@ -40,8 +44,7 @@ Quarters are defined as follows:
   Q3 \tab 1 July \tab 30 September \cr
   Q4 \tab 1 October \tab 31 December
 }
-}
-\details{
+
 \code{break_min} and \code{break_max},
 together with \code{open_first},
 define the lower and upper limits of the cohorts.
@@ -80,3 +83,4 @@ To make labels for cohorts with widths measured in years,
 use function \code{\link{make_labels_cohort}}, and to make
 labels for month cohorts, use \code{\link{make_labels_cohort_month}}.
 }
+\keyword{internal}

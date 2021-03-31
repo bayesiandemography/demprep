@@ -8,6 +8,9 @@
 #' no upper limit. Negative values are allowed,
 #' but fractions are not.
 #'
+#' The function would not normally be
+#' called directly by end users. 
+#'
 #' The labels for intervals follow the same conventions
 #' as age groups. Single-value intervals are represented
 #' by single integers. Multiple-value intervals are
@@ -60,6 +63,7 @@
 #'                 open_first = TRUE,
 #'                 open_last = TRUE,
 #'                 include_na = TRUE)
+#' @keywords internal
 #' @export
 make_labels_enum <- function(breaks,
                              open_first = FALSE,

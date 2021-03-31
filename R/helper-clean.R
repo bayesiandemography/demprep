@@ -34,7 +34,20 @@ clean_age_5 <- function(x) {
 ## apply a standard set of transformations
 ## that are likely to turn the elements of 'x'
 ## into valid dem formats
-clean_age_guess <- function(x) {
+clean_age_guess <- function(x, language) {
+    if (language == "English") {
+        year <- "year|years|yr|yrs"
+        quarter <- "quarters|quarter|qtrs|qu"
+        month <- "months|month|mnths"
+        infant <- "^infants$|^in 1st$|^less than 1$|^under 1$|^less than one$"
+        plus <- "and over|plus|and above|and older|or more"
+        num <- c("zero", "one", "two", "three", "four",
+                 "five", "six", "seven", "eight", "nine")
+    }
+    else
+        stop(gettextf("cannot process language \"%s\"",
+                      language),
+             call. = FALSE)
     ## test whether 'x' consists of lower limits
     ## of 5-year or abridged life table age groups
     ans <- clean_age_5(x)
@@ -48,30 +61,22 @@ clean_age_guess <- function(x) {
     ## trim leading zeros from any numbers
     x <- gsub("(?<![0-9])0+(?=[0-9])", "", x, perl = TRUE)
     ## remove "year" labels
-    x <- sub("year|years|yr|yrs", "", x)
+    x <- sub(year, "", x)
     ## translate quarters and years
-    x <- sub("quarters|quarter|qtrs|qu", "q", x)
-    x <- sub("months|month|mnths", "m", x)
+    x <- sub(quarter, "q", x)
+    x <- sub(month, "m", x)
     ## translate synonyms for age group "0"
-    x <- sub("^infants$|^in 1st$|^less than 1$|^under 1$|^less than one$", "0", x)
+    x <- sub(infant, "0", x)
     ## translate synonyms for "+"
-    x <- sub("and over|plus|and above|and older|or more", "+", x)
+    x <- sub(plus, "+", x)
     ## remove spaces
     x <- gsub(" ", "", x)
     ## tranlsate synonyms for "-"
     x <- sub("^([0-9]+)to([0-9]+)$", "\\1-\\2", x)
     x <- sub("^([0-9]+)[[:punct:]]+([0-9]+)$", "\\1-\\2", x)
-    ## translate English digits
-    x <- gsub("zero", "0", x)
-    x <- gsub("one", "1", x)
-    x <- gsub("two", "2", x)
-    x <- gsub("three", "3", x)
-    x <- gsub("four", "4", x)
-    x <- gsub("five", "5", x)
-    x <- gsub("six", "6", x)
-    x <- gsub("seven", "7", x)
-    x <- gsub("eight", "8", x)
-    x <- gsub("nine", "9", x)
+    ## translate numbers
+    for (i in seq_along(num))
+        x <- gsub(num[[i]], i - 1L, x)
     x
 }
 

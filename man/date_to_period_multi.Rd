@@ -74,21 +74,20 @@ date_to_period_multi(date = c("2024-03-27",
                      month_start = "Jul")
 }
 \seealso{
-Other functions for creating periods are
+Other functions for creating
+periods from dates are
 \code{\link{date_to_period_year}},
 \code{\link{date_to_period_custom}},
 \code{\link{date_to_period_quarter}},
 and \code{\link{date_to_period_month}}.
 
-Other functions for working with multi-year intervals are
+Other functions for creating multi-year
+intervals from dates are
 \code{\link{date_to_age_multi}},
 \code{\link{date_to_cohort_multi}},
 and \code{\link{date_to_triangle_multi}}.
 
-\code{\link{make_labels_period}} describes the rules
-for constructing labels for periods.
-
-\code{\link{plot_date_to_period_multi}} creates plots
-that illustrate how \code{date_to_period_multi}
-works.
+Existing labels for multi-year periods
+can be processed using \code{\link{clean_age}}
+and \code{\link{format_period_multi}}.
 }
