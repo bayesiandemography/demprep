@@ -180,7 +180,9 @@ date_to_age_year <- function(date,
     breaks <- make_breaks_date_to_integer_year(age = age_years,
                                                width = 1L,
                                                break_min = break_min,
-                                               break_max = break_max)
+                                               break_max = break_max,
+                                               has_break_min_arg = TRUE,
+                                               has_break_max_arg = TRUE)
     ## make labels for these breaks
     include_na <- anyNA(date) || anyNA(dob)
     labels <- make_labels_age(breaks = breaks,
@@ -353,7 +355,9 @@ date_to_age_multi <- function(date,
     breaks <- make_breaks_date_to_integer_year(age = age_years,
                                                width = width,
                                                break_min = break_min,
-                                               break_max = break_max)
+                                               break_max = break_max,
+                                               has_break_min_arg = TRUE,
+                                               has_break_max_arg = TRUE)
     ## make labels for these breaks
     include_na <- anyNA(date) || anyNA(dob)
     labels <- make_labels_age(breaks = breaks,
@@ -1014,7 +1018,9 @@ date_to_age_quarter <- function(date,
     ## make breaks
     breaks <- make_breaks_date_to_integer_month_quarter(age = age_quarters,
                                                         break_min = break_min,
-                                                        break_max = break_max)
+                                                        break_max = break_max,
+                                                        has_break_min_arg = TRUE,
+                                                        has_break_max_arg = TRUE)
     ## make labels for these breaks
     n_break <- length(breaks)
     break_min <- breaks[[1L]]
@@ -1181,7 +1187,9 @@ date_to_age_month <- function(date,
     ## make breaks
     breaks <- make_breaks_date_to_integer_month_quarter(age = age_months,
                                                         break_min = break_min,
-                                                        break_max = break_max)
+                                                        break_max = break_max,
+                                                        has_break_min_arg = TRUE,
+                                                        has_break_max_arg = TRUE)
     ## make labels for these breaks
     n_break <- length(breaks)
     break_min <- breaks[[1L]]

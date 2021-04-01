@@ -1,46 +1,47 @@
 
 ## NO_TESTS
-## Depict the intervals created by
-## function 'date_to_age_year'
-##
-## Create a plot illustrating how function
-## \code{\link{date_to_age_year}} works.
-## 
-## \code{plot_date_to_age_year} is typically used for
-## learning or documentation, rather than for
-## actual data analysis.
-##
-## @param date Dates of events or measurements.
-## A vector of class \code{\link[base]{Date}},
-## or a vector that can be coerced to class
-## \code{Date} using function \code{\link[base]{as.Date}}.
-## @param dob Dates of birth.
-## A vector of class \code{\link[base]{Date}},
-## or a vector that can be coerced to class
-## \code{Date} using function \code{\link[base]{as.Date}}.
-## @param break_min An integer or \code{NULL}.
-## Defaults to 0.
-## @param break_max An integer or \code{NULL}.
-## Defaults to 100.
-## @param open_last Whether the final age group
-## has no upper limit. Defaults to \code{TRUE}.
-## @param show_months Whether to include vertical
-## lines showing boundaries between months.
-## Defaults to \code{FALSE}.
-##
-## @examples
-## plot_date_to_age_year(date = c("2002-11-09",
-##                                "2004-04-27"),
-##                       dob = c("2000-07-13",
-##                               "2001-03-21"),
-##                       break_max = 2)
-## plot_date_to_age_year(date = c("2002-11-09",
-##                                "2004-04-27"),
-##                       dob = c("2000-07-13",
-##                               "2001-03-21"),
-##                       break_max = 4,
-##                       open_last = FALSE)
-## @export
+#' Depict the intervals created by
+#' function 'date_to_age_year'
+#'
+#' Create a plot illustrating how function
+#' \code{\link{date_to_age_year}} works.
+#' 
+#' \code{plot_date_to_age_year} is typically used for
+#' learning or documentation, rather than for
+#' actual data analysis.
+#'
+#' @param date Dates of events or measurements.
+#' A vector of class \code{\link[base]{Date}},
+#' or a vector that can be coerced to class
+#' \code{Date} using function \code{\link[base]{as.Date}}.
+#' @param dob Dates of birth.
+#' A vector of class \code{\link[base]{Date}},
+#' or a vector that can be coerced to class
+#' \code{Date} using function \code{\link[base]{as.Date}}.
+#' @param break_min An integer or \code{NULL}.
+#' Defaults to 0.
+#' @param break_max An integer or \code{NULL}.
+#' Defaults to 100.
+#' @param open_last Whether the final age group
+#' has no upper limit. Defaults to \code{TRUE}.
+#' @param show_months Whether to include vertical
+#' lines showing boundaries between months.
+#' Defaults to \code{FALSE}.
+#'
+#' @examples
+#' plot_date_to_age_year(date = c("2002-11-09",
+#'                                "2004-04-27"),
+#'                       dob = c("2000-07-13",
+#'                               "2001-03-21"),
+#'                       break_max = 2)
+#' plot_date_to_age_year(date = c("2002-11-09",
+#'                                "2004-04-27"),
+#'                       dob = c("2000-07-13",
+#'                               "2001-03-21"),
+#'                       break_max = 4,
+#'                       open_last = FALSE)
+#' @keywords interal
+#' @export
 plot_date_to_age_year <- function(date,
                                   dob,
                                   break_min = 0,
@@ -93,7 +94,9 @@ plot_date_to_age_year <- function(date,
     breaks <- make_breaks_date_to_integer_year(age = age_years,
                                                width = 1L,
                                                break_min = break_min,
-                                               break_max = break_max)
+                                               break_max = break_max,
+                                               has_break_min_arg = TRUE,
+                                               has_break_max_arg = TRUE)
     ## make labels for these breaks
     labels <- make_labels_age(breaks = breaks,
                               open_last = open_last,
@@ -113,44 +116,45 @@ plot_date_to_age_year <- function(date,
 }
 
 ## NO_TESTS
-## Depict the intervals created by
-## function 'date_to_age_multi'
-##
-## Create a plot illustrating how function
-## \code{\link{date_to_age_multi}} works.
-## 
-## \code{plot_date_to_age_multi} is typically used for
-## learning or documentation, rather than for
-## actual data analysis.
-##
-## @inheritParams plot_date_to_age_year
-## @param width The width in years of the age intervals.
-## A positive integer. Defaults to 5.
-##
-## @examples
-## plot_date_to_age_multi(date = c("2024-03-27",
-##                                 "2022-11-09"),
-##                        dob = c("2001-03-21",
-##                                "2013-07-13"),
-##                        break_max = 35)
-##
-## ## alternative values for 'width' and 'break_max'
-## plot_date_to_age_multi(date = c("2024-03-27",
-##                                 "2022-11-09"),
-##                        dob = c("2001-03-21",
-##                                "2013-07-13"),
-##                        width = 10,
-##                        break_max = 40)
-##
-## ## oldest age group closed
-## plot_date_to_age_multi(date = c("2024-03-27",
-##                                 "2022-11-09"),
-##                        dob = c("2001-03-21",
-##                                "2013-07-13"),
-##                        width = 10,
-##                        break_max = 40,
-##                        open_last = FALSE)
-## @export
+#' Depict the intervals created by
+#' function 'date_to_age_multi'
+#'
+#' Create a plot illustrating how function
+#' \code{\link{date_to_age_multi}} works.
+#' 
+#' \code{plot_date_to_age_multi} is typically used for
+#' learning or documentation, rather than for
+#' actual data analysis.
+#'
+#' @inheritParams plot_date_to_age_year
+#' @param width The width in years of the age intervals.
+#' A positive integer. Defaults to 5.
+#'
+#' @examples
+#' plot_date_to_age_multi(date = c("2024-03-27",
+#'                                 "2022-11-09"),
+#'                        dob = c("2001-03-21",
+#'                                "2013-07-13"),
+#'                        break_max = 35)
+#'
+#' ## alternative values for 'width' and 'break_max'
+#' plot_date_to_age_multi(date = c("2024-03-27",
+#'                                 "2022-11-09"),
+#'                        dob = c("2001-03-21",
+#'                                "2013-07-13"),
+#'                        width = 10,
+#'                        break_max = 40)
+#'
+#' ## oldest age group closed
+#' plot_date_to_age_multi(date = c("2024-03-27",
+#'                                 "2022-11-09"),
+#'                        dob = c("2001-03-21",
+#'                                "2013-07-13"),
+#'                        width = 10,
+#'                        break_max = 40,
+#'                        open_last = FALSE)
+#' @keywords interal
+#' @export
 plot_date_to_age_multi <- function(date,
                                    dob,
                                    width = 5,
@@ -214,7 +218,9 @@ plot_date_to_age_multi <- function(date,
     breaks <- make_breaks_date_to_integer_year(age = age_years,
                                                width = width,
                                                break_min = break_min,
-                                               break_max = break_max)
+                                               break_max = break_max,
+                                               has_break_min_arg = TRUE,
+                                               has_break_max_arg = TRUE)
     ## make labels for these breaks
     labels <- make_labels_age(breaks = breaks,
                               open_last = open_last)
@@ -234,26 +240,27 @@ plot_date_to_age_multi <- function(date,
 }
 
 ## NO_TESTS
-## Depict the intervals created by
-## function 'date_to_age_lifetab'
-##
-## Create a plot illustrating how function
-## \code{\link{date_to_age_lifetab}} works.
-## 
-## \code{plot_date_to_age_lifetab} is typically used for
-## learning or documentation, rather than for
-## actual data analysis.
-##
-## @inheritParams plot_date_to_age_year
-## @param date Date of death.
-##
-## @examples
-## plot_date_to_age_lifetab(date = c("2024-03-27",
-##                                   "2022-11-09"),
-##                          dob = c("2001-03-21",
-##                                  "2004-07-13"),
-##                          break_max = 30)
-## @export
+#' Depict the intervals created by
+#' function 'date_to_age_lifetab'
+#'
+#' Create a plot illustrating how function
+#' \code{\link{date_to_age_lifetab}} works.
+#' 
+#' \code{plot_date_to_age_lifetab} is typically used for
+#' learning or documentation, rather than for
+#' actual data analysis.
+#'
+#' @inheritParams plot_date_to_age_year
+#' @param date Date of death.
+#'
+#' @examples
+#' plot_date_to_age_lifetab(date = c("2024-03-27",
+#'                                   "2022-11-09"),
+#'                          dob = c("2001-03-21",
+#'                                  "2004-07-13"),
+#'                          break_max = 30)
+#' @keywords interal
+#' @export
 plot_date_to_age_lifetab <- function(date,
                                      dob,
                                      break_max = 100,
@@ -300,66 +307,67 @@ plot_date_to_age_lifetab <- function(date,
 }
 
 ## NO_TESTS
-## Depict the intervals created by
-## function 'date_to_age_births'
-##
-## Create a plot illustrating how function
-## \code{\link{date_to_age_births}} works.
-## 
-## \code{plot_date_to_age_births} is typically used for
-## learning or documentation, rather than for
-## actual data analysis.
-##
-## @inheritParams plot_date_to_age_year
-## @param date Dates when births being measured occur.
-## @param dob Dates of birth of monthers.
-## @param break_min An integer or \code{NULL}.
-## Defaults to 15.
-## @param break_max An integer or \code{NULL}.
-## Defaults to 50.
-## @param width The width in years of the age intervals.
-## A positive integer defaulting to 5.
-## @param recode_up If \code{TRUE}, births to women
-## aged less than \code{break_min} are treated as occurring to
-## women in the lowest repoductive age group.
-## @param recode_down If \code{TRUE}, births to women
-## aged \code{break_max} or more are treated as
-## occurring to women in the highest reproductive
-## age group.
-##
-## @examples
-## plot_date_to_age_births(date = c("2024-03-27",
-##                                  "2022-11-09"),
-##                         dob = c("2001-03-21",
-##                                 "2000-07-13"))
-## plot_date_to_age_births(date = c("2024-03-27",
-##                                  "2022-11-09"),
-##                         dob = c("2001-03-21",
-##                                 "2000-07-13"),
-##                         width = 10,
-##                         break_min = 20)
-##
-## ## allow youngest and oldest age groups to be
-## ## set by the data
-## plot_date_to_age_births(date = c("2052-01-02",
-##                                  "2019-09-22",
-##                                  "2022-10-08"),
-##                         dob = c("2000-01-01",
-##                                 "2001-03-17",
-##                                 "2010-07-05"),
-##                         break_min = NULL,
-##                         break_max = NULL)
-##
-## ## recode ages outside the expected range
-## plot_date_to_age_births(date = c("2052-01-02",
-##                                  "2019-09-22",
-##                                  "2022-10-08"),
-##                         dob = c("2000-01-01",
-##                                 "2001-03-17",
-##                                 "2010-07-05"),
-##                         recode_up = TRUE,
-##                         recode_down = TRUE)
-## @export
+#' Depict the intervals created by
+#' function 'date_to_age_births'
+#'
+#' Create a plot illustrating how function
+#' \code{\link{date_to_age_births}} works.
+#' 
+#' \code{plot_date_to_age_births} is typically used for
+#' learning or documentation, rather than for
+#' actual data analysis.
+#'
+#' @inheritParams plot_date_to_age_year
+#' @param date Dates when births being measured occur.
+#' @param dob Dates of birth of monthers.
+#' @param break_min An integer or \code{NULL}.
+#' Defaults to 15.
+#' @param break_max An integer or \code{NULL}.
+#' Defaults to 50.
+#' @param width The width in years of the age intervals.
+#' A positive integer defaulting to 5.
+#' @param recode_up If \code{TRUE}, births to women
+#' aged less than \code{break_min} are treated as occurring to
+#' women in the lowest repoductive age group.
+#' @param recode_down If \code{TRUE}, births to women
+#' aged \code{break_max} or more are treated as
+#' occurring to women in the highest reproductive
+#' age group.
+#'
+#' @examples
+#' plot_date_to_age_births(date = c("2024-03-27",
+#'                                  "2022-11-09"),
+#'                         dob = c("2001-03-21",
+#'                                 "2000-07-13"))
+#' plot_date_to_age_births(date = c("2024-03-27",
+#'                                  "2022-11-09"),
+#'                         dob = c("2001-03-21",
+#'                                 "2000-07-13"),
+#'                         width = 10,
+#'                         break_min = 20)
+#'
+#' ## allow youngest and oldest age groups to be
+#' ## set by the data
+#' plot_date_to_age_births(date = c("2052-01-02",
+#'                                  "2019-09-22",
+#'                                  "2022-10-08"),
+#'                         dob = c("2000-01-01",
+#'                                 "2001-03-17",
+#'                                 "2010-07-05"),
+#'                         break_min = NULL,
+#'                         break_max = NULL)
+#'
+#' ## recode ages outside the expected range
+#' plot_date_to_age_births(date = c("2052-01-02",
+#'                                  "2019-09-22",
+#'                                  "2022-10-08"),
+#'                         dob = c("2000-01-01",
+#'                                 "2001-03-17",
+#'                                 "2010-07-05"),
+#'                         recode_up = TRUE,
+#'                         recode_down = TRUE)
+#' @keywords interal
+#' @export
 plot_date_to_age_births <- function(date, dob,
                                     break_min = 15,
                                     break_max = 50,
@@ -444,9 +452,9 @@ plot_date_to_age_births <- function(date, dob,
     }
     ## make breaks
     breaks <- make_breaks_date_to_integer_births(age = age_years,
-                                         width = width,
-                                         break_min = break_min,
-                                         break_max = break_max)
+                                                 width = width,
+                                                 break_min = break_min,
+                                                 break_max = break_max)
     ## make labels for breaks
     labels <- make_labels_age(breaks = breaks,
                               open_last = FALSE)
@@ -465,44 +473,45 @@ plot_date_to_age_births <- function(date, dob,
 }
 
 ## NO_TESTS
-## Depict the intervals created by
-## function 'date_to_age_custom'
-##
-## Create a plot illustrating how function
-## \code{\link{date_to_age_custom}} works.
-## 
-## \code{plot_date_to_age_custom} is typically used for
-## learning or documentation, rather than for
-## actual data analysis.
-##
-## @inheritParams plot_date_to_age_year
-## @param breaks A vector of strictly increasing integer values.
-##
-## @examples
-## plot_date_to_age_custom(date = c("2024-03-27",
-##                                  "2022-11-09"),
-##                         dob = c("2001-03-21",
-##                                 "2010-07-13"),
-##                         breaks = c(0, 15, 60))
-## plot_date_to_age_custom(date = c("2024-03-27",
-##                                  "2022-11-09"),
-##                         dob = c("2001-03-21",
-##                                 "2010-07-13"),
-##                         breaks = c(10, 40, 65))
-##
-## ## alternative specifications for oldest age group
-## plot_date_to_age_custom(date = c("2024-03-27",
-##                                  "2022-11-09"),
-##                         dob = c("2001-03-21",
-##                                 "2010-07-13"),
-##                         breaks = c(0, 15, 50))
-## plot_date_to_age_custom(date = c("2024-03-27",
-##                                  "2022-11-09"),
-##                         dob = c("2001-03-21",
-##                                 "2010-07-13"),
-##                         breaks = c(0, 15, 50),
-##                         open_last = FALSE)
-## @export
+#' Depict the intervals created by
+#' function 'date_to_age_custom'
+#'
+#' Create a plot illustrating how function
+#' \code{\link{date_to_age_custom}} works.
+#' 
+#' \code{plot_date_to_age_custom} is typically used for
+#' learning or documentation, rather than for
+#' actual data analysis.
+#'
+#' @inheritParams plot_date_to_age_year
+#' @param breaks A vector of strictly increasing integer values.
+#'
+#' @examples
+#' plot_date_to_age_custom(date = c("2024-03-27",
+#'                                  "2022-11-09"),
+#'                         dob = c("2001-03-21",
+#'                                 "2010-07-13"),
+#'                         breaks = c(0, 15, 60))
+#' plot_date_to_age_custom(date = c("2024-03-27",
+#'                                  "2022-11-09"),
+#'                         dob = c("2001-03-21",
+#'                                 "2010-07-13"),
+#'                         breaks = c(10, 40, 65))
+#'
+#' ## alternative specifications for oldest age group
+#' plot_date_to_age_custom(date = c("2024-03-27",
+#'                                  "2022-11-09"),
+#'                         dob = c("2001-03-21",
+#'                                 "2010-07-13"),
+#'                         breaks = c(0, 15, 50))
+#' plot_date_to_age_custom(date = c("2024-03-27",
+#'                                  "2022-11-09"),
+#'                         dob = c("2001-03-21",
+#'                                 "2010-07-13"),
+#'                         breaks = c(0, 15, 50),
+#'                         open_last = FALSE)
+#' @keywords interal
+#' @export
 plot_date_to_age_custom <- function(date, dob,
                                     breaks = NULL,
                                     open_last = TRUE,
@@ -571,39 +580,40 @@ plot_date_to_age_custom <- function(date, dob,
 }
 
 ## NO_TESTS
-## Depict the intervals created by
-## function 'date_to_age_quarter'
-##
-## Create a plot illustrating how function
-## \code{\link{date_to_age_quarter}} works.
-## 
-## \code{plot_date_to_age_quarter} is typically used for
-## learning or documentation, rather than for
-## actual data analysis.
-##
-## @inheritParams plot_date_to_age_year
-## @param break_max An integer or \code{NULL}.
-## Defaults to 400.
-##
-## @examples
-## plot_date_to_age_quarter(date = c("2004-03-27",
-##                                   "2002-11-09"),
-##                          dob = c("2001-03-21",
-##                                  "2000-07-13"),
-##                          break_max = 12)
-##
-## ## alternative specifications for oldest age group
-## plot_date_to_age_quarter(date = "2019-09-22",
-##                          dob = "2018-01-01",
-##                          break_max = 4)
-## plot_date_to_age_quarter(date = "2019-09-22",
-##                          dob = "2018-01-01",
-##                          break_max = NULL)
-## plot_date_to_age_quarter(date = "2019-09-22",
-##                          dob = "2018-01-01",
-##                          break_max = NULL,
-##                          open_last = FALSE)
-## @export
+#' Depict the intervals created by
+#' function 'date_to_age_quarter'
+#'
+#' Create a plot illustrating how function
+#' \code{\link{date_to_age_quarter}} works.
+#' 
+#' \code{plot_date_to_age_quarter} is typically used for
+#' learning or documentation, rather than for
+#' actual data analysis.
+#'
+#' @inheritParams plot_date_to_age_year
+#' @param break_max An integer or \code{NULL}.
+#' Defaults to 400.
+#'
+#' @examples
+#' plot_date_to_age_quarter(date = c("2004-03-27",
+#'                                   "2002-11-09"),
+#'                          dob = c("2001-03-21",
+#'                                  "2000-07-13"),
+#'                          break_max = 12)
+#'
+#' ## alternative specifications for oldest age group
+#' plot_date_to_age_quarter(date = "2019-09-22",
+#'                          dob = "2018-01-01",
+#'                          break_max = 4)
+#' plot_date_to_age_quarter(date = "2019-09-22",
+#'                          dob = "2018-01-01",
+#'                          break_max = NULL)
+#' plot_date_to_age_quarter(date = "2019-09-22",
+#'                          dob = "2018-01-01",
+#'                          break_max = NULL,
+#'                          open_last = FALSE)
+#' @keywords interal
+#' @export
 plot_date_to_age_quarter <- function(date,
                                      dob,
                                      break_min = 0,
@@ -656,8 +666,10 @@ plot_date_to_age_quarter <- function(date,
                                        unit = "quarter")
     ## make breaks
     breaks <- make_breaks_date_to_integer_month_quarter(age = age_quarters,
-                                                break_min = break_min,
-                                                break_max = break_max)
+                                                        break_min = break_min,
+                                                        break_max = break_max,
+                                                        has_break_min_arg = TRUE,
+                                                        has_break_max_arg = TRUE)
     ## make labels for these breaks
     n_break <- length(breaks)
     break_min <- breaks[[1L]]
@@ -680,39 +692,40 @@ plot_date_to_age_quarter <- function(date,
 }
 
 ## NO_TESTS
-## Depict the intervals created by
-## function 'date_to_age_month'
-##
-## Create a plot illustrating how function
-## \code{\link{date_to_age_month}} works.
-## 
-## \code{plot_date_to_age_month} is typically used for
-## learning or documentation, rather than for
-## actual data analysis.
-##
-## @inheritParams plot_date_to_age_year
-## @param break_max An integer or \code{NULL}.
-## Defaults to 1200.
-##
-## @examples
-## plot_date_to_age_month(date = c("2004-03-27",
-##                                 "2004-11-09"),
-##                        dob = c("2003-03-21",
-##                                "2003-07-13"),
-##                        break_max = 24)
-##
-## ## alternative specifications for oldest age group
-## plot_date_to_age_month(date = "2019-09-22",
-##                        dob = "2019-01-01",
-##                        break_max = 12)
-## plot_date_to_age_month(date = "2019-09-22",
-##                        dob = "2019-01-01",
-##                        break_max = NULL)
-## plot_date_to_age_month(date = "2019-09-22",
-##                        dob = "2019-01-01",
-##                        break_max = NULL,
-##                        open_last = FALSE)
-## @export
+#' Depict the intervals created by
+#' function 'date_to_age_month'
+#'
+#' Create a plot illustrating how function
+#' \code{\link{date_to_age_month}} works.
+#' 
+#' \code{plot_date_to_age_month} is typically used for
+#' learning or documentation, rather than for
+#' actual data analysis.
+#'
+#' @inheritParams plot_date_to_age_year
+#' @param break_max An integer or \code{NULL}.
+#' Defaults to 1200.
+#'
+#' @examples
+#' plot_date_to_age_month(date = c("2004-03-27",
+#'                                 "2004-11-09"),
+#'                        dob = c("2003-03-21",
+#'                                "2003-07-13"),
+#'                        break_max = 24)
+#'
+#' ## alternative specifications for oldest age group
+#' plot_date_to_age_month(date = "2019-09-22",
+#'                        dob = "2019-01-01",
+#'                        break_max = 12)
+#' plot_date_to_age_month(date = "2019-09-22",
+#'                        dob = "2019-01-01",
+#'                        break_max = NULL)
+#' plot_date_to_age_month(date = "2019-09-22",
+#'                        dob = "2019-01-01",
+#'                        break_max = NULL,
+#'                        open_last = FALSE)
+#' @keywords interal
+#' @export
 plot_date_to_age_month <- function(date,
                                    dob,
                                    break_min = 0,
@@ -765,7 +778,9 @@ plot_date_to_age_month <- function(date,
     ## make breaks
     breaks <- make_breaks_date_to_integer_month_quarter(age = age_months,
                                                         break_min = break_min,
-                                                        break_max = break_max)
+                                                        break_max = break_max,
+                                                        has_break_min_arg = TRUE,
+                                                        has_break_max_arg = TRUE)
     ## make labels for these breaks
     n_break <- length(breaks)
     break_min <- breaks[[1L]]

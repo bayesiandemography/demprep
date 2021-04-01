@@ -118,7 +118,8 @@ date_to_period_year <- function(date,
                                             month_start = month_start,
                                             width = 1L,
                                             origin = NULL,
-                                            break_min = NULL)
+                                            break_min = NULL,
+                                            has_break_min_arg = FALSE)
     ## create labels
     include_na <- anyNA(date)
     labels <- make_labels_period(breaks = breaks,
@@ -241,10 +242,11 @@ date_to_period_multi <- function(date,
     }
     ## create sequence of breaks
     breaks <- make_breaks_date_to_date_year(date = date,
-                                    month_start = month_start,
-                                    width = width,
-                                    origin = origin,
-                                    break_min = NULL)
+                                            month_start = month_start,
+                                            width = width,
+                                            origin = origin,
+                                            break_min = NULL,
+                                            has_break_min_arg = FALSE)
     ## make labels for these breaks
     include_na <- anyNA(date)
     labels <- make_labels_cohort(breaks = breaks,
@@ -449,7 +451,8 @@ date_to_period_quarter <- function(date) {
     }
     ## create sequence of breaks
     breaks <- make_breaks_date_to_date_quarter(date = date,
-                                               break_min = NULL)
+                                               break_min = NULL,
+                                               has_break_min_arg = FALSE)
     ## make labels for these breaks
     n <- length(breaks)
     break_min <- breaks[[1L]]
@@ -533,7 +536,8 @@ date_to_period_month <- function(date) {
     }
     ## create sequence of breaks
     breaks <- make_breaks_date_to_date_month(date = date,
-                                             break_min = NULL)
+                                             break_min = NULL,
+                                             has_break_min_arg = FALSE)
     ## make labels for these breaks
     n <- length(breaks)
     break_min <- breaks[[1L]]

@@ -169,8 +169,12 @@ date_to_cohort_year <- function(date,
             stop(gettextf("'%s' is %s but '%s' is %s",
                           "open_first", "TRUE", "label_year_start", "FALSE"))
     }
-    else        
+    else {
         open_first <- has_break_min && isTRUE(label_year_start)
+        message(gettextf("'%s' set to %d",
+                         "open_first", open_first),
+                appendLF = TRUE)
+    }
     if (!open_first && has_break_min)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
@@ -190,7 +194,8 @@ date_to_cohort_year <- function(date,
                                             month_start = month_start,
                                             width = 1L,
                                             origin = NULL,
-                                            break_min = break_min)
+                                            break_min = break_min,
+                                            has_break_min_arg = TRUE)
     ## make labels for these breaks
     include_na <- anyNA(date)
     labels <- make_labels_cohort(breaks = breaks,
@@ -358,8 +363,12 @@ date_to_cohort_multi <- function(date,
         demcheck::err_is_logical_flag(x = open_first,
                                       name = "open_first")
     }
-    else
+    else {
         open_first <- has_break_min
+        message(gettextf("'%s' set to %d",
+                         "open_first", open_first),
+                appendLF = TRUE)
+    }
     if (!open_first && has_break_min)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
@@ -376,10 +385,11 @@ date_to_cohort_multi <- function(date,
     }
     ## create sequence of breaks
     breaks <- make_breaks_date_to_date_year(date = date,
-                                    month_start = month_start,
-                                    width = width,
-                                    origin = origin,
-                                    break_min = break_min)
+                                            month_start = month_start,
+                                            width = width,
+                                            origin = origin,
+                                            break_min = break_min,
+                                            has_break_min_arg = TRUE)
     ## make labels for these breaks
     include_na <- anyNA(date)
     labels <- make_labels_cohort(breaks = breaks,
@@ -401,7 +411,7 @@ date_to_cohort_multi <- function(date,
 
 
 ## HAS_TESTS
-#' Convert dates to customized cohorts
+#' Convert dates to customised cohorts
 #'
 #' Identify cohorts, based on dates of births or other events.
 #' The cohorts have varying widths. All widths
@@ -645,8 +655,12 @@ date_to_cohort_quarter <- function(date,
     if (has_open_first)
         demcheck::err_is_logical_flag(x = open_first,
                                       name = "open_first")
-    else
+    else {
         open_first <- has_break_min
+        message(gettextf("'%s' set to %d",
+                         "open_first", open_first),
+                appendLF = TRUE)
+    }        
     if (!open_first && has_break_min)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
@@ -663,7 +677,8 @@ date_to_cohort_quarter <- function(date,
     }
     ## create sequence of breaks
     breaks <- make_breaks_date_to_date_quarter(date = date,
-                                       break_min = break_min)
+                                               break_min = break_min,
+                                               has_break_min_arg = TRUE)
     ## make labels for these breaks
     n_break <- length(breaks)
     break_min <- breaks[[1L]]
@@ -773,8 +788,12 @@ date_to_cohort_month <- function(date,
     if (has_open_first)
         demcheck::err_is_logical_flag(x = open_first,
                                       name = "open_first")
-    else
+    else {
         open_first <- has_break_min
+        message(gettextf("'%s' set to %d",
+                         "open_first", open_first),
+                appendLF = TRUE)
+    }
     if (!open_first && has_break_min)
         demcheck::err_ge_break_min_date(date = date,
                                         break_min = break_min)
@@ -791,7 +810,8 @@ date_to_cohort_month <- function(date,
     }
     ## create sequence of breaks
     breaks <- make_breaks_date_to_date_month(date = date,
-                                             break_min = break_min)
+                                             break_min = break_min,
+                                             has_break_min_arg = TRUE)
     ## make labels for these breaks
     n_break <- length(breaks)
     break_min <- breaks[[1L]]

@@ -79,6 +79,8 @@ format_period_year <- function(x) {
                                                 is_open = FALSE,
                                                 break_min = NULL,
                                                 break_max = NULL,
+                                                has_break_min_arg = FALSE,
+                                                has_break_max_arg = FALSE,
                                                 open_first = FALSE,
                                                 open_last = FALSE)
     ## make labels for these breaks
@@ -212,6 +214,8 @@ format_period_multi <- function(x,
                                                 is_open = FALSE,
                                                 break_min = NULL,
                                                 break_max = NULL,
+                                                has_break_min_arg = FALSE,
+                                                has_break_max_arg = FALSE,
                                                 open_first = FALSE,
                                                 open_last = FALSE)
     ## make labels for these breaks
@@ -427,7 +431,8 @@ format_period_quarter <- function(x) {
     date <- date_start_quarter(labels_old)
     ## make breaks
     breaks <- make_breaks_date_to_date_quarter(date = date,
-                                               break_min = NULL)
+                                               break_min = NULL,
+                                               has_break_min_arg = FALSE)
     ## make labels for these breaks
     include_na <- any(is_na)
     n <- length(breaks)
@@ -518,7 +523,8 @@ format_period_month <- function(x) {
     date <- date_start_month(labels_old)
     ## make breaks
     breaks <- make_breaks_date_to_date_month(date = date,
-                                             break_min = NULL)
+                                             break_min = NULL,
+                                             has_break_min_arg = FALSE)
     ## make labels for these breaks
     include_na <- any(is_na)
     n <- length(breaks)

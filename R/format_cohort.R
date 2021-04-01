@@ -168,6 +168,8 @@ format_cohort_year <- function(x,
                                                 is_open = is_open,
                                                 break_min = break_min,
                                                 break_max = NULL,
+                                                has_break_min_arg = TRUE,
+                                                has_break_max_arg = FALSE,
                                                 open_first = open_first,
                                                 open_last = FALSE)
     ## make labels for these breaks
@@ -371,6 +373,8 @@ format_cohort_multi <- function(x,
                                                 is_open = any(is_open),
                                                 break_min = break_min,
                                                 break_max = NULL,
+                                                has_break_min_arg = TRUE,
+                                                has_break_max_arg = FALSE,
                                                 open_first = open_first,
                                                 open_last = FALSE)
     ## make labels for these breaks
@@ -696,6 +700,7 @@ format_cohort_quarter <- function(x,
     breaks <- make_breaks_label_to_date_month_quarter(date_low = date_low,
                                                       date_up = date_up,
                                                       break_min = break_min,
+                                                      has_break_min_arg = TRUE,
                                                       is_open = is_open,
                                                       unit = "quarter")
     ## make labels for these breaks
@@ -857,6 +862,7 @@ format_cohort_month <- function(x,
     breaks <- make_breaks_label_to_date_month_quarter(date_low = date_low,
                                                       date_up = date_up,
                                                       break_min = break_min,
+                                                      has_break_min_arg = TRUE,
                                                       is_open = is_open,
                                                       unit = "month")
     ## make labels for these breaks

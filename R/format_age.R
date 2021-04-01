@@ -268,6 +268,8 @@ format_age_multi <- function(x,
                                                 is_open = is_open,
                                                 break_min = break_min,
                                                 break_max = break_max,
+                                                has_break_min_arg = TRUE,
+                                                has_break_max_arg = TRUE,
                                                 open_first = FALSE,
                                                 open_last = open_last)
     ## make labels for these breaks
@@ -938,6 +940,8 @@ format_age_quarter <- function(x,
                                                          is_open = is_open,
                                                          break_min = break_min,
                                                          break_max = break_max,
+                                                         has_break_min_arg = TRUE,
+                                                         has_break_max_arg = TRUE,
                                                          open_last = open_last)
     ## make labels for these breaks
     include_na <- any(is_na)
@@ -1119,6 +1123,8 @@ format_age_month <- function(x,
                                                          is_open = is_open,
                                                          break_min = break_min,
                                                          break_max = break_max,
+                                                         has_break_min_arg = TRUE,
+                                                         has_break_max_arg = TRUE,
                                                          open_last = open_last)
     ## make labels for these breaks
     include_na <- any(is_na)

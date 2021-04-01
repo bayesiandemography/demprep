@@ -2,7 +2,7 @@
 % Please edit documentation in R/date_to_cohort.R
 \name{date_to_cohort_custom}
 \alias{date_to_cohort_custom}
-\title{Convert dates to customized cohorts}
+\title{Convert dates to customised cohorts}
 \usage{
 date_to_cohort_custom(date, breaks, open_first = TRUE)
 }
