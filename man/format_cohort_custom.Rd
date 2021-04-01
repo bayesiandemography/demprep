@@ -3,7 +3,7 @@
 \name{format_cohort_custom}
 \alias{format_cohort_custom}
 \title{Put cohort labels into the format required
-for customized cohorts}
+for customised cohorts}
 \usage{
 format_cohort_custom(x, breaks, open_first = NULL)
 }
@@ -23,22 +23,20 @@ A factor with the same length as
 Given a vector of cohort labels, create a
 \code{\link[base]{factor}}
 that contains levels for all cohorts
-defined by \code{breaks}.
-If \code{open_first} is \code{TRUE}, then the earliest
-cohort has no lower limit. (This is equivalent
-to an open age group with no upper limit.)
-}
-\details{
-\code{format_cohort_custom}
+defined by \code{breaks}. \code{format_cohort_custom}
 is the most flexible
 of the \code{format_cohort} functions
 in that the cohorts can have any combination of widths,
 though the widths must be defined in whole numbers of years.
+}
+\details{
+If \code{open_first} is \code{TRUE}, then the earliest
+cohort has no lower limit. (This is equivalent
+to an open age group with no upper limit.)
 
-The elements of \code{x} can be
-single-year labels, such as \code{"2018"} and \code{"1974"},
+The elements of \code{x} must be
 multi-year labels such as \code{"1950-1960"} and
-\code{"2020-2025"}, and labels for intervals
+\code{"2020-2025"}, or labels for intervals
 that are open on the left, such as \code{"<2000"}
 and \code{<"1960"}.
 
@@ -47,7 +45,7 @@ if any of the intervals in \code{x} is open,
 and to \code{FALSE} otherwise.
 
 If \code{x} contains \code{NA}, then the
-levels of the factor created by \code{format_cohort_year}
+levels of the factor created by \code{format_cohort_custom}
 also contain \code{NA}.
 }
 \examples{

@@ -36,8 +36,8 @@ test_that("format_cohort_multi works with valid input", {
                             exclude = NULL))
     expect_identical(format_cohort_multi(x = c("2000-2001", "2010-2011", NA, "2004-2005"),
                                          width = 1),
-                     factor(c("2000", "2010", NA, "2004"),
-                            levels = c(2000:2010, NA_character_),
+                     factor(c("2000-2001", "2010-2011", NA, "2004-2005"),
+                            levels = c(paste(2000:2010, 2001:2011, sep = "-"), NA_character_),
                             exclude = NULL))
     expect_identical(format_cohort_multi(x = c("2000-2001", "2010-2015", NA, "2004-2005"),
                                          break_min = 1995),
@@ -78,17 +78,17 @@ test_that("format_cohort_multi gives correct error with invalid inputs", {
 ## format_cohort_custom -------------------------------------------------------
 
 test_that("format_cohort_custom works with valid input", {
-    expect_identical(format_cohort_custom(x = c("<2000", "2000-2001", "2010-2015", NA, "2004"),
+    expect_identical(format_cohort_custom(x = c("<2000", "2000-2001", "2010-2015", NA, "2004-2005"),
                                           breaks = c(2000, 2003, 2006, 2020)),
                      factor(c("<2000", "2000-2003", "2006-2020", NA, "2003-2006"),
                             levels = c("<2000", "2000-2003", "2003-2006", "2006-2020", NA),
                             exclude = NULL))
-    expect_identical(format_cohort_custom(x = c("2000", "2000-2001", "2010-2015", NA, "2004"),
+    expect_identical(format_cohort_custom(x = c("2000-2001", "2000-2001", "2010-2015", NA, "2004-2005"),
                                           breaks = c(2000, 2003, 2006, 2020)),
                      factor(c("2000-2003", "2000-2003", "2006-2020", NA, "2003-2006"),
                             levels = c("2000-2003", "2003-2006", "2006-2020", NA),
                             exclude = NULL))
-    expect_identical(format_cohort_custom(x = c("2000-2001", "2010-2015", NA, "2004", "1990"),
+    expect_identical(format_cohort_custom(x = c("2000-2001", "2010-2015", NA, "2004-2005", "1990-1991"),
                                           breaks = c(2000, 2003, 2006, 2020),
                                           open_first = TRUE),
                      factor(c("2000-2003", "2006-2020", NA, "2003-2006", "<2000"),

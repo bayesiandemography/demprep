@@ -33,20 +33,28 @@ A factor with the same length as
 }
 \description{
 Given a vector of cohort labels, create a
-\code{\link[base]{factor}} where the levels
-contain a complete set of cohorts. 
+\code{\link[base]{factor}}  containing
+levels for the earliest and latest cohorts
+in \code{x}, and for all cohorts in between.
+For instance, if the earliest cohort in \code{x}
+is \code{"1990-1995"}, and the latest is \code{"2005-2010"},
+then \code{format_cohort_multi} creates a factor
+with levels \code{"1990-1995"}, \code{"1995-2000"},
+\code{"2000-2005"},and \code{"2005-2010"}.
+All cohorts in the return value (with the possible
+exception of the earliest) have the same length,
+which is controlled by the \code{width} parameter.
+}
+\details{
 If \code{open_first} is \code{TRUE}, then the earliest
 cohort has no lower limit. (This is equivalent
 to an open age group with no upper limit.)
-}
-\details{
-The elements of \code{x} are typically multi-year
+
+The elements of \code{x} must be multi-year
 intervals such as \code{"1950-1960"},
 \code{"2020-2025"}, or intervals that are
-open on the left, eg \code{"<2000"}
-or \code{<"1960"}. However, \code{x} can
-also contain single-year labels, such as
-\code{"2018"} or \code{"1974"}.
+open on the left, such as \code{"<2000"}
+or \code{<"1960"}.
 
 \code{open_first} defaults to \code{TRUE}
 if a value for \code{break_min} is supplied,
@@ -54,22 +62,22 @@ or if any intervals in \code{x} is open,
 and to \code{FALSE} otherwise.
 
 If \code{x} contains \code{NA}, then the
-levels of the factor created by \code{format_cohort_year}
+levels of the factor created by \code{format_cohort_multi}
 also contain \code{NA}.
 }
 \examples{
-format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"))
+format_cohort_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"))
 
 ## 'break_min' is higher than the minimum of 'x'
-format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
+format_cohort_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
                     break_min = 2005)
 
 ## 'break_min' is lower then the minimum of 'x'
-format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
+format_cohort_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
                     break_min = 1990)
 
 ## 'break_min' supplied, but 'open_first' is FALSE
-format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
+format_cohort_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
                     break_min = 1990,
                     open_first = FALSE)
 

@@ -22,32 +22,35 @@ A factor with the same length as
 \description{
 Given a vector of period labels, create a
 \code{\link[base]{factor}}  containing
-levels for the earliest and lastest periods
+levels for the earliest and latest periods
 in \code{x}, and for all periods in between.
 For instance, if the earliest period in \code{x}
 is \code{"1990-1995"}, and the latest is \code{"2005-2010"},
 then \code{format_period_multi} creates a factor
 with levels \code{"1990-1995"}, \code{"1995-2000"},
 \code{"2000-2005"},and \code{"2005-2010"}.
+All periods in the return value have the same length,
+which is controlled by the \code{width} parameter.
 }
 \details{
-The elements of \code{x} are typically multi-year
+The elements of \code{x} must be multi-year
 intervals such as \code{"1950-1960"},
-\code{"2020-2025"}. However, \code{x} can
-also contain single-year labels, such as
-\code{"2018"} or \code{"1974"}.
+\code{"2020-2025"}.
+
+The location of the periods can be shifted
+by using different values for \code{origin}.
 
 If \code{x} contains \code{NA}, then the
-levels of the factor created by \code{format_period_year}
+levels of the factor created by \code{format_period_multi}
 also contain \code{NA}.
 }
 \examples{
-format_period_multi(x = c("2000-2001", "2005-2010", NA, "1999"))
+format_period_multi(x = c("2000-2001", "2005-2010", NA, "1996-1998"))
 
-format_period_multi(x = c("2000-2001", "2005-2010", NA, "1999"),
+format_period_multi(x = c("2000-2001", "2005-2010", NA, "1996-1998"),
                     width = 10)
 
-format_period_multi(x = c("2000-2001", "2005-2010", NA, "1999"),
+format_period_multi(x = c("2000-2001", "2005-2010", NA, "1996-1998"),
                     width = 10,
                     origin = 2001)
 }

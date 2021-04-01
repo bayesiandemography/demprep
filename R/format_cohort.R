@@ -128,7 +128,7 @@ format_cohort_year <- function(x,
     ## determine value for 'open_first', if not supplied
     if (!has_open_first)
         open_first <- has_break_min || any(is_open)
-    ## extract lower and upper ages
+    ## extract lower and upper years
     year_low <- rep(NA_integer_, times = length(labels_old))
     year_up <- year_low
     year_low[is_single] <- as.integer(labels_old[is_single])
@@ -177,16 +177,16 @@ format_cohort_year <- function(x,
                                                        open_last = FALSE,
                                                        include_na = include_na)
     ## assign new labels to x
-    i_label_old <- match(x, labels_old)
-    year <- year_low[i_label_old]
-    i_intervals_new <- findInterval(x = year,
-                                    vec = breaks)
+    i_labels_old <- match(x, labels_old)
+    year <- year_low[i_labels_old]
+    i_labels_new <- findInterval(x = year,
+                                 vec = breaks)
     if (open_first) {
         is_open_x <- x %in% labels_old[is_open]
-        i_intervals_new[is_open_x] <- 1L
-        i_intervals_new[!is_open_x] <- i_intervals_new[!is_open_x] + 1L
+        i_labels_new[is_open_x] <- 1L
+        i_labels_new[!is_open_x] <- i_labels_new[!is_open_x] + 1L
     }
-    ans <- labels_new[i_intervals_new]
+    ans <- labels_new[i_labels_new]
     ## return result
     ans <- factor(x = ans,
                   levels = labels_new,
@@ -200,19 +200,27 @@ format_cohort_year <- function(x,
 #' for multi-year cohorts
 #'
 #' Given a vector of cohort labels, create a
-#' \code{\link[base]{factor}} where the levels
-#' contain a complete set of cohorts. 
+#' \code{\link[base]{factor}}  containing
+#' levels for the earliest and latest cohorts
+#' in \code{x}, and for all cohorts in between.
+#' For instance, if the earliest cohort in \code{x}
+#' is \code{"1990-1995"}, and the latest is \code{"2005-2010"},
+#' then \code{format_cohort_multi} creates a factor
+#' with levels \code{"1990-1995"}, \code{"1995-2000"},
+#' \code{"2000-2005"},and \code{"2005-2010"}.
+#' All cohorts in the return value (with the possible
+#' exception of the earliest) have the same length,
+#' which is controlled by the \code{width} parameter.
+#'
 #' If \code{open_first} is \code{TRUE}, then the earliest
 #' cohort has no lower limit. (This is equivalent
 #' to an open age group with no upper limit.)
 #' 
-#' The elements of \code{x} are typically multi-year
+#' The elements of \code{x} must be multi-year
 #' intervals such as \code{"1950-1960"},
 #' \code{"2020-2025"}, or intervals that are
-#' open on the left, eg \code{"<2000"}
-#' or \code{<"1960"}. However, \code{x} can
-#' also contain single-year labels, such as
-#' \code{"2018"} or \code{"1974"}.
+#' open on the left, such as \code{"<2000"}
+#' or \code{<"1960"}.
 #'
 #' \code{open_first} defaults to \code{TRUE}
 #' if a value for \code{break_min} is supplied,
@@ -220,7 +228,7 @@ format_cohort_year <- function(x,
 #' and to \code{FALSE} otherwise.
 #' 
 #' If \code{x} contains \code{NA}, then the
-#' levels of the factor created by \code{format_cohort_year}
+#' levels of the factor created by \code{format_cohort_multi}
 #' also contain \code{NA}.
 #'
 #' @inheritParams format_cohort_year
@@ -245,18 +253,18 @@ format_cohort_year <- function(x,
 #' for constructing labels for cohorts.
 #'
 #' @examples
-#' format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"))
+#' format_cohort_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"))
 #'
 #' ## 'break_min' is higher than the minimum of 'x'
-#' format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
+#' format_cohort_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
 #'                     break_min = 2005)
 #'
 #' ## 'break_min' is lower then the minimum of 'x'
-#' format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
+#' format_cohort_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
 #'                     break_min = 1990)
 #'
 #' ## 'break_min' supplied, but 'open_first' is FALSE
-#' format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
+#' format_cohort_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
 #'                     break_min = 1990,
 #'                     open_first = FALSE)
 #'
@@ -275,7 +283,6 @@ format_cohort_multi <- function(x,
                                 break_min = NULL,
                                 open_first = NULL) {
     ## regexp patterns
-    p_single <- "^-?[0-9]+$"
     p_low_up <- "^(-?[0-9]+)-(-?[0-9]+)$"
     p_open <- "^<-?[0-9]+$"
     ## see if arguments supplied
@@ -315,10 +322,9 @@ format_cohort_multi <- function(x,
     labels_old <- unique(x)
     ## classify labels_old, raising error for any invalid ones
     is_na <- is.na(labels_old)
-    is_single <- grepl(p_single, labels_old)
     is_low_up <- grepl(p_low_up, labels_old)
     is_open <- grepl(p_open, labels_old)
-    is_valid <- is_na | is_single | is_low_up | is_open
+    is_valid <- is_na | is_low_up | is_open
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
         stop(gettextf("\"%s\" is not a valid label",
@@ -330,8 +336,6 @@ format_cohort_multi <- function(x,
     ## extract lower and upper ages
     year_low <- rep(NA_integer_, times = length(labels_old))
     year_up <- year_low
-    year_low[is_single] <- as.integer(labels_old[is_single])
-    year_up[is_single] <- year_low[is_single] + 1L
     year_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
     year_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up]))
     year_up[is_open] <- as.integer(sub("^<", "", labels_old[is_open]))
@@ -371,28 +375,21 @@ format_cohort_multi <- function(x,
                                                 open_last = FALSE)
     ## make labels for these breaks
     include_na <- any(is_na)
-    all_single <- (length(breaks) > 1L) && all(diff(breaks) == 1L)
-    if (all_single)
-        labels_new <- make_labels_grouped_int_enumerations(breaks = breaks,
-                                                           open_first = open_first,
-                                                           open_last = FALSE,
-                                                           include_na = include_na)
-    else
-        labels_new <- make_labels_grouped_int_endpoints(breaks = breaks,
-                                                        open_first = open_first,
-                                                        open_last = FALSE,
-                                                        include_na = include_na)
+    labels_new <- make_labels_grouped_int_endpoints(breaks = breaks,
+                                                    open_first = open_first,
+                                                    open_last = FALSE,
+                                                    include_na = include_na)
     ## assign new labels to x
-    i_label_old <- match(x, labels_old)
-    year <- year_low[i_label_old]
-    i_intervals_new <- findInterval(x = year,
-                                    vec = breaks)
+    i_labels_old <- match(x, labels_old)
+    year <- year_low[i_labels_old]
+    i_labels_new <- findInterval(x = year,
+                                 vec = breaks)
     if (open_first) {
         is_open_x <- x %in% labels_old[is_open]
-        i_intervals_new[is_open_x] <- 1L
-        i_intervals_new[!is_open_x] <- i_intervals_new[!is_open_x] + 1L
+        i_labels_new[is_open_x] <- 1L
+        i_labels_new[!is_open_x] <- i_labels_new[!is_open_x] + 1L
     }
-    ans <- labels_new[i_intervals_new]
+    ans <- labels_new[i_labels_new]
     ## return result
     ans <- factor(x = ans,
                   levels = labels_new,
@@ -403,26 +400,24 @@ format_cohort_multi <- function(x,
 
 ## HAS_TESTS
 #' Put cohort labels into the format required
-#' for customized cohorts
+#' for customised cohorts
 #'
 #' Given a vector of cohort labels, create a
 #' \code{\link[base]{factor}}
 #' that contains levels for all cohorts
-#' defined by \code{breaks}.
-#' If \code{open_first} is \code{TRUE}, then the earliest
-#' cohort has no lower limit. (This is equivalent
-#' to an open age group with no upper limit.)
-#'
-#' \code{format_cohort_custom}
+#' defined by \code{breaks}. \code{format_cohort_custom}
 #' is the most flexible
 #' of the \code{format_cohort} functions
 #' in that the cohorts can have any combination of widths,
 #' though the widths must be defined in whole numbers of years.
 #' 
-#' The elements of \code{x} can be
-#' single-year labels, such as \code{"2018"} and \code{"1974"},
+#' If \code{open_first} is \code{TRUE}, then the earliest
+#' cohort has no lower limit. (This is equivalent
+#' to an open age group with no upper limit.)
+#'
+#' The elements of \code{x} must be
 #' multi-year labels such as \code{"1950-1960"} and
-#' \code{"2020-2025"}, and labels for intervals
+#' \code{"2020-2025"}, or labels for intervals
 #' that are open on the left, such as \code{"<2000"}
 #' and \code{<"1960"}.
 #'
@@ -431,7 +426,7 @@ format_cohort_multi <- function(x,
 #' and to \code{FALSE} otherwise.
 #'
 #' If \code{x} contains \code{NA}, then the
-#' levels of the factor created by \code{format_cohort_year}
+#' levels of the factor created by \code{format_cohort_custom}
 #' also contain \code{NA}.
 #'
 #' @inheritParams format_cohort_year
@@ -463,7 +458,6 @@ format_cohort_custom <- function(x,
                                  breaks,
                                  open_first = NULL) {
     ## regexp patterns
-    p_single <- "^-?[0-9]+$"
     p_low_up <- "^(-?[0-9]+)-(-?[0-9]+)$"
     p_open <- "^<-?[0-9]+$"
     ## see if arguments supplied
@@ -496,10 +490,9 @@ format_cohort_custom <- function(x,
     labels_old <- unique(x)
     ## classify labels_old, raising error for any invalid ones
     is_na <- is.na(labels_old)
-    is_single <- grepl(p_single, labels_old)
     is_low_up <- grepl(p_low_up, labels_old)
     is_open <- grepl(p_open, labels_old)
-    is_valid <- is_na | is_single | is_low_up | is_open
+    is_valid <- is_na | is_low_up | is_open
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
         stop(gettextf("\"%s\" is not a valid label",
@@ -508,8 +501,6 @@ format_cohort_custom <- function(x,
     ## extract lower and upper ages
     year_low <- rep(NA_integer_, times = length(labels_old))
     year_up <- year_low
-    year_low[is_single] <- as.integer(labels_old[is_single])
-    year_up[is_single] <- year_low[is_single] + 1L
     year_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
     year_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up]))
     year_up[is_open] <- as.integer(sub("^<", "", labels_old[is_open]))
@@ -535,20 +526,13 @@ format_cohort_custom <- function(x,
                                               break_max = break_max)
     ## make labels for these breaks
     include_na <- any(is_na)
-    all_single <- (length(breaks) > 1L) && all(diff(breaks) == 1L)
-    if (all_single)
-        labels_new <- make_labels_grouped_int_enumerations(breaks = breaks,
-                                                           open_first = open_first,
-                                                           open_last = FALSE,
-                                                           include_na = include_na)
-    else
-        labels_new <- make_labels_grouped_int_endpoints(breaks = breaks,
-                                                        open_first = open_first,
-                                                        open_last = FALSE,
-                                                        include_na = include_na)
+    labels_new <- make_labels_grouped_int_endpoints(breaks = breaks,
+                                                    open_first = open_first,
+                                                    open_last = FALSE,
+                                                    include_na = include_na)
     ## assign new labels to x
-    i_label_old <- match(x, labels_old)
-    year <- year_low[i_label_old]
+    i_labels_old <- match(x, labels_old)
+    year <- year_low[i_labels_old]
     i_intervals_new <- findInterval(x = year,
                                     vec = breaks)
     if (open_first) {

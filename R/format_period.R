@@ -90,10 +90,11 @@ format_period_year <- function(x) {
                                        int_max = int_max,
                                        include_na = include_na)
     ## assign new labels to x
-    i_label_old <- match(x, labels_old)
-    i_intervals_new <- findInterval(x = year_low,
-                                    vec = breaks)
-    ans <- labels_new[i_intervals_new]
+    i_labels_old <- match(x, labels_old)
+    year <- year_low[i_labels_old]
+    i_labels_new <- findInterval(x = year,
+                                 vec = breaks)
+    ans <- labels_new[i_labels_new]
     ## return result
     ans <- factor(x = ans,
                   levels = labels_new,
@@ -108,22 +109,25 @@ format_period_year <- function(x) {
 #'
 #' Given a vector of period labels, create a
 #' \code{\link[base]{factor}}  containing
-#' levels for the earliest and lastest periods
+#' levels for the earliest and latest periods
 #' in \code{x}, and for all periods in between.
 #' For instance, if the earliest period in \code{x}
 #' is \code{"1990-1995"}, and the latest is \code{"2005-2010"},
 #' then \code{format_period_multi} creates a factor
 #' with levels \code{"1990-1995"}, \code{"1995-2000"},
 #' \code{"2000-2005"},and \code{"2005-2010"}.
+#' All periods in the return value have the same length,
+#' which is controlled by the \code{width} parameter.
 #'
-#' The elements of \code{x} are typically multi-year
+#' The elements of \code{x} must be multi-year
 #' intervals such as \code{"1950-1960"},
-#' \code{"2020-2025"}. However, \code{x} can
-#' also contain single-year labels, such as
-#' \code{"2018"} or \code{"1974"}.
+#' \code{"2020-2025"}.
+#'
+#' The location of the periods can be shifted
+#' by using different values for \code{origin}.
 #'
 #' If \code{x} contains \code{NA}, then the
-#' levels of the factor created by \code{format_period_year}
+#' levels of the factor created by \code{format_period_multi}
 #' also contain \code{NA}.
 #'
 #' @inheritParams format_period_year
@@ -148,12 +152,12 @@ format_period_year <- function(x) {
 #' for constructing labels for periods.
 #'
 #' @examples
-#' format_period_multi(x = c("2000-2001", "2005-2010", NA, "1999"))
+#' format_period_multi(x = c("2000-2001", "2005-2010", NA, "1996-1998"))
 #'
-#' format_period_multi(x = c("2000-2001", "2005-2010", NA, "1999"),
+#' format_period_multi(x = c("2000-2001", "2005-2010", NA, "1996-1998"),
 #'                     width = 10)
 #'
-#' format_period_multi(x = c("2000-2001", "2005-2010", NA, "1999"),
+#' format_period_multi(x = c("2000-2001", "2005-2010", NA, "1996-1998"),
 #'                     width = 10,
 #'                     origin = 2001)
 #' @export 
@@ -161,7 +165,6 @@ format_period_multi <- function(x,
                                 width = 5, 
                                 origin = 2000) {
     ## regexp patterns
-    p_single <- "^-?[0-9]+$"
     p_low_up <- "^(-?[0-9]+)-(-?[0-9]+)$"
     ## check arguments
     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
@@ -185,9 +188,8 @@ format_period_multi <- function(x,
     labels_old <- unique(x)
     ## classify labels_old, raising error for any invalid ones
     is_na <- is.na(labels_old)
-    is_single <- grepl(p_single, labels_old)
     is_low_up <- grepl(p_low_up, labels_old)
-    is_valid <- is_na | is_single | is_low_up
+    is_valid <- is_na | is_low_up
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
         stop(gettextf("\"%s\" is not a valid label",
@@ -196,8 +198,6 @@ format_period_multi <- function(x,
     ## extract lower and upper ages
     year_low <- rep(NA_integer_, times = length(labels_old))
     year_up <- year_low
-    year_low[is_single] <- as.integer(labels_old[is_single])
-    year_up[is_single] <- year_low[is_single] + 1L
     year_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
     year_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up]))
     demcheck::err_interval_diff_ge_one(int_low = year_low,
@@ -216,22 +216,16 @@ format_period_multi <- function(x,
                                                 open_last = FALSE)
     ## make labels for these breaks
     include_na <- any(is_na)
-    all_single <- (length(breaks) > 1L) && all(diff(breaks) == 1L)
-    if (all_single)
-        labels_new <- make_labels_grouped_int_enumerations(breaks = breaks,
-                                                           open_first = FALSE,
-                                                           open_last = FALSE,
-                                                           include_na = include_na)
-    else
-        labels_new <- make_labels_grouped_int_endpoints(breaks = breaks,
-                                                        open_first = FALSE,
-                                                        open_last = FALSE,
-                                                        include_na = include_na)
+    labels_new <- make_labels_grouped_int_endpoints(breaks = breaks,
+                                                    open_first = FALSE,
+                                                    open_last = FALSE,
+                                                    include_na = include_na)
     ## assign new labels to x
-    i_label_old <- match(x, labels_old)
-    i_intervals_new <- findInterval(x = year_low,
-                                    vec = breaks)
-    ans <- labels_new[i_intervals_new]
+    i_labels_old <- match(x, labels_old)
+    year <- year_low[i_labels_old]
+    i_labels_new <- findInterval(x = year,
+                                 vec = breaks)
+    ans <- labels_new[i_labels_new]
     ## return result
     ans <- factor(x = ans,
                   levels = labels_new,
@@ -242,7 +236,7 @@ format_period_multi <- function(x,
 
 ## HAS_TESTS
 #' Put period labels into the format required
-#' for customized periods
+#' for customised periods
 #'
 #' Given a vector of period labels, create a
 #' \code{\link[base]{factor}}
@@ -253,14 +247,12 @@ format_period_multi <- function(x,
 #' in that the periods can have any combination of widths,
 #' though the widths must be defined in whole numbers of years.
 #'
-#' The elements of \code{x} are typically multi-year
+#' The elements of \code{x} must be multi-year
 #' intervals such as \code{"1950-1960"},
-#' \code{"2020-2025"}. However, \code{x} can
-#' also contain single-year labels, such as
-#' \code{"2018"} or \code{"1974"}.
+#' \code{"2020-2025"}.
 #'
 #' If \code{x} contains \code{NA}, then the
-#' levels of the factor created by \code{format_period_year}
+#' levels of the factor created by \code{format_period_custom}
 #' also contain \code{NA}.
 #'
 #' @param x A vector of character labels.
@@ -282,16 +274,15 @@ format_period_multi <- function(x,
 #' \code{\link{make_labels_period}} describes the rules
 #' for constructing labels for periods.
 #' @examples
-#' format_period_custom(x = c("2000-2001", "2005-2010", "1999"),
+#' format_period_custom(x = c("2000-2001", "2005-2010", "1996-1998"),
 #'                      breaks = c(1990, 2000, 2020))
 #'
-#' format_period_custom(x = c("2000-2001", "2005-2010", "1999"),
+#' format_period_custom(x = c("2000-2001", "2005-2010", "1996-1998"),
 #'                      breaks = c(1995, 2005, 2010, 2020))
 #' @export 
 format_period_custom <- function(x,
                                  breaks) {
     ## regexp patterns
-    p_single <- "^-?[0-9]+$"
     p_low_up <- "^(-?[0-9]+)-(-?[0-9]+)$"
     ## check arguments
     breaks <- demcheck::err_tdy_breaks_integer_period(breaks = breaks)
@@ -313,9 +304,8 @@ format_period_custom <- function(x,
     labels_old <- unique(x)
     ## classify labels_old, raising error for any invalid ones
     is_na <- is.na(labels_old)
-    is_single <- grepl(p_single, labels_old)
     is_low_up <- grepl(p_low_up, labels_old)
-    is_valid <- is_na | is_single | is_low_up
+    is_valid <- is_na | is_low_up
     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
     if (i_invalid > 0L)
         stop(gettextf("\"%s\" is not a valid label",
@@ -324,8 +314,6 @@ format_period_custom <- function(x,
     ## extract lower and upper ages
     year_low <- rep(NA_integer_, times = length(labels_old))
     year_up <- year_low
-    year_low[is_single] <- as.integer(labels_old[is_single])
-    year_up[is_single] <- year_low[is_single] + 1L
     year_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
     year_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up])) + 1L
     demcheck::err_interval_diff_ge_one(int_low = year_low,
@@ -343,23 +331,16 @@ format_period_custom <- function(x,
                                               break_max = break_max)
     ## make labels for these breaks
     include_na <- any(is_na)
-    all_single <- (length(breaks) > 1L) && all(diff(breaks) == 1L)
-    if (all_single)
-        labels_new <- make_labels_grouped_int_enumerations(breaks = breaks,
-                                                           open_first = FALSE,
-                                                           open_last = FALSE,
-                                                           include_na = include_na)
-    else
-        labels_new <- make_labels_grouped_int_endpoints(breaks = breaks,
-                                                        open_first = FALSE,
-                                                        open_last = FALSE,
-                                                        include_na = include_na)
+    labels_new <- make_labels_grouped_int_endpoints(breaks = breaks,
+                                                    open_first = FALSE,
+                                                    open_last = FALSE,
+                                                    include_na = include_na)
     ## assign new labels to x
-    i_label_old <- match(x, labels_old)
-    year <- year_low[i_label_old]
-    i_intervals_new <- findInterval(x = year,
-                                    vec = breaks)
-    ans <- labels_new[i_intervals_new]
+    i_labels_old <- match(x, labels_old)
+    year <- year_low[i_labels_old]
+    i_labels_new <- findInterval(x = year,
+                                 vec = breaks)
+    ans <- labels_new[i_labels_new]
     ## return result
     ans <- factor(x = ans,
                   levels = labels_new,

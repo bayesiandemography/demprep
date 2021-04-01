@@ -3,7 +3,7 @@
 \name{format_period_custom}
 \alias{format_period_custom}
 \title{Put period labels into the format required
-for customized periods}
+for customised periods}
 \usage{
 format_period_custom(x, breaks)
 }
@@ -27,21 +27,19 @@ in that the periods can have any combination of widths,
 though the widths must be defined in whole numbers of years.
 }
 \details{
-The elements of \code{x} are typically multi-year
+The elements of \code{x} must be multi-year
 intervals such as \code{"1950-1960"},
-\code{"2020-2025"}. However, \code{x} can
-also contain single-year labels, such as
-\code{"2018"} or \code{"1974"}.
+\code{"2020-2025"}.
 
 If \code{x} contains \code{NA}, then the
-levels of the factor created by \code{format_period_year}
+levels of the factor created by \code{format_period_custom}
 also contain \code{NA}.
 }
 \examples{
-format_period_custom(x = c("2000-2001", "2005-2010", "1999"),
+format_period_custom(x = c("2000-2001", "2005-2010", "1996-1998"),
                      breaks = c(1990, 2000, 2020))
 
-format_period_custom(x = c("2000-2001", "2005-2010", "1999"),
+format_period_custom(x = c("2000-2001", "2005-2010", "1996-1998"),
                      breaks = c(1995, 2005, 2010, 2020))
 }
 \seealso{
