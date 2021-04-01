@@ -34,4 +34,4 @@ plot_date_to_triangle_month(date = c("2024-03-27",
                                     "2024-03-11"),
                             break_max = 12)
 }
-\keyword{interal}
+\keyword{internal}

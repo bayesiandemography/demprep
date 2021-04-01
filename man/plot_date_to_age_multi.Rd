@@ -75,4 +75,4 @@ plot_date_to_age_multi(date = c("2024-03-27",
                        break_max = 40,
                        open_last = FALSE)
 }
-\keyword{interal}
+\keyword{internal}

@@ -44,4 +44,4 @@ plot_date_to_triangle_quarter(date = c("2024-03-27",
                                       "2021-06-22"),
                               break_max = 20)
 }
-\keyword{interal}
+\keyword{internal}

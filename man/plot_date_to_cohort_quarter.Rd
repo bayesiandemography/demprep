@@ -41,4 +41,4 @@ plot_date_to_cohort_quarter(date = c("2024-03-27",
                                      "2022-11-09"),
                             break_min = "2022-01-01")
 }
-\keyword{interal}
+\keyword{internal}

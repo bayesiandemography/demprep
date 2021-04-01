@@ -80,4 +80,4 @@ plot_date_to_triangle_births(date = c("2024-01-27",
                              width = 1,
                              break_max = 45)
 }
-\keyword{interal}
+\keyword{internal}

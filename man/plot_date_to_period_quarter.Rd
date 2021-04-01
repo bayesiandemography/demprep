@@ -23,4 +23,4 @@ actual data analysis.
 plot_date_to_period_quarter(date = c("2021-11-24",
                                      "2022-04-09"))
 }
-\keyword{interal}
+\keyword{internal}

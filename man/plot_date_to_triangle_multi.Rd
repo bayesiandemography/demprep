@@ -64,4 +64,4 @@ plot_date_to_triangle_multi(date = c("2027-03-27",
                             width = 10,
                             break_max = 20)
 }
-\keyword{interal}
+\keyword{internal}

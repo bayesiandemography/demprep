@@ -40,7 +40,7 @@
 #'                               "2001-03-21"),
 #'                       break_max = 4,
 #'                       open_last = FALSE)
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_age_year <- function(date,
                                   dob,
@@ -153,7 +153,7 @@ plot_date_to_age_year <- function(date,
 #'                        width = 10,
 #'                        break_max = 40,
 #'                        open_last = FALSE)
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_age_multi <- function(date,
                                    dob,
@@ -259,7 +259,7 @@ plot_date_to_age_multi <- function(date,
 #'                          dob = c("2001-03-21",
 #'                                  "2004-07-13"),
 #'                          break_max = 30)
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_age_lifetab <- function(date,
                                      dob,
@@ -366,7 +366,7 @@ plot_date_to_age_lifetab <- function(date,
 #'                                 "2010-07-05"),
 #'                         recode_up = TRUE,
 #'                         recode_down = TRUE)
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_age_births <- function(date, dob,
                                     break_min = 15,
@@ -510,7 +510,7 @@ plot_date_to_age_births <- function(date, dob,
 #'                                 "2010-07-13"),
 #'                         breaks = c(0, 15, 50),
 #'                         open_last = FALSE)
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_age_custom <- function(date, dob,
                                     breaks = NULL,
@@ -612,7 +612,7 @@ plot_date_to_age_custom <- function(date, dob,
 #'                          dob = "2018-01-01",
 #'                          break_max = NULL,
 #'                          open_last = FALSE)
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_age_quarter <- function(date,
                                      dob,
@@ -724,7 +724,7 @@ plot_date_to_age_quarter <- function(date,
 #'                        dob = "2019-01-01",
 #'                        break_max = NULL,
 #'                        open_last = FALSE)
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_age_month <- function(date,
                                    dob,

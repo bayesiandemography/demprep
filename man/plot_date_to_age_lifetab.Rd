@@ -38,4 +38,4 @@ plot_date_to_age_lifetab(date = c("2024-03-27",
                                  "2004-07-13"),
                          break_max = 30)
 }
-\keyword{interal}
+\keyword{internal}

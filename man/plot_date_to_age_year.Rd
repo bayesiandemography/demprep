@@ -60,4 +60,4 @@ plot_date_to_age_year(date = c("2002-11-09",
                       break_max = 4,
                       open_last = FALSE)
 }
-\keyword{interal}
+\keyword{internal}

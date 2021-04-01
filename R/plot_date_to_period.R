@@ -34,7 +34,7 @@
 #'                                   "2022-11-09"),
 #'                          month_start = "Jul",
 #'                          label_year_start = FALSE)
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_period_year <- function(date,
                                      month_start = "Jan",
@@ -105,7 +105,7 @@ plot_date_to_period_year <- function(date,
 #'                                    "2018-11-09",
 #'                                    "2021-03-02"),
 #'                           month_start = "Jul")
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_period_multi <- function(date,
                                       width = 5,
@@ -172,7 +172,7 @@ plot_date_to_period_multi <- function(date,
 #'                            breaks = c("2000-03-01",
 #'                                       "2019-03-01",
 #'                                       "2026-03-01"))
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_period_custom <- function(date = NULL, breaks) {
     has_date <- !is.null(date) && (length(date) > 0L)
@@ -221,7 +221,7 @@ plot_date_to_period_custom <- function(date = NULL, breaks) {
 #' @examples
 #' plot_date_to_period_quarter(date = c("2021-11-24",
 #'                                      "2022-04-09"))
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_period_quarter <- function(date) {
     ## check arguments and/or apply defaults
@@ -264,7 +264,7 @@ plot_date_to_period_quarter <- function(date) {
 #' @examples
 #' plot_date_to_period_month(date = c("2021-11-24",
 #'                                    "2022-04-09"))
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_period_month <- function(date) {
     ## check arguments and/or apply defaults

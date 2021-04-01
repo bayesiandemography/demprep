@@ -86,4 +86,4 @@ plot_date_to_cohort_multi(date = c("2024-03-27",
                           break_min = "2005-01-01",
                           open_first = FALSE)
 }
-\keyword{interal}
+\keyword{internal}

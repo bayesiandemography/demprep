@@ -66,4 +66,4 @@ plot_date_to_age_quarter(date = "2019-09-22",
                          break_max = NULL,
                          open_last = FALSE)
 }
-\keyword{interal}
+\keyword{internal}

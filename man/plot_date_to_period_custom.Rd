@@ -38,4 +38,4 @@ plot_date_to_period_custom(date = c("2024-03-27",
                                       "2019-03-01",
                                       "2026-03-01"))
 }
-\keyword{interal}
+\keyword{internal}

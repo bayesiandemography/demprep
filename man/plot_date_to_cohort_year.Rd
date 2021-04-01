@@ -82,4 +82,4 @@ plot_date_to_cohort_year(date = c("2024-03-27",
                          break_min = "2015-07-01",
                          open_first = FALSE)
 }
-\keyword{interal}
+\keyword{internal}

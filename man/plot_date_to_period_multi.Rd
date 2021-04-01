@@ -51,4 +51,4 @@ plot_date_to_period_multi(date = c("2024-03-27",
                                    "2021-03-02"),
                           month_start = "Jul")
 }
-\keyword{interal}
+\keyword{internal}

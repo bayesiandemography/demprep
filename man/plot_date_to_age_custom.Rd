@@ -67,4 +67,4 @@ plot_date_to_age_custom(date = c("2024-03-27",
                         breaks = c(0, 15, 50),
                         open_last = FALSE)
 }
-\keyword{interal}
+\keyword{internal}

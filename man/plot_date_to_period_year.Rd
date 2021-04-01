@@ -44,4 +44,4 @@ plot_date_to_period_year(date = c("2024-03-27",
                          month_start = "Jul",
                          label_year_start = FALSE)
 }
-\keyword{interal}
+\keyword{internal}

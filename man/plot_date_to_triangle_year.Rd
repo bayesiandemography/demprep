@@ -65,4 +65,4 @@ plot_date_to_triangle_year(date = c("2024-05-27",
                            break_max = 5,
                            month_start = "July")
 }
-\keyword{interal}
+\keyword{internal}

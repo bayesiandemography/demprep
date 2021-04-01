@@ -85,4 +85,4 @@ plot_date_to_age_births(date = c("2052-01-02",
                         recode_up = TRUE,
                         recode_down = TRUE)
 }
-\keyword{interal}
+\keyword{internal}

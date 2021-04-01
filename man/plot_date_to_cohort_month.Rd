@@ -43,4 +43,4 @@ plot_date_to_cohort_month(date = c("2024-03-27",
                                    "2023-11-09"),
                           break_min = "2023-10-01")
 }
-\keyword{interal}
+\keyword{internal}

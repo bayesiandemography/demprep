@@ -64,7 +64,7 @@
 #'                                   "2022-11-09"),
 #'                          break_min = "2015-07-01",
 #'                          open_first = FALSE)
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_cohort_year <- function(date,
                                      month_start = "Jan",
@@ -182,7 +182,7 @@ plot_date_to_cohort_year <- function(date,
 #'                                    "2021-03-02"),
 #'                           break_min = "2005-01-01",
 #'                           open_first = FALSE)
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_cohort_multi <- function(date,
                                       width = 5,
@@ -276,7 +276,7 @@ plot_date_to_cohort_multi <- function(date,
 #'                            breaks = c("2010-03-01",
 #'                                       "2020-03-01",
 #'                                       "2026-03-01"))
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_cohort_custom <- function(date, breaks, open_first = TRUE) {
     ## check arguments and/or apply defaults
@@ -326,7 +326,7 @@ plot_date_to_cohort_custom <- function(date, breaks, open_first = TRUE) {
 #'                                      "2022-05-13",
 #'                                      "2022-11-09"),
 #'                             break_min = "2022-01-01")
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_cohort_quarter <- function(date,
                                         break_min = NULL,
@@ -393,7 +393,7 @@ plot_date_to_cohort_quarter <- function(date,
 #'                                    "2023-08-13",
 #'                                    "2023-11-09"),
 #'                           break_min = "2023-10-01")
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_cohort_month <- function(date,
                                       break_min = NULL,

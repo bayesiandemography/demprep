@@ -45,7 +45,7 @@
 #'                                    "2021-08-24"),
 #'                            break_max = 5,
 #'                            month_start = "July")
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_triangle_year <- function(date,
                                        dob,
@@ -94,7 +94,7 @@ plot_date_to_triangle_year <- function(date,
 #'                                     "2016-02-29"),
 #'                             width = 10,
 #'                             break_max = 20)
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_triangle_multi <- function(date,
                                         dob,
@@ -219,7 +219,7 @@ plot_date_to_triangle_multi <- function(date,
 #'                                      "2000-07-13"),
 #'                              width = 1,
 #'                              break_max = 45)
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_triangle_births <- function(date,
                                          dob,
@@ -366,7 +366,7 @@ plot_date_to_triangle_births <- function(date,
 #'                               dob = c("2020-05-01",
 #'                                       "2021-06-22"),
 #'                               break_max = 20)
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_triangle_quarter <- function(date,
                                           dob,
@@ -458,7 +458,7 @@ plot_date_to_triangle_quarter <- function(date,
 #'                             dob = c("2023-10-05",
 #'                                     "2024-03-11"),
 #'                             break_max = 12)
-#' @keywords interal
+#' @keywords internal
 #' @export
 plot_date_to_triangle_month <- function(date,
                                         dob,
