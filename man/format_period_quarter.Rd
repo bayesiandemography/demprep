@@ -37,6 +37,8 @@ Quarters are defined as follows:
 
 The elements of \code{x} must all be single quarters,
 eg \code{"2001 Q2"} or \code{"2055 Q1"}.
+Open intervals such as \code{"<2001 Q2"} are not
+allowed.
 
 If \code{x} contains \code{NA}, then the
 levels of the factor created by \code{format_period_quarter}

@@ -16,8 +16,9 @@ format_age_multi(
 \arguments{
 \item{x}{A vector of age group labels.}
 
-\item{width}{The width in years of the age intervals.
-A positive integer. Defaults to 5.}
+\item{width}{The width in years of the age
+groups to be created. A positive integer.
+Defaults to 5.}
 
 \item{break_min}{An integer or \code{NULL}.
 Defaults to 0.}

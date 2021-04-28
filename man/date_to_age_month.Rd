@@ -4,7 +4,7 @@
 \alias{date_to_age_month}
 \title{Convert dates to one-month age groups}
 \usage{
-date_to_age_month(date, dob, break_min = 0, break_max = 1200, open_last = TRUE)
+date_to_age_month(date, dob)
 }
 \arguments{
 \item{date}{Dates of events.
@@ -16,18 +16,9 @@ or a vector that can be coerced to class
 A vector of class \code{\link[base]{Date}},
 or a vector that can be coerced to class
 \code{Date} using function \code{\link[base]{as.Date}}.}
-
-\item{break_min}{An integer or \code{NULL}.
-Defaults to 0.}
-
-\item{break_max}{An integer or \code{NULL}.
-Defaults to 1200.}
-
-\item{open_last}{Whether the final age group
-has no upper limit. Defaults to \code{TRUE}.}
 }
 \value{
-A factor with the same length as
+an integer vector with the same length as
 \code{date} or \code{dob}, whichever
 is longer.
 }
@@ -35,8 +26,7 @@ is longer.
 Given the dates when events occurred,
 and the dates of birth of the people experiencing the events,
 allocate the events to age groups. These
-age groups all have widths of one month,
-except possibly the final age group.
+age groups all have widths of one month.
 }
 \details{
 A person belongs to age group \code{"x"} if that
@@ -49,21 +39,6 @@ group \code{"60m"} if that person had their
 \code{date} and \code{dob} must have the same length,
 unless one of them has length 1, in which case the
 length-1 argument is recycled.
-
-If \code{break_min} or \code{break_max} is set to \code{NULL},
-rather than to a specific value, then \code{date_to_age_year}
-finds the narrowest range that accommodates the data.
-
-When \code{open_last} is \code{TRUE}, the final age group
-is "open", meaning that it has no upper limit.
-
-The return value is a factor. The levels of this
-factor contain all intermediate age groups,
-including ones that do not appear in the data.
-
-If \code{date} or \code{dob} contain \code{NA}, then the
-levels of the factor created by \code{date_to_age_custom}
-will also contain \code{NA}.
 }
 \examples{
 date_to_age_month(date = c("2024-03-27",
@@ -71,32 +46,20 @@ date_to_age_month(date = c("2024-03-27",
                   dob = c("2021-03-21",
                           "2020-07-13"))
 
-## specify highest age group
-date_to_age_month(date = "2019-10-22",
-                  dob = "2018-01-01",
-                  break_max = 24)
+## replicate date of birth
+date_to_age_month(date = c("2024-03-27",
+                           "2022-11-09"),
+                  dob = "2020-07-13")
 
-## let lowest age group be set by the data
-date_to_age_month(date = "2019-10-22",
-                  dob = "2018-01-01",
-                  break_min = NULL,
-                  break_max = 24)
-
-## make final age group closed
-date_to_age_month(date = "2019-10-22",
-                  dob = "2018-01-01",
-                  break_min = NULL,
-                  break_max = 24,
-                  open_last = FALSE)
 }
 \seealso{
+The output from \code{date_to_age_month}
+is typically processed further using function
+\code{\link{format_age_month}}.
+
 Other functions for creating
 age groups from dates are
-\code{\link{date_to_age_year}},
-\code{\link{date_to_age_multi}},
-\code{\link{date_to_age_lifetab}},
-\code{\link{date_to_age_births}},
-\code{\link{date_to_age_custom}},
+\code{\link{date_to_age_year}} and
 \code{\link{date_to_age_quarter}}.
 
 Other functions for creating one-month
@@ -104,8 +67,4 @@ intervals from dates are
 \code{\link{date_to_period_month}},
 \code{\link{date_to_cohort_month}},
 and \code{\link{date_to_triangle_month}}.
-
-Existing labels for month age groups
-can be processed using \code{\link{clean_age}}
-and \code{\link{format_age_month}}.
 }

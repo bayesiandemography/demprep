@@ -1,0 +1,63 @@
+---
+title: "Design of package 'demprep'"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Design of package 'demprep'}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE,
+  fig.width = 6.5
+)
+```
+
+# Introduction
+
+- This doc aimed at developers rather than users (though advanced users may find parts useful.)
+
+# General philosophy
+
+- small composable functions
+
+
+# Naming conventions
+
+\code{_year} = length one year (apart from open). ambiguous
+\code{_multi} = all with same length, of 1+ years (apart from open). ambiguous
+\code{_custom} = varying length. ambiguous.
+\code{_quarter} = 3-month, defined by dates
+\code{_month} = 1-month, defined by dates
+
+# Format functions
+
+| Function                     | Parsing function                 | Breaks   | Label function                    |
+|------------------------------|----------------------------------|----------|-----------------------------------|
+| \code{format_age_year}       | \code{parse_integers}            | integers | \code{make_labels_age}            |
+| \code{format_age_multi}      | \code{parse_integers_quantities} | integers | \code{make_labels_age}            |
+| \code{format_age_custom}     | \code{parse_integers_quantities} | integers | \code{make_labels_age}            |
+| \code{format_age_quarter}    | \code{parse_integers}            | integers | \code{make_labels_age}            |
+| \code{format_age_month}      | \code{parse_integers}            | integers | \code{make_labels_age}            |
+| \code{format_cohort_year}    | \code{parse_integers}            | integers | \code{make_labels_cohort_year}    |
+| \code{format_cohort_multi}   | \code{parse_integers_intervals}  | integers | \code{make_labels_cohort_custom}  |
+| \code{format_cohort_custom}  | \code{parse_integers_intervals}  | integers | \code{make_labels_cohort_custom}  |
+| \code{format_cohort_quarter} | \code{parse_quarters}            | dates    | \code{make_labels_cohort_quarter} |
+| \code{format_cohort_month}   | \code{parse_months}              | dates    | \code{make_labels_cohort_month}   |
+| \code{format_period_year}    | \code{parse_integers}            | integers | \code{make_labels_period_year}    |
+| \code{format_period_multi}   | \code{parse_integers_intervals}  | integers | \code{make_labels_period_custom}  |
+| \code{format_period_custom}  | \code{parse_integers_intervals}  | integers | \code{make_labels_period_custom}  |
+| \code{format_period_quarter} | \code{parse_quarters}            p| dates    | \code{make_labels_period_quarter} |
+| \code{format_period_month}   | \code{parse_months}              | dates    | \code{make_labels_period_month}   |
+
+
+
+
+
+
+
+
+

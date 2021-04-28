@@ -5,12 +5,20 @@
 \title{Put period labels into the format required
 for customised periods}
 \usage{
-format_period_custom(x, breaks)
+format_period_custom(x, breaks, month_start = "Jan", label_year_start = TRUE)
 }
 \arguments{
-\item{x}{A vector of character labels.}
+\item{x}{A vector of period labels.}
 
 \item{breaks}{A vector of strictly increasing integer values.}
+
+\item{month_start}{An element of \code{\link[base]{month.name}},
+or \code{\link[base]{month.abb}}. Cohorts start on
+the first day of this month.}
+
+\item{label_year_start}{Logical. Whether to label a cohort
+by the calendar year at the beginning of the cohort
+or the calendar year at the end. Defaults to \code{TRUE}.}
 }
 \value{
 A factor with the same length as
@@ -27,19 +35,23 @@ in that the periods can have any combination of widths,
 though the widths must be defined in whole numbers of years.
 }
 \details{
-The elements of \code{x} must be multi-year
-intervals such as \code{"1950-1960"},
-\code{"2020-2025"}.
+The elements of \code{x} can be
+single-year labels such as \code{"2000"}
+and \code{"1975"}, multi-year labels
+such as \code{"1950-1960"} and \code{"2020-2025"},
+or a mixture of the two.
+\code{x} cannot contain open intervals
+such as \code{"<2020"}.
 
 If \code{x} contains \code{NA}, then the
 levels of the factor created by \code{format_period_custom}
 also contain \code{NA}.
 }
 \examples{
-format_period_custom(x = c("2000-2001", "2005-2010", "1996-1998"),
+format_period_custom(x = c("2000-2001", "2004", "2005-2010", "1996-1998"),
                      breaks = c(1990, 2000, 2020))
 
-format_period_custom(x = c("2000-2001", "2005-2010", "1996-1998"),
+format_period_custom(x = c("2000-2001", "2004", "2005-2010", "1996-1998"),
                      breaks = c(1995, 2005, 2010, 2020))
 }
 \seealso{

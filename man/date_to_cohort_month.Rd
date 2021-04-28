@@ -4,92 +4,39 @@
 \alias{date_to_cohort_month}
 \title{Convert dates to one-month cohorts}
 \usage{
-date_to_cohort_month(date, break_min = NULL, open_first = NULL)
+date_to_cohort_month(date)
 }
 \arguments{
-\item{date}{Dates of events defining cohorts.
+\item{date}{Dates of events defining cohorts (typically births).
 A vector of class \code{\link[base]{Date}},
 or a vector that can be coerced to class \code{Date}
 via function \code{\link[base]{as.Date}}.}
-
-\item{break_min}{The start date of the first cohort,
-or \code{NULL} (the default.)
-If non-\code{NULL}, \code{break_min} can be a single value of
-class \code{\link[base]{Date}}, or a value that
-can be coerced to class \code{Date}
-via function \code{\link[base]{as.Date}};
-in either case, it must be the first day of
-a month.}
-
-\item{open_first}{Whether the first cohort
-has no lower limit. If \code{break_min} is non-\code{NULL}
-and \code{label_year_start} is \code{TRUE},
-then \code{open_first} defaults to \code{TRUE};
-otherwise it defaults to \code{FALSE}.}
 }
 \value{
-A factor with the same length as \code{date}.
+A character vector with the same length as \code{date}.
 }
 \description{
 Identify cohorts, based on dates of births or other events.
 The cohorts have widths of one month.
 }
-\details{
-The interface for \code{date_to_cohort_month} is the similar
-to that of \code{\link{date_to_period_month}}, except that
-\code{date_to_cohort_month} also has arguments \code{break_min}
-and \code{open_first}.
-
-Supplying a date for \code{break_min} defines
-the first cohort. It is similar
-to supplying a value for \code{break_max} in
-\code{\link{date_to_age_multi}}. If
-\code{open_first} is \code{TRUE}, then \code{break_min}
-forms the upper limit for the first cohort, and there is no lower
-limit. If \code{open_first} is \code{FALSE}, then
-\code{break_min} forms the lower limit for the first cohort.
-
-The return value is a factor. The levels of this
-factor contain all intermediate cohorts,
-including cohorts that do not appear in the data.
-
-If \code{date} contains \code{NA}, then the
-levels of the factor created by \code{date_to_cohort_month}
-also contain \code{NA}.
-}
 \examples{
 date_to_cohort_month(date = c("2024-03-27",
+                              "2023-05-01",
                               "2022-11-09"))
-
-## Specify oldest cohort, with open_first
-## at default value of TRUE
-date_to_cohort_month(date = c("2024-03-27",
-                              "2019-08-22",
-                              "2022-11-09"),
-                       break_min = "2020-01-01")
-
-## Specify oldest cohort, with open_first = FALSE
-date_to_cohort_month(date = c("2024-03-27",
-                              "2019-08-22",
-                              "2022-11-09"),
-                    break_min = "2015-07-01",
-                    open_first = FALSE)
 }
 \seealso{
-Other functions for creating cohorts
-from dates are
-\code{\link{date_to_cohort_year}},
-\code{\link{date_to_cohort_multi}},
-\code{\link{date_to_cohort_custom}},
+The output from \code{date_to_cohort_month}
+is often processed further using \code{\link{format_cohort_month}}.
+
+Other functions for creating cohorts from dates are
+\code{\link{date_to_cohort_year}} and
 and \code{\link{date_to_cohort_quarter}}.
 
-Other functions for creating one-month
-intervals from dates are
+Other functions for creating one-month units
+from dates are
 \code{\link{date_to_age_month}},
 \code{\link{date_to_period_month}},
 and \code{\link{date_to_triangle_month}}.
-
-Existing labels for month cohorts
-can be processed using \code{\link{clean_age}}
-and \code{\link{format_cohort_month}}.
+The interface for \code{date_to_cohort_month} is identical
+to that of \code{\link{date_to_period_month}}.
 }

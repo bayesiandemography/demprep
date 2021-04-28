@@ -1,0 +1,799 @@
+
+## NO_TESTS
+#' Format labels for one-year Lexis triangles
+#'
+#' Create labels for one-year Lexis triangles
+#' to be used with one-year age groups and periods.
+#'
+#' \code{age} gives the age group to which each triangle
+#' in \code{x} belongs. All age groups in \code{age}
+#' must be single-year, except for any open age groups.
+#'
+#' \code{open_last} determines whether the
+#' triangles need to account for an
+#' open age group, and \code{break_max}
+#' specifies the cut-off for the open age group.
+#' See \code{\link{format_age_year}} for a description
+#' of how \code{open_last} and \code{break_max}
+#' control age groups.
+#'
+#' \code{format_triangle_year} leaves the labels
+#' in \code{x} unchanged, except for labels
+#' corresponding to ages\code{break_max + 1} and higher,
+#' which are recoded to \code{"Upper"}
+#' (assuming \code{open_last} is \code{TRUE}.)
+#'
+#' The return value is a factor with levels
+#' \code{"Lower"}, \code{"Upper"}, and
+#' (if the return value has \code{NA}s)
+#' \code{NA}.
+#' 
+#' @param x A vector of Lexis triangle labels.
+#' @param age A vector of age groups, the same length
+#' as \code{x}.
+#' @param break_max An integer or \code{NULL}.
+#' Defaults to 100.
+#' @param open_last Whether the final age group
+#' has no upper limit. Defaults to \code{TRUE}.
+#'
+#' @return A factor with the same length as
+#' \code{x}.
+#'
+#' @seealso Other functions for reformating
+#' triangle labels are 
+#' \code{\link{format_triangle_multi}},
+#' \code{\link{format_triangle_births}},
+#' \code{\link{format_triangle_quarter}},
+#' and \code{\link{format_triangle_month}}.
+#'
+#' \code{\link{date_to_triangle_year}} creates
+#' one-year Lexis triangles from dates.
+#'
+#' @examples
+#' ## we construct 'x' and 'age' from
+#' ## dates information ourselves before
+#' ## calling 'format_triangle_year'
+#' x <- date_to_triangle_year(date = c("2024-03-27",
+#'                                     "2022-11-09"),
+#'                            dob = "2020-01-01",
+#'                            month_start = "Jul")
+#' age <- date_to_age_year(date = c("2024-03-27",
+#'                                  "2022-11-09"),
+#'                         dob = "2020-01-01")
+#' format_triangle_year(x = x,
+#'                      age = age)
+#' format_triangle_year(x = x,
+#'                      age = age,
+#'                      break_max = 5)
+#'
+#' ## someone else has constructed
+#' ## 'x' and 'age' from
+#' ## dates information
+#' x <- c("Lower", "Lower", "Lower")
+#' age <- c("10", "15+", "5")
+#' format_triangle_year(x = x,
+#'                      age = age,
+#'                      break_max = 10)
+#' @export 
+format_triangle_year <- function(x,
+                                 age,
+                                 break_max = 100,
+                                 open_last = TRUE) {
+    format_triangle_month_quarter_year(x = x,
+                                       age = age,
+                                       break_max = break_max,
+                                       open_last = open_last)
+}
+
+
+## HAS_TESTS
+#' Format labels for multi-year Lexis triangles
+#'
+#' Create labels for multi-year Lexis triangles to
+#' be used with multi-year age groups and periods.
+#' The age groups and periods must all have the same
+#' length.
+#'
+#' \code{age} and \code{period} define the
+#' age groups and periods to which the
+#' Lexis triangles
+#' in \code{x} belong. Age groups can be single-year
+#' (eg \code{"23"}), multi-year (eg \code{"20-24"})
+#' or open (eg \code{"100+"}).
+#' Periods can be single-year
+#' (eg \code{"2023"}), multi-year (eg \code{"2020-2025"}).
+#'
+#' \code{format_triangle_multi} returns different labels
+#' from \code{x} in two situations: (i) when the intervals
+#' in \code{age} and \code{period} are narrower than
+#' \code{width}, so that aggregation is required, and
+#' (ii) when the age groups are older than
+#' \code{break_max + width}, in which case lower
+#' triangles are recoded to upper.
+#' 
+#' \code{open_last} determines whether the
+#' triangles need to account for an
+#' open age group, and \code{break_max}
+#' specifies the cut-off for the open age group.
+#' See \code{\link{format_age_multi}} for a description
+#' of how \code{open_last} and \code{break_max}
+#' determine age groups.
+#' 
+#' \code{x} and \code{period} must be based on the same
+#' starting month, e.g. if \code{x} uses years that
+#' start in July and end in June,
+#' then \code{period} must do so too. If
+#' \code{x} was created using function
+#' \code{\link{date_to_triangle_year}}
+#' and \code{period} was created using function
+#' \code{\link{date_to_period_year}},
+#' then both should have used the
+#' same value for \code{month_start}.
+#' If \code{x} and \code{period} were not
+#' calculated from raw dates data, 
+#' then it may be necessary to check the
+#' documentation for \code{x} and \code{period}
+#' to see which
+#' months of the year were used.
+#'
+#' @param x A vector of Lexis triangle labels.
+#' @param age A vector of age groups, the same length
+#' as \code{x}.
+#' @param period A vector of periods, the same length
+#' as \code{x}.
+#' @param break_max An integer or \code{NULL}.
+#' Defaults to 100.
+#' @param open_last Whether the final age group
+#' has no upper limit. Defaults to \code{TRUE}.
+#'
+#' @return A factor with the same length as
+#' \code{x}.
+#'
+#' @seealso Other functions for reformating
+#' triangle labels are 
+#' \code{\link{format_triangle_year}},
+#' \code{\link{format_triangle_births}},
+#' \code{\link{format_triangle_quarter}},
+#' and \code{\link{format_triangle_month}}.
+#'
+#' \code{\link{date_to_triangle_multi}} creates
+#' multi-year Lexis triangles from dates.
+#'
+#' @examples
+#' ## we construct 'x', 'age', and 'period'
+#' ## from dates information ourselves before
+#' ## calling 'format_triangle_multi'
+#' x <- date_to_triangle_multi(date = c("2024-03-27",
+#'                                      "2022-11-09"),
+#'                             dob = "2020-01-01",
+#'                             month_start = "Jul")
+#' age <- date_to_age_multi(date = c("2024-03-27",
+#'                                   "2022-11-09"),
+#'                          dob = "2020-01-01")
+#' period <- date_to_period_multi(date = c("2024-03-27",
+#'                                         "2022-11-09"))
+#'                                month_start = "Jul") ## same as above
+#' format_triangle_multi(x = x,
+#'                       age = age,
+#'                       period = period)
+#' format_triangle_multi(x = x,
+#'                       age = age,
+#'                       period = period,
+#'                       break_max = 10)
+#'
+#' ## someone else has constructed
+#' ## 'x', 'age', and 'period' from
+#' ## dates information
+#' x <- c("Lower", "Lower", "Lower")
+#' age <- c("10", "15+", "5")
+#' period <- c(2002, 2015, 2011)
+#' format_triangle_multi(x = x,
+#'                       age = age,
+#'                       period = period,
+#'                       break_max = 10)
+#' @export 
+format_triangle_multi <- function(x,
+                                  age,
+                                  period,
+                                  width = 5,
+                                  break_max = 100,
+                                  open_last = TRUE,
+                                  month_start = "Jan",
+                                  label_year_start = TRUE,
+                                  origin = 2000) {
+    valid_triangles <- c("Lower", "Upper", NA)
+    ## see if arguments supplied
+    has_break_max <- !is.null(break_max)
+    ## check arguments
+    demcheck::err_length_same(x1 = age,
+                              x2 = x,
+                              name1 = "age",
+                              name2 = "x")
+    demcheck::err_length_same(x1 = period,
+                              x2 = x,
+                              name1 = "period",
+                              name2 = "x")
+    width <- demcheck::err_tdy_positive_integer_scalar(x = width,
+                                                       name = "width")
+    if (has_break_max) {
+        break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
+                                                               name = "break_max")
+        demcheck::err_multiple_of(x1 = break_max,
+                                  x2 = width,
+                                  name1 = "break_max",
+                                  name2 = "width")
+    }
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
+    month_start <- demcheck::err_tdy_month_start(x = month_start,
+                                                 name = "month_start")
+    demcheck::err_is_logical_flag(x = label_year_start,
+                                  name = "label_year_start")
+    origin <- demcheck::err_tdy_integer_scalar(x = origin,
+                                               name = "origin")
+    ## deal with "empty" case where 'x' has no non-NA values
+    n <- length(x)
+    if (n == 0L) {
+        ans <- factor(character(),
+                      levels = c("Lower", "Upper"))
+        return(ans)
+    }
+    is_na_any <- is.na(x) | is.na(age) | is.na(period)
+    if (all(is_na_any)) {
+        ans <- rep(NA_character_, times = n)
+        ans <- factor(ans,
+                      levels = c("Lower", "Upper", NA),
+                      exclude = NULL)
+        return(ans)
+    }
+    ## put unique values in 'labels' vectors
+    labels_x <- unique(x)
+    labels_age <- unique(age)
+    labels_period <- unique(period)
+    ## check for invalid triangles
+    is_valid_tri <- labels_x %in% valid_triangles
+    i_invalid_tri <- match(FALSE, is_valid_tri, nomatch = 0L)
+    if (i_invalid_tri > 0L)
+        stop(gettextf("'%s' has invalid value for Lexis triangle [\"%s\"]",
+                      "x", labels_x[[i_invalid_tri]]),
+             call. = FALSE)
+    ## parse 'age'
+    parsed_age <- parse_quantities(x = labels_age,
+                                   name = "age")
+    low_age <- parsed_age$low # integer
+    up_age <- parsed_age$up   # integer
+    is_open_first_age <- parsed_age$is_open_first
+    is_open_last_age <- parsed_age$is_open_last
+    break_max_age <- parsed_age$break_max # integer
+    i_open_first_age <- match(TRUE, is_open_first_age, nomatch = 0L)
+    if (i_open_first_age > 0L) {
+        stop(gettextf("'%s' has interval [\"%s\"] that is open on the left",
+                      "age", labels_age[[i_open_first_age]]),
+             call. = FALSE)
+    }
+    ## parse 'period'
+    parsed_period <- parse_integers_intervals(x = labels_period,
+                                              name = "period",
+                                              month_start = month_start,
+                                              label_year_start = label_year_start)
+    low_period <- parsed_period$low # integer
+    up_period <- parsed_period$up   # integer
+    is_open_first_period <- parsed_period$is_open_first
+    is_open_last_period <- parsed_period$is_open_last
+    break_min_period <- parsed_period$break_min # integer
+    break_max_period <- parsed_period$break_max # integer
+    is_open_period <- is_open_first_period | is_open_last_period
+    i_open_period <- match(TRUE, is_open_period, nomatch = 0L)
+    if (i_open_period > 0L) {
+        stop(gettextf("'%s' has open interval [\"%s\"]",
+                      "period", labels_period[[i_open_period]]),
+             call. = FALSE)
+    }
+    ## if 'open_last' is TRUE and 'break_max' is supplied, check that
+    ## all open age groups start at or above 'break_max'
+    if (open_last && has_break_max) {
+        is_too_low_age <- is_open_last_age & (low_age < break_min)
+        i_too_low_age <- match(TRUE, is_too_low_age, nomatch = 0L)
+        if (i_too_low_age > 0L) {
+            stop(gettextf("'%s' has open interval [\"%s\"] that starts below '%s' [%d]",
+                          "age", labels_age[[i_too_low_age]], "break_max", break_max),
+                 call. = FALSE)
+        }
+    }
+    ## make 'break_max' if not supplied
+    if (!has_break_max) {
+        remainder_max_age <- break_max_age %% width
+        if (remainder_max_age == 0L)
+            break_max <- break_max_age
+        else
+            break_max <- break_max_age - remainder_max_age + width
+        message(gettextf("setting '%s' to %d",
+                         "break_max", break_max))
+    }
+    ## make breaks for age
+    breaks_age <- seq.int(from = 0L,
+                          to = break_max,
+                          by = width)
+    ## Check that all age intervals fall within implied breaks.
+    ## (Checking now gives more informative error messages
+    ## then waiting for attempt to form Lexis triangles.)
+    i_interval_age <- make_i_breaks(low = low_age,
+                                    up = up_age,
+                                    breaks = breaks_age,
+                                    open_first = FALSE,
+                                    open_last = open_last)
+    is_multiple_intervals_age <- i_interval_age == -1L
+    i_multiple_intervals_age <- match(TRUE, is_multiple_intervals_age, nomatch = 0L)
+    if (i_multiple_intervals_age > 0L)
+        stop(gettextf("label \"%\" from '%s' intersects two or more intervals formed using '%s' = %d and '%s' = %d",
+                      labels_age[[i_multiple_intervals_age]],
+                      "age",
+                      "break_max",
+                      break_max,
+                      "width",
+                      width),
+             call. = FALSE)
+    ## make breaks for period
+    remainder_min_period <- (break_min_period - origin) %% width
+    break_min_period <- break_min_period - remainder_min_period
+    remainder_max_period <- (break_max_period - origin) %% width
+    if (remainder_max_period == 0L)
+        break_max_period <- break_max_period
+    else
+        break_max_period <- break_max_period - remainder_max_period + width
+    ## Check that all intervals fall within implied breaks.
+    ## (Checking now gives more informative error messages
+    ## then waiting for attempt to form Lexis triangles.)
+    breaks_period <- seq.int(from = break_min_period,
+                             to = break_max_period,
+                             by = width)
+    i_interval_period <- make_i_intervals(low_period = low_period,
+                                          up_period = up_period,
+                                          breaks = breaks_period,
+                                          open_first = FALSE,
+                                          open_last = FALSE)
+    is_multiple_intervals <- i_interval == -1L
+    i_multiple_intervals <- match(TRUE, is_multiple_intervals, nomatch = 0L)
+    if (i_multiple_intervals > 0L)
+        stop(gettextf("label \"%\" from '%s' intersects two or more intervals formed using '%s' = %d and '%s' = %d",
+                      labels_period[[i_multiple_intervals_period]],
+                      "period",
+                      "origin",
+                      origin,
+                      "width",
+                      width),
+             call. = FALSE)
+    ## Construct and classify Lexis squares from existing labels
+    i_labels_age <- match(age, labels_age)
+    i_labels_period <- match(period, labels_period)
+    low_age_all <- low_age[i_labels_age]
+    low_period_all <- low_period[i_labels_period]
+    up_age_all <- up_age[i_labels_age]
+    up_period_all <- up_period[i_labels_period]
+    height <- age_up_all - age_low_all
+    width <- up_period_all - low_period_all
+    is_square <- height == width
+    i_not_square <- match(FALSE, is_square, nomatch = 0L)
+    if (i_not_square > 0L)
+        stop(gettextf("element %d of '%s' [\"%s\"] and element %d of '%s' [\"%s\"] have different widths, so do not form a Lexis square",
+                      i_not_square,
+                      "age",
+                      age[[i_not_square]],
+                      i_not_square,
+                      "period",
+                      period[[i_not_square]]),
+             call. = FALSE)
+    i_low_age <- findInterval(low_age_all, breaks_age)
+    i_low_period <- findInterval(low_period_all, breaks_period)
+    break_age <- breaks_age[i_low_age]
+    break_period <- breaks_period[i_low_period]
+    offset_low_age <- low_age_all - break_age
+    offset_low_period <- low_period_all - break_period
+    offset_up_age <- up_age_all - break_age
+    is_break_max_plus_width <- low_age_all >= break_max + width
+    is_on_diag <- !is_na_any & (offset_low_age == offset_low_period)
+    is_all_below_diag <- !is_na_any & (offset_up_age <= offset_low_period)
+    is_all_above_diag <- !is_na_any & (offset_low_age >= offset_low_period)
+    is_off_diag_crosses <- !(is_na_any
+        | is_break_max_plus_width
+        | is_on_diag
+        | is_below_diag
+        | is_above_diag)
+    i_off_diag_crosses <- match(TRUE, is_off_diag_crosses, nomatch = 0L)
+    if (i_off_diag_crosses > 0L)
+        stop(gettextf("old Lexis triangles formed by element %d of '%s' [\"%s\"] and element %d of '%s' [\"%s\"] cannot be assigned unambiguously to new Lexis triangles",
+                      i_off_diag_crosses,
+                      "age",
+                      age[[i_off_diag_crosses]],
+                      i_off_diag_crosses,
+                      "period",
+                      period[[i_off_diag_crosses]]),
+             call. = FALSE)
+    ## allocate triangles
+    ans <- rep(NA_character_, times = length(x))
+    ans[is_on_diag] <- x[is_on_diag]
+    ans[is_all_below_diag] <- "Lower"
+    ans[is_all_above_diag] <- "Upper"
+    ans[is_break_max_plus_width] <- "Upper"
+    ## return result
+    levels <- c("Lower", "Upper")
+    if (anyNA(ans))
+        levels <- c(levels, NA)
+    ans <- factor(x = ans,
+                  levels = levels,
+                  exclude = NULL)
+    ans
+}
+
+
+## ## HAS_TESTS
+## #' Put age groups labels into format
+## #' required for tabulating births
+## #'
+## #' Given a vector of age group labels, create a factor that contains
+## #' levels for all ages between \code{break_min} and \code{break_max}.
+## #'
+## #' \code{break_min} and \code{break_max} specify
+## #' the range of ages over which reproduction
+## #' is assumed to occur. If, for instance,
+## #' \code{break_min} is \code{15} and \code{break_max}
+## #' is \code{50}, all births are assumed to
+## #' occur to women aged 15 to 49 (inclusive).
+## #'
+## #' If \code{break_min} or \code{break_max} is set to \code{NULL},
+## #' rather than to a specific value, then \code{date_to_age_births}
+## #' finds the narrowest range that accommodates the values
+## #' in \code{x}.
+## #'
+## #' Datasets sometimes contain a few births to parents
+## #' younger than the assumed minimum age of reproduction,
+## #' or births to parents older than the assumed maximum age
+## #' of reproduction. Demographers often recode such births,
+## #' so that ones to unexpectedly young parents are
+## #' treated as occurring just above the minimum age
+## #' for reproduction, and ones to unexpectedly old parents
+## #' are treated as occurring just below the maximum
+## #' age for reproduction. This recoding can be justified
+## #' on the grounds that some of the original ages may have
+## #' been misreported, but it also alleviates any problems
+## #' with tabulations having small counts at extreme ages.
+## #' Recoding of parents' ages outside the expected range
+## #' is controlled by parameters \code{recode_up}
+## #' and \code{recode_down}. The default
+## #' is for no recoding to occur.
+## #'
+## #' @param x A vector of age group labels. The
+## #' age of the parent at the time of the birth of
+## #' the child.
+## #' @param break_min An integer or \code{NULL}.
+## #' Defaults to 15.
+## #' @param break_max An integer or \code{NULL}.
+## #' Defaults to 50.
+## #' @param width The width in years of the age intervals.
+## #' A positive integer defaulting to 5.
+## #' @param recode_up If \code{TRUE}, births to parents
+## #' aged less than \code{break_min} are treated as occurring to
+## #' people in the lowest repoductive age group.
+## #' @param recode_down If \code{TRUE}, births to parents
+## #' aged \code{break_max} or more are treated as
+## #' occurring to people in the highest reproductive
+## #' age group.
+## #'
+## #' @return A factor with the same length as \code{x}.
+## #'
+## #' @seealso Other functions for creating age groups are
+## #' \code{\link{format_age_year}},
+## #' \code{\link{format_age_multi}},
+## #' \code{\link{format_age_lifetab}},
+## #' \code{\link{format_age_custom}},
+## #' \code{\link{format_age_quarter}},
+## #' and \code{\link{format_age_month}}.
+## #'
+## #' \code{\link{date_to_age_births}} creates
+## #' reproductive age groups from dates.
+## #'
+## #' \code{\link{make_labels_age}} describes the rules
+## #' for constructing labels for age groups.
+## #'
+## #' @examples
+## #' format_age_births(x = c("20-24", "37", NA, "32", "21-24"))
+## #' 
+## #' format_age_births(x = c("20-24", "37", "32", "21-24"),
+## #'                   width = 10,
+## #'                   break_min = 20)
+## #'
+## #' format_age_births(x = c("20", "37", "15"),
+## #'                   width = 1,
+## #'                   break_max = 45)
+## #'
+## #' ## allow youngest and oldest age groups to be
+## #' ## determined by the data
+## #' format_age_births(x = c("21", "33", "22-24"),
+## #'                   break_min = NULL,
+## #'                   break_max = NULL)
+## #'
+## #' ## recode ages outside the expected range
+## #' format_age_births(x = c("22", "13", "54"),
+## #'                   recode_up = TRUE,
+## #'                   recode_down = TRUE)
+## #' @export
+## format_age_births <- function(x,
+##                               break_min = 15,
+##                               break_max = 50,
+##                               width = 5,
+##                               recode_up = FALSE,
+##                               recode_down = FALSE) {
+##     ## regexp patterns
+##     p_single <- "^[0-9]+$"
+##     p_low_up <- "^([0-9]+)-([0-9]+)$"
+##     ## check arguments
+##     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
+##                                                        name = "width",
+##                                                        null_ok = TRUE)
+##     break_min <- demcheck::err_tdy_non_negative_integer_scalar(x = break_min,
+##                                                                name = "break_min",
+##                                                                null_ok = TRUE)
+##     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
+##                                                            name = "break_max",
+##                                                            null_ok = TRUE)
+##     if (!is.null(break_min) && !is.null(break_max)) {
+##         demcheck::err_lt_scalar(x1 = break_min,
+##                                 x2 = break_max,
+##                                 name1 = "break_min",
+##                                 name2 = "break_max")
+##         demcheck::err_difference_divisible(x1 = break_max,
+##                                            x2 = break_min,
+##                                            y = width,
+##                                            name1 = "break_max",
+##                                            name2 = "break_min",
+##                                            name_y = "width")
+##     }
+##     demcheck::err_is_logical_flag(x = recode_up,
+##                                   name = "recode_up")
+##     demcheck::err_is_logical_flag(x = recode_down,
+##                                   name = "recode_down")
+##     ## deal with "empty" case where 'x' has no non-NA values
+##     ## and 'break_min' or 'break_max' is missing
+##     ## (so cannot construct levels)
+##     n <- length(x)
+##     all_empty <- (n == 0L) || all(is.na(x))
+##     is_unbounded <- is.null(break_min) || is.null(break_max)
+##     if (all_empty && is_unbounded) {
+##         ans <- rep(NA_character_, times = n)
+##         ans <- factor(ans,
+##                       levels = NA_character_,
+##                       exclude = NULL)
+##         return(ans)
+##     }
+##     ## put unique values in 'labels_old' vector
+##     labels_old <- unique(x)
+##     ## classify labels_old, raising error for any invalid ones
+##     is_na <- is.na(labels_old)
+##     is_single <- grepl(p_single, labels_old)
+##     is_low_up <- grepl(p_low_up, labels_old)
+##     is_valid <- is_na | is_single | is_low_up
+##     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
+##     if (i_invalid > 0L)
+##         stop(gettextf("\"%s\" is not a valid label",
+##                       labels_old[[i_invalid]]),
+##              call. = FALSE)
+##     ## extract lower and upper ages
+##     age_low <- rep(NA_integer_, times = length(labels_old))
+##     age_up <- age_low
+##     age_low[is_single] <- as.integer(labels_old[is_single])
+##     age_up[is_single] <- age_low[is_single] + 1L
+##     age_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
+##     age_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up])) + 1L
+##     demcheck::err_interval_diff_gt_one(int_low = age_low,
+##                                        int_up = age_up,
+##                                        is_low_up = is_low_up,
+##                                        labels = labels_old)
+##     ## check that ages lie within limits implied by 'break_min' and 'break_max'
+##     if (!is.null(break_min)) {
+##         is_lt_min <- age_low < break_min
+##         i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
+##         if (i_lt_min > 0L) {
+##             if (recode_up) {
+##                 age_low[is_lt_min] <- break_min
+##                 age_up[is_lt_min] <- pmax(age_up[is_lt_min], age_low[is_lt_min] + 1L)
+##             }
+##             else {
+##                 stop(gettextf("age group \"%s\" less than 'break_min' [%d] and 'recode_up' is FALSE",
+##                               labels_old[[i_lt_min]],
+##                               break_min),
+##                      call. = FALSE)
+##             }
+##         }
+##     }
+##     if (!is.null(break_max)) {
+##         is_gt_max <- age_up > break_max
+##         i_gt_max <- match(TRUE, is_gt_max, nomatch = 0L)
+##         if (i_gt_max > 0L) {
+##             if (recode_down) {
+##                 age_up[is_gt_max] <- break_max
+##                 age_low[is_gt_max] <- pmin(age_low[is_gt_max], age_up[is_gt_max] - 1L)
+##             }
+##             else {
+##                 stop(gettextf("age group \"%s\" greater than 'break_max' [%d] and 'recode_down' is FALSE",
+##                               labels_old[[i_gt_max]],
+##                               break_max),
+##                      call. = FALSE)
+##             }
+##         }
+##     }
+##     ## make breaks
+##     breaks <- make_breaks_label_to_integer_births(age_low = age_low,
+##                                                   age_up = age_up,
+##                                                   labels = labels,
+##                                                   width = width,
+##                                                   break_min = break_min,
+##                                                   break_max = break_max)
+##     ## make labels for breaks
+##     include_na <- any(is_na)
+##     labels_new <- make_labels_age(breaks = breaks,
+##                                   open_last = FALSE,
+##                                   include_na = include_na)
+##     ## assign new labels to x
+##     i_label_old <- match(x, labels_old)
+##     age <- age_low[i_label_old]
+##     i_intervals_new <- findInterval(x = age,
+##                                     vec = breaks)
+##     ans <- labels_new[i_intervals_new]
+##     ## return result
+##     ans <- factor(x = ans,
+##                   levels = labels_new,
+##                   exclude = NULL)
+##     ans
+## }
+
+
+
+## NO_TESTS
+#' Format labels for quarter Lexis triangles
+#'
+#' Create labels for one-quarter (three-month)
+#' Lexis triangles to be used with one-quarter
+#' age groups and periods.
+#'
+#' \code{age} gives the age group to which each triangle
+#' in \code{x} belongs. All age groups in \code{age}
+#' must have a width of one quarter,
+#' except for any open age groups.
+#' 
+#' \code{break_max} and \code{open_first}
+#' control the boundaries of Lexis triangles
+#' for the oldest age group.
+#' 
+#' @param x A vector of Lexis triangle labels.
+#' @param age A vector of age groups, the same length
+#' as \code{x}.
+#' @param break_max An integer or \code{NULL}.
+#' Defaults to 400.
+#' @param open_last Whether the final age group
+#' has no upper limit. Defaults to \code{TRUE}.
+#'
+#' @return A factor with the same length as
+#' \code{x}.
+#'
+#' @seealso Other functions for reformating
+#' triangle labels are 
+#' \code{\link{format_triangle_year}},
+#' \code{\link{format_triangle_multi}},
+#' \code{\link{format_triangle_births}},
+#' and \code{\link{format_triangle_month}}.
+#'
+#' \code{\link{date_to_triangle_quarter}} creates
+#' one-quarter Lexis triangles from dates.
+#'
+#' @examples
+#' ## we construct 'x' and 'age' from
+#' ## dates information ourselves before
+#' ## calling 'format_triangle_quarter'
+#' x <- date_to_triangle_quarter(date = c("2024-03-27",
+#'                                     "2022-11-09"),
+#'                               dob = "2020-01-01")
+#' age <- date_to_age_quarter(date = c("2024-03-27",
+#'                                     "2022-11-09"),
+#'                            dob = "2020-01-01")
+#' format_triangle_quarter(x = x,
+#'                         age = age)
+#' format_triangle_quarter(x = x,
+#'                         age = age,
+#'                         break_max = 5)
+#'
+#' ## someone else has constructed
+#' ## 'x' and 'age' from
+#' ## dates information
+#' x <- c("Lower", "Lower", "Lower")
+#' age <- c("10", "15+", "5")
+#' format_triangle_quarter(x = x,
+#'                         age = age,
+#'                         break_max = 10)
+#' @export 
+format_triangle_quarter <- function(x,
+                                    age,
+                                    break_max = 400,
+                                    open_last = TRUE) {
+    format_triangle_month_quarter_year(x = x,
+                                       age = age,
+                                       break_max = break_max,
+                                       open_last = open_last)
+}
+
+
+
+## NO_TESTS
+#' Format labels for one-month Lexis triangles
+#'
+#' Create labels for one-month Lexis triangles
+#' to be used with labels for one-month
+#' age groups and periods.
+#'
+#' \code{age} gives the age group to which each triangle
+#' in \code{x} belongs. All age groups in \code{age}
+#' must be single-month, except for any open age groups.
+#' The lower limit of open age groups in \code{age} must
+#' be at least as high as \code{break_min}
+#' (if \code{break_min} is non-\code{NULL}).
+#' 
+#' \code{break_max} and \code{open_first}
+#' control the boundaries of Lexis triangles
+#' for the oldest age group.
+#' 
+#' @param x A vector of Lexis triangle labels.
+#' @param age A vector of age groups, the same length
+#' as \code{x}.
+#' @param break_max An integer or \code{NULL}.
+#' Defaults to 1200.
+#' @param open_last Whether the final age group
+#' has no upper limit. Defaults to \code{TRUE}.
+#'
+#' @return A factor with the same length as
+#' \code{x}.
+#'
+#' @seealso Other functions for reformating
+#' triangle labels are 
+#' \code{\link{format_triangle_year}},
+#' \code{\link{format_triangle_multi}},
+#' \code{\link{format_triangle_births}},
+#' and \code{\link{format_triangle_quarter}}.
+#'
+#' \code{\link{date_to_triangle_month}} creates
+#' one-month Lexis triangles from dates.
+#'
+#' @examples
+#' ## we construct 'x' and 'age' from
+#' ## dates information ourselves before
+#' ## calling 'format_triangle_month'
+#' x <- date_to_triangle_month(date = c("2024-03-27",
+#'                                      "2022-11-09"),
+#'                             dob = "2020-01-01",
+#'                             month_start = "Jul")
+#' age <- date_to_age_month(date = c("2024-03-27",
+#'                                   "2022-11-09"),
+#'                          dob = "2020-01-01")
+#' format_triangle_month(x = x,
+#'                       age = age)
+#' format_triangle_month(x = x,
+#'                       age = age,
+#'                       break_max = 12)
+#'
+#' ## someone else has constructed
+#' ## 'x' and 'age' from
+#' ## dates information
+#' x <- c("Lower", "Lower", "Lower")
+#' age <- c("10", "12+", "6")
+#' format_triangle_month(x = x,
+#'                       age = age,
+#'                       break_max = 12)
+#' @export 
+format_triangle_month <- function(x,
+                                 age,
+                                 break_max = 1200,
+                                 open_last = TRUE) {
+    format_triangle_month_quarter_year(x = x,
+                                       age = age,
+                                       break_max = break_max,
+                                       open_last = open_last)
+}
+

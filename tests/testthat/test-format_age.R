@@ -78,8 +78,8 @@ test_that("format_age_multi gives correct answers with valid inputs", {
                      factor(c("0-9", "10+", "0-9"), levels = c("0-9", "10+")))
     expect_identical(format_age_multi(x = c("0", "11", "0-4"),
                                       break_max = NULL),
-                     factor(c("0-4", "10+", "0-4"),
-                            levels = c("0-4", "5-9", "10+")))
+                     factor(c("0-4", "10-14", "0-4"),
+                            levels = c("0-4", "5-9", "10-14", "15+")))
     expect_identical(format_age_multi(x = c("1-4", "14", "0"),
                                       break_max = NULL,
                                       open_last = FALSE),
@@ -168,6 +168,8 @@ test_that("format_age_births gives correct answers with valid inputs", {
 })
 
 test_that("format_age_births throws correct errors with invalid inputs", {
+    expect_error(format_age_births(x = "20+"),
+                 "'x' contains open age group \\[\"20\\+\"]")
     expect_error(format_age_births(x = "22",
                                    width = 3),
                  "difference between 'break_max' \\[50\\] and 'break_min' \\[15\\] not divisible by 'width' \\[3\\]")
@@ -229,18 +231,18 @@ test_that("format_age_custom throws correct errors with invalid inputs", {
 ## format_age_quarter ---------------------------------------------------
 
 test_that("format_age_quarter gives correct answers with valid inputs", {
-    expect_identical(format_age_quarter(x = c("0q", "1q", "4q")),
-                     factor(c("0q", "1q", "4q"),
-                            levels = c(paste0(0:399, "q"), "400q+")))
-    expect_identical(format_age_quarter(c("0q", "1q", "100q"),
+    expect_identical(format_age_quarter(x = c("0", "1", "4")),
+                     factor(c("0", "1", "4"),
+                            levels = c(0:399, "400+")))
+    expect_identical(format_age_quarter(c("0", "1", "100"),
                                         break_max = 5L),
-                     factor(c("0q", "1q", "5q+"),
-                            levels = c(paste0(0:4, "q"), "5q+")))
-    expect_identical(format_age_quarter(x = c("0q", "1q", NA, "5q"),
-                                               break_max = 6,
-                                               open_last = FALSE),
-                     factor(c("0q", "1q", NA, "5q"),
-                            levels = c("0q", "1q", "2q", "3q", "4q", "5q", NA),
+                     factor(c("0", "1", "5+"),
+                            levels = c(0:4, "5+")))
+    expect_identical(format_age_quarter(x = c("0", "1", NA, "5"),
+                                        break_max = 6,
+                                        open_last = FALSE),
+                     factor(c("0", "1", NA, "5"),
+                            levels = c("0", "1", "2", "3", "4", "5", NA),
                             exclude = NULL))
     expect_identical(format_age_quarter(x = c(NA, NA),
                                         break_max = NULL,
@@ -249,40 +251,40 @@ test_that("format_age_quarter gives correct answers with valid inputs", {
                             levels = NA_character_,
                             exclude = NULL))
     expect_identical(format_age_quarter(x = c(NA, NA),
-                                               break_max = 3,
-                                               open_last = FALSE),
+                                        break_max = 3,
+                                        open_last = FALSE),
                      factor(c(NA, NA),
-                            levels = c("0q", "1q", "2q", NA),
+                            levels = c("0", "1", "2", NA),
                             exclude = NULL))
 })
 
 ## format_age_month ---------------------------------------------------
 
 test_that("format_age_month gives correct answers with valid inputs", {
-    expect_identical(format_age_month(x = c("0m", "1m", "4m")),
-                     factor(c("0m", "1m", "4m"),
-                            levels = c(paste0(0:1199, "m"), "1200m+")))
-    expect_identical(format_age_month(c("0m", "1m", "100m"),
-                                        break_max = 5L),
-                     factor(c("0m", "1m", "5m+"),
-                            levels = c(paste0(0:4, "m"), "5m+")))
-    expect_identical(format_age_month(x = c("0m", "1m", NA, "5m"),
-                                               break_max = 6,
-                                               open_last = FALSE),
-                     factor(c("0m", "1m", NA, "5m"),
-                            levels = c("0m", "1m", "2m", "3m", "4m", "5m", NA),
+    expect_identical(format_age_month(x = c("0", "1", "4")),
+                     factor(c("0", "1", "4"),
+                            levels = c(0:1199, "1200+")))
+    expect_identical(format_age_month(c("0", "1", "100"),
+                                      break_max = 5L),
+                     factor(c("0", "1", "5+"),
+                            levels = c(0:4, "5+")))
+    expect_identical(format_age_month(x = c("0", "1", NA, "5"),
+                                      break_max = 6,
+                                      open_last = FALSE),
+                     factor(c("0", "1", NA, "5"),
+                            levels = c("0", "1", "2", "3", "4", "5", NA),
                             exclude = NULL))
     expect_identical(format_age_month(x = c(NA, NA),
-                                        break_max = NULL,
-                                        open_last = FALSE),
+                                      break_max = NULL,
+                                      open_last = FALSE),
                      factor(c(NA, NA),
                             levels = NA_character_,
                             exclude = NULL))
     expect_identical(format_age_month(x = c(NA, NA),
-                                               break_max = 3,
-                                               open_last = FALSE),
+                                      break_max = 3,
+                                      open_last = FALSE),
                      factor(c(NA, NA),
-                            levels = c("0m", "1m", "2m", NA),
+                            levels = c("0", "1", "2", NA),
                             exclude = NULL))
 })
 

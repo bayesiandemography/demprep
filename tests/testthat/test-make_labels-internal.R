@@ -198,39 +198,33 @@ test_that("'make_labels_duration_quarters_months' gives correct answer with vali
     expect_identical(make_labels_duration_quarters_months(break_min = 0,
                                                           break_max = 5,
                                                           open_last = FALSE,
-                                                          unit = "month",
                                                           include_na = FALSE),
-                     c("0m", "1m", "2m", "3m", "4m"))
+                     c("0", "1", "2", "3", "4"))
     expect_identical(make_labels_duration_quarters_months(break_min = 0,
                                                           break_max = 5,
                                                           open_last = FALSE,
-                                                          unit = "quarter",
                                                           include_na = FALSE),
-                     c("0q", "1q", "2q", "3q", "4q"))
+                     c("0", "1", "2", "3", "4"))
     expect_identical(make_labels_duration_quarters_months(break_min = 0,
                                                           break_max = 5,
                                                           open_last = TRUE,
-                                                          unit = "month",
                                                           include_na = FALSE),
-                     c("0m", "1m", "2m", "3m", "4m", "5m+"))
+                     c("0", "1", "2", "3", "4", "5+"))
     expect_identical(make_labels_duration_quarters_months(break_min = 0,
                                                           break_max = 5,
                                                           open_last = TRUE,
-                                                          unit = "quarter",
                                                           include_na = TRUE),
-                     c("0q", "1q", "2q", "3q", "4q", "5q+", NA))
+                     c("0", "1", "2", "3", "4", "5+", NA))
     expect_identical(make_labels_duration_quarters_months(break_min = 0,
                                                           break_max = 0,
                                                           open_last = TRUE,
-                                                          unit = "month",
                                                           include_na = FALSE),
-                     "0m+")
+                     "0+")
     expect_identical(make_labels_duration_quarters_months(break_min = 0,
                                                           break_max = 0,
                                                           open_last = TRUE,
-                                                          unit = "quarter",
                                                           include_na = TRUE),
-                     c("0q+", NA))
+                     c("0+", NA))
 })
 
 

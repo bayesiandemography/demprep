@@ -163,6 +163,8 @@ date_start_quarter <- function(labels) {
     ans
 }
 
+
+
 ## HAS_TESTS
 date_ymd_ge <- function(y1, m1, d1, y2, m2, d2) {
     (y1 > y2) ||
@@ -191,6 +193,135 @@ diff_completed_year <- function(y1, m1, d1, y2, m2, d2) {
 }
 
 ## HAS_TESTS
+## labels with "10-14" format are allowed iff 'low_up' is TRUE 
+extract_age <- function(labels, low_up) {
+    ## regular expressions
+    p_single <- "^[0-9]+$"
+    p_open <- "^[0-9]+\\+$"
+    if (low_up)
+        p_low_up <- "^([0-9]+)-([0-9]+)$"
+    ## classify labels, rasing error for invalid ones
+    is_na <- is.na(labels)
+    is_single <- grepl(p_single, labels)
+    is_open <- grepl(p_open, labels)
+    is_valid <- is_na | is_single | is_open
+    if (low_up) {
+            is_low_up <- grepl(p_low_up, labels)
+            is_valid <- is_valid | is_low_up
+    }
+    i_invalid <- match(FALSE, is_valid, nomatch = 0L)
+    if (i_invalid > 0L)
+        stop(gettextf("\"%s\" is not a valid label",
+                      labels[[i_invalid]]),
+             call. = FALSE)
+    ## extract lower and upper ages
+    age_low <- rep(NA_integer_, times = length(labels))
+    age_up <- age_low
+    age_low[is_single] <- as.integer(labels[is_single])
+    age_up[is_single] <- age_low[is_single] + 1L
+    age_low[is_open] <- as.integer(sub("\\+", "", labels[is_open]))
+    if (low_up) {
+        age_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels[is_low_up]))
+        age_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels[is_low_up])) + 1L
+        demcheck::err_interval_diff_gt_one(int_low = age_low,
+                                           int_up = age_up,
+                                           is_low_up = is_low_up,
+                                           labels = labels)
+    }
+    list(age_low = age_low,
+         age_up = age_up,
+         is_open = is_open)
+}
+
+## HAS_TESTS
+## Labels with "2005-2010" format are allowed iff 'low_up' is TRUE.
+## 'month_start' and 'label_year_start' needed to interpret
+## single-year labels, when these need to be disambiguated
+## rather than just left as-is
+extract_time <- function(labels,
+                         low_up,
+                         disambiguate_single,
+                         month_start,
+                         label_year_start) {
+    ## regular expressions
+    p_single <- "^-?[0-9]+$"
+    p_open <- "^<-?[0-9]+$"
+    if (low_up)
+        p_low_up <- "^(-?[0-9]+)-(-?[0-9]+)$"
+    ## classify labels, rasing error for invalid ones
+    is_na <- is.na(labels)
+    is_single <- grepl(p_single, labels)
+    is_open <- grepl(p_open, labels)
+    is_valid <- is_na | is_single | is_open
+    if (low_up) {
+        is_low_up <- grepl(p_low_up, labels)
+        is_valid <- is_valid | is_low_up
+    }
+    i_invalid <- match(FALSE, is_valid, nomatch = 0L)
+    if (i_invalid > 0L)
+        stop(gettextf("\"%s\" is not a valid label",
+                      labels[[i_invalid]]),
+             call. = FALSE)
+    ## extract lower and upper times
+    time_low <- rep(NA_integer_, times = length(labels))
+    time_up <- time_low
+    time_single <- as.integer(labels[is_single])
+    if (disambiguate_single && !label_year_start && (month_start != "Jan"))
+        time_single <- time_single - 1L
+    time_low[is_single] <- time_single
+    time_up[is_single] <- time_single + 1L
+    time_up[is_open] <- as.integer(sub("<", "", labels[is_open]))
+    if (low_up) {
+        time_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels[is_low_up]))
+        time_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels[is_low_up]))
+        demcheck::err_interval_diff_ge_one(int_low = time_low,
+                                           int_up = time_up,
+                                           is_low_up = is_low_up,
+                                           labels = labels)
+    }
+    list(time_low = time_low,
+         time_up = time_up,
+         is_open = is_open)
+}
+
+extract_time_quarter <- function(labels) {
+    ## regular expressions
+    p_single <- "^-?[0-9]+ Q[1-4]$"
+    p_open <- "^<-?[0-9]+ Q[1-4]$"
+    ## classify labels, rasing error for invalid ones
+    is_na <- is.na(labels)
+    is_single <- grepl(p_single, labels)
+    is_open <- grepl(p_open, labels)
+    is_valid <- is_na | is_single | is_open
+    i_invalid <- match(FALSE, is_valid, nomatch = 0L)
+    if (i_invalid > 0L)
+        stop(gettextf("\"%s\" is not a valid label",
+                      labels[[i_invalid]]),
+             call. = FALSE)
+    ## extract lower and upper times
+    time_low <- rep(NA_integer_, times = length(labels))
+    time_up <- time_low
+    time_single <- as.integer(labels[is_single])
+    if (disambiguate_single && !label_year_start && (month_start != "Jan"))
+        time_single <- time_single - 1L
+    time_low[is_single] <- time_single
+    time_up[is_single] <- time_single + 1L
+    time_up[is_open] <- as.integer(sub("<", "", labels[is_open]))
+    if (low_up) {
+        time_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels[is_low_up]))
+        time_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels[is_low_up]))
+        demcheck::err_interval_diff_ge_one(int_low = time_low,
+                                           int_up = time_up,
+                                           is_low_up = is_low_up,
+                                           labels = labels)
+    }
+    list(time_low = time_low,
+         time_up = time_up,
+         is_open = is_open)
+}
+
+
+## HAS_TESTS
 i_month_within_period <- function(date_ymd, width, origin, month_start) {
     year <- date_ymd$y
     month <- date_ymd$m
@@ -217,199 +348,88 @@ is_lower_within_month <- function(date_ymd, dob_ymd) {
 }
 
 ## HAS_TESTS
-make_breaks_date_to_date_month <- function(date,
-                                           break_min,
-                                           has_break_min_arg) {
-    has_date <- sum(!is.na(date)) > 0L
-    has_break_min <- !is.null(break_min)
-    ## date_from
-    if (has_break_min)
-        date_from <- break_min
-    else {
-        date_first <- min(date, na.rm = TRUE)
-        date_first_ymd <- as_ymd(date_first)
-        year_first <- date_first_ymd$y
-        month_first <- date_first_ymd$m
-        date_from <- sprintf("%d-%d-01", year_first, month_first)
-        date_from <- as.Date(date_from)
-        if (has_break_min_arg) {
-            message(gettextf("'%s' set to %s",
-                             "break_min", date_from),
-                    appendLF = TRUE)
-        }
+make_breaks_date_to_date_month <- function(date) {
+    ## break_min
+    date_min <- min(date, na.rm = TRUE)
+    date_min_ymd <- as_ymd(date_min)
+    year_min <- date_min_ymd$y
+    month_min <- date_min_ymd$m
+    break_min <- paste(year_min, month_min, 1, sep = "-")
+    break_min <- as.Date(break_min)
+    ## break_max
+    date_max <- max(date, na.rm = TRUE)
+    date_max_ymd <- as_ymd(date_max)
+    year_max <- date_max_ymd$y
+    month_max <- date_max_ymd$m
+    month_to <- month_max + 1L
+    if (month_max > 12L) {
+        year_max <- year_max + 1L
+        month_max <- 1L
     }
-    ## date_to
-    if (has_date) {
-        date_last <- max(date, na.rm = TRUE)
-        date_last_ymd <- as_ymd(date_last)
-        year_last <- date_last_ymd$y
-        month_last <- date_last_ymd$m
-        year_to <- year_last
-        month_to <- month_last + 1L
-        if (month_to > 12L) {
-            year_to <- year_to + 1L
-            month_to <- 1L
-        }
-        date_to <- sprintf("%d-%d-01", year_to, month_to)
-        date_to <- as.Date(date_to)
-    }
-    else
-        date_to <- break_min
+    break_max <- paste(year_max, month_max, 1, sep = "-")
+    break_max <- as.Date(break_max)
     ## sequence
-    seq.Date(from = date_from,
-             to = date_to,
+    seq.Date(from = break_min,
+             to = break_max,
              by = "month")
 }
 
 ## HAS_TESTS
-make_breaks_date_to_date_quarter <- function(date,
-                                             break_min,
-                                             has_break_min_arg) {
-    has_date <- sum(!is.na(date)) > 0L
-    has_break_min <- !is.null(break_min)
-    ## date_from
-    if (has_break_min)
-        date_from <- break_min
-    else {
-        date_first <- min(date, na.rm = TRUE)
-        date_first_ymd <- as_ymd(date_first)
-        year_first <- date_first_ymd$y
-        month_first <- date_first_ymd$m
-        year_from <- year_first
-        month_from <- ((month_first - 1L) %/% 3L) * 3L + 1L
-        date_from <- sprintf("%d-%d-01", year_from, month_from)
-        date_from <- as.Date(date_from)
-        if (has_break_min_arg) {
-            message(gettextf("'%s' set to %s",
-                             "break_min", date_from),
-                    appendLF = TRUE)
-        }
+make_breaks_date_to_date_quarter <- function(date) {
+    ## break_min
+    date_min <- min(date, na.rm = TRUE)
+    date_min_ymd <- as_ymd(date_min)
+    year_min <- date_min_ymd$y
+    month_min <- date_min_ymd$m
+    month_min <- ((month_min - 1L) %/% 3L) * 3L + 1L
+    break_min <- paste(year_min, month_min, 1, sep = "-")
+    break_min <- as.Date(break_min)
+    ## break_max
+    date_max <- max(date, na.rm = TRUE)
+    date_max_ymd <- as_ymd(date_max)
+    year_max <- date_max_ymd$y
+    month_max <- date_max_ymd$m
+    month_max <- ((month_max - 1L) %/% 3L + 1L) * 3L + 1L
+    if (month_to > 12L) {
+        year_max <- year_max + 1L
+        month_max <- 1L
     }
-    ## date_to
-    if (has_date) {
-        date_last <- max(date, na.rm = TRUE)
-        date_last_ymd <- as_ymd(date_last)
-        year_last <- date_last_ymd$y
-        month_last <- date_last_ymd$m
-        year_to <- year_last
-        month_to <- ((month_last - 1L) %/% 3L + 1L) * 3L + 1L
-        if (month_to > 12L) {
-            year_to <- year_to + 1L
-            month_to <- 1L
-        }
-        date_to <- sprintf("%d-%d-01", year_to, month_to)
-        date_to <- as.Date(date_to)
-    }
-    else
-        date_to <- break_min
+    break_max <- paste(year_max, month_max, 1, sep = "-")
+    break_max <- as.Date(break_max)
     ## sequence
-    seq.Date(from = date_from,
-             to = date_to,
+    seq.Date(from = break_min,
+             to = break_max,
              by = "quarter")
 }
 
 ## HAS_TESTS
 make_breaks_date_to_date_year <- function(date,
-                                          month_start,
-                                          width,
-                                          origin,
-                                          break_min,
-                                          has_break_min_arg) {
-    has_date <- sum(!is.na(date)) > 0L
-    has_break_min <- !is.null(break_min)
-    has_origin <- !is.null(origin)
-    ## get year of 'break_min'
-    if (has_break_min) {
-        year_break_min <- format(break_min, "%Y")
-        year_break_min <- as.integer(year_break_min)
-    }
-    ## obtain 'year_origin', 'month_origin', 'day_origin'
-    if (has_break_min)
-        origin <- year_break_min
-    else {
-        if (!has_origin) {
-            if (!identical(width, 1L))
-                stop(gettextf("'%s' is %s but '%s' equals %d",
-                              "origin", "NULL", "width", width))
-            origin <- 2000L
-        }
-    }
-    year_origin <- origin
-    month_origin <- match(month_start, month.abb)
-    day_origin <- 1L
-    ## obtain 'year_from'
-    if (has_break_min)
-        year_from <- year_break_min
-    else {
-        if (has_date) {
-            date_first <- min(date, na.rm = TRUE)
-            date_first_ymd <- as_ymd(date_first)
-            year_first <- date_first_ymd$y
-            month_first <- date_first_ymd$m
-            day_first <- date_first_ymd$d
-            diff_first_origin <- diff_completed_year(y1 = year_first,
-                                                     m1 = month_first,
-                                                     d1 = day_first,
-                                                     y2 = year_origin,
-                                                     m2 = month_origin,
-                                                     d2 = day_origin)
-            date_first_ge_origin <- date_ymd_ge(y1 = year_first,
-                                                m1 = month_first,
-                                                d1 = day_first,
-                                                y2 = year_origin,
-                                                m2 = month_origin,
-                                                d2 = 1L)
-            if (date_first_ge_origin)
-                year_from <- year_origin + (diff_first_origin %/% width) * width
-            else {
-                same_day <- (month_first == month_origin) && (day_first == 1L)
-                year_from <- year_origin + ((diff_first_origin - 1L + same_day) %/% width) * width
-            }
-        }
-        else
-            year_from <- year_origin
-        
-    }
-    ## obtain 'year_to'
-    if (has_date) {
-        date_last <- max(date, na.rm = TRUE)
-        date_last_ymd <- as_ymd(date_last)
-        year_last <- date_last_ymd$y
-        month_last <- date_last_ymd$m
-        day_last <- date_last_ymd$d
-        diff_last_origin <- diff_completed_year(y1 = year_last,
-                                                m1 = month_last,
-                                                d1 = day_last,
-                                                y2 = year_origin,
-                                                m2 = month_origin,
-                                                d2 = day_origin)
-        date_last_ge_origin <- date_ymd_ge(y1 = year_last,
-                                           m1 = month_last,
-                                           d1 = day_last,
-                                           y2 = year_origin,
-                                           m2 = month_origin,
-                                           d2 = day_origin)
-        if (date_last_ge_origin)
-            year_to <- year_origin + (diff_last_origin %/% width + 1L) * width
-        else
-            year_to <- year_origin + ((diff_last_origin - 1L) %/% width + 1L) * width
-    }
+                                          month_start) {
+    month_start_int <- match(month_start, month.abb)
+    ## obtain 'break_min'
+    date_min <- min(date, na.rm = TRUE)
+    date_min_ymd <- as_ymd(date_min)
+    year_min <- date_min_ymd$y
+    month_min <- date_min_ymd$m
+    if (month_min >= month_start_int)
+        break_min <- paste(year_min, month_start_int, 1L, sep = "-")
     else
-        year_to <- year_from
-    ## create series
-    date_from <- sprintf("%d-%d-%d", year_from, month_origin, day_origin)
-    date_to <- sprintf("%d-%d-%d", year_to, month_origin, day_origin)
-    date_from <- as.Date(date_from, format = "%Y-%m-%d")
-    date_to <- as.Date(date_to, format = "%Y-%m-%d")
-    by <- paste(width, "year")
-    if (!has_break_min && has_break_min_arg) {
-        message(gettextf("'%s' set to %s",
-                         "break_min", date_from),
-                appendLF = TRUE)
-    }
-    seq.Date(from = date_from,
-             to = date_to,
-             by = by)
+        break_min <- paste(year_min - 1L, month_start_int, 1L, sep = "-")
+    break_min <- as.Date(break_min)
+    ## obtain 'break_max'
+    date_max <- max(date, na.rm = TRUE)
+    date_max_ymd <- as_ymd(date_max)
+    year_max <- date_max_ymd$y
+    month_max <- date_max_ymd$m
+    if (month_start_int > month_max)
+        break_max <- paste(year_max, month_start_int, 1L, sep = "-")
+    else
+        break_max <- paste(year_max + 1L, month_start_int, 1L, sep = "-")
+    break_max <- as.Date(break_max)
+    ## return result
+    seq.Date(from = break_min,
+             to = break_max,
+             by = "year")
 }
 
 ## HAS_TESTS
@@ -574,7 +594,6 @@ make_breaks_label_to_integer_births <- function(age_low,
     breaks
 }
 
-
 ## HAS_TESTS
 make_breaks_label_to_integer_lifetab <- function(age_low,
                                                  age_up,
@@ -602,67 +621,28 @@ make_breaks_label_to_integer_lifetab <- function(age_low,
     breaks
 }
 
-
 ## HAS_TESTS
-make_breaks_label_to_integer_month_quarter <- function(age_low,
-                                                       age_up,
-                                                       labels,
-                                                       is_open,
-                                                       break_min,
-                                                       break_max,
-                                                       has_break_min_arg,
-                                                       has_break_max_arg,
-                                                       open_last) {
+make_breaks_label_to_integer <- function(int_low,
+                                         int_up,
+                                         labels,
+                                         width,
+                                         origin,
+                                         break_min,
+                                         break_max,
+                                         has_break_min_arg,
+                                         has_break_max_arg) {
+    ## classify intervals
+    is_na_low <- is.na(int_low)
+    is_na_up <- is.na(int_up)
+    is_na <- is_na_low & is_na_up
+    is_open_low <- is_na_low & !is_na_up
+    is_open_up <- !is_na_low & is_na_up
+    open_first <- any(is_open_low)
+    open_last <- any(is_open_up)
     ## determine 'break_min'
     if (is.null(break_min)) {
-        break_min <- min(age_low, na.rm = TRUE)
-        if (has_break_min_arg) {
-            message(gettextf("'%s' set to %d",
-                             "break_min", break_min),
-                    appendLF = TRUE)
-        }
-    }
-    ## Determine 'break_max'. 
-    if (is.null(break_max)) {
-        if (any(is_open))
-            break_max <- min(age_low[is_open])
-        else
-            break_max <- max(age_up, na.rm = TRUE)
-        if (has_break_max_arg) {
-            message(gettextf("'%s' set to %d",
-                             "break_max", break_max),
-                    appendLF = TRUE)
-        }
-    }
-    ## make breaks
-    breaks <- seq.int(from = break_min,
-                      to = break_max)
-    ## return value
-    breaks
-}
-
-
-## HAS_TESTS
-make_breaks_label_to_integer_year <- function(int_low,
-                                              int_up,
-                                              labels,
-                                              width,
-                                              origin,
-                                              is_open,
-                                              break_min,
-                                              break_max,
-                                              has_break_min_arg,
-                                              has_break_max_arg,
-                                              open_first,
-                                              open_last) {
-    if (open_first && open_last)
-        stop(gettextf("'%s' and '%s' both %s",
-                      "open_first", "open_last", "TRUE"),
-             call. = FALSE)
-    ## determine 'break_min'
-    if (is.null(break_min)) {
-        if (open_first && any(is_open))
-            break_min <- max(int_up[is_open])
+        if (open_first)
+            break_min <- max(int_up[is_open_low])
         else
             break_min <- min(int_low, na.rm = TRUE)
         break_min <- break_min - origin
@@ -680,12 +660,10 @@ make_breaks_label_to_integer_year <- function(int_low,
                     appendLF = TRUE)
         }
     }
-    ## Determine 'break_max'. Formula different from 'date_to_integer'
-    ## equivalent, since age in that case is age in completed years,
-    ## whereas here it is the upper limit of the age group.
+    ## determine 'break_max'
     if (is.null(break_max)) {
-        if (open_last && any(is_open))
-            break_max <- min(int_low[is_open])
+        if (open_last)
+            break_max <- min(int_low[is_open_up])
         else
             break_max <- max(int_up, na.rm = TRUE)
         break_max <- break_max - origin
@@ -743,26 +721,6 @@ rollback_month <- function(date) {
 }
 
 ## HAS_TESTS
-## Roll back to first day of current multi-year period.
-rollback_multi <- function(date, width, origin, month_start) {
-    if (identical(length(date), 0L))
-        return(as.Date(character()))
-    if (all(is.na(date)))
-        return(date)
-    breaks <- make_breaks_date_to_date_year(date = date,
-                                            month_start = month_start,
-                                            width = width,
-                                            origin = origin,
-                                            break_min = NULL,
-                                            has_break_min_arg = FALSE)
-    date_int <- as.integer(date)
-    breaks_int <- as.integer(breaks)
-    i <- findInterval(x = date_int,
-                      vec = breaks_int)
-    breaks[i]
-}
-
-## HAS_TESTS
 ## Roll back to first day of current quarter.
 rollback_quarter <- function(date) {
     if (identical(length(date), 0L))
@@ -772,6 +730,21 @@ rollback_quarter <- function(date) {
     date$mon <- (date$mon %/% 3L) * 3L
     as.Date(date)
 }
+
+## HAS_TESTS
+## Roll back to first day of current year.
+rollback_year <- function(date, month_start) {
+    if (identical(length(date), 0L))
+        return(as.Date(character()))
+    date <- as.POSIXlt(date)
+    i_month_start <- match(month_start, month.abb) - 1L
+    is_before_month_start <- !is.na(date) & (date$mon < i_month_start)
+    date$year[is_before_month_start] <- date$year[is_before_month_start] - 1L
+    date$mon <- i_month_start
+    date$mday <- 1L
+    as.Date(date)
+}
+
 
 ## HAS_TESTS
 ## Roll forward to first day of next month.

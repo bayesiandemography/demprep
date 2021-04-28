@@ -5,13 +5,7 @@
 \title{Depict the intervals created by
 function 'date_to_cohort_year'}
 \usage{
-plot_date_to_cohort_year(
-  date,
-  month_start = "Jan",
-  label_year_start = TRUE,
-  break_min = NULL,
-  open_first = NULL
-)
+plot_date_to_cohort_year(date, month_start = "Jan", label_year_start = TRUE)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}
@@ -24,21 +18,6 @@ the first day of this month.}
 by the calendar year at the beginning of the cohort
 or the calendar year at the end. Not needed for cohorts
 that start on 1 January. Defaults to \code{TRUE}.}
-
-\item{break_min}{The start date of the first cohort,
-or \code{NULL} (the default.)
-If non-\code{NULL}, \code{break_min} can be a single value of
-class \code{\link[base]{Date}}, or a value that
-can be coerced to class \code{Date}
-via function \code{\link[base]{as.Date}};
-in either case, it must be the first day of
-a month.}
-
-\item{open_first}{Whether the first cohort
-has no lower limit. If \code{break_min} is non-\code{NULL}
-and \code{label_year_start} is \code{TRUE},
-then \code{open_first} defaults to \code{TRUE};
-otherwise it defaults to \code{FALSE}.}
 }
 \description{
 Create a plot illustrating how function
@@ -69,17 +48,5 @@ plot_date_to_cohort_year(date = c("2024-03-27",
 ## specify oldest cohort, with 'open_first'
 ## at default value of 'TRUE', so first cohort
 ## has no lower limit
-plot_date_to_cohort_year(date = c("2024-03-27",
-                                  "2019-08-22",
-                                  "2022-11-09"),
-                         break_min = "2020-01-01")
-
-## specify oldest cohort with 'open_first' equal to
-## 'FALSE', so first cohort has lower limit
-plot_date_to_cohort_year(date = c("2024-03-27",
-                                  "2019-08-22",
-                                  "2022-11-09"),
-                         break_min = "2015-07-01",
-                         open_first = FALSE)
 }
 \keyword{internal}

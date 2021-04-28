@@ -1,6 +1,6 @@
 
 ## HAS_TESTS
-#' Make labels for periods measured in years
+#' Make complete labels for periods measured in years
 #'
 #' Make labels for periods with lengths measured in whole years.
 #' The function would not normally be

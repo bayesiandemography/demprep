@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_labels_period.R
 \name{make_labels_period}
 \alias{make_labels_period}
-\title{Make labels for periods measured in years}
+\title{Make complete labels for periods measured in years}
 \usage{
 make_labels_period(breaks, label_year_start = TRUE, include_na = FALSE)
 }

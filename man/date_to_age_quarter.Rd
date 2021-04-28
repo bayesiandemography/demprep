@@ -4,13 +4,7 @@
 \alias{date_to_age_quarter}
 \title{Convert dates to quarter (three-month) age groups}
 \usage{
-date_to_age_quarter(
-  date,
-  dob,
-  break_min = 0,
-  break_max = 400,
-  open_last = TRUE
-)
+date_to_age_quarter(date, dob)
 }
 \arguments{
 \item{date}{Dates of events.
@@ -22,18 +16,9 @@ or a vector that can be coerced to class
 A vector of class \code{\link[base]{Date}},
 or a vector that can be coerced to class
 \code{Date} using function \code{\link[base]{as.Date}}.}
-
-\item{break_min}{An integer or \code{NULL}.
-Defaults to 0.}
-
-\item{break_max}{An integer or \code{NULL}.
-Defaults to 400.}
-
-\item{open_last}{Whether the final age group
-has no upper limit. Defaults to \code{TRUE}.}
 }
 \value{
-A factor with the same length as
+an integer vector with the same length as
 \code{date} or \code{dob}, whichever
 is longer.
 }
@@ -41,8 +26,7 @@ is longer.
 Given the dates when events occurred,
 and the dates of birth of the people experiencing the events,
 allocate the events to age groups. The resulting
-age groups all have widths of one quarter (ie three months),
-except possibly the final age group.
+age groups all have widths of one quarter (ie three months).
 }
 \details{
 A person belongs to age group \code{"x"} if that
@@ -54,21 +38,6 @@ their 5th birthday (= 20 quarters) two days ago.
 \code{date} and \code{dob} must have the same length,
 unless one of them has length 1, in which case the
 length-1 argument is recycled.
-
-If \code{break_min} or \code{break_max} is set to \code{NULL},
-rather than to a specific value, then \code{date_to_age_year}
-finds the narrowest range that accommodates the data.
-
-When \code{open_last} is \code{TRUE}, the final age group
-is "open", meaning that it has no upper limit.
-
-The return value is a factor. The levels of this
-factor contain all intermediate age groups,
-including ones that do not appear in the data.
-
-If \code{date} or \code{dob} contain \code{NA}, then the
-levels of the factor created by \code{date_to_age_quarter}
-will also contain \code{NA}.
 }
 \examples{
 date_to_age_quarter(date = c("2024-03-27",
@@ -76,32 +45,20 @@ date_to_age_quarter(date = c("2024-03-27",
                     dob = c("2001-03-21",
                             "2000-07-13"))
 
-## specify highest age group
-date_to_age_quarter(date = "2019-09-22",
-                    dob = "2010-01-01",
-                    break_max = 48)
+## replicate date of event
+date_to_age_quarter(date = "2024-03-27",
+                    dob = c("2001-03-21",
+                            "2000-07-13"))
 
-## let lowest age group be set by the data
-date_to_age_quarter(date = "2019-09-22",
-                    dob = "2010-01-01",
-                    break_min = NULL,
-                    break_max = 48)
-
-## make final age group closed
-date_to_age_quarter(date = "2019-09-22",
-                    dob = "2010-01-01",
-                    break_min = NULL,
-                    break_max = 48,
-                    open_last = FALSE)
 }
 \seealso{
+The output from \code{date_to_age_quarter}
+is typically processed further using function
+\code{\link{format_age_quarter}}.
+
 Other functions for creating
 age groups from dates are
-\code{\link{date_to_age_year}},
-\code{\link{date_to_age_multi}},
-\code{\link{date_to_age_lifetab}},
-\code{\link{date_to_age_births}},
-\code{\link{date_to_age_custom}},
+\code{\link{date_to_age_year}}
 and \code{\link{date_to_age_month}}.
 
 Other functions for creating one-quarter
@@ -109,8 +66,4 @@ intervals from dates are
 \code{\link{date_to_period_quarter}},
 \code{\link{date_to_cohort_quarter}},
 and \code{\link{date_to_triangle_quarter}}.
-
-Existing labels for quarter age groups
-can be processed using \code{\link{clean_age}}
-and \code{\link{format_age_quarter}}.
 }

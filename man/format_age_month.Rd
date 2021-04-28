@@ -34,8 +34,8 @@ and \code{break_max}, and that may contain an open age group
 If, for instance, \code{break_min} is \code{0},
 \code{break_max} is \code{1200}, and \code{open_last} is
 \code{TRUE} (the defaults), then \code{format_age_year}
-creates a factor with levels \code{"0m"}, \code{"1m"},
-\dots, \code{"1199m"}, \code{"1200m+"}. Even when an age
+creates a factor with levels \code{"0"}, \code{"1"},
+\dots, \code{"1199"}, \code{"1200+"}. Even when an age
 group between \code{break_min} and \code{break_max}
 is not included in \code{x}, \code{factor_age_month}
 still creates a level for it.
@@ -45,7 +45,7 @@ A person belongs to age group \code{"x"} if that
 person was exactly \code{x} months
 old at their most recent birthday.
 For instance, a person belongs to age
-group \code{"60m"} if that person had their
+group \code{"60"} if that person had their
 5th birthday (= 60 months) two days ago.
 
 If \code{break_min} or \code{break_max} is set to \code{NULL},
@@ -57,19 +57,19 @@ except above \code{break_max}, where open age groups
 are allowed.
 }
 \examples{
-format_age_month(x = c("3m", "12m", "1400m+"))
+format_age_month(x = c("3", "12", "1400+"))
 
 ## specify highest age group
-format_age_month(x = c("3m", "12m", "1400m+"),
+format_age_month(x = c("3", "12", "1400+"),
                  break_max = 24)
 
 ## let lowest age group be determined by the data
-format_age_month(x = c("3m", "12m", "1400m+"),
+format_age_month(x = c("3", "12", "1400+"),
                  break_min = NULL,
                  break_max = 24)
 
 ## make final age group closed
-format_age_month(x = c("3m", "12m"),
+format_age_month(x = c("3", "12"),
                  break_min = NULL,
                  break_max = 24,
                  open_last = FALSE)

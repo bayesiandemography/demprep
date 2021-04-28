@@ -25,8 +25,8 @@ Defaults to 15.}
 \item{break_max}{An integer or \code{NULL}.
 Defaults to 50.}
 
-\item{width}{The width in years of the age intervals.
-A positive integer defaulting to 5.}
+\item{width}{The width in years of the age
+groups to be created. A positive integer defaulting to 5.}
 
 \item{recode_up}{If \code{TRUE}, births to parents
 aged less than \code{break_min} are treated as occurring to

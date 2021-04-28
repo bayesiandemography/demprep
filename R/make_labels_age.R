@@ -161,8 +161,7 @@ make_labels_age_quarter <- function(break_min = 0,
     make_labels_duration_quarters_months(break_min = break_min,
                                          break_max = break_max,
                                          open_last = open_last,
-                                         include_na = include_na,
-                                         unit = "quarter")
+                                         include_na = include_na)
 }
 
 ## HAS_TESTS
@@ -248,6 +247,5 @@ make_labels_age_month <- function(break_min = 0,
     make_labels_duration_quarters_months(break_min = break_min,
                                          break_max = break_max,
                                          open_last = open_last,
-                                         include_na = include_na,
-                                         unit = "month")
+                                         include_na = include_na)
 }

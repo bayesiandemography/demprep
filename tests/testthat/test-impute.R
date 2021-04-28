@@ -92,9 +92,7 @@ test_that("can impute dates of birth, then convert back to ages and get original
     dob <- impute_dob(date = date,
                       age_years = age_years)
     age_years_inferred <- date_to_age_year(date = date,
-                                           dob = dob,
-                                           break_max = 110)
-    age_years_inferred <- as.integer(as.character(age_years_inferred))
+                                           dob = dob)
     expect_identical(age_years, age_years_inferred)
     ## month only
     age_months <- sample(0:1200,
@@ -103,9 +101,7 @@ test_that("can impute dates of birth, then convert back to ages and get original
     dob <- impute_dob(date = date,
                       age_months = age_months)
     age_months_inferred <- date_to_age_month(date = date,
-                                             dob = dob,
-                                             break_max = 1400)
-    age_months_inferred <- as.integer(sub("m", "", age_months_inferred))
+                                             dob = dob)
     expect_identical(age_months, age_months_inferred)
     ## year and month
     age_years <- sample(0:90,
@@ -118,9 +114,7 @@ test_that("can impute dates of birth, then convert back to ages and get original
                       age_years = age_years,
                       age_months = age_months)
     age_months_inferred <- date_to_age_month(date = date,
-                                             dob = dob,
-                                             break_max = 1400)
-    age_months_inferred <- as.integer(sub("m", "", age_months_inferred))
+                                             dob = dob)
     expect_identical(12L * age_years + age_months,
                      age_months_inferred)
 })

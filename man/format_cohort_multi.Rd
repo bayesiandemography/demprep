@@ -10,7 +10,9 @@ format_cohort_multi(
   width = 5,
   origin = 2000,
   break_min = NULL,
-  open_first = NULL
+  open_first = NULL,
+  month_start = "Jan",
+  label_year_start = TRUE
 )
 }
 \arguments{
@@ -26,6 +28,14 @@ or \code{NULL} (the default).}
 
 \item{open_first}{Whether the first cohort
 has no lower limit.}
+
+\item{month_start}{An element of \code{\link[base]{month.name}},
+or \code{\link[base]{month.abb}}. Cohorts start on
+the first day of this month.}
+
+\item{label_year_start}{Logical. Whether to label a cohort
+by the calendar year at the beginning of the cohort
+or the calendar year at the end. Defaults to \code{TRUE}.}
 }
 \value{
 A factor with the same length as
@@ -40,25 +50,38 @@ For instance, if the earliest cohort in \code{x}
 is \code{"1990-1995"}, and the latest is \code{"2005-2010"},
 then \code{format_cohort_multi} creates a factor
 with levels \code{"1990-1995"}, \code{"1995-2000"},
-\code{"2000-2005"},and \code{"2005-2010"}.
-All cohorts in the return value (with the possible
-exception of the earliest) have the same length,
-which is controlled by the \code{width} parameter.
+\code{"2000-2005"}, and \code{"2005-2010"}.
+All cohorts, with the possible exception of
+a first "open" cohort, have the same length.
+The length of cohorts is controlled by
+\code{width}.
 }
 \details{
 If \code{open_first} is \code{TRUE}, then the earliest
 cohort has no lower limit. (This is equivalent
 to an open age group with no upper limit.)
 
-The elements of \code{x} must be multi-year
-intervals such as \code{"1950-1960"},
-\code{"2020-2025"}, or intervals that are
-open on the left, such as \code{"<2000"}
-or \code{<"1960"}.
+The elements of \code{x} can be
+single-year labels such as \code{"2020"},
+multi-year labels such as \code{"1950-1960"},
+and intervals that are open on the left,
+such as \code{"<2000"}.
+
+As discussed in \code{\link{date_to_cohort_year}},
+single-year labels such as \code{"2000"} are ambiguous.
+Correctly aligning single-year and multi-year cohorts
+requires knowing which month cohorts start on,
+and whether single-year cohorts are labelled according
+to the calendar year at the start of the cohort or the end.
+\code{format_cohort_multi} assumes that
+cohorts start in January, and that single-year cohorts
+are labelled by calendar year at the start. These
+settings can be changed using \code{month_start}
+and \code{label_year_start}.
 
 \code{open_first} defaults to \code{TRUE}
 if a value for \code{break_min} is supplied,
-or if any intervals in \code{x} is open,
+or if any intervals in \code{x} are open,
 and to \code{FALSE} otherwise.
 
 If \code{x} contains \code{NA}, then the
@@ -66,27 +89,36 @@ levels of the factor created by \code{format_cohort_multi}
 also contain \code{NA}.
 }
 \examples{
-format_cohort_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"))
+format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"))
+
+## contains open interval
+format_cohort_multi(x = c("2000", "2005-2010", NA, "<1995"))
+
+## changing the interpretation of the labels results in the
+## reclassification of cohort "2000"
+format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
+                    month_start = "Jul",
+                    label_year_start = FALSE)
 
 ## 'break_min' is higher than the minimum of 'x'
-format_cohort_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
+format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
                     break_min = 2005)
 
 ## 'break_min' is lower then the minimum of 'x'
-format_cohort_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
+format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
                     break_min = 1990)
 
 ## 'break_min' supplied, but 'open_first' is FALSE
-format_cohort_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
+format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
                     break_min = 1990,
                     open_first = FALSE)
 
 ## non-default value for 'width'
-format_cohort_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
+format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
                     width = 10)
 
 ## non-default value for 'origin', to shift labels by one year
-format_cohort_multi(x = c("2000-2001", "2005-2010", NA, "1995-1999"),
+format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
                     width = 10,
                     origin = 2001)
 }

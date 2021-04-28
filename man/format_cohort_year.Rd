@@ -29,16 +29,13 @@ cohort has no lower limit. (This is equivalent
 to an open age group with no upper limit.)
 }
 \details{
-The elements of \code{x} are typically single-year
-labels, such as \code{"2001"} or \code{"2055"}, or
+The elements of \code{x} must be single-year
+labels, such as \code{"2001"}, or
 labels for cohorts
-that are open on the left, such as \code{"<2000"}
-or \code{<"1960"}. However, when \code{open_first}
-is \code{TRUE}, \code{x} can also include
-multi-year labels such as \code{"1950-1960"},
-provided that the intervals are less
-than \code{break_min} (and hence are absorbed
-into the open age group).
+that are open on the left, such as \code{"<2000"}.
+\code{x} cannot contain
+closed multi-year intervals such
+as \code{"2000-2005"}
 
 \code{open_first} defaults to \code{TRUE}
 if a value for \code{break_min} is supplied,
@@ -65,11 +62,9 @@ format_cohort_year(x = c("2000", "2005", NA, "2004"),
 format_cohort_year(x = c("2000", "2005", NA, "2004"),
                    break_min = 2001)
 
-## multi-year labels are allowed if they are earlier than 'break_min'
-format_cohort_year(x = c("1950-1980", "2005", NA, "2004"),
-                   break_min = 2001)
-
 ## set 'open_first' to FALSE 
+format_cohort_year(x = c("2000", "2005", NA, "2004"),
+                   open_first = FALSE)
 format_cohort_year(x = c("2000", "2005", NA, "2004"),
                    break_min = 1998,
                    open_first = FALSE)

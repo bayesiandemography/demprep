@@ -2,18 +2,12 @@
 % Please edit documentation in R/make_labels-internal.R
 \name{make_labels-internal}
 \alias{make_labels-internal}
-\alias{make_labels_default}
-\alias{make_labels_integers}
 \alias{make_labels_grouped_int_enumerations}
 \alias{make_labels_grouped_int_endpoints}
 \alias{make_labels_calendar_quarters_months}
 \alias{make_labels_duration_quarters_months}
 \title{Internal functions for making labels}
 \usage{
-make_labels_default(labels, include_na)
-
-make_labels_integers(int_min, int_max, include_na)
-
 make_labels_grouped_int_enumerations(breaks, open_first, open_last, include_na)
 
 make_labels_grouped_int_endpoints(breaks, open_first, open_last, include_na)
@@ -31,20 +25,10 @@ make_labels_duration_quarters_months(
   break_min,
   break_max,
   open_last,
-  include_na,
-  unit
+  include_na
 )
 }
 \arguments{
-\item{labels}{A character vector.}
-
-\item{include_na}{Logical. Whether to
-append \code{NA} to end of labels.}
-
-\item{int_min}{An integer.}
-
-\item{int_max}{An integer.}
-
 \item{breaks}{A vector of integers or dates.}
 
 \item{open_first}{Logical. Whether to
@@ -53,12 +37,21 @@ include interval open on left.}
 \item{open_last}{Logical. Whether to
 include interval open on right.}
 
+\item{include_na}{Logical. Whether to
+append \code{NA} to end of labels.}
+
 \item{break_min}{An integer or date.}
 
 \item{break_max}{An integer or date.}
 
 \item{unit}{Time unit. Currently \code{"quarter"}
 or \code{"month"}.}
+
+\item{labels}{A character vector.}
+
+\item{int_min}{An integer.}
+
+\item{int_max}{An integer.}
 }
 \value{
 A character vector.

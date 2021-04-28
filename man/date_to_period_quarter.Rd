@@ -7,13 +7,17 @@
 date_to_period_quarter(date)
 }
 \arguments{
-\item{date}{Dates of events or measurements.}
+\item{date}{Dates of events or measurements.
+A vector of class \code{\link[base]{Date}},
+or a vector than can be coerced to class \code{Date}
+via function \code{\link[base]{as.Date}}.}
 }
 \value{
-A factor with the same length as \code{date}.
+A character vector with the same length as \code{date}.
 }
 \description{
-Allocate dates to periods with periods one quarter long.
+Allocate dates to periods. The
+periods have widths of one quarter.
 Quarters are defined as follows:
 \tabular{lll}{
   \strong{Quarter} \tab \strong{Start} \tab \strong{End} \cr
@@ -23,37 +27,24 @@ Quarters are defined as follows:
   Q4 \tab 1 October \tab 31 December
 }
 }
-\details{
-\code{date} is a vector of class \code{\link[base]{Date}},
-or can be coerced to class \code{Date}
-via function \code{\link[base]{as.Date}}.
-
-The return value is a factor.
-The levels of this factor include all intermediate periods,
-including periods that do not appear in the data.
-
-If \code{date} contains \code{NA}, then the
-levels of the factor created by \code{date_to_period_quarter}
-also contain \code{NA}.
-}
 \examples{
 date_to_period_quarter(date = c("2024-03-27",
                                 "2020-01-03",
                                 "2022-11-09"))
 }
 \seealso{
-Other functions for creating periods are
-\code{\link{date_to_period_year}},
-\code{\link{date_to_period_multi}},
-\code{\link{date_to_period_custom}},
+The output from \code{date_to_period_quarter}
+is often processed further using \code{\link{format_period_quarter}}.
+
+Other functions for creating periods from dates are
+\code{\link{date_to_period_year}} and
 and \code{\link{date_to_period_month}}.
 
-Other functions for working with quarter intervals are
+Other functions for creating one-quarter units
+from dates are
 \code{\link{date_to_age_quarter}},
-and \code{\link{date_to_cohort_quarter}},
+\code{\link{date_to_cohort_quarter}},
 and \code{\link{date_to_triangle_quarter}}.
-
-Existing labels for quarter periods
-can be processed using \code{\link{clean_age}}
-and \code{\link{format_period_quarter}}.
+The interface for \code{date_to_period_quarter} is identical
+to that of \code{\link{date_to_cohort_quarter}}.
 }

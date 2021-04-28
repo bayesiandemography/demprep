@@ -9,21 +9,6 @@ plot_date_to_cohort_month(date, break_min = NULL, open_first = NULL)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}
-
-\item{break_min}{The start date of the first cohort,
-or \code{NULL} (the default.)
-If non-\code{NULL}, \code{break_min} can be a single value of
-class \code{\link[base]{Date}}, or a value that
-can be coerced to class \code{Date}
-via function \code{\link[base]{as.Date}};
-in either case, it must be the first day of
-a month.}
-
-\item{open_first}{Whether the first cohort
-has no lower limit. If \code{break_min} is non-\code{NULL}
-and \code{label_year_start} is \code{TRUE},
-then \code{open_first} defaults to \code{TRUE};
-otherwise it defaults to \code{FALSE}.}
 }
 \description{
 Create plot illustrating how function

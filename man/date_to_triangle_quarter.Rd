@@ -4,21 +4,21 @@
 \alias{date_to_triangle_quarter}
 \title{Convert dates to quarter-length Lexis triangles}
 \usage{
-date_to_triangle_quarter(date, dob, break_max = 400, open_last = TRUE)
+date_to_triangle_quarter(date, dob)
 }
 \arguments{
-\item{date}{Dates of events.}
+\item{date}{Dates of events.
+A vector of class \code{\link[base]{Date}},
+or a vector that can be coerced to class
+\code{Date} using function \code{\link[base]{as.Date}}.}
 
-\item{dob}{Dates of birth.}
-
-\item{break_max}{An integer or \code{NULL}.
-Defaults to 400.}
-
-\item{open_last}{Whether the final age group
-has no upper limit. Defaults to \code{TRUE}.}
+\item{dob}{Dates of birth.
+A vector of class \code{\link[base]{Date}},
+or a vector that can be coerced to class
+\code{Date} using function \code{\link[base]{as.Date}}.}
 }
 \value{
-A factor with the same length as \code{date}.
+A character vector with the same length as \code{date}.
 }
 \description{
 Based on an age-time plan where age groups and periods both have
@@ -50,55 +50,28 @@ allocates events to Lexis triangles as follows:
   etc \tab etc
 }
 
-\code{date} and \code{dob} are both vectors of class
-\code{\link[base]{Date}}, or vectors that can be coerced to class
-\code{Date} via function \code{\link[base]{as.Date}}.
-
 \code{date} and \code{dob} must have the same length,
 unless one of them has length 1, in which case the
 length-1 argument is recycled.
-
-\code{break_max} and \code{open_last} are used to specify
-the oldest age group.
-When \code{break_max} is non-\code{NULL} and
-\code{open_last} is \code{TRUE}, the oldest
-age group is \code{[break_max, Inf)} years. When
-\code{break_max} is non-\code{NULL} and 
-\code{open_last} is \code{FALSE}, the oldest age
-group is \code{[break_max-1, break_max)} years.
-
-If \code{break_max} is \code{NULL}, then
-\code{date_to_triangle_quarter}
-derives a value for \code{break_max}
-based on the highest age in the data,
-and the value for \code{open_last}.
-
-The return value is a factor.
-The levels of the factor include \code{"Lower"} and
-\code{"Upper"}, even when \code{"Lower"}
-and \code{"Upper"} do not both appear
-in the data.
 }
 \examples{
 date_to_triangle_quarter(date = c("2024-03-27",
                                   "2022-11-09"),
                          dob = "2020-01-01")
-
-
-## open age group starts at 40 quarters
-date_to_triangle_quarter(date = c("2017-03-27",
-                                  "2024-03-27"),
-                         dob = "2010-01-01",
-                         break_max = 40)
 }
 \seealso{
-Other functions for creating Lexis triangles are
-\code{\link{date_to_triangle_year}},
-\code{\link{date_to_triangle_multi}},
-\code{\link{date_to_triangle_births}},
+The output from \code{date_to_triangle_quarter}
+is often processed further using function
+\code{\link{format_triangle_quarter}}.
+
+Other functions for creating
+triangles from dates are
+\code{\link{date_to_triangle_year}}
 and \code{\link{date_to_triangle_month}}.
 
-\code{date_to_triangle_quarter} is typically used in combination with
-\code{\link{date_to_age_quarter}}
-and \code{\link{date_to_period_quarter}}.
+Other functions for creating one-quarter
+units from dates are
+\code{\link{date_to_age_quarter}}.
+\code{\link{date_to_period_quarter}}, and
+\code{\link{date_to_cohort_quarter}}.
 }

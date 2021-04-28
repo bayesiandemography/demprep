@@ -4,16 +4,10 @@
 \alias{date_to_cohort_year}
 \title{Convert dates to one-year cohorts}
 \usage{
-date_to_cohort_year(
-  date,
-  month_start = "Jan",
-  label_year_start = TRUE,
-  break_min = NULL,
-  open_first = NULL
-)
+date_to_cohort_year(date, month_start = "Jan", label_year_start = TRUE)
 }
 \arguments{
-\item{date}{Dates of events defining cohorts.
+\item{date}{Dates of events defining cohorts (typically births).
 A vector of class \code{\link[base]{Date}},
 or a vector that can be coerced to class \code{Date}
 via function \code{\link[base]{as.Date}}.}
@@ -24,55 +18,20 @@ the first day of this month.}
 
 \item{label_year_start}{Logical. Whether to label a cohort
 by the calendar year at the beginning of the cohort
-or the calendar year at the end. Not needed for cohorts
-that start on 1 January. Defaults to \code{TRUE}.}
-
-\item{break_min}{The start date of the first cohort,
-or \code{NULL} (the default.)
-If non-\code{NULL}, \code{break_min} can be a single value of
-class \code{\link[base]{Date}}, or a value that
-can be coerced to class \code{Date}
-via function \code{\link[base]{as.Date}};
-in either case, it must be the first day of
-a month.}
-
-\item{open_first}{Whether the first cohort
-has no lower limit. If \code{break_min} is non-\code{NULL}
-and \code{label_year_start} is \code{TRUE},
-then \code{open_first} defaults to \code{TRUE};
-otherwise it defaults to \code{FALSE}.}
+or the calendar year at the end. Defaults to \code{TRUE}.}
 }
 \value{
-A factor with the same length as \code{date}.
+An integer vector with the same length as \code{date}.
 }
 \description{
-Identify cohorts, based on dates of births or other events.
+Identify cohorts, based on dates of events such as births.
 The cohorts have widths of one year.
 }
 \details{
-The interface for \code{date_to_cohort_year} is similar
-to that of \code{\link{date_to_period_year}}, except that
-\code{date_to_cohort_year} also has arguments \code{break_min}
-and \code{open_first}.
-
-\code{break_min} sets the limits of the first cohort,
-and is similar to \code{break_max} with function
-\code{\link{date_to_age_year}}. If no value for \code{break_min}
-is supplied, then the limits of the first cohort are
-determined by the data.
-
-If \code{open_first} is \code{TRUE}, then the first cohort
-has no lower limit, which is similar to having \code{open_last}
-equal to \code{TRUE}  with function
-\code{\link{date_to_age_year}}
-
-If a value for \code{break_min} is supplied, then
-cohorts start on the day and month specified by \code{break_min};
-otherwise they start on first day of \code{month_start}.
-Cohorts end one-year-minus-one-day later.
+Cohorts start on the first day of \code{month_start},
+and end one-year-minus-one-day later.
 The default value for \code{month_start} is \code{"Jan"},
-so when \code{break_min} is not specified,
-cohorts by default start on 1 January and
+so cohorts by default start on 1 January and
 end on 31 December. \code{month_start} can be a
 full month name or an abbreviation.
 
@@ -83,27 +42,51 @@ the first day belongs to one calendar
 year and the last day belongs to the next calendar year.
 For instance, if a cohort extends from
 1 July 2000 to 30 June 2001, then the first
-day belongs to the year 2000, and the last
-day belongs to the year 2001. Some authors
-use the first year to label such cohorts,
-and others use the last year.
+day belongs to calendar year 2000, and the last
+day belongs to calendar year 2001. Some people
+use the first calendar year to label such cohorts,
+and others use the last calendar year.
 For instance, if a cohort extends from
-1 July 2000 to 30 June 2001, some authors
+1 July 2000 to 30 June 2001, some people
 label the cohort \code{"2000"}, and
 others label it \code{"2001"}. Function
 \code{date_to_cohort_year} by default uses
 the start year. To use the end year, set
 \code{label_year_start} to \code{FALSE}.
-If \code{open_first} is \code{TRUE}, then
-\code{label_year_start} must be \code{TRUE}.
 
-The return value is a factor. The levels of this
-factor contain all intermediate cohorts,
-including cohorts that do not appear in the data.
+Here, for different settings of
+\code{month_start} and \code{label_year_start},
+is how \code{date_to_cohort_year}
+constructs a cohort label for a birth occurring
+on 15 June 2020:
 
-If \code{date} contains \code{NA}, then the
-levels of the factor created by \code{date_to_cohort_year}
-also contain \code{NA}.
+\tabular{cccc}{
+  \code{month_start} \tab \code{label_year_start} \tab Cohort \tab Label \cr
+  \code{"Jan"} \tab \code{TRUE}  \tab 1 Jan 2020 - 31 Dec 2020 \tab \code{"2020"} \cr
+  \code{"Jan"} \tab \code{FALSE} \tab 1 Jan 2020 - 31 Dec 2020 \tab \code{"2020"} \cr
+  \code{"Feb"} \tab \code{TRUE}  \tab 1 Feb 2020 - 31 Jan 2021 \tab \code{"2020"} \cr
+  \code{"Feb"} \tab \code{FALSE} \tab 1 Feb 2020 - 31 Jan 2021 \tab \code{"2021"} \cr
+  \code{"Mar"} \tab \code{TRUE}  \tab 1 Mar 2020 - 28 Feb 2021 \tab \code{"2020"} \cr
+  \code{"Mar"} \tab \code{FALSE} \tab 1 Mar 2020 - 28 Feb 2021 \tab \code{"2021"} \cr
+  \code{"Apr"} \tab \code{TRUE}  \tab 1 Apr 2020 - 31 Mar 2021 \tab \code{"2020"} \cr
+  \code{"Apr"} \tab \code{FALSE} \tab 1 Apr 2020 - 31 Mar 2021 \tab \code{"2021"} \cr
+  \code{"May"} \tab \code{TRUE}  \tab 1 May 2020 - 30 Apr 2021 \tab \code{"2020"} \cr
+  \code{"May"} \tab \code{FALSE} \tab 1 May 2020 - 30 Apr 2021 \tab \code{"2021"} \cr
+  \code{"Jun"} \tab \code{TRUE}  \tab 1 Jun 2020 - 31 May 2021 \tab \code{"2020"} \cr
+  \code{"Jun"} \tab \code{FALSE} \tab 1 Jun 2020 - 31 May 2021 \tab \code{"2021"} \cr
+  \code{"Jul"} \tab \code{TRUE}  \tab 1 Jul 2019 - 30 Jun 2020 \tab \code{"2019"} \cr
+  \code{"Jul"} \tab \code{FALSE} \tab 1 Jul 2019 - 30 Jun 2020 \tab \code{"2020"} \cr
+  \code{"Aug"} \tab \code{TRUE}  \tab 1 Aug 2019 - 31 Jul 2020 \tab \code{"2019"} \cr
+  \code{"Aug"} \tab \code{FALSE} \tab 1 Aug 2019 - 31 Jul 2020 \tab \code{"2020"} \cr
+  \code{"Sep"} \tab \code{TRUE}  \tab 1 Sep 2019 - 31 Aug 2020 \tab \code{"2019"} \cr
+  \code{"Sep"} \tab \code{FALSE} \tab 1 Sep 2019 - 31 Aug 2020 \tab \code{"2020"} \cr
+  \code{"Oct"} \tab \code{TRUE}  \tab 1 Oct 2019 - 30 Sep 2020 \tab \code{"2019"} \cr
+  \code{"Oct"} \tab \code{FALSE} \tab 1 Oct 2019 - 30 Sep 2020 \tab \code{"2020"} \cr
+  \code{"Nov"} \tab \code{TRUE}  \tab 1 Nov 2019 - 31 Oct 2020 \tab \code{"2019"} \cr
+  \code{"Nov"} \tab \code{FALSE} \tab 1 Nov 2019 - 31 Oct 2020 \tab \code{"2020"} \cr
+  \code{"Dec"} \tab \code{TRUE}  \tab 1 Dec 2019 - 30 Nov 2020 \tab \code{"2019"} \cr
+  \code{"Dec"} \tab \code{FALSE} \tab 1 Dec 2019 - 30 Nov 2020 \tab \code{"2020"}
+}
 }
 \examples{
 date_to_cohort_year(date = c("2024-03-27", "2022-11-09"))
@@ -117,27 +100,15 @@ date_to_cohort_year(date = c("2024-03-27", "2022-11-09"),
 date_to_cohort_year(date = c("2024-03-27", "2022-11-09"),
                     month_start = "Jul",
                     label_year_start = FALSE)
-
-## Specify oldest cohort, with open_first
-## at default value of TRUE
-date_to_cohort_year(date = c("2024-03-27",
-                             "2019-08-22",
-                             "2022-11-09"),
-                    break_min = "2020-01-01")
-
-## Specify oldest cohort, with open_first = FALSE
-date_to_cohort_year(date = c("2024-03-27",
-                             "2019-08-22",
-                             "2022-11-09"),
-                    break_min = "2015-07-01",
-                    open_first = FALSE)
 }
 \seealso{
+The output from \code{date_to_cohort_year}
+is ofen processed further using function
+\code{\link{format_cohort_year}}.
+
 Other functions for creating
 cohorts from dates are
-\code{\link{date_to_cohort_multi}},
-\code{\link{date_to_cohort_custom}},
-\code{\link{date_to_cohort_quarter}},
+\code{\link{date_to_cohort_quarter}} and
 and \code{\link{date_to_cohort_month}}.
 
 Other functions for creating one-year
@@ -145,8 +116,6 @@ intervals from dates are
 \code{\link{date_to_age_year}},
 \code{\link{date_to_period_year}},
 and \code{\link{date_to_triangle_year}}.
-
-Existing labels for one-year cohorts
-can be processed using \code{\link{clean_age}}
-and \code{\link{format_cohort_year}}.
+The interface for \code{date_to_cohort_year} is identical
+to that of \code{\link{date_to_period_year}}.
 }

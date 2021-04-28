@@ -5,15 +5,29 @@
 \title{Put period labels into the format required
 for multi-year periods}
 \usage{
-format_period_multi(x, width = 5, origin = 2000)
+format_period_multi(
+  x,
+  width = 5,
+  origin = 2000,
+  month_start = "Jan",
+  label_year_start = TRUE
+)
 }
 \arguments{
 \item{x}{A vector of period labels.}
 
-\item{width}{The length, in whole years, of the periods.
-Defaults to 5.}
+\item{width}{The length, in whole years, of the periods
+to be created. Defaults to 5.}
 
 \item{origin}{An integer. Defaults to 2000.}
+
+\item{month_start}{An element of \code{\link[base]{month.name}},
+or \code{\link[base]{month.abb}}. Cohorts start on
+the first day of this month.}
+
+\item{label_year_start}{Logical. Whether to label a cohort
+by the calendar year at the beginning of the cohort
+or the calendar year at the end. Defaults to \code{TRUE}.}
 }
 \value{
 A factor with the same length as
@@ -33,9 +47,34 @@ All periods in the return value have the same length,
 which is controlled by the \code{width} parameter.
 }
 \details{
-The elements of \code{x} must be multi-year
-intervals such as \code{"1950-1960"},
-\code{"2020-2025"}.
+The elements of \code{x} are typically multi-year
+labels such as \code{"1950-1960"} or
+\code{"2020-2025"}, but can also be single-year
+labels such as \code{"2000"} or \code{"2025"}.
+\code{x} cannot contain open intervals
+such as \code{"<2020"}.
+
+As discussed in \code{\link{date_to_period_year}}, the
+meaning of single-year labels for periods depends on the
+the starting month, and whether periods are
+labelled according to the calendar year
+at the start of the period, or the calendar year
+at the end. The multi-year labels produced
+by \code{format_period_multi} are less ambiguous,
+in that they always show a pair of years: the calendar
+year at the start of the period and the calendar year at
+end of the period plus one day. For instance, a period
+starting on 1 January 2000 and ending on 31 December 2000,
+where the end of the period plus one day is 1 January 2001,
+is labeled \code{"2000-2001"}.
+
+If \code{x} contains single-year labels, then \code{format_period_multi}
+may need help to interpret these correctly. \code{format_period_multi}
+assumes that periods start on January and that
+single-year periods are labelled according to the calendar year
+at the start of the period. Alternative settings can be
+specified via the \code{month_start} and \code{label_start_year}
+arguments.
 
 The location of the periods can be shifted
 by using different values for \code{origin}.
@@ -47,12 +86,28 @@ also contain \code{NA}.
 \examples{
 format_period_multi(x = c("2000-2001", "2005-2010", NA, "1996-1998"))
 
+## use non-default value for 'width'
 format_period_multi(x = c("2000-2001", "2005-2010", NA, "1996-1998"),
                     width = 10)
 
+## use non-default value for 'origin' to shift periods
 format_period_multi(x = c("2000-2001", "2005-2010", NA, "1996-1998"),
                     width = 10,
                     origin = 2001)
+
+## Labels include single-year periods. Use default assumption
+## that single-year periods start in January and/or
+## are labelled by the calendar year at the start of
+## the period
+format_period_multi(x = c("2000-2001", "2005", NA, "1996-1998"))
+
+## Change to assumption that single-year periods are
+## start in July, and are labelled by the calendar
+## year at the end of the period
+format_period_multi(x = c("2000-2001", "2005", NA, "1996-1998"),
+                    month_start = "Jul",
+                    label_year_start = FALSE)
+
 }
 \seealso{
 Other functions for reformating

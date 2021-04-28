@@ -30,8 +30,8 @@ and \code{break_max}, and that may contain an open age group
 If, for instance, \code{break_min} is \code{0},
 \code{break_max} is \code{400}, and \code{open_last} is
 \code{TRUE} (the defaults), then \code{format_age_year}
-creates a factor with levels \code{"0q"}, \code{"1q"},
-\dots, \code{"399q"}, \code{"400q+"}. Even when an age
+creates a factor with levels \code{"0"}, \code{"1"},
+\dots, \code{"399"}, \code{"400+"}. Even when an age
 group between \code{break_min} and \code{break_max}
 is not included in \code{x}, \code{factor_age_quarter}
 still creates a level for it.
@@ -40,7 +40,7 @@ still creates a level for it.
 A person belongs to age group \code{"x"} if that
 person was exactly \code{x} quarters
 old at their most recent birthday. For instance, a person
-belongs to age group \code{"20q"} if that person had
+belongs to age group \code{"20"} if that person had
 their 5th birthday (= 20 quarters) two days ago.
 
 If \code{break_min} or \code{break_max} is set to \code{NULL},
@@ -52,19 +52,19 @@ except above \code{break_max}, where open age groups
 are allowed.
 }
 \examples{
-format_age_quarter(x = c("10q", "22q", "500q+"))
+format_age_quarter(x = c("10", "22", "500+"))
 
 ## specify highest age group
-format_age_quarter(x = c("10q", "22q", "500q+"),
+format_age_quarter(x = c("10", "22", "500+"),
                    break_max = 48)
 
 ## let lowest age group be determined by the data
-format_age_quarter(x = c("10q", "22q", "500q+"),
+format_age_quarter(x = c("10", "22", "500+"),
                    break_min = NULL,
                    break_max = 48)
 
 ## make final age group closed
-format_age_quarter(x = c("10q", "22q"),
+format_age_quarter(x = c("10", "22"),
                    break_min = NULL,
                    break_max = 48,
                    open_last = FALSE)

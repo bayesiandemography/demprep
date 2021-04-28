@@ -8,7 +8,7 @@ for single-year periods}
 format_period_year(x)
 }
 \arguments{
-\item{x}{A vector of period labels.}
+\item{x}{A vector of single-year period labels.}
 }
 \value{
 A factor with the same length as
@@ -26,8 +26,20 @@ with levels \code{"1990"}, \code{"1991"}, \dots,
 \code{"2010"}.
 }
 \details{
-The elements of \code{x} must all be single years,
-eg \code{"2001"} or \code{"2055"}.
+The elements of \code{x} must  be single-year
+labels such as \code{"2001"} or \code{"2055"}.
+\code{x} cannot contain multi-year intervals such
+as \code{"2000-2005"} or \code{"<2020"}.
+
+As discussed in \code{\link{date_to_period_year}}, the
+meaning of single-year labels for periods depends on the
+the starting month, and whether periods are
+labelled according to the calendar year
+at the start of each period, or the calendar year
+at the end (where these differ.) \code{format_period_year} leaves
+labels untouched, so whatever convention
+was used to create \code{x} also applies to the output
+from \code{format_period_year}.
 
 If \code{x} contains \code{NA}, then the
 levels of the factor created by \code{format_period_year}
@@ -46,7 +58,4 @@ and \code{\link{format_period_month}}.
 
 \code{\link{date_to_period_year}} creates
 single-year periods from dates.
-
-\code{\link{make_labels_period}} describes the rules
-for constructing labels for periods.
 }

@@ -89,13 +89,6 @@ test_that("format_period_quarter works with valid input", {
                             exclude = NULL))
 })
 
-test_that("format_period_quarter gives correct error with invalid inputs", {
-    expect_error(format_period_quarter(x = c("2000 Q4", "2010 Q3", NA, "wrong")),
-                 "\"wrong\" is not a valid label")
-    expect_error(format_period_quarter(x = c("2000 Q5", "2010 Q3", NA)),
-                 "\"2000 Q5\" is not a valid label")
-})
-
 
 ## format_period_month --------------------------------------------------------
 
@@ -112,11 +105,4 @@ test_that("format_period_month works with valid input", {
                      factor(c(NA, NA),
                             levels = NA_character_,
                             exclude = NULL))
-})
-
-test_that("format_period_month gives correct error with invalid inputs", {
-    expect_error(format_period_month(x = c("2000 Jan", "2010 Feb", NA, "wrong")),
-                 "\"wrong\" is not a valid label")
-    expect_error(format_period_month(x = c("2000 JAN", "2010 Q3", NA)),
-                 "\"2000 JAN\" is not a valid label")
 })

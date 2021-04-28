@@ -4,95 +4,47 @@
 \alias{date_to_cohort_quarter}
 \title{Convert dates to quarter (three-month) cohorts}
 \usage{
-date_to_cohort_quarter(date, break_min = NULL, open_first = NULL)
+date_to_cohort_quarter(date)
 }
 \arguments{
-\item{date}{Dates of events defining cohorts.
+\item{date}{Dates of events defining cohorts (typically births).
 A vector of class \code{\link[base]{Date}},
 or a vector that can be coerced to class \code{Date}
 via function \code{\link[base]{as.Date}}.}
-
-\item{break_min}{The start date of the first cohort,
-or \code{NULL} (the default.)
-If non-\code{NULL}, \code{break_min} can be a single value of
-class \code{\link[base]{Date}}, or a value that
-can be coerced to class \code{Date}
-via function \code{\link[base]{as.Date}};
-in either case, it must be the first day of
-a quarter.}
-
-\item{open_first}{Whether the first cohort
-has no lower limit. If \code{break_min} is non-\code{NULL}
-and \code{label_year_start} is \code{TRUE},
-then \code{open_first} defaults to \code{TRUE};
-otherwise it defaults to \code{FALSE}.}
 }
 \value{
-A factor with the same length as \code{date}.
+A character vector with the same length as \code{date}.
 }
 \description{
-Identify cohorts, based on dates of births or other events.
-Q1 (the first quarter) starts on 1 January
-and ends on 31 March; Q2 starts on 1 April and ends on
-30 June; Q3 starts on 1 July and ends on 30 September;
-Q4 starts on 1 October and ends on 31 December.
+Identify cohorts, based on the dates of events such as birth.
+The cohorts have widths of one quarter.
+Quarters are defined as follows:
+\tabular{lll}{
+  \strong{Quarter} \tab \strong{Start} \tab \strong{End} \cr
+  Q1 \tab 1 January \tab 31 March \cr
+  Q2 \tab 1 April \tab 30 June \cr
+  Q3 \tab 1 July \tab 30 September \cr
+  Q4 \tab 1 October \tab 31 December
 }
-\details{
-The interface for \code{date_to_cohort_quarter} is the similar
-to that of \code{\link{date_to_period_quarter}}, except that
-\code{date_to_cohort_quarter} also has arguments \code{break_min}
-and \code{open_first}.
-
-Supplying a date for \code{break_min} defines
-the first cohort. It is similar
-to supplying a value for \code{break_max} in
-\code{\link{date_to_age_multi}}. If
-\code{open_first} is \code{TRUE}, then \code{break_min}
-forms the upper limit for the first cohort, and there is no lower
-limit. If \code{open_first} is \code{FALSE}, then
-\code{break_min} forms the lower limit for the first cohort.
-
-The return value is a factor. The levels of this
-factor contain all intermediate cohorts,
-including cohorts that do not appear in the data.
-
-If \code{date} contains \code{NA}, then the
-levels of the factor created by \code{date_to_cohort_quarter}
-also contain \code{NA}.
 }
 \examples{
 date_to_cohort_quarter(date = c("2024-03-27",
-                                "2022-11-09"))
-
-## Specify oldest cohort, with open_first
-## at default value of TRUE
-date_to_cohort_quarter(date = c("2024-03-27",
-                                "2019-08-22",
-                                "2022-11-09"),
-                       break_min = "2020-01-01")
-
-## Specify oldest cohort, with open_first = FALSE
-date_to_cohort_quarter(date = c("2024-03-27",
-                                "2019-08-22",
-                                "2022-11-09"),
-                    break_min = "2015-07-01",
-                    open_first = FALSE)
+                                "2022-11-09",
+                                "2023-05-11"))
 }
 \seealso{
-Other functions for creating cohorts
-from dates are
-\code{\link{date_to_cohort_year}},
-\code{\link{date_to_cohort_multi}},
-\code{\link{date_to_cohort_custom}},
+The output from \code{date_to_cohort_quarter}
+is often processed further using \code{\link{format_cohort_quarter}}.
+
+Other functions for creating cohorts from dates are
+\code{\link{date_to_cohort_quarter}} and
 and \code{\link{date_to_cohort_month}}.
 
-Other functions for creating quarter
-intervals from dates are
+Other functions for creating one-quarter units
+from dates are
 \code{\link{date_to_age_quarter}},
 \code{\link{date_to_period_quarter}},
 and \code{\link{date_to_triangle_quarter}}.
-
-Existing labels for quarter cohorts
-can be processed using \code{\link{clean_age}}
-and \code{\link{format_cohort_quarter}}.
+The interface for \code{date_to_cohort_quarter} is identical
+to that of \code{\link{date_to_period_quarter}}.
 }
