@@ -602,7 +602,7 @@ format_age_births <- function(x,
         return(ans)
     }
     if (all(is.na(x))) {
-        is_unbounded <- is.null(break_min) || is.null(break_max)
+        is_unbounded <- !has_break_min || !has_break_max
         if (is_unbounded) {
             ans <- rep(NA_character_, times = n)
             ans <- factor(ans,
@@ -720,7 +720,7 @@ format_age_births <- function(x,
 #' Given a vector of age group labels, create a factor
 #' that contains levels for all age groups
 #' defined by \code{breaks}, including, possibly,
-#' an open age group.\code{format_custom} is the most flexible
+#' an open age group.\code{format_age_custom} is the most flexible
 #' of the \code{format_age} functions
 #' in that the age groups can have any combination of widths,
 #' though the widths must be defined in whole numbers of years.
@@ -735,18 +735,18 @@ format_age_births <- function(x,
 #' is the last value, then the oldest age
 #' group is \code{[a, b)} years.
 #'
-#' @inheritParams format_year
+#' @inheritParams format_age_year
 #' @param breaks A vector of strictly increasing integer values.
 #'
 #' @return A factor with length equal to \code{x}.
 #'
 #' @seealso Other functions for creating age groups are
-#' \code{\link{format_year}},
-#' \code{\link{format_multi}},
-#' \code{\link{format_lifetab}},
-#' \code{\link{format_births}},
-#' \code{\link{format_quarter}},
-#' and \code{\link{format_month}}.
+#' \code{\link{format_age_year}},
+#' \code{\link{format_age_multi}},
+#' \code{\link{format_age_lifetab}},
+#' \code{\link{format_age_births}},
+#' \code{\link{format_age_quarter}},
+#' and \code{\link{format_age_month}}.
 #'
 #' \code{\link{date_to_custom}} creates
 #' customized age groups from dates.
@@ -755,13 +755,13 @@ format_age_births <- function(x,
 #' for constructing labels for age groups.
 #'
 #' @examples
-#' format_custom(x = c("90+", "19-40", "22", NA),
+#' format_age_custom(x = c("90+", "19-40", "22", NA),
 #'                   breaks = c(0, 15, 60))
-#' format_custom(x = c("50-59", "19-40", "31"),
+#' format_age_custom(x = c("50-59", "19-40", "31"),
 #'                   breaks = c(15, 45, 60),
 #'                   open_last = FALSE)
 #' @export
-format_custom <- function(x,
+format_age_custom <- function(x,
                           breaks = NULL,
                           open_last = TRUE) {
     ## check arguments
@@ -857,7 +857,7 @@ format_custom <- function(x,
 #' (ie an age group with no upper limit.)
 #' If, for instance, \code{break_min} is \code{0},
 #' \code{break_max} is \code{400}, and \code{open_last} is
-#' \code{TRUE} (the defaults), then \code{format_year}
+#' \code{TRUE} (the defaults), then \code{format_age_quarter}
 #' creates a factor with levels \code{"0"}, \code{"1"},
 #' \dots, \code{"399"}, \code{"400+"}. Even when an age
 #' group between \code{break_min} and \code{break_max}
@@ -871,49 +871,49 @@ format_custom <- function(x,
 #' their 5th birthday (= 20 quarters) two days ago.
 #' 
 #' If \code{break_min} or \code{break_max} is set to \code{NULL},
-#' rather than to a specific value, then \code{format_year}
+#' rather than to a specific value, then \code{format_age_year}
 #' finds the narrowest range that accommodates the data.
 #'
 #' All age groups in \code{x} must be single-quarter age groups,
 #' except above \code{break_max}, where open age groups
 #' are allowed.
 #'
-#' @inheritParams format_year
+#' @inheritParams format_age_year
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 400.
 #'
 #' @return A factor with the same length as \code{x}.
 #'
 #' @seealso Other functions for creating age groups are
-#' \code{\link{format_year}},
-#' \code{\link{format_multi}},
-#' \code{\link{format_lifetab}},
-#' \code{\link{format_births}},
-#' \code{\link{format_custom}},
-#' and \code{\link{format_month}}.
+#' \code{\link{format_age_year}},
+#' \code{\link{format_age_multi}},
+#' \code{\link{format_age_lifetab}},
+#' \code{\link{format_age_births}},
+#' \code{\link{format_age_custom}},
+#' and \code{\link{format_age_month}}.
 #'
 #' \code{\link{make_labels_quarter}} describes the rules
 #' for constructing labels for quarter age groups.
 #'
 #' @examples
-#' format_quarter(x = c("10", "22", "500+"))
+#' format_age_quarter(x = c("10", "22", "500+"))
 #'
 #' ## specify highest age group
-#' format_quarter(x = c("10", "22", "500+"),
+#' format_age_quarter(x = c("10", "22", "500+"),
 #'                    break_max = 48)
 #'
 #' ## let lowest age group be determined by the data
-#' format_quarter(x = c("10", "22", "500+"),
+#' format_age_quarter(x = c("10", "22", "500+"),
 #'                    break_min = NULL,
 #'                    break_max = 48)
 #'
 #' ## make final age group closed
-#' format_quarter(x = c("10", "22"),
+#' format_age_quarter(x = c("10", "22"),
 #'                    break_min = NULL,
 #'                    break_max = 48,
 #'                    open_last = FALSE)
 #' @export
-format_quarter <- function(x, 
+format_age_quarter <- function(x, 
                            break_min = 0,
                            break_max = 400,
                            open_last = TRUE) {
@@ -933,7 +933,7 @@ format_quarter <- function(x,
 #' (ie an age group with no upper limit.)
 #' If, for instance, \code{break_min} is \code{0},
 #' \code{break_max} is \code{1200}, and \code{open_last} is
-#' \code{TRUE} (the defaults), then \code{format_year}
+#' \code{TRUE} (the defaults), then \code{format_age_year}
 #' creates a factor with levels \code{"0"}, \code{"1"},
 #' \dots, \code{"1199"}, \code{"1200+"}. Even when an age
 #' group between \code{break_min} and \code{break_max}
@@ -948,14 +948,14 @@ format_quarter <- function(x,
 #' 5th birthday (= 60 months) two days ago.
 #'
 #' If \code{break_min} or \code{break_max} is set to \code{NULL},
-#' rather than to a specific value, then \code{format_year}
+#' rather than to a specific value, then \code{format_age_year}
 #' finds the narrowest range that accommodates the data.
 #'
 #' All age groups in \code{x} must be single-quarter age groups,
 #' except above \code{break_max}, where open age groups
 #' are allowed.
 #'
-#' @inheritParams format_year
+#' @inheritParams format_age_year
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 1200.
 #'
@@ -966,35 +966,35 @@ format_quarter <- function(x,
 #' is greater.
 #'
 #' @seealso Other functions for creating age groups are
-#' \code{\link{format_year}},
-#' \code{\link{format_multi}},
-#' \code{\link{format_lifetab}},
-#' \code{\link{format_births}},
-#' \code{\link{format_custom}},
-#' \code{\link{format_quarter}}.
+#' \code{\link{format_age_year}},
+#' \code{\link{format_age_multi}},
+#' \code{\link{format_age_lifetab}},
+#' \code{\link{format_age_births}},
+#' \code{\link{format_age_custom}},
+#' \code{\link{format_age_quarter}}.
 #'
 #' \code{\link{make_labels_month}} describes the rules
 #' for constructing labels for month age groups.
 #'
 #' @examples
-#' format_month(x = c("3", "12", "1400+"))
+#' format_age_month(x = c("3", "12", "1400+"))
 #'
 #' ## specify highest age group
-#' format_month(x = c("3", "12", "1400+"),
+#' format_age_month(x = c("3", "12", "1400+"),
 #'                  break_max = 24)
 #'
 #' ## let lowest age group be determined by the data
-#' format_month(x = c("3", "12", "1400+"),
+#' format_age_month(x = c("3", "12", "1400+"),
 #'                  break_min = NULL,
 #'                  break_max = 24)
 #'
 #' ## make final age group closed
-#' format_month(x = c("3", "12"),
+#' format_age_month(x = c("3", "12"),
 #'                  break_min = NULL,
 #'                  break_max = 24,
 #'                  open_last = FALSE)
 #' @export
-format_month <- function(x,
+format_age_month <- function(x,
                              break_min = 0,
                              break_max = 1200,
                              open_last = TRUE) {

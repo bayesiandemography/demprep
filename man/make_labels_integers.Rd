@@ -7,23 +7,49 @@
 make_labels_integers(x)
 }
 \arguments{
-\item{x}{An integer vector.}
+\item{x}{A list of integer vectors.}
 }
 \value{
 A character vector
 }
 \description{
-Make labels with the format expected for a \code{"Integers"}
-dimlabels object (as defined in the demarray package.)
-}
-\details{
+Make labels with the format expected for an
+object of class \code{"Integers"}
+(as defined in the demarray package).
 This function would not normally be called directly
 by end users.
+}
+\details{
+\code{x} is a list of integer vectors of length 2.
+If elements of a vector are non-NA, then the second
+element must be one greater than the first.
+The vectors cannot overlap.
 
-\code{x} is an integer vector with no duplicates.
+The elements of \code{x} are converted into
+labels as follows:
+
+\tabular{ll}{
+  Element \tab Label \cr
+  \code{c(100L, 101L)} \tab \code{"100"} \cr
+  \code{c(NA_integer_, 100L)} \tab \code{"<100"} \cr
+  \code{c(100L, NA_integer_)} \tab \code{"100+"} \cr
+  \code{c(NA_integer_, NA_integer_)} \tab \code{NA} \cr
+}
 }
 \examples{
-x <- c(20L, 1:3, -2L)
+x <- list(c(20L, 21L), c(80L, NA), c(11L, 12L))
 make_labels_integers(x)
+}
+\seealso{
+\code{\link{make_labels_categories}},
+\code{\link{make_labels_triangles}},
+\code{\link{make_labels_directions}},
+\code{\link{make_labels_quantiles}},
+\code{\link{make_labels_intervals}},
+\code{\link{make_labels_quantities}},
+\code{\link{make_labels_quarters}},
+\code{\link{make_labels_months}},
+\code{\link{make_labels_dateranges}},
+\code{\link{make_labels_datepoints}}
 }
 \keyword{internal}

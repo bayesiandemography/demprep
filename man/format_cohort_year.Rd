@@ -10,7 +10,7 @@ format_cohort_year(x, break_min = NULL, open_first = NULL)
 \arguments{
 \item{x}{A vector of cohort labels.}
 
-\item{break_min}{The lower limit of the cohort,
+\item{break_min}{An integer. The lower limit of the cohort,
 or \code{NULL} (the default).}
 
 \item{open_first}{Whether the first cohort
@@ -33,18 +33,18 @@ The elements of \code{x} must be single-year
 labels, such as \code{"2001"}, or
 labels for cohorts
 that are open on the left, such as \code{"<2000"}.
-\code{x} cannot contain
-closed multi-year intervals such
-as \code{"2000-2005"}
+\code{x} must not contain
+multi-year intervals such
+as \code{"2000--2005"}
 
 \code{open_first} defaults to \code{TRUE}
 if a value for \code{break_min} is supplied,
-or if any intervals in \code{x} is open,
-and to \code{FALSE} otherwise.
+or if any elements of \code{x} are open
+on the left, and to \code{FALSE} otherwise.
 
-If \code{x} contains \code{NA}, then the
+If \code{x} has \code{NA}s, then the
 levels of the factor created by \code{format_cohort_year}
-also contain \code{NA}.
+will included an \code{NA}.
 }
 \examples{
 format_cohort_year(x = c("2000", "2005", NA, "2004"))
@@ -53,7 +53,7 @@ format_cohort_year(x = c("2000", "2005", NA, "2004"))
 ## 'open_first' defaults to TRUE
 format_cohort_year(x = c("<2000", "2005", NA, "2004"))
 
-## specify 'break_min', which makes also
+## specify 'break_min', which also makes
 ## 'open_first' default to TRUE
 format_cohort_year(x = c("2000", "2005", NA, "2004"),
                    break_min = 1998)
@@ -71,9 +71,9 @@ format_cohort_year(x = c("2000", "2005", NA, "2004"),
 
 ## if no value for 'break_min' is supplied, and one or
 ## more of the labels refers to an open cohort,
-## then the levels start with the most
-## recent open cohort
-format_cohort_year(x = c("2000", "2005", "<2002", "2004", "<2001"))
+## then the levels start with the latest open cohort
+format_cohort_year(x = c("2000", "2005", "<2002",
+                         "2004", "<2001"))
 }
 \seealso{
 Other functions for reformatting

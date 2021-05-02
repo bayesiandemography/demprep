@@ -29,11 +29,11 @@ and \code{break_max}, and that may contain an open age group
 (ie an age group with no upper limit.)
 If, for instance, \code{break_min} is \code{0},
 \code{break_max} is \code{400}, and \code{open_last} is
-\code{TRUE} (the defaults), then \code{format_age_year}
+\code{TRUE} (the defaults), then \code{format_age_quarter}
 creates a factor with levels \code{"0"}, \code{"1"},
 \dots, \code{"399"}, \code{"400+"}. Even when an age
 group between \code{break_min} and \code{break_max}
-is not included in \code{x}, \code{factor_age_quarter}
+is not included in \code{x}, \code{factor_quarter}
 still creates a level for it.
 }
 \details{
@@ -78,6 +78,6 @@ Other functions for creating age groups are
 \code{\link{format_age_custom}},
 and \code{\link{format_age_month}}.
 
-\code{\link{make_labels_age_quarter}} describes the rules
+\code{\link{make_labels_quarter}} describes the rules
 for constructing labels for quarter age groups.
 }

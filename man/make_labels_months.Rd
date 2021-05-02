@@ -7,30 +7,54 @@
 make_labels_months(x)
 }
 \arguments{
-\item{x}{A list.}
+\item{x}{A list of Date vectors.}
 }
 \value{
 A character vector
 }
 \description{
-Make labels with the format expected for a \code{"Months"}
-dimlabels object (as defined in the demarray package.)
-}
-\details{
+Make labels with the format expected for an
+object of class \code{"Months"}
+(as defined in the demarray package).
 This function would not normally be called directly
 by end users.
+}
+\details{
+\code{x} is a list of Date vectors of length 2.
+If elements of a vector are non-NA, then the second
+element must one month after the first.
+Any non-NA elements must be the first day of a month.
+The vectors cannot overlap.
 
-\code{x} is a list of date vectors of
-length 2. When both elements in an item are
-non-NA, the second element must be one month
-greater than the first. Months must not overlap.
+The elements of \code{x} are converted into
+labels as follows:
+
+\tabular{ll}{
+  Element \tab Label \cr
+  \code{as.Date(c("2020-01-01", "2020-01-01"))} \tab \code{"2020 Jan"} \cr
+  \code{as.Date(c(NA, "2020-01-01"))} \tab \code{"<2020 Jan"} \cr
+  \code{as.Date(c("2020-01-01", NA))} \tab \code{"2020 Jan+"} \cr
+  \code{as.Date(c(NA, NA))} \tab \code{NA} \cr
+}
 }
 \examples{
-x <- list(as.Date(c("2020-10-01", "2020-11-01")),
+x <- list(as.Date(c("2020-12-01", "2021-01-01")),
           as.Date(c(NA, "2020-01-01")),
           as.Date(c(NA_character_, NA__character_)),
           as.Date(c("2025-01-01", NA)),
           as.Date(c("2020-01-01", "2020-02-01")))
 make_labels_months(x)
+}
+\seealso{
+\code{\link{make_labels_categories}},
+\code{\link{make_labels_triangles}},
+\code{\link{make_labels_directions}},
+\code{\link{make_labels_quantiles}},
+\code{\link{make_labels_integers}},
+\code{\link{make_labels_intervals}},
+\code{\link{make_labels_quantities}},
+\code{\link{make_labels_quarters}},
+\code{\link{make_labels_dateranges}},
+\code{\link{make_labels_datepoints}}
 }
 \keyword{internal}

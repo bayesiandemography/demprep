@@ -5,7 +5,13 @@
 \title{Put cohort labels into the format required
 for customised cohorts}
 \usage{
-format_cohort_custom(x, breaks, open_first = NULL)
+format_cohort_custom(
+  x,
+  breaks,
+  open_first = NULL,
+  month_start = "Jan",
+  label_year_start = TRUE
+)
 }
 \arguments{
 \item{x}{A vector of cohort labels.}

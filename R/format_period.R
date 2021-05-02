@@ -50,7 +50,7 @@
 #' format_period_year(x = c("2000", "2005", NA, "2004"))
 #' @export 
 format_period_year <- function(x) {
-    format_period_month_quarter_year(x = x
+    format_period_month_quarter_year(x = x,
                                      parse_fun = parse_integers,
                                      labels_fun = make_labels_period_year)
 }
@@ -425,7 +425,7 @@ format_period_custom <- function(x,
 #' format_period_quarter(x = c("2000 Q4", "2005 Q1", NA, "2004 Q3"))
 #' @export 
 format_period_quarter <- function(x) {
-    format_period_month_quarter_year(x = x
+    format_period_month_quarter_year(x = x,
                                      parse_fun = parse_quarters,
                                      labels_fun = make_labels_period_quarter)
 }
@@ -471,7 +471,7 @@ format_period_quarter <- function(x) {
 #' format_period_month(x = c("2000 Sep", "2005 May", NA, "2004 Jan"))
 #' @export 
 format_period_month <- function(x) {
-    format_period_month_quarter_year(x = x
+    format_period_month_quarter_year(x = x,
                                      parse_fun = parse_months,
                                      labels_fun = make_labels_period_month)
 }

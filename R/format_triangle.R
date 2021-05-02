@@ -370,7 +370,7 @@ format_triangle_multi <- function(x,
     low_period_all <- low_period[i_labels_period]
     up_age_all <- up_age[i_labels_age]
     up_period_all <- up_period[i_labels_period]
-    height <- age_up_all - age_low_all
+    height <- up_age_all - low_age_all
     width <- up_period_all - low_period_all
     is_square <- height == width
     i_not_square <- match(FALSE, is_square, nomatch = 0L)
@@ -426,226 +426,310 @@ format_triangle_multi <- function(x,
 }
 
 
-## ## HAS_TESTS
-## #' Put age groups labels into format
-## #' required for tabulating births
-## #'
-## #' Given a vector of age group labels, create a factor that contains
-## #' levels for all ages between \code{break_min} and \code{break_max}.
-## #'
-## #' \code{break_min} and \code{break_max} specify
-## #' the range of ages over which reproduction
-## #' is assumed to occur. If, for instance,
-## #' \code{break_min} is \code{15} and \code{break_max}
-## #' is \code{50}, all births are assumed to
-## #' occur to women aged 15 to 49 (inclusive).
-## #'
-## #' If \code{break_min} or \code{break_max} is set to \code{NULL},
-## #' rather than to a specific value, then \code{date_to_age_births}
-## #' finds the narrowest range that accommodates the values
-## #' in \code{x}.
-## #'
-## #' Datasets sometimes contain a few births to parents
-## #' younger than the assumed minimum age of reproduction,
-## #' or births to parents older than the assumed maximum age
-## #' of reproduction. Demographers often recode such births,
-## #' so that ones to unexpectedly young parents are
-## #' treated as occurring just above the minimum age
-## #' for reproduction, and ones to unexpectedly old parents
-## #' are treated as occurring just below the maximum
-## #' age for reproduction. This recoding can be justified
-## #' on the grounds that some of the original ages may have
-## #' been misreported, but it also alleviates any problems
-## #' with tabulations having small counts at extreme ages.
-## #' Recoding of parents' ages outside the expected range
-## #' is controlled by parameters \code{recode_up}
-## #' and \code{recode_down}. The default
-## #' is for no recoding to occur.
-## #'
-## #' @param x A vector of age group labels. The
-## #' age of the parent at the time of the birth of
-## #' the child.
-## #' @param break_min An integer or \code{NULL}.
-## #' Defaults to 15.
-## #' @param break_max An integer or \code{NULL}.
-## #' Defaults to 50.
-## #' @param width The width in years of the age intervals.
-## #' A positive integer defaulting to 5.
-## #' @param recode_up If \code{TRUE}, births to parents
-## #' aged less than \code{break_min} are treated as occurring to
-## #' people in the lowest repoductive age group.
-## #' @param recode_down If \code{TRUE}, births to parents
-## #' aged \code{break_max} or more are treated as
-## #' occurring to people in the highest reproductive
-## #' age group.
-## #'
-## #' @return A factor with the same length as \code{x}.
-## #'
-## #' @seealso Other functions for creating age groups are
-## #' \code{\link{format_age_year}},
-## #' \code{\link{format_age_multi}},
-## #' \code{\link{format_age_lifetab}},
-## #' \code{\link{format_age_custom}},
-## #' \code{\link{format_age_quarter}},
-## #' and \code{\link{format_age_month}}.
-## #'
-## #' \code{\link{date_to_age_births}} creates
-## #' reproductive age groups from dates.
-## #'
-## #' \code{\link{make_labels_age}} describes the rules
-## #' for constructing labels for age groups.
-## #'
-## #' @examples
-## #' format_age_births(x = c("20-24", "37", NA, "32", "21-24"))
-## #' 
-## #' format_age_births(x = c("20-24", "37", "32", "21-24"),
-## #'                   width = 10,
-## #'                   break_min = 20)
-## #'
-## #' format_age_births(x = c("20", "37", "15"),
-## #'                   width = 1,
-## #'                   break_max = 45)
-## #'
-## #' ## allow youngest and oldest age groups to be
-## #' ## determined by the data
-## #' format_age_births(x = c("21", "33", "22-24"),
-## #'                   break_min = NULL,
-## #'                   break_max = NULL)
-## #'
-## #' ## recode ages outside the expected range
-## #' format_age_births(x = c("22", "13", "54"),
-## #'                   recode_up = TRUE,
-## #'                   recode_down = TRUE)
-## #' @export
-## format_age_births <- function(x,
-##                               break_min = 15,
-##                               break_max = 50,
-##                               width = 5,
-##                               recode_up = FALSE,
-##                               recode_down = FALSE) {
-##     ## regexp patterns
-##     p_single <- "^[0-9]+$"
-##     p_low_up <- "^([0-9]+)-([0-9]+)$"
-##     ## check arguments
-##     width <- demcheck::err_tdy_positive_integer_scalar(x = width,
-##                                                        name = "width",
-##                                                        null_ok = TRUE)
-##     break_min <- demcheck::err_tdy_non_negative_integer_scalar(x = break_min,
-##                                                                name = "break_min",
-##                                                                null_ok = TRUE)
-##     break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
-##                                                            name = "break_max",
-##                                                            null_ok = TRUE)
-##     if (!is.null(break_min) && !is.null(break_max)) {
-##         demcheck::err_lt_scalar(x1 = break_min,
-##                                 x2 = break_max,
-##                                 name1 = "break_min",
-##                                 name2 = "break_max")
-##         demcheck::err_difference_divisible(x1 = break_max,
-##                                            x2 = break_min,
-##                                            y = width,
-##                                            name1 = "break_max",
-##                                            name2 = "break_min",
-##                                            name_y = "width")
-##     }
-##     demcheck::err_is_logical_flag(x = recode_up,
-##                                   name = "recode_up")
-##     demcheck::err_is_logical_flag(x = recode_down,
-##                                   name = "recode_down")
-##     ## deal with "empty" case where 'x' has no non-NA values
-##     ## and 'break_min' or 'break_max' is missing
-##     ## (so cannot construct levels)
-##     n <- length(x)
-##     all_empty <- (n == 0L) || all(is.na(x))
-##     is_unbounded <- is.null(break_min) || is.null(break_max)
-##     if (all_empty && is_unbounded) {
-##         ans <- rep(NA_character_, times = n)
-##         ans <- factor(ans,
-##                       levels = NA_character_,
-##                       exclude = NULL)
-##         return(ans)
-##     }
-##     ## put unique values in 'labels_old' vector
-##     labels_old <- unique(x)
-##     ## classify labels_old, raising error for any invalid ones
-##     is_na <- is.na(labels_old)
-##     is_single <- grepl(p_single, labels_old)
-##     is_low_up <- grepl(p_low_up, labels_old)
-##     is_valid <- is_na | is_single | is_low_up
-##     i_invalid <- match(FALSE, is_valid, nomatch = 0L)
-##     if (i_invalid > 0L)
-##         stop(gettextf("\"%s\" is not a valid label",
-##                       labels_old[[i_invalid]]),
-##              call. = FALSE)
-##     ## extract lower and upper ages
-##     age_low <- rep(NA_integer_, times = length(labels_old))
-##     age_up <- age_low
-##     age_low[is_single] <- as.integer(labels_old[is_single])
-##     age_up[is_single] <- age_low[is_single] + 1L
-##     age_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels_old[is_low_up]))
-##     age_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels_old[is_low_up])) + 1L
-##     demcheck::err_interval_diff_gt_one(int_low = age_low,
-##                                        int_up = age_up,
-##                                        is_low_up = is_low_up,
-##                                        labels = labels_old)
-##     ## check that ages lie within limits implied by 'break_min' and 'break_max'
-##     if (!is.null(break_min)) {
-##         is_lt_min <- age_low < break_min
-##         i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
-##         if (i_lt_min > 0L) {
-##             if (recode_up) {
-##                 age_low[is_lt_min] <- break_min
-##                 age_up[is_lt_min] <- pmax(age_up[is_lt_min], age_low[is_lt_min] + 1L)
-##             }
-##             else {
-##                 stop(gettextf("age group \"%s\" less than 'break_min' [%d] and 'recode_up' is FALSE",
-##                               labels_old[[i_lt_min]],
-##                               break_min),
-##                      call. = FALSE)
-##             }
-##         }
-##     }
-##     if (!is.null(break_max)) {
-##         is_gt_max <- age_up > break_max
-##         i_gt_max <- match(TRUE, is_gt_max, nomatch = 0L)
-##         if (i_gt_max > 0L) {
-##             if (recode_down) {
-##                 age_up[is_gt_max] <- break_max
-##                 age_low[is_gt_max] <- pmin(age_low[is_gt_max], age_up[is_gt_max] - 1L)
-##             }
-##             else {
-##                 stop(gettextf("age group \"%s\" greater than 'break_max' [%d] and 'recode_down' is FALSE",
-##                               labels_old[[i_gt_max]],
-##                               break_max),
-##                      call. = FALSE)
-##             }
-##         }
-##     }
-##     ## make breaks
-##     breaks <- make_breaks_label_to_integer_births(age_low = age_low,
-##                                                   age_up = age_up,
-##                                                   labels = labels,
-##                                                   width = width,
-##                                                   break_min = break_min,
-##                                                   break_max = break_max)
-##     ## make labels for breaks
-##     include_na <- any(is_na)
-##     labels_new <- make_labels_age(breaks = breaks,
-##                                   open_last = FALSE,
-##                                   include_na = include_na)
-##     ## assign new labels to x
-##     i_label_old <- match(x, labels_old)
-##     age <- age_low[i_label_old]
-##     i_intervals_new <- findInterval(x = age,
-##                                     vec = breaks)
-##     ans <- labels_new[i_intervals_new]
-##     ## return result
-##     ans <- factor(x = ans,
-##                   levels = labels_new,
-##                   exclude = NULL)
-##     ans
-## }
-
+## NO_TESTS
+#' Format labels for Lexis triangles
+#' used when tabulating births
+#'
+#' Create labels for Lexis triangles used,
+#' along with age groups and periods,
+#' for tabulating births.
+#' The age groups and periods must all have the same
+#' length.
+#'
+#' \code{age} and \code{period} define the
+#' age groups and periods to which the
+#' Lexis triangles
+#' in \code{x} belong. Age groups can be single-year
+#' (eg \code{"23"}) or multi-year (eg \code{"20-24"}).
+#' Periods can also be single-year
+#' (eg \code{"2023"}), multi-year (eg \code{"2020-2025"}).
+#'
+#' \code{break_min} and \code{break_max} specify
+#' the range of ages over which reproduction
+#' is assumed to occur, and \code{recode_up} and
+#' \code{recode_down} control the way that reported
+#' ages outside this range are handled. See
+#' \code{\link{date_to_age_births}} for details.
+#' 
+#' \code{format_triangle_births} returns different labels
+#' from \code{x} in two situations: (i) when the intervals
+#' in \code{age} and \code{period} are narrower than
+#' \code{width}, so that aggregation is required, and
+#' (ii) when ages lie outside the range set
+#' by \code{break_min} and \code{break_max}.
+#' If an age is recoded upwards to fall within
+#' the youngest reproductive age group,
+#' then the corresponding Lexis triangle is set to
+#' \code{"Lower"}. If an age is recoded downwards to
+#' fall within the lowest reproductive age group, then
+#' the corresponding Lexis triangle is set to \code{"Upper"}.
+#'
+#' @inheritParams format_triangle_multi
+#' @param break_min An integer or \code{NULL}.
+#' Defaults to 15.
+#' @param break_max An integer or \code{NULL}.
+#' Defaults to 50.
+#' @param recode_up If \code{TRUE}, births to parents
+#' aged less than \code{break_min} are treated as occurring to
+#' people in the youngest repoductive age group.
+#' @param recode_down If \code{TRUE}, births to parents
+#' aged \code{break_max} or more are treated as
+#' occurring to people in the oldest reproductive
+#' age group.
+#'
+#' @return A factor with the same length as \code{x}.
+#'
+#' @seealso Other functions for creating Lexis triangles are
+#' \code{\link{format_triangle_year}},
+#' \code{\link{format_triangle_multi}},
+#' \code{\link{format_triangle_quarter}},
+#' and \code{\link{format_triangle_month}}.
+#'
+#' \code{\link{date_to_triangle_births}} creates
+#' Lexis triangles from dates.
+#'
+#' @examples
+#' format_age_births(x = c("20-24", "37", NA, "32", "21-24"))
+#' 
+#' format_age_births(x = c("20-24", "37", "32", "21-24"),
+#'                   width = 10,
+#'                   break_min = 20)
+#'
+#' format_age_births(x = c("20", "37", "15"),
+#'                   width = 1,
+#'                   break_max = 45)
+#'
+#' ## allow youngest and oldest age groups to be
+#' ## determined by the data
+#' format_age_births(x = c("21", "33", "22-24"),
+#'                   break_min = NULL,
+#'                   break_max = NULL)
+#'
+#' ## recode ages outside the expected range
+#' format_age_births(x = c("22", "13", "54"),
+#'                   recode_up = TRUE,
+#'                   recode_down = TRUE)
+#' @export
+format_triangle_births <- function(x,
+                                   age,
+                                   period,
+                                   width = 5,
+                                   break_min = 15,
+                                   break_max = 50,
+                                   recode_up = FALSE,
+                                   recode_down = FALSE,
+                                   month_start = "Jan",
+                                   label_year_start = TRUE,
+                                   origin = 2000) {
+    valid_triangles <- c("Lower", "Upper", NA)
+    ## see if arguments supplied
+    has_break_min <- !is.null(break_min)
+    has_break_max <- !is.null(break_max)
+    ## check arguments
+    demcheck::err_length_same(x1 = age,
+                              x2 = x,
+                              name1 = "age",
+                              name2 = "x")
+    demcheck::err_length_same(x1 = period,
+                              x2 = x,
+                              name1 = "period",
+                              name2 = "x")
+    width <- demcheck::err_tdy_positive_integer_scalar(x = width,
+                                                       name = "width")
+    
+    if (has_break_min) {
+        break_min <- demcheck::err_tdy_positive_integer_scalar(x = break_min,
+                                                               name = "break_min")
+        demcheck::err_multiple_of(x1 = break_min,
+                                  x2 = width,
+                                  name1 = "break_min",
+                                  name2 = "width")
+    }
+    if (has_break_max) {
+        break_max <- demcheck::err_tdy_positive_integer_scalar(x = break_max,
+                                                               name = "break_max")
+        demcheck::err_multiple_of(x1 = break_max,
+                                  x2 = width,
+                                  name1 = "break_max",
+                                  name2 = "width")
+    }
+    if (has_break_min && has_break_max) {
+        demcheck::err_lt_scalar(x1 = break_min,
+                                x2 = break_max,
+                                name1 = "break_min",
+                                name2 = "break_max")
+    }
+    demcheck::err_is_logical_flag(x = recode_up,
+                                  name = "recode_up")
+    demcheck::err_is_logical_flag(x = recode_down,
+                                  name = "recode_down")
+    month_start <- demcheck::err_tdy_month_start(x = month_start,
+                                                 name = "month_start")
+    demcheck::err_is_logical_flag(x = label_year_start,
+                                  name = "label_year_start")
+    origin <- demcheck::err_tdy_integer_scalar(x = origin,
+                                               name = "origin")
+    ## deal with "empty" case where 'x' has no non-NA values
+    n <- length(x)
+    if (n == 0L) {
+        ans <- factor(character(),
+                      levels = c("Lower", "Upper"))
+        return(ans)
+    }
+    is_na_any <- is.na(x) | is.na(age) | is.na(period)
+    if (all(is_na_any)) {
+        ans <- rep(NA_character_, times = n)
+        ans <- factor(ans,
+                      levels = c("Lower", "Upper", NA),
+                      exclude = NULL)
+        return(ans)
+    }
+    ## put unique values in 'labels' vectors
+    labels_x <- unique(x)
+    labels_age <- unique(age)
+    labels_period <- unique(period)
+    ## check for invalid triangles
+    is_valid_tri <- labels_x %in% valid_triangles
+    i_invalid_tri <- match(FALSE, is_valid_tri, nomatch = 0L)
+    if (i_invalid_tri > 0L)
+        stop(gettextf("'%s' has invalid value for Lexis triangle [\"%s\"]",
+                      "x", labels_x[[i_invalid_tri]]),
+             call. = FALSE)
+    ## parse 'age'
+    parsed_age <- parse_quantities(x = labels_age,
+                                   name = "age")
+    low_age <- parsed_age$low # integer
+    up_age <- parsed_age$up   # integer
+    is_open_first_age <- parsed_age$is_open_first
+    is_open_last_age <- parsed_age$is_open_last
+    break_min_age <- parsed_age$break_min # integer
+    break_max_age <- parsed_age$break_max # integer
+    is_open_age <- is_open_first_age | is_open_last_age
+    i_open_age <- match(TRUE, is_open_age, nomatch = 0L)
+    if (i_open_age > 0L) {
+        stop(gettextf("'%s' has open interval [\"%s\"]",
+                      "age", labels_age[[i_open_age]]),
+             call. = FALSE)
+    }
+    ## parse 'period'
+    parsed_period <- parse_integers_intervals(x = labels_period,
+                                              name = "period",
+                                              month_start = month_start,
+                                              label_year_start = label_year_start)
+    low_period <- parsed_period$low # integer
+    up_period <- parsed_period$up   # integer
+    is_open_first_period <- parsed_period$is_open_first
+    is_open_last_period <- parsed_period$is_open_last
+    break_min_period <- parsed_period$break_min # integer
+    break_max_period <- parsed_period$break_max # integer
+    is_open_period <- is_open_first_period | is_open_last_period
+    i_open_period <- match(TRUE, is_open_period, nomatch = 0L)
+    if (i_open_period > 0L) {
+        stop(gettextf("'%s' has open interval [\"%s\"]",
+                      "period", labels_period[[i_open_period]]),
+             call. = FALSE)
+    }
+    ## Check that ages lie within limits implied by 'break_min' and 'break_max',
+    ## and recode where necessary. (Triangles recoded later.)
+    if (!has_break_min) {
+        is_lt_min <- low_age < break_min
+        i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
+        if (i_lt_min > 0L) {
+            if (recode_up) {
+                low_age[is_lt_min] <- break_min
+                age_up[is_lt_min] <- pmax(age_up[is_lt_min], low_age[is_lt_min] + 1L)
+            }
+            else {
+                stop(gettextf("age group \"%s\" less than 'break_min' [%d] and 'recode_up' is FALSE",
+                              labels_old[[i_lt_min]],
+                              break_min),
+                     call. = FALSE)
+            }
+        }
+    }
+    if (!has_break_max) {
+        is_gt_max <- age_up > break_max
+        i_gt_max <- match(TRUE, is_gt_max, nomatch = 0L)
+        if (i_gt_max > 0L) {
+            if (recode_down) {
+                age_up[is_gt_max] <- break_max
+                low_age[is_gt_max] <- pmin(low_age[is_gt_max], age_up[is_gt_max] - 1L)
+            }
+            else {
+                stop(gettextf("age group \"%s\" greater than 'break_max' [%d] and 'recode_down' is FALSE",
+                              labels_old[[i_gt_max]],
+                              break_max),
+                     call. = FALSE)
+            }
+        }
+    }
+    ## Construct and classify Lexis squares from existing labels
+    i_labels_age <- match(age, labels_age)
+    i_labels_period <- match(period, labels_period)
+    low_age_all <- low_age[i_labels_age]
+    low_period_all <- low_period[i_labels_period]
+    up_age_all <- up_age[i_labels_age]
+    up_period_all <- up_period[i_labels_period]
+    is_reclassified_up <- is_lt_min[i_labels_age]
+    is_reclassified_down <- is_gt_mad[i_labels_age]
+    is_reclassified <- is_reclassifed_up | is_reclassified_down
+    height <- age_up_all - low_age_all
+    width <- up_period_all - low_period_all
+    is_not_square <- (height != width) & !is_reclassified
+    i_not_square <- match(TRUE, is_not_square, nomatch = 0L)
+    if (i_not_square > 0L)
+        stop(gettextf("element %d of '%s' [\"%s\"] and element %d of '%s' [\"%s\"] have different widths, so do not form a Lexis square",
+                      i_not_square,
+                      "age",
+                      age[[i_not_square]],
+                      i_not_square,
+                      "period",
+                      period[[i_not_square]]),
+             call. = FALSE)
+    i_low_age <- findInterval(low_age_all, breaks_age)
+    i_low_period <- findInterval(low_period_all, breaks_period)
+    break_age <- breaks_age[i_low_age]
+    break_period <- breaks_period[i_low_period]
+    offset_low_age <- low_age_all - break_age
+    offset_low_period <- low_period_all - break_period
+    offset_up_age <- up_age_all - break_age
+    is_break_max_plus_width <- low_age_all >= break_max + width
+    is_on_diag <- !is_na_any & (offset_low_age == offset_low_period)
+    is_all_below_diag <- !is_na_any & (offset_up_age <= offset_low_period)
+    is_all_above_diag <- !is_na_any & (offset_low_age >= offset_low_period)
+    is_off_diag_crosses <- !(is_na_any
+        | is_reclassified
+        | is_break_max_plus_width
+        | is_on_diag
+        | is_below_diag
+        | is_above_diag)
+    i_off_diag_crosses <- match(TRUE, is_off_diag_crosses, nomatch = 0L)
+    if (i_off_diag_crosses > 0L)
+        stop(gettextf("old Lexis triangles formed by element %d of '%s' [\"%s\"] and element %d of '%s' [\"%s\"] cannot be assigned unambiguously to new Lexis triangles",
+                      i_off_diag_crosses,
+                      "age",
+                      age[[i_off_diag_crosses]],
+                      i_off_diag_crosses,
+                      "period",
+                      period[[i_off_diag_crosses]]),
+             call. = FALSE)
+    ## allocate triangles
+    ans <- rep(NA_character_, times = length(x))
+    ans[is_on_diag] <- x[is_on_diag]
+    ans[is_all_below_diag] <- "Lower"
+    ans[is_all_above_diag] <- "Upper"
+    ans[is_break_max_plus_width] <- "Upper"
+    ans[is_reclassified_up] <- "Lower"
+    ans[is_reclassified_down] <- "Upper"
+    ## return result
+    levels <- c("Lower", "Upper")
+    if (anyNA(ans))
+        levels <- c(levels, NA)
+    ans <- factor(x = ans,
+                  levels = levels,
+                  exclude = NULL)
+    ans
+}
 
 
 ## NO_TESTS

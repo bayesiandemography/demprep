@@ -37,7 +37,7 @@ If, for instance, \code{break_min} is \code{0},
 creates a factor with levels \code{"0"}, \code{"1"},
 \dots, \code{"1199"}, \code{"1200+"}. Even when an age
 group between \code{break_min} and \code{break_max}
-is not included in \code{x}, \code{factor_age_month}
+is not included in \code{x}, \code{factor_month}
 still creates a level for it.
 }
 \details{
@@ -83,6 +83,6 @@ Other functions for creating age groups are
 \code{\link{format_age_custom}},
 \code{\link{format_age_quarter}}.
 
-\code{\link{make_labels_age_month}} describes the rules
+\code{\link{make_labels_month}} describes the rules
 for constructing labels for month age groups.
 }

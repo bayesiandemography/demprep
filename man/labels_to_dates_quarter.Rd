@@ -36,10 +36,7 @@ more than one open interval and more than one missing value.
 }
 \examples{
 x <- c("<2019 Q3", NA, "2011 Q1", "2012 Q1", NA)
-labels_to_dates_quarter(x, name = "x", open_ok = TRUE)
-
-x <- c(NA, "2011 Q1", "2012 Q1", NA)
-labels_to_dates_quarter(x, name = "x", open_ok = FALSE)
+labels_to_dates_quarter(x, name = "x")
 }
 \seealso{
 \code{\link{labels_to_dates_year}},

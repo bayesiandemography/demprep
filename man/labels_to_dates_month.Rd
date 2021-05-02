@@ -36,10 +36,7 @@ more than one open interval and more than one missing value.
 }
 \examples{
 x <- c("<2019 Aug", NA, "2011 Feb", "2012 Mar", NA)
-labels_to_dates_month(x, name = "x", open_ok = TRUE)
-
-x <- c(NA, "2011 Feb", "2012 Mar", NA)
-labels_to_dates_month(x, name = "x", open_ok = FALSE)
+labels_to_dates_month(x, name = "x")
 }
 \seealso{
 \code{\link{labels_to_dates_year}},

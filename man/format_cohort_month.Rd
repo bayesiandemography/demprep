@@ -10,7 +10,7 @@ format_cohort_month(x, break_min = NULL, open_first = NULL)
 \arguments{
 \item{x}{A vector of cohort labels.}
 
-\item{break_min}{The lower limit of the cohort,
+\item{break_min}{An integer. The lower limit of the cohort,
 or \code{NULL} (the default).}
 
 \item{open_first}{Whether the first cohort

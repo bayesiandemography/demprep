@@ -7,30 +7,55 @@
 make_labels_intervals(x)
 }
 \arguments{
-\item{x}{A list.}
+\item{x}{A list of integer vectors.}
 }
 \value{
 A character vector
 }
 \description{
-Make labels with the format expected for a \code{"Intervals"}
-dimlabels object (as defined in the demarray package.)
-}
-\details{
+Make labels with the format expected for an
+object of class \code{"Intervals"}
+(as defined in the demarray package).
 This function would not normally be called directly
 by end users.
+}
+\details{
+\code{x} is a list of integer vectors of length 2.
+If elements of a vector are non-NA, then the second
+element must be greater than the first.
+The vectors cannot overlap.
 
-\code{x} is a list of integer vectors of
-length 2. When both elements in an item are
-non-NA, the second element must be greater than
-the first. Intervals must not overlap.
+The elements of \code{x} are converted into
+labels as follows:
+
+\tabular{ll}{
+  Element \tab Label \cr
+  \code{c(100L, 101L)} \tab \code{"100-101"} \cr
+  \code{c(100L, 110L)} \tab \code{"100-110"} \cr
+  \code{c(NA_integer_, 100L)} \tab \code{"<100"} \cr
+  \code{c(100L, NA_integer_)} \tab \code{"100+"} \cr
+  \code{c(NA_integer_, NA_integer_)} \tab \code{NA} \cr
+}
 }
 \examples{
 x <- list(c(2000L, 2010L),
+          c(2011L, 2012L),
           c(NA, 2000L),
           c(NA_integer_, NA__integer_),
           c(2030L, NA),
           c(2020L, 2030L))
 make_labels_intervals(x)
+}
+\seealso{
+\code{\link{make_labels_categories}},
+\code{\link{make_labels_triangles}},
+\code{\link{make_labels_directions}},
+\code{\link{make_labels_quantiles}},
+\code{\link{make_labels_integers}},
+\code{\link{make_labels_quantities}},
+\code{\link{make_labels_quarters}},
+\code{\link{make_labels_months}},
+\code{\link{make_labels_dateranges}},
+\code{\link{make_labels_datepoints}}
 }
 \keyword{internal}

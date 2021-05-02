@@ -7,23 +7,32 @@
 make_labels_datepoints(x)
 }
 \arguments{
-\item{x}{A vector of class \code{\link[base]{Date}}.}
+\item{x}{A Date vector.}
 }
 \value{
 A character vector
 }
 \description{
-Make labels with the format expected for a \code{"DatePoints"}
-dimlabels object (as defined in the demarray package.)
-}
-\details{
+Make labels with the format expected for an
+object of class \code{"DatePoints"}
+(as defined in the demarray package).
 This function would not normally be called directly
 by end users.
-
-\code{x} is a dates vector with no duplicates.
 }
 \examples{
 x <- as.Date(c("2020-07-01", "2015-07-01", NA))
 make_labels_datepoints(x)
+}
+\seealso{
+\code{\link{make_labels_categories}},
+\code{\link{make_labels_triangles}},
+\code{\link{make_labels_directions}},
+\code{\link{make_labels_quantiles}},
+\code{\link{make_labels_integers}},
+\code{\link{make_labels_intervals}},
+\code{\link{make_labels_quantities}},
+\code{\link{make_labels_quarters}},
+\code{\link{make_labels_months}},
+\code{\link{make_labels_dateranges}}
 }
 \keyword{internal}

@@ -1,233 +1,190 @@
 
 context("make_labels")
 
-## make_labels_categories --------------------------------------------------------
+## Categories -----------------------------------------------------------------
 
 test_that("'make_labels_categories' gives correct answer with valid inputs", {
-    make_labels_categories <- demprep:::make_labels_categories
-    expect_identical(make_labels_categories(x = 1:3,
-                                            include_na = FALSE),
-                     as.character(1:3))
-    expect_identical(make_labels_categories(x = 1:3,
-                                            include_na = TRUE),
-                     c(as.character(1:3), NA))
-    expect_identical(make_labels_categories(x = character(),
-                                            include_na = FALSE),
-                     character())
-    expect_identical(make_labels_categories(x = character(),
-                                            include_na = TRUE),
-                     NA_character_)
+    x <- c("a", "b", "c", NA)
+    expect_identical(make_labels_categories(x), x)
+    x <- character()
+    expect_identical(make_labels_categories(x), x)
+    x <- NA_character_
+    expect_identical(make_labels_categories(x), x)
 })
 
 
-## make_labels_integers --------------------------------------------------------
+## make_labels_triangles ------------------------------------------------------
+
+test_that("'make_labels_triangles' gives correct answer with valid inputs", {
+    x <- c("Lower", "Upper", NA)
+    expect_identical(make_labels_triangles(x), x)
+    x <- c(NA, "Upper")
+    expect_identical(make_labels_triangles(x), x)
+    x <- character()
+    expect_identical(make_labels_triangles(x), x)
+    x <- NA_character_
+    expect_identical(make_labels_triangles(x), x)
+})
+
+
+## make_labels_directions ------------------------------------------------------
+
+test_that("'make_labels_directions' gives correct answer with valid inputs", {
+    x <- c("In", "Out", NA)
+    expect_identical(make_labels_directions(x), x)
+    x <- c(NA, "Out")
+    expect_identical(make_labels_directions(x), x)
+    x <- character()
+    expect_identical(make_labels_directions(x), x)
+    x <- NA_character_
+    expect_identical(make_labels_directions(x), x)
+})
+
+
+## make_labels_quantiles ------------------------------------------------------
+
+test_that("'make_labels_quantiles' gives correct answer with valid inputs", {
+    x <- c("50%", "1.2%", NA)
+    expect_identical(make_labels_quantiles(x), x)
+    x <- c(NA, "100%")
+    expect_identical(make_labels_quantiles(x), x)
+    x <- character()
+    expect_identical(make_labels_quantiles(x), x)
+    x <- NA_character_
+    expect_identical(make_labels_quantiles(x), x)
+})
+
+
+## make_labels_integers -------------------------------------------------------
 
 test_that("'make_labels_integers' gives correct answer with valid inputs", {
-    make_labels_integers <- demprep:::make_labels_integers
-    expect_identical(make_labels_integers(x = c(0, 100),
-                                          include_na = FALSE),
-                     c("0", "100"))
-    expect_identical(make_labels_integers(x = c(-1L, 0L),
-                                          include_na = TRUE),
-                     c("-1", "0", NA))
-    expect_identical(make_labels_integers(x = character(),
-                                          include_na = TRUE),
+    x <- list(c(50L, 51L),
+              c(NA_integer_, NA_integer_),
+              c(NA, 0L),
+              c(100L, NA))
+    expect_identical(make_labels_integers(x),
+                     c("50", NA, "<0", "100+"))
+    x <- list()
+    expect_identical(make_labels_integers(x),
+                     character())
+    x <- list(c(NA_integer_, NA_integer_))
+    expect_identical(make_labels_integers(x),
                      NA_character_)
 })
 
 
-## ## make_labels_grouped_int_enumerations ---------------------------------------
+## make_labels_intervals -------------------------------------------------------
 
-## test_that("'make_labels_grouped_int_enumerations' gives correct answer with valid inputs", {
-##     make_labels_grouped_int_enumerations <- demprep:::make_labels_grouped_int_enumerations
-##     expect_identical(make_labels_grouped_int_enumerations(breaks = c(0, 1, 5, 10),
-##                                                           open_first = FALSE,
-##                                                           open_last = TRUE,
-##                                                           include_na = FALSE),
-##                      c("0", "1-4", "5-9", "10+"))
-##     expect_identical(make_labels_grouped_int_enumerations(breaks = integer(),
-##                                                           open_first = FALSE,
-##                                                           open_last = FALSE,
-##                                                           include_na = FALSE),
-##                      character())
-##     expect_identical(make_labels_grouped_int_enumerations(breaks = integer(),
-##                                                           open_first = FALSE,
-##                                                           open_last = FALSE,
-##                                                           include_na = TRUE),
-##                      NA_character_)
-##     expect_identical(make_labels_grouped_int_enumerations(breaks = 2000,
-##                                                           open_first = TRUE,
-##                                                           open_last = TRUE,
-##                                                           include_na = TRUE),
-##                      c("<2000", "2000+", NA))
-##     expect_identical(make_labels_grouped_int_enumerations(breaks = 2000,
-##                                                           open_first = FALSE,
-##                                                           open_last = TRUE,
-##                                                           include_na = FALSE),
-##                      "2000+")
-##     expect_identical(make_labels_grouped_int_enumerations(breaks = 1995:2000,
-##                                                           open_first = FALSE,
-##                                                           open_last = FALSE,
-##                                                           include_na = TRUE),
-##                      c(as.character(1995:1999), NA))
-##     expect_identical(make_labels_grouped_int_enumerations(breaks = 1995:2000,
-##                                                           open_first = FALSE,
-##                                                           open_last = TRUE,
-##                                                           include_na = TRUE),
-##                      c(1995:1999, "2000+", NA))
-##     expect_identical(make_labels_grouped_int_enumerations(breaks = c(1995, 2000),
-##                                                           open_first = TRUE,
-##                                                           open_last = FALSE,
-##                                                           include_na = FALSE),
-##                      c("<1995", "1995-1999"))
-##     expect_identical(make_labels_grouped_int_enumerations(breaks = (-1):1,
-##                                                           open_first = FALSE,
-##                                                           open_last = FALSE,
-##                                                           include_na = FALSE),
-##                      c("-1", "0"))
-## })
-    
-    
-## ## make_labels_grouped_int_endpoints ---------------------------------------
-
-## test_that("'make_labels_grouped_int_endpoints' gives correct answer with valid inputs", {
-##     make_labels_grouped_int_endpoints <- demprep:::make_labels_grouped_int_endpoints
-##     expect_identical(make_labels_grouped_int_endpoints(breaks = c(0, 1, 5, 10),
-##                                                        open_first = FALSE,
-##                                                        open_last = FALSE,
-##                                                        include_na = FALSE),
-##                      c("0-1", "1-5", "5-10"))
-##     expect_identical(make_labels_grouped_int_endpoints(breaks = c(0, 1, 5, 10),
-##                                                        open_first = FALSE,
-##                                                        open_last = TRUE,
-##                                                        include_na = FALSE),
-##                      c("0-1", "1-5", "5-10", "10+"))
-##     expect_identical(make_labels_grouped_int_endpoints(breaks = integer(),
-##                                                        open_first = FALSE,
-##                                                        open_last = FALSE,
-##                                                        include_na = FALSE),
-##                      character())
-##     expect_identical(make_labels_grouped_int_endpoints(breaks = integer(),
-##                                                        open_first = FALSE,
-##                                                        open_last = FALSE,
-##                                                        include_na = TRUE),
-##                      NA_character_)
-##     expect_identical(make_labels_grouped_int_endpoints(breaks = 2000,
-##                                                        open_first = TRUE,
-##                                                        open_last = FALSE,
-##                                                        include_na = TRUE),
-##                      c("<2000", NA))
-##     expect_identical(make_labels_grouped_int_endpoints(breaks = 2000,
-##                                                        open_first = FALSE,
-##                                                        open_last = TRUE,
-##                                                        include_na = FALSE),
-##                      "2000+")
-##     expect_identical(make_labels_grouped_int_endpoints(breaks = 1995:1997,
-##                                                        open_first = FALSE,
-##                                                        open_last = FALSE,
-##                                                        include_na = TRUE),
-##                      c("1995-1996", "1996-1997", NA))
-##     expect_identical(make_labels_grouped_int_endpoints(breaks = 1995:1997,
-##                                                        open_first = FALSE,
-##                                                        open_last = FALSE,
-##                                                        include_na = TRUE),
-##                      c("1995-1996", "1996-1997", NA))
-##     expect_identical(make_labels_grouped_int_endpoints(breaks = c(1995, 2000),
-##                                                        open_first = TRUE,
-##                                                        open_last = FALSE,
-##                                                        include_na = FALSE),
-##                      c("<1995", "1995-2000"))
-##     expect_identical(make_labels_grouped_int_endpoints(breaks = (-1):1,
-##                                                        open_first = FALSE,
-##                                                        open_last = FALSE,
-##                                                        include_na = FALSE),
-##                      c("-1-0", "0-1"))
-## })    
-    
-
-## ## make_labels_calendar_quarters_months ----------------------------------------
-
-## test_that("'make_labels_calendar_quarters_months' gives correct answer with valid inputs", {
-##     make_labels_calendar_quarters_months <- demprep:::make_labels_calendar_quarters_months
-##     expect_identical(make_labels_calendar_quarters_months(break_min = as.Date("2019-01-01"),
-##                                                           break_max = as.Date("2019-04-01"),
-##                                                           open_first = FALSE,
-##                                                           open_last = FALSE,
-##                                                           unit = "month",
-##                                                           include_na = FALSE),
-##                      c("2019 Jan", "2019 Feb", "2019 Mar"))
-##     expect_identical(make_labels_calendar_quarters_months(break_min = as.Date("2019-01-01"),
-##                                                           break_max = as.Date("2019-04-01"),
-##                                                           open_first = FALSE,
-##                                                           open_last = TRUE,
-##                                                           unit = "month",
-##                                                           include_na = FALSE),
-##                      c("2019 Jan", "2019 Feb", "2019 Mar", "2019 Apr+"))
-##     expect_identical(make_labels_calendar_quarters_months(break_min = as.Date("2019-01-01"),
-##                                                           break_max = as.Date("2020-01-01"),
-##                                                           open_first = FALSE,
-##                                                           open_last = FALSE,
-##                                                           unit = "quarter",
-##                                                           include_na = FALSE),
-##                      c("2019 Q1", "2019 Q2", "2019 Q3", "2019 Q4"))
-##     expect_identical(make_labels_calendar_quarters_months(break_min = as.Date("2019-07-01"),
-##                                                           break_max = as.Date("2020-07-01"),
-##                                                           open_first = TRUE,
-##                                                           open_last = FALSE,
-##                                                           unit = "quarter",
-##                                                           include_na = TRUE),
-##                      c("<2019 Q3", "2019 Q3", "2019 Q4", "2020 Q1", "2020 Q2", NA))
-##     expect_identical(make_labels_calendar_quarters_months(break_min = as.Date("2019-07-01"),
-##                                                           break_max = as.Date("2019-07-01"),
-##                                                           open_first = TRUE,
-##                                                           open_last = FALSE,
-##                                                           unit = "quarter",
-##                                                           include_na = FALSE),
-##                      "<2019 Q3")
-##     expect_identical(make_labels_calendar_quarters_months(break_min = as.Date("2019-07-01"),
-##                                                           break_max = as.Date("2019-07-01"),
-##                                                           open_first = TRUE,
-##                                                           open_last = TRUE,
-##                                                           unit = "quarter",
-##                                                           include_na = FALSE),
-##                      c("<2019 Q3", "2019 Q3+"))
-## })
+test_that("'make_labels_intervals' gives correct answer with valid inputs", {
+    x <- list(c(50L, 51L),
+              c(60L, 70L),
+              c(NA_integer_, NA_integer_),
+              c(NA, 0L),
+              c(100L, NA))
+    expect_identical(make_labels_intervals(x),
+                     c("50-51", "60-70", NA, "<0", "100+"))
+    x <- list()
+    expect_identical(make_labels_intervals(x),
+                     character())
+    x <- list(c(NA_integer_, NA_integer_))
+    expect_identical(make_labels_intervals(x),
+                     NA_character_)
+})
 
 
-## ## make_labels_duration_quarters_months ---------------------------------------
+## make_labels_quantities -----------------------------------------------------
 
-## test_that("'make_labels_duration_quarters_months' gives correct answer with valid inputs", {
-##     expect_identical(make_labels_duration_quarters_months(break_min = 0,
-##                                                           break_max = 5,
-##                                                           open_last = FALSE,
-##                                                           include_na = FALSE),
-##                      c("0", "1", "2", "3", "4"))
-##     expect_identical(make_labels_duration_quarters_months(break_min = 0,
-##                                                           break_max = 5,
-##                                                           open_last = FALSE,
-##                                                           include_na = FALSE),
-##                      c("0", "1", "2", "3", "4"))
-##     expect_identical(make_labels_duration_quarters_months(break_min = 0,
-##                                                           break_max = 5,
-##                                                           open_last = TRUE,
-##                                                           include_na = FALSE),
-##                      c("0", "1", "2", "3", "4", "5+"))
-##     expect_identical(make_labels_duration_quarters_months(break_min = 0,
-##                                                           break_max = 5,
-##                                                           open_last = TRUE,
-##                                                           include_na = TRUE),
-##                      c("0", "1", "2", "3", "4", "5+", NA))
-##     expect_identical(make_labels_duration_quarters_months(break_min = 0,
-##                                                           break_max = 0,
-##                                                           open_last = TRUE,
-##                                                           include_na = FALSE),
-##                      "0+")
-##     expect_identical(make_labels_duration_quarters_months(break_min = 0,
-##                                                           break_max = 0,
-##                                                           open_last = TRUE,
-##                                                           include_na = TRUE),
-##                      c("0+", NA))
-## })
+test_that("'make_labels_quantities' gives correct answer with valid inputs", {
+    x <- list(c(50L, 51L),
+              c(60L, 70L),
+              c(NA_integer_, NA_integer_),
+              c(NA, 0L),
+              c(100L, NA))
+    expect_identical(make_labels_quantities(x),
+                     c("50", "60-69", NA, "<0", "100+"))
+    x <- list()
+    expect_identical(make_labels_quantities(x),
+                     character())
+    x <- list(c(NA_integer_, NA_integer_))
+    expect_identical(make_labels_quantities(x),
+                     NA_character_)
+})
+
+
+## make_labels_quarters -------------------------------------------------------
+
+test_that("'make_labels_quarters' gives correct answer with valid inputs", {
+    x <- list(as.Date(c("2020-04-01", "2020-07-01")),
+              as.Date(c(NA, "2020-01-01")),
+              as.Date(c("2020-10-01", NA)),
+              as.Date(c(NA, NA)))
+    expect_identical(make_labels_quarters(x),
+                     c("2020 Q2", "<2020 Q1", "2020 Q4+", NA))
+    x <- list()
+    expect_identical(make_labels_quarters(x),
+                     character())
+    x <- list(as.Date(c(NA, NA)))
+    expect_identical(make_labels_quarters(x),
+                     NA_character_)
+})
+
+
+## make_labels_months -------------------------------------------------------
+
+test_that("'make_labels_months' gives correct answer with valid inputs", {
+    x <- list(as.Date(c("2020-04-01", "2020-05-01")),
+              as.Date(c(NA, "2020-01-01")),
+              as.Date(c("2020-10-01", NA)),
+              as.Date(c(NA, NA)))
+    expect_identical(make_labels_months(x),
+                     c("2020 Apr", "<2020 Jan", "2020 Oct+", NA))
+    x <- list()
+    expect_identical(make_labels_months(x),
+                     character())
+    x <- list(as.Date(c(NA, NA)))
+    expect_identical(make_labels_months(x),
+                     NA_character_)
+})
+
+
+## make_labels_dateranges -------------------------------------------------------
+
+test_that("'make_labels_dateranges' gives correct answer with valid inputs", {
+    x <- list(as.Date(c("2020-04-01", "2020-05-01")),
+              as.Date(c(NA, "2020-01-01")),
+              as.Date(c("2020-10-01", NA)),
+              as.Date(c(NA, NA)))
+    expect_identical(make_labels_dateranges(x),
+                     c("[2020-04-01, 2020-04-30]",
+                       "(-Inf, 2019-12-31]",
+                       "[2020-10-01, Inf)",
+                       NA))
+    x <- list()
+    expect_identical(make_labels_dateranges(x),
+                     character())
+    x <- list(as.Date(c(NA, NA)))
+    expect_identical(make_labels_dateranges(x),
+                     NA_character_)
+})
+
+
+## make_labels_datepoints -------------------------------------------------------
+
+test_that("'make_labels_datepoints' gives correct answer with valid inputs", {
+    x <- as.Date(c("2020-04-01",
+                   "2020-05-01",
+                   NA,
+                   "2020-01-01"))
+    expect_identical(make_labels_datepoints(x),
+                     as.character(x))
+    x <- as.Date(character())
+    expect_identical(make_labels_datepoints(x),
+                     character())
+    x <- as.Date(NA)
+    expect_identical(make_labels_datepoints(x),
+                     NA_character_)
+})
+
 
 
 
