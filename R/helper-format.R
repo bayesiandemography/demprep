@@ -257,8 +257,8 @@ format_period_month_quarter_year <- function(x,
     ## parse the labels
     parsed <- parse_fun(x = labels_x,
                         name = "x")
-    low <- parsed$low # integer
-    up <- parsed$up   # integer
+    low <- parsed$low
+    up <- parsed$up
     is_open_first <- parsed$is_open_first
     is_open_last <- parsed$is_open_last
     break_min <- parsed$break_min

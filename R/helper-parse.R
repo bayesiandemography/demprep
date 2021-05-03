@@ -1,4 +1,5 @@
 
+## HAS_TESTS
 parse_integers <- function(x, name) {
     ## classify labels, rasing error for invalid ones
     is_na <- is.na(x)
@@ -43,13 +44,13 @@ parse_integers <- function(x, name) {
          break_max = break_max)
 }
 
-
-
+## HAS_TESTS
 parse_integers_intervals <- function(x,
                                      name,
                                      month_start,
                                      label_year_start) {
     ## whether to subtract 1 from single-year labels
+    ## to get implied calendar years
     subtract_1 <- (month_start != "Jan") && !label_year_start
     ## classify labels, rasing error for invalid ones
     is_na <- is.na(x)
@@ -73,8 +74,8 @@ parse_integers_intervals <- function(x,
         low[is_single] <- low[is_single] - 1L
         up[is_single] <- up[is_single] - 1L
     }
-    low[is_low_up] <- as.integer(sub(p_low_up, "\\1", x[is_low_up]))
-    up[is_low_up] <- as.integer(sub(p_low_up, "\\2", x[is_low_up]))
+    low[is_low_up] <- as.integer(sub(CONST_P_LOW_UP, "\\1", x[is_low_up]))
+    up[is_low_up] <- as.integer(sub(CONST_P_LOW_UP, "\\2", x[is_low_up]))
     up[is_open_first] <- as.integer(sub("<", "", x[is_open_first]))
     low[is_open_last] <- as.integer(sub("\\+", "", x[is_open_last]))
     ## find 'break_min' and 'break_max'
@@ -101,6 +102,8 @@ parse_integers_intervals <- function(x,
          break_max = break_max)
 }
 
+
+## HAS_TESTS
 parse_quantities <- function(x, name) {
     ## classify labels, rasing error for invalid ones
     is_na <- is.na(x)
@@ -120,8 +123,8 @@ parse_quantities <- function(x, name) {
     up <- rep(NA_integer_, times = n)
     low[is_single] <- as.integer(x[is_single])
     up[is_single] <- low[is_single] + 1L
-    low[is_low_up] <- as.integer(sub(p_low_up, "\\1", x[is_low_up]))
-    up[is_low_up] <- as.integer(sub(p_low_up, "\\2", x[is_low_up]))
+    low[is_low_up] <- as.integer(sub(CONST_P_LOW_UP, "\\1", x[is_low_up]))
+    up[is_low_up] <- as.integer(sub(CONST_P_LOW_UP, "\\2", x[is_low_up])) + 1L
     up[is_open_first] <- as.integer(sub("<", "", x[is_open_first]))
     low[is_open_last] <- as.integer(sub("\\+", "", x[is_open_last]))
     ## find 'break_min' and 'break_max'
