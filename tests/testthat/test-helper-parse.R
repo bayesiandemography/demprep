@@ -63,3 +63,43 @@ test_that("'parse_quantities' gives correct answer with valid inputs", {
                           break_min = 1L,
                           break_max = 11L))
 })
+
+
+## parse_quarters -------------------------------------------------------------
+
+test_that("'parse_quarters' gives correct answer with valid inputs", {
+    expect_identical(parse_quarters(c("2020 Q1", "2020 Q3", NA, "2020 Q1", "<2020 Q2")),
+                     list(low = as.Date(c("2020-01-01", "2020-07-01", NA, "2020-01-01", NA)),
+                          up = as.Date(c("2020-04-01", "2020-10-01", NA, "2020-04-01", "2020-04-01")),
+                          is_open_first = c(FALSE, FALSE, FALSE, FALSE, TRUE),
+                          is_open_last = c(FALSE, FALSE, FALSE, FALSE, FALSE),
+                          break_min = as.Date("2020-04-01"),
+                          break_max = as.Date("2020-10-01")))
+    expect_identical(parse_quarters(c("2010 Q4", "<2000 Q3")),
+                     list(low = as.Date(c("2010-10-01", NA)),
+                          up = as.Date(c("2011-01-01", "2000-07-01")),
+                          is_open_first = c(FALSE, TRUE),
+                          is_open_last = c(FALSE, FALSE),
+                          break_min = as.Date("2000-07-01"),
+                          break_max = as.Date("2011-01-01")))
+})
+
+
+## parse_months ---------------------------------------------------------------
+
+test_that("'parse_months' gives correct answer with valid inputs", {
+    expect_identical(parse_months(c("2020 Jan", "2020 Aug", NA, "2020 Feb", "<2020 Mar")),
+                     list(low = as.Date(c("2020-01-01", "2020-08-01", NA, "2020-02-01", NA)),
+                          up = as.Date(c("2020-02-01", "2020-09-01", NA, "2020-03-01", "2020-03-01")),
+                          is_open_first = c(FALSE, FALSE, FALSE, FALSE, TRUE),
+                          is_open_last = c(FALSE, FALSE, FALSE, FALSE, FALSE),
+                          break_min = as.Date("2020-03-01"),
+                          break_max = as.Date("2020-09-01")))
+    expect_identical(parse_months(c("2010 Nov", "<2000 Jul")),
+                     list(low = as.Date(c("2010-11-01", NA)),
+                          up = as.Date(c("2010-12-01", "2000-07-01")),
+                          is_open_first = c(FALSE, TRUE),
+                          is_open_last = c(FALSE, FALSE),
+                          break_min = as.Date("2000-07-01"),
+                          break_max = as.Date("2010-12-01")))
+})

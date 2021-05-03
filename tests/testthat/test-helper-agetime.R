@@ -624,7 +624,6 @@ test_that("'rollback_year' gives correct answer with valid inputs", {
 ## rollforward_month ----------------------------------------------------------
 
 test_that("'rollforward_month' gives correct answer with valid inputs", {
-    rollforward_month <- demprep:::rollforward_month
     expect_identical(rollforward_month("2000-01-01"),
                      as.Date("2000-02-01"))
     expect_identical(rollforward_month("2000-01-31"),
@@ -638,5 +637,25 @@ test_that("'rollforward_month' gives correct answer with valid inputs", {
     expect_identical(rollforward_month(as.Date(character())),
                      as.Date(character()))
     expect_identical(rollforward_month(as.Date(NA_character_)),
+                     as.Date(NA_character_))
+})
+
+
+## rollforward_quarter ----------------------------------------------------------
+
+test_that("'rollforward_quarter' gives correct answer with valid inputs", {
+    expect_identical(rollforward_quarter("2000-01-01"),
+                     as.Date("2000-04-01"))
+    expect_identical(rollforward_quarter("2000-01-31"),
+                     as.Date("2000-04-01"))
+    expect_identical(rollforward_quarter("2000-02-29"),
+                     as.Date("2000-04-01"))
+    expect_identical(rollforward_quarter("2000-12-31"),
+                     as.Date("2001-01-01"))
+    expect_identical(rollforward_quarter(c("2000-12-31", "2001-01-01")),
+                     as.Date(c("2001-01-01", "2001-04-01")))
+    expect_identical(rollforward_quarter(as.Date(character())),
+                     as.Date(character()))
+    expect_identical(rollforward_quarter(as.Date(NA_character_)),
                      as.Date(NA_character_))
 })

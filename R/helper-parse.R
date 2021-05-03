@@ -152,6 +152,88 @@ parse_quantities <- function(x, name) {
 }
 
 
+## HAS_TESTS
+parse_quarters <- function(x, name) {
+    ## classify labels, rasing error for invalid ones
+    is_na <- is.na(x)
+    is_single <- grepl(CONST_P_SINGLE_QUARTER, x)
+    is_open_first <- grepl(CONST_P_OPEN_FIRST_QUARTER, x)
+    is_valid <- is_na | is_single | is_open_first
+    i_invalid <- match(FALSE, is_valid, nomatch = 0L)
+    if (i_invalid > 0L)
+        stop(gettextf("'%s' has invalid label [\"%s\"]",
+                      name, x[[i_invalid]]),
+             call. = FALSE)
+    ## extract 'low' and 'up'
+    n <- length(x)
+    low <- as.Date(rep(NA, times = n))
+    up <- as.Date(rep(NA, times = n))
+    low[is_single] <- date_start_quarter(x[is_single])
+    up[is_single] <- rollforward_quarter(low[is_single])
+    up[is_open_first] <- date_start_quarter(x[is_open_first])
+    ## find 'break_min' and 'break_max'
+    if (all(is_na)) {
+        break_min <- as.Date(NA)
+        break_max <- as.Date(NA)
+    }
+    else {
+        if (any(is_open_first))
+            break_min <- max(up[is_open_first])
+        else
+            break_min <- min(low, na.rm = TRUE)
+        break_max <- max(up, na.rm = TRUE)
+    }
+    ## return answer
+    is_open_last <- rep(FALSE, times = n)
+    list(low = low,
+         up = up,
+         is_open_first = is_open_first,
+         is_open_last = is_open_last,
+         break_min = break_min,
+         break_max = break_max)
+}
+
+
+## HAS_TESTS
+parse_months <- function(x, name) {
+    ## classify labels, rasing error for invalid ones
+    is_na <- is.na(x)
+    is_single <- grepl(CONST_P_SINGLE_MONTH, x)
+    is_open_first <- grepl(CONST_P_OPEN_FIRST_MONTH, x)
+    is_valid <- is_na | is_single | is_open_first
+    i_invalid <- match(FALSE, is_valid, nomatch = 0L)
+    if (i_invalid > 0L)
+        stop(gettextf("'%s' has invalid label [\"%s\"]",
+                      name, x[[i_invalid]]),
+             call. = FALSE)
+    ## extract 'low' and 'up'
+    n <- length(x)
+    low <- as.Date(rep(NA, times = n))
+    up <- as.Date(rep(NA, times = n))
+    low[is_single] <- date_start_month(x[is_single])
+    up[is_single] <- rollforward_month(low[is_single])
+    up[is_open_first] <- date_start_month(x[is_open_first])
+    ## find 'break_min' and 'break_max'
+    if (all(is_na)) {
+        break_min <- as.Date(NA)
+        break_max <- as.Date(NA)
+    }
+    else {
+        if (any(is_open_first))
+            break_min <- max(up[is_open_first])
+        else
+            break_min <- min(low, na.rm = TRUE)
+        break_max <- max(up, na.rm = TRUE)
+    }
+    ## return answer
+    is_open_last <- rep(FALSE, times = n)
+    list(low = low,
+         up = up,
+         is_open_first = is_open_first,
+         is_open_last = is_open_last,
+         break_min = break_min,
+         break_max = break_max)
+}
 
 
 

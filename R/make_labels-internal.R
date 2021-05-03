@@ -68,7 +68,7 @@ make_labels_period_month <- function(break_min, break_max, include_na) {
 
 ## Cohort ---------------------------------------------------------------------
 
-## NO_TESTS
+## HAS_TESTS
 make_labels_cohort_year <- function(break_min, break_max, open_first, include_na) {
     breaks <- seq.int(from = break_min,
                       to = break_max)
@@ -79,7 +79,7 @@ make_labels_cohort_year <- function(break_min, break_max, open_first, include_na
     make_labels_integers(x)
 }
 
-## NO_TESTS
+## HAS_TESTS
 make_labels_cohort_custom <- function(breaks, open_first, include_na) {
     x <- breaks_to_pairs(breaks = breaks,
                          open_first = open_first,
@@ -88,7 +88,7 @@ make_labels_cohort_custom <- function(breaks, open_first, include_na) {
     make_labels_intervals(x)
 }
 
-## NO_TESTS
+## HAS_TESTS
 make_labels_cohort_quarter <- function(break_min, break_max, open_first, include_na) {
     breaks <- seq.Date(from = break_min,
                        to = break_max,
@@ -100,7 +100,7 @@ make_labels_cohort_quarter <- function(break_min, break_max, open_first, include
     make_labels_quarters(x)
 }
 
-## NO_TESTS
+## HAS_TESTS
 make_labels_cohort_month <- function(break_min, break_max, open_first, include_na) {
     breaks <- seq.Date(from = break_min,
                        to = break_max,

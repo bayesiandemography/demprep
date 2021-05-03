@@ -756,4 +756,19 @@ rollforward_month <- function(date) {
     date$mon <- date$mon + 1L
     as.Date(date)
 }
-    
+
+
+## NO_TESTS
+## Roll forward to first day of next quarter.
+rollforward_quarter <- function(date) {
+    if (identical(length(date), 0L))
+        return(as.Date(character()))
+    date <- as.POSIXlt(date)
+    date$mday <- 1L
+    mon_old <- date$mon
+    remainder <- mon_old %% 3L
+    mon_new <- mon_old + 3L - remainder
+    date$mon <- mon_new
+    as.Date(date)
+}
+
