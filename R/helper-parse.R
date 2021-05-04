@@ -76,6 +76,12 @@ parse_integers_intervals <- function(x,
     }
     low[is_low_up] <- as.integer(sub(CONST_P_LOW_UP, "\\1", x[is_low_up]))
     up[is_low_up] <- as.integer(sub(CONST_P_LOW_UP, "\\2", x[is_low_up]))
+    is_up_le_low <- up[is_low_up] <= low[is_low_up]
+    i_up_le_low <- match(TRUE, is_up_le_low, nomatch = 0L)
+    if (i_up_le_low > 0L)
+        stop(gettextf("'%s' has label with upper limit less than or equal to lower limit [\"%s\"]",
+                      name, x[is_low_up][[i_up_le_low]]),
+             call. = FALSE)
     up[is_open_first] <- as.integer(sub("<", "", x[is_open_first]))
     low[is_open_last] <- as.integer(sub("\\+", "", x[is_open_last]))
     ## find 'break_min' and 'break_max'
@@ -125,6 +131,12 @@ parse_quantities <- function(x, name) {
     up[is_single] <- low[is_single] + 1L
     low[is_low_up] <- as.integer(sub(CONST_P_LOW_UP, "\\1", x[is_low_up]))
     up[is_low_up] <- as.integer(sub(CONST_P_LOW_UP, "\\2", x[is_low_up])) + 1L
+    is_up_le_low <- up[is_low_up] <= low[is_low_up]
+    i_up_le_low <- match(TRUE, is_up_le_low, nomatch = 0L)
+    if (i_up_le_low > 0L)
+        stop(gettextf("'%s' has label with upper limit less than lower limit [\"%s\"]",
+                      name, x[is_low_up][[i_up_le_low]]),
+             call. = FALSE) ## "upper limit" in error message is not 'up'
     up[is_open_first] <- as.integer(sub("<", "", x[is_open_first]))
     low[is_open_last] <- as.integer(sub("\\+", "", x[is_open_last]))
     ## find 'break_min' and 'break_max'

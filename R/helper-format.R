@@ -236,7 +236,7 @@ format_cohort_month_quarter_year <- function(x,
 }
 
 
-## NO_TESTS
+## HAS_TESTS
 format_period_month_quarter_year <- function(x,
                                              parse_fun,
                                              labels_fun) {
@@ -279,46 +279,6 @@ format_period_month_quarter_year <- function(x,
                   exclude = NULL)
     ans
 }
-
-
-
-extract_time_quarter <- function(labels) {
-    ## regular expressions
-    p_single <- "^-?[0-9]+ Q[1-4]$"
-    p_open <- "^<-?[0-9]+ Q[1-4]$"
-    ## classify labels, rasing error for invalid ones
-    is_na <- is.na(labels)
-    is_single <- grepl(p_single, labels)
-    is_open <- grepl(p_open, labels)
-    is_valid <- is_na | is_single | is_open
-    i_invalid <- match(FALSE, is_valid, nomatch = 0L)
-    if (i_invalid > 0L)
-        stop(gettextf("\"%s\" is not a valid label",
-                      labels[[i_invalid]]),
-             call. = FALSE)
-    ## extract lower and upper times
-    time_low <- rep(NA_integer_, times = length(labels))
-    time_up <- time_low
-    time_single <- as.integer(labels[is_single])
-    if (disambiguate_single && !label_year_start && (month_start != "Jan"))
-        time_single <- time_single - 1L
-    time_low[is_single] <- time_single
-    time_up[is_single] <- time_single + 1L
-    time_up[is_open] <- as.integer(sub("<", "", labels[is_open]))
-    if (low_up) {
-        time_low[is_low_up] <- as.integer(sub(p_low_up, "\\1", labels[is_low_up]))
-        time_up[is_low_up] <- as.integer(sub(p_low_up, "\\2", labels[is_low_up]))
-        demcheck::err_interval_diff_ge_one(int_low = time_low,
-                                           int_up = time_up,
-                                           is_low_up = is_low_up,
-                                           labels = labels)
-    }
-    list(time_low = time_low,
-         time_up = time_up,
-         is_open = is_open)
-}
-
-
 
 
 format_triangle_month_quarter_year <- function(x,
@@ -434,4 +394,37 @@ format_triangle_month_quarter_year <- function(x,
 }
 
     
-    
+## Return the intervals defined by 'breaks',
+## 'open_first', and 'open_last'
+## that the intervals defined by 'low' and 'up' belong to.
+## If 'open_first' is TRUE, then interval (-Inf, breaks[1L])
+## is interval number 1. If an interval defined by 'low'
+## and 'up' falls within 2 or more intervals defined
+## by 'breaks', 'open_first', and 'open_last',
+## then return -1L for that interval.
+## Assume inputs all have valid lengths and types.
+make_i_interval <- function(low,
+                            up,
+                            breaks,
+                            open_first,
+                            open_last) {
+    n <- length(breaks)
+    i_low <- findInterval(low, breaks)
+    i_up <- findInterval(up, breaks)
+    is_open_first <- is.na(low) & !is.na(up)
+    is_open_last <- !is.na(low) & is.na(up)
+    is_low_up <- !is.na(low) & !is.na(up)
+    is_intersect_open_first <- is_open_first & (up > breaks[[1L]])
+    is_intersect_open_last <- is_open_last & (low < breaks[[n]])
+    up_is_next_break <- is_low_up & (up == breaks[i_low + 1L])
+    is_intersect_low_up <- is_low_up & (i_up > i_low) & !up_is_next_break
+    is_intersect <- (is_intersect_open_first
+        | is_intersect_open_last
+        | is_intersect_low_up)
+    ans <- i_low
+    if (open_first)
+        ans <- ans + 1L
+    ans[is_intersect] <- -1L
+    ans
+}
+

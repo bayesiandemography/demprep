@@ -458,52 +458,6 @@ test_that("extract_time gives correct answers with valid inputs when 'x' has len
 })
 
 
-## i_month_within_period ------------------------------------------------------
-
-test_that("'i_month_within_period' gives correct answer with valid inputs", {
-    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-01-01"),
-                                           width = 1L,
-                                           origin = 2000L,
-                                           month_start = "Jan"),
-                     1L)
-    expect_identical(i_month_within_period(date_ymd = as_ymd("1999-12-31"),
-                                           width = 1L,
-                                           origin = 2000L,
-                                           month_start = "Jan"),
-                     12L)
-    expect_identical(i_month_within_period(date_ymd = as_ymd("1999-12-31"),
-                                           width = 5L,
-                                           origin = 2000L,
-                                           month_start = "Jan"),
-                     60L)
-    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-01-01"),
-                                           width = 1L,
-                                           origin = 1998L,
-                                           month_start = "Jan"),
-                     1L)
-    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-01-01"),
-                                           width = 2L,
-                                           origin = 1998L,
-                                           month_start = "Jul"),
-                     19L)
-    expect_identical(i_month_within_period(date_ymd = as_ymd(NA),
-                                           width = 2L,
-                                           origin = 1998L,
-                                           month_start = "Jul"),
-                     NA_integer_)
-    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-06-30"),
-                                           width = 5L,
-                                           origin = 2000L,
-                                           month_start = "Jul"),
-                     60L)
-    expect_identical(i_month_within_period(date_ymd = as_ymd("2000-07-01"),
-                                           width = 5L,
-                                           origin = 2000L,
-                                           month_start = "Jul"),
-                     1L)
-})
-
-
 ## is_leap_year ---------------------------------------------------------------
 
 test_that("'is_leap_year' gives correct answer with valid input", {

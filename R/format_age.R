@@ -288,7 +288,7 @@ format_age_multi <- function(x,
                       to = break_max,
                       by = width)
     ## check that all intervals fall within implied breaks
-    i_interval <- make_i_breaks(low = low,
+    i_interval <- make_i_interval(low = low,
                                 up = up,
                                 breaks = breaks,
                                 open_first = FALSE,
@@ -441,7 +441,7 @@ format_age_lifetab <- function(x, break_max = 100) {
                                   open_last = TRUE,
                                   include_na = include_na)
     ## check that all intervals fall within implied breaks
-    i_interval <- make_i_breaks(low = low,
+    i_interval <- make_i_interval(low = low,
                                 up = up,
                                 breaks = breaks,
                                 open_first = FALSE,
@@ -681,7 +681,7 @@ format_age_births <- function(x,
                       to = break_max,
                       by = width)
     ## check that all intervals fall within implied breaks
-    i_interval <- make_i_breaks(low = low,
+    i_interval <- make_i_interval(low = low,
                                 up = up,
                                 breaks = breaks,
                                 open_first = FALSE,
@@ -820,7 +820,7 @@ format_age_custom <- function(x,
         }
     }
     ## check that all intervals fall within implied breaks
-    i_interval <- make_i_breaks(low = low,
+    i_interval <- make_i_interval(low = low,
                                 up = up,
                                 breaks = breaks,
                                 open_first = FALSE,

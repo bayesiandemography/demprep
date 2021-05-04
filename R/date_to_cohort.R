@@ -1,5 +1,5 @@
 
-## HAS_TESTS
+## HAS_TESTS (via date_to_cohort_period_year)
 #' Convert dates to one-year cohorts
 #'
 #' Identify cohorts, based on dates of events such as births.
@@ -118,7 +118,7 @@ date_to_cohort_year <- function(date,
 }
 
 
-## HAS_TESTS (via date_to_cohort_period_month)
+## HAS_TESTS (via date_to_cohort_period_quarter)
 #' Convert dates to quarter (three-month) cohorts
 #'
 #' Identify cohorts, based on the dates of events such as birth.

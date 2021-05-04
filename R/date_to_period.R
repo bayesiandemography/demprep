@@ -1,5 +1,5 @@
 
-## HAS_TESTS
+## HAS_TESTS (via date_to_cohort_period_year)
 #' Convert dates to one-year periods
 #'
 #' Allocate dates to one-year periods. The one-year periods are,
@@ -115,7 +115,7 @@ date_to_period_year <- function(date,
 }
 
 
-## HAS_TESTS
+## HAS_TESTS (via date_to_cohort_period_quarter)
 #' Convert dates to quarter (three-month) periods
 #'
 #' Allocate dates to periods. The
@@ -154,45 +154,9 @@ date_to_period_year <- function(date,
 #'                                 "2022-11-09"))
 #' @export
 date_to_period_quarter <- function(date) {
-    ## see if arguments supplied
-    has_date <- sum(!is.na(date)) > 0L
-    ## check arguments and/or apply defaults
-    if (has_date)
-        date <- demcheck::err_tdy_date_vector(x = date,
-                                              name = "date")
-    ## deal with "empty" case where 'date' has length 0
-    ## or is all NA
-    if (!has_date) {
-            if (length(date) > 0L)
-                ans <- factor(date,
-                              levels = NA_character_,
-                              exclude = NULL)
-            else
-                ans <- factor()
-        return(ans)
-    }
-    ## create sequence of breaks
-    breaks <- make_breaks_date_to_date_quarter(date = date,
-                                               break_min = NULL,
-                                               has_break_min_arg = FALSE)
-    ## make labels for these breaks
-    n <- length(breaks)
-    break_min <- breaks[[1L]]
-    break_max <- breaks[[n]]
-    include_na <- anyNA(date)
-    labels <- make_labels_period_quarter(break_min = break_min,
-                                         break_max = break_max,
-                                         include_na = include_na)
-    ## assign labels to dates
-    i <- findInterval(x = date,
-                      vec = breaks)
-    ans <- labels[i]
-    ## return result
-    ans <- factor(x = ans,
-                  levels = labels,
-                  exclude = NULL)
-    ans   
+    date_to_cohort_period_quarter(date = date)
 }
+
 
 ## HAS_TESTS (via date_to_cohort_period_month)
 #' Convert dates to one-month periods

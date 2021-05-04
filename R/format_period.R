@@ -213,26 +213,25 @@ format_period_multi <- function(x,
     if (remainder_max == 0L)
         break_max <- break_max_x
     else
-        break_max <- break_max_x - remainder + width
+        break_max <- break_max_x - remainder_max + width
     ## check that all intervals fall within implied breaks
     breaks <- seq.int(from = break_min,
                       to = break_max,
                       by = width)
-    i_interval <- make_i_intervals(low = low,
+    i_interval <- make_i_interval(low = low,
                                    up = up,
                                    breaks = breaks,
-                                   open_first = open_first,
+                                   open_first = FALSE,
                                    open_last = FALSE)
     is_multiple_intervals <- i_interval == -1L
     i_multiple_intervals <- match(TRUE, is_multiple_intervals, nomatch = 0L)
     if (i_multiple_intervals > 0L)
-        stop(gettextf("label \"%\" from '%s' intersects two or more intervals formed using '%s = %d' and '%s = %d'",
+        stop(gettextf("label \"%s\" from '%s' intersects two or more intervals formed using %s = %d and %s = %d",
                       labels_x[[i_multiple_intervals ]], "x", "origin", origin, "width", width),
              call. = FALSE)
     ## make labels
     include_na <- anyNA(labels_x)
     labels_new <- make_labels_period_custom(breaks = breaks,
-                                            open_first = open_first,
                                             include_na = include_na)
     ## assign new labels to x and return
     ans <- labels_new[i_interval]
@@ -336,7 +335,7 @@ format_period_custom <- function(x,
                       "x", labels_x[[i_open]]),
              call. = FALSE)
     }
-    ## check times within bounds set by breaks
+    ## check intervals within bounds set by breaks
     is_too_low <- !is.na(low) & (low < breaks[[1L]])
     i_too_low <- match(TRUE, is_too_low, nomatch = 0L)
     if (i_too_low > 0L)
@@ -350,15 +349,15 @@ format_period_custom <- function(x,
                       labels_x[[i_too_high]], "breaks", breaks[[n_break]]),
              call. = FALSE)
     ## check that intervals do not cross boundaries set by breaks
-    i_interval <- make_i_intervals(low = low,
-                                   up = up,
-                                   breaks = breaks,
-                                   open_first = FALSE,
-                                   open_last = FALSE)
+    i_interval <- make_i_interval(low = low,
+                                  up = up,
+                                  breaks = breaks,
+                                  open_first = FALSE,
+                                  open_last = FALSE)
     is_multiple_intervals <- i_interval == -1L
     i_multiple_intervals <- match(TRUE, is_multiple_intervals, nomatch = 0L)
     if (i_multiple_intervals > 0L)
-        stop(gettextf("label \"%\" from '%s' intersects two or more intervals formed from '%s'",
+        stop(gettextf("label \"%s\" from '%s' intersects two or more intervals formed from '%s'",
                       labels_x[[i_multiple_intervals ]], "x", "breaks"),
              call. = FALSE)
     ## make labels for these breaks

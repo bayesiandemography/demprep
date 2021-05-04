@@ -317,11 +317,11 @@ format_triangle_multi <- function(x,
     ## Check that all age intervals fall within implied breaks.
     ## (Checking now gives more informative error messages
     ## then waiting for attempt to form Lexis triangles.)
-    i_interval_age <- make_i_breaks(low = low_age,
-                                    up = up_age,
-                                    breaks = breaks_age,
-                                    open_first = FALSE,
-                                    open_last = open_last)
+    i_interval_age <- make_i_interval(low = low_age,
+                                      up = up_age,
+                                      breaks = breaks_age,
+                                      open_first = FALSE,
+                                      open_last = open_last)
     is_multiple_intervals_age <- i_interval_age == -1L
     i_multiple_intervals_age <- match(TRUE, is_multiple_intervals_age, nomatch = 0L)
     if (i_multiple_intervals_age > 0L)
@@ -347,11 +347,11 @@ format_triangle_multi <- function(x,
     breaks_period <- seq.int(from = break_min_period,
                              to = break_max_period,
                              by = width)
-    i_interval_period <- make_i_intervals(low_period = low_period,
-                                          up_period = up_period,
-                                          breaks = breaks_period,
-                                          open_first = FALSE,
-                                          open_last = FALSE)
+    i_interval_period <- make_i_interval(low_period = low_period,
+                                         up_period = up_period,
+                                         breaks = breaks_period,
+                                         open_first = FALSE,
+                                         open_last = FALSE)
     is_multiple_intervals <- i_interval == -1L
     i_multiple_intervals <- match(TRUE, is_multiple_intervals, nomatch = 0L)
     if (i_multiple_intervals > 0L)

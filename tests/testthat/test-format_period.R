@@ -18,7 +18,7 @@ test_that("format_period_year works with valid input", {
 
 test_that("format_period_year gives correct error with invalid inputs", {
     expect_error(format_period_year(x = c("2000", "2010", NA, "wrong")),
-                 "\"wrong\" is not a valid label")
+                 "'x' has invalid label \\[\"wrong\"\\]")
 })
 
 
@@ -44,8 +44,14 @@ test_that("format_period_multi works with valid input", {
 })
 
 test_that("format_period_multi gives correct error with invalid inputs", {
-    expect_error(format_period_multi(x = c("2000-2001", "2010-2005", NA, "wrong")),
-                 "\"wrong\" is not a valid label")
+    expect_error(format_period_multi(x = c("<2000", "2010-2015", NA, "2005")),
+                 "'x' has open interval \\[\"<2000\"\\]")
+    expect_error(format_period_multi(x = c("2000-2001", "2010-2015", NA, "2005+")),
+                 "'x' has open interval \\[\"2005\\+\"\\]")
+    expect_error(format_period_multi(x = c("2000-2001", "2010-2015", NA, "wrong")),
+                 "'x' has invalid label \\[\"wrong\"\\]")
+    expect_error(format_period_multi(x = c("2000-2001", "2010-2016")),
+                 "label \"2010-2016\" from 'x' intersects two or more intervals formed using origin = 2000 and width = 5")
 })
 
 
@@ -61,12 +67,21 @@ test_that("format_period_custom works with valid input", {
                      factor())
 })
 
-test_that("format_period_multi gives correct error with invalid inputs", {
+test_that("format_period_custom gives correct error with invalid inputs", {
     expect_error(format_period_custom(x = "2000-2010", breaks = integer()),
                  "'breaks' has length 0")
-    expect_error(format_period_custom(x = c("2000-2001", "2010-2005", NA, "wrong"),
+    expect_error(format_period_custom(x = c("2000-2001", "2010-2015", NA, "2000+"),
                                       breaks = c(2000, 2020)),
-                 "\"wrong\" is not a valid label")
+                 "'x' has open interval \\[\"2000\\+\"\\]")
+    expect_error(format_period_custom(x = c("2000-2001", "2010-2015", NA, "<1990"),
+                                      breaks = c(2000, 2020)),
+                 "'x' has open interval \\[\"<1990\"\\]")
+    expect_error(format_period_custom(x = c("2000-2001", "2010-2015", NA, "wrong"),
+                                      breaks = c(2000, 2020)),
+                 "'x' has invalid label \\[\"wrong\"\\]")
+    expect_error(format_period_custom(x = c("2000-2001", "2010-2015", NA, "2019-2021"),
+                                      breaks = c(2000, 2020, 2030)),
+                 "label \"2019-2021\" from 'x' intersects two or more intervals formed from 'breaks'")
 })
 
 

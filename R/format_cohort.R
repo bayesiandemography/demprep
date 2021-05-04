@@ -313,7 +313,7 @@ format_cohort_multi <- function(x,
                       to = break_max,
                       by = width)
     ## check that all intervals fall within implied breaks
-    i_interval <- make_i_breaks(low = low,
+    i_interval <- make_i_interval(low = low,
                                 up = up,
                                 breaks = breaks,
                                 open_first = open_first,
@@ -490,7 +490,7 @@ format_cohort_custom <- function(x,
                       labels_x[[i_too_high]], "breaks", breaks[[n_break]]),
              call. = FALSE)
     ## check that intervals do not cross boundaries set by breaks
-    i_interval <- make_i_breaks(low = low,
+    i_interval <- make_i_interval(low = low,
                                 up = up,
                                 breaks = breaks,
                                 open_first = open_first,
