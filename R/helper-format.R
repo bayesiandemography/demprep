@@ -1,4 +1,22 @@
 
+## date_to_month_label --------------------------------------------------------
+
+date_to_month_label <- function(date) {
+    format(date, format = "%Y %b")
+}
+
+
+## date_to_month_label --------------------------------------------------------
+
+date_to_quarter_label <- function(date) {
+    year <- format(date, format = "%Y")
+    quarter <- quarters(date)
+    paste(year, quarter)
+}
+
+
+## format month quarter year --------------------------------------------------
+
 ## NO_TESTS
 format_age_month_quarter_year <- function(x,
                                          break_min,
@@ -132,18 +150,23 @@ format_age_month_quarter_year <- function(x,
 }
 
 ## NO_TESTS
+## 'break_min' is a bit fiddly because it is numeric
+## (eg 2000) if unit is years, and character
+## (eg "2000 Q1" or "2000 Jan") if quarter or month
 format_cohort_month_quarter_year <- function(x,
-                               break_min,
-                               open_first,
-                               parse_fun,
-                               label_fun) {
+                                             break_min,
+                                             open_first,
+                                             break_min_tdy_fun,
+                                             break_min_lab_fun,
+                                             parse_fun,
+                                             labels_fun) {
     ## see if arguments supplied
     has_break_min <- !is.null(break_min)
     has_open_first <- !is.null(open_first)
     ## check arguments
     if (has_break_min) {
-        break_min <- demcheck::err_tdy_non_negative_integer_scalar(x = break_min,
-                                                                   name = "break_min")
+        break_min_tdy <- break_min_tdy_fun(x = break_min, ## 'break_min_tdy' is integer or date
+                                           name = "break_min") 
     }
     if (has_open_first) {
         demcheck::err_is_logical_flag(x = open_first,
@@ -165,7 +188,7 @@ format_cohort_month_quarter_year <- function(x,
     labels_x <- unique(x)
     ## parse the labels
     parsed <- parse_fun(x = labels_x,
-                             name = "x")
+                        name = "x")
     low <- parsed$low
     up <- parsed$up
     is_open_first <- parsed$is_open_first
@@ -173,58 +196,73 @@ format_cohort_month_quarter_year <- function(x,
     break_min_x <- parsed$break_min
     break_max_x <- parsed$break_max
     i_open_last <- match(TRUE, is_open_last, nomatch = 0L)
-    if (i_open_last > 0L) {
+    if (i_open_last > 0L)
         stop(gettextf("'%s' has interval [\"%s\"] that is open on the right",
                       "x", labels_x[[i_open_last]]),
              call. = FALSE)
-    }
-    ## do checks required when 'open_first' was supplied
-    if (has_open_first) {
-        ## if 'open_first' is TRUE, and 'break_min' is supplied, and there are open intervals,
-        ## check that the open intervals all start at or below 'break_min'
-        if (open_first && has_break_min && any(is_open_first)) {
-            is_too_high <- is_open_first & (up > break_min)
-            i_too_high <- match(TRUE, is_too_high, nomatch = 0L)
-            if (i_too_high > 0L) {
-                if (inherits(break_min, "Date"))
-                    break_min_str <- sprintf("\"%s\"", break_min)
-                else
-                    break_min_str <- sprintf("%d", break_min)
-                stop(gettextf("'%s' has open interval [\"%s\"] that ends above '%s' [%s]",
-                              "x", labels_x[[i_too_high]], "break_min", break_min_str),
-                     call. = FALSE)
-            }
-        }
-        ## if 'open_first' is FALSE, check that there are no open intervals
-        if (!open_first) {
-            i_is_open <- match(TRUE, is_open_first, nomatch = 0L)
-            if (i_is_open > 0L)
-                stop(gettextf("'%s' is %s but '%s' has open interval [\"%s\"]",
-                              "open_first", "FALSE", "x", labels_x[[i_is_open]]),
-                     call. = FALSE)
-        }
-    }
-    else { ## where 'open_first' not supplied, assign a default value
+    ## where 'open_first' not supplied, assign a default value
+    if (!has_open_first) {
         open_first <- any(is_open_first) || has_break_min
         message(gettextf("setting '%s' to %s",
                          "open_first", open_first))
     }
+    ## if 'open_first' is TRUE, and 'break_min' is supplied, and there are open intervals,
+    ## check that the open intervals all start at or below 'break_min'
+    if (open_first && has_break_min && any(is_open_first)) {
+        is_too_high <- is_open_first & (up > break_min_tdy)
+        i_too_high <- match(TRUE, is_too_high, nomatch = 0L)
+        if (i_too_high > 0L) {
+            stop(gettextf("'%s' has open interval [\"%s\"] that ends above '%s' [%s]",
+                          "x",
+                          labels_x[[i_too_high]],
+                          "break_min",
+                          quote_if_nonnum(break_min)),
+                 call. = FALSE)
+        }
+    }
+    ## if 'open_first' is FALSE, check that there are no open intervals
+    if (!open_first) {
+        i_is_open <- match(TRUE, is_open_first, nomatch = 0L)
+        if (i_is_open > 0L)
+            stop(gettextf("'%s' is %s but '%s' has open interval [\"%s\"]",
+                          "open_first",
+                          "FALSE",
+                          "x",
+                          labels_x[[i_is_open]]),
+                 call. = FALSE)
+    }
+    ## if 'open_first' is FALSE, check that all intervals start at or above 'break_min'
+    if (!open_first && has_break_min) {
+        is_too_low <- low < break_min_tdy
+        i_too_low <- match(TRUE, is_too_low, nomatch = 0L)
+        if (i_too_low > 0L)
+            stop(gettextf("'%s' is %s but '%s' has interval [\"%s\"] that starts below '%s' [%s]",
+                          "open_first",
+                          "FALSE",
+                          "x",
+                          labels_x[[i_too_low]],
+                          "break_min",
+                          quote_if_nonnum(break_min)),
+                 call. = FALSE)
+    }
     ## make break_min, break_max
     if (!has_break_min) {
-        break_min <- break_min_x
-        message(gettextf("setting '%s' to %d",
-                         "break_min", break_min))
+        break_min_tdy <- break_min_x
+        break_min_lab <- break_min_lab_fun(break_min_tdy)
+        break_min_str <- quote_if_nonnum(break_min_lab)
+        message(gettextf("setting '%s' to %s",
+                         "break_min", break_min_str))
     }
     break_max <- break_max_x
     ## make labels
     include_na <- anyNA(labels_x)
-    labels_new <- labels_fun(break_min = break_min,
+    labels_new <- labels_fun(break_min = break_min_tdy,
                              break_max = break_max,
                              open_first = open_first,
                              include_na = include_na)
     ## make return value
     if (open_first) {
-        i <- match(x, labels_new, nomatch = 1L)  # unrecognized label belong to open interval
+        i <- match(x, labels_new, nomatch = 1L) # unrecognized labels must belong to open interval
         ans <- labels_new[i]
     }
     else
@@ -393,7 +431,10 @@ format_triangle_month_quarter_year <- function(x,
     ans
 }
 
-    
+
+## make_i_interval ------------------------------------------------------------
+
+## HAS_TESTS
 ## Return the intervals defined by 'breaks',
 ## 'open_first', and 'open_last'
 ## that the intervals defined by 'low' and 'up' belong to.
@@ -428,3 +469,13 @@ make_i_interval <- function(low,
     ans
 }
 
+
+## quote_if_nonnum ------------------------------------------------------------
+
+## HAS_TESTS
+quote_if_nonnum <- function(x) {
+    if (is.numeric(x))
+        sprintf("%s", x)
+    else 
+        sprintf("\"%s\"", x)
+}

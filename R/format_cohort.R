@@ -5,8 +5,9 @@
 #'
 #' Given a vector of cohort labels, create a
 #' \code{\link[base]{factor}} where the levels
-#' contain a complete set of cohorts. 
-#' If \code{open_first} is \code{TRUE}, then the earliest
+#' contain a set of cohorts with no gaps between
+#' the oldest and youngest cohorts.
+#' If \code{open_first} is \code{TRUE}, then the oldest
 #' cohort has no lower limit. (This is equivalent
 #' to an open age group with no upper limit.)
 #' 
@@ -25,12 +26,13 @@
 #'
 #' If \code{x} has \code{NA}s, then the
 #' levels of the factor created by \code{format_cohort_year}
-#' will included an \code{NA}.
+#' also contain \code{NA}.
 #'
 #' @param x A vector of cohort labels.
-#' @param break_min An integer. The lower limit of the cohort,
-#' or \code{NULL} (the default).
-#' @param open_first Whether the first cohort
+#' @param break_min An integer or \code{NULL}
+#' (the default). If an integer, it is the
+#' year in which the oldest cohort begins.
+#' @param open_first Whether the oldest cohort
 #' has no lower limit. 
 #'
 #' @return A factor with the same length as
@@ -50,6 +52,9 @@
 #' for constructing labels for cohorts.
 #'
 #' @examples
+#' ## note that the 'levels' contain all values from
+#' '2000' to '2005', even when these do not
+#' appear in the data
 #' format_cohort_year(x = c("2000", "2005", NA, "2004"))
 #'
 #' ## 'x' contains an open interval, so
@@ -84,8 +89,10 @@ format_cohort_year <- function(x,
     format_cohort_month_quarter_year(x = x,
                                      break_min = break_min,
                                      open_first = open_first,
+                                     break_min_tdy_fun = demcheck::err_tdy_non_negative_integer_scalar,
+                                     break_min_lab_fun = I,
                                      parse_fun = parse_integers,
-                                     label_fun = make_labels_cohort_year)
+                                     labels_fun = make_labels_cohort_year)
 }
 
 
@@ -103,9 +110,8 @@ format_cohort_year <- function(x,
 #' with levels \code{"1990--1995"}, \code{"1995--2000"},
 #' \code{"2000--2005"}, and \code{"2005--2010"}.
 #' All cohorts, with the possible exception of
-#' a first "open" cohort, have the same length.
-#' The length of cohorts is controlled by
-#' \code{width}.
+#' a first "open" cohort, have the same width,
+#' which is controlled by the \code{width} argument.
 #'
 #' If \code{open_first} is \code{TRUE}, then the earliest
 #' cohort has no lower limit. (This is equivalent
@@ -120,7 +126,7 @@ format_cohort_year <- function(x,
 #' As discussed in \code{\link{date_to_cohort_year}},
 #' single-year labels such as \code{"2000"} are ambiguous.
 #' Correctly aligning single-year and multi-year cohorts
-#' requires knowing which month cohorts start on,
+#' requires knowing which month the single-year cohorts start on,
 #' and whether single-year cohorts are labelled according
 #' to the calendar year at the start of the cohort or the end.
 #' \code{format_cohort_multi} assumes that
@@ -128,6 +134,15 @@ format_cohort_year <- function(x,
 #' are labelled by calendar year at the start. These
 #' settings can be changed using \code{month_start}
 #' and \code{label_year_start}.
+#'
+#' The multi-year labels produced
+#' by \code{format_cohort_multi} are less ambiguous,
+#' in that they always show a pair of years: the calendar
+#' year at the start of the cohort and the calendar year at
+#' the-end-of-the-cohort-plus-one-day. For instance, if a cohort
+#' starts on 1 January 2000 and ends on 31 December 2000,
+#' then the end of the cohort plus one day is 1 January 2001,
+#' and the label is \code{"2000-2001"}.
 #'
 #' \code{open_first} defaults to \code{TRUE}
 #' if a value for \code{break_min} is supplied,
@@ -139,8 +154,8 @@ format_cohort_year <- function(x,
 #' also contain \code{NA}.
 #'
 #' @inheritParams format_cohort_year
-#' @param width The length, in whole years, of the cohorts.
-#' Defaults to 5.
+#' @param width The width, in whole years, of the cohorts
+#' to be created. Defaults to 5.
 #' @param origin An integer. Defaults to 2000.
 #' @param month_start An element of \code{\link[base]{month.name}},
 #' or \code{\link[base]{month.abb}}. Cohorts start on
@@ -327,7 +342,6 @@ format_cohort_multi <- function(x,
     ## make labels
     include_na <- anyNA(labels_x)
     labels_new <- make_labels_period_custom(breaks = breaks,
-                                            open_first = open_first,
                                             include_na = include_na)
     ## assign new labels to x and return
     ans <- labels_new[i_interval]
@@ -504,7 +518,6 @@ format_cohort_custom <- function(x,
     ## make labels
     include_na <- anyNA(labels_x)
     labels_new <- make_labels_period_custom(breaks = breaks,
-                                            open_first = open_first,
                                             include_na = include_na)
     ## assign new labels to x and return
     ans <- labels_new[i_interval]
@@ -588,8 +601,10 @@ format_cohort_quarter <- function(x,
     format_cohort_month_quarter_year(x = x,
                                      break_min = break_min,
                                      open_first = open_first,
+                                     break_min_tdy_fun = demcheck::err_tdy_quarter_label,
+                                     break_min_lab_fun = date_to_quarter_label,
                                      parse_fun = parse_quarters,
-                                     label_fun = make_labels_cohort_quarter)
+                                     labels_fun = make_labels_cohort_quarter)
 }
 
 
@@ -657,6 +672,8 @@ format_cohort_month <- function(x,
     format_cohort_month_quarter_year(x = x,
                                      break_min = break_min,
                                      open_first = open_first,
+                                     break_min_tdy_fun = demcheck::err_tdy_month_label,
+                                     break_min_lab_fun = date_to_month_label,
                                      parse_fun = parse_months,
-                                     label_fun = make_labels_cohort_month)
+                                     labels_fun = make_labels_cohort_month)
 }

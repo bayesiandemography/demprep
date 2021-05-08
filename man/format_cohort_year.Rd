@@ -10,10 +10,11 @@ format_cohort_year(x, break_min = NULL, open_first = NULL)
 \arguments{
 \item{x}{A vector of cohort labels.}
 
-\item{break_min}{An integer. The lower limit of the cohort,
-or \code{NULL} (the default).}
+\item{break_min}{An integer or \code{NULL}
+(the default). If an integer, it is the
+year in which the oldest cohort begins.}
 
-\item{open_first}{Whether the first cohort
+\item{open_first}{Whether the oldest cohort
 has no lower limit.}
 }
 \value{
@@ -23,8 +24,9 @@ A factor with the same length as
 \description{
 Given a vector of cohort labels, create a
 \code{\link[base]{factor}} where the levels
-contain a complete set of cohorts. 
-If \code{open_first} is \code{TRUE}, then the earliest
+contain a set of cohorts with no gaps between
+the oldest and youngest cohorts.
+If \code{open_first} is \code{TRUE}, then the oldest
 cohort has no lower limit. (This is equivalent
 to an open age group with no upper limit.)
 }
@@ -44,9 +46,12 @@ on the left, and to \code{FALSE} otherwise.
 
 If \code{x} has \code{NA}s, then the
 levels of the factor created by \code{format_cohort_year}
-will included an \code{NA}.
+also contain \code{NA}.
 }
 \examples{
+## note that the 'levels' contain all values from
+'2000' to '2005', even when these do not
+appear in the data
 format_cohort_year(x = c("2000", "2005", NA, "2004"))
 
 ## 'x' contains an open interval, so

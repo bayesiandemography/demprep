@@ -10,10 +10,11 @@ format_cohort_quarter(x, break_min = NULL, open_first = NULL)
 \arguments{
 \item{x}{A vector of cohort labels.}
 
-\item{break_min}{An integer. The lower limit of the cohort,
-or \code{NULL} (the default).}
+\item{break_min}{An integer or \code{NULL}
+(the default). If an integer, it is the
+year in which the oldest cohort begins.}
 
-\item{open_first}{Whether the first cohort
+\item{open_first}{Whether the oldest cohort
 has no lower limit.}
 }
 \value{

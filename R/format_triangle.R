@@ -347,8 +347,8 @@ format_triangle_multi <- function(x,
     breaks_period <- seq.int(from = break_min_period,
                              to = break_max_period,
                              by = width)
-    i_interval_period <- make_i_interval(low_period = low_period,
-                                         up_period = up_period,
+    i_interval_period <- make_i_interval(low = low_period,
+                                         up = up_period,
                                          breaks = breaks_period,
                                          open_first = FALSE,
                                          open_last = FALSE)

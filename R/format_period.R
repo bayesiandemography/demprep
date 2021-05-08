@@ -47,6 +47,11 @@
 #' single-year periods from dates.
 #'
 #' @examples
+#' ## note that the 'levels' contain all values from
+#' '2000' to '2010', even when these do not
+#' appear in the data
+#' format_period_year(x = c("2000", "2010"))
+#'
 #' format_period_year(x = c("2000", "2005", NA, "2004"))
 #' @export 
 format_period_year <- function(x) {
@@ -69,12 +74,12 @@ format_period_year <- function(x) {
 #' then \code{format_period_multi} creates a factor
 #' with levels \code{"1990-1995"}, \code{"1995-2000"},
 #' \code{"2000-2005"},and \code{"2005-2010"}.
-#' All periods in the return value have the same length,
-#' which is controlled by the \code{width} parameter.
+#' All periods in the return value have the same width,
+#' which is controlled by the \code{width} argument.
 #'
 #' The elements of \code{x} are typically multi-year
 #' labels such as \code{"1950-1960"} or
-#' \code{"2020-2025"}, but can also be single-year
+#' \code{"2020-2025"} or single-year
 #' labels such as \code{"2000"} or \code{"2025"}.
 #' \code{x} cannot contain open intervals
 #' such as \code{"<2020"}.
@@ -88,10 +93,10 @@ format_period_year <- function(x) {
 #' by \code{format_period_multi} are less ambiguous,
 #' in that they always show a pair of years: the calendar
 #' year at the start of the period and the calendar year at
-#' end of the period plus one day. For instance, a period
-#' starting on 1 January 2000 and ending on 31 December 2000,
-#' where the end of the period plus one day is 1 January 2001,
-#' is labeled \code{"2000-2001"}.
+#' the-end-of-the-period-plus-one-day. For instance, if a period
+#' starts on 1 January 2000 and ends on 31 December 2000,
+#' then the end of the period plus one day is 1 January 2001,
+#' and the label is \code{"2000-2001"}.
 #'
 #' If \code{x} contains single-year labels, then \code{format_period_multi}
 #' may need help to interpret these correctly. \code{format_period_multi}
@@ -109,7 +114,7 @@ format_period_year <- function(x) {
 #' also contain \code{NA}.
 #'
 #' @param x A vector of period labels.
-#' @param width The length, in whole years, of the periods
+#' @param width The width, in whole years, of the periods
 #' to be created. Defaults to 5.
 #' @param origin An integer. Defaults to 2000.
 #' @param month_start An element of \code{\link[base]{month.name}},

@@ -18,15 +18,16 @@ format_cohort_multi(
 \arguments{
 \item{x}{A vector of cohort labels.}
 
-\item{width}{The length, in whole years, of the cohorts.
-Defaults to 5.}
+\item{width}{The width, in whole years, of the cohorts
+to be created. Defaults to 5.}
 
 \item{origin}{An integer. Defaults to 2000.}
 
-\item{break_min}{An integer. The lower limit of the cohort,
-or \code{NULL} (the default).}
+\item{break_min}{An integer or \code{NULL}
+(the default). If an integer, it is the
+year in which the oldest cohort begins.}
 
-\item{open_first}{Whether the first cohort
+\item{open_first}{Whether the oldest cohort
 has no lower limit.}
 
 \item{month_start}{An element of \code{\link[base]{month.name}},
@@ -52,9 +53,8 @@ then \code{format_cohort_multi} creates a factor
 with levels \code{"1990--1995"}, \code{"1995--2000"},
 \code{"2000--2005"}, and \code{"2005--2010"}.
 All cohorts, with the possible exception of
-a first "open" cohort, have the same length.
-The length of cohorts is controlled by
-\code{width}.
+a first "open" cohort, have the same width,
+which is controlled by the \code{width} argument.
 }
 \details{
 If \code{open_first} is \code{TRUE}, then the earliest
@@ -70,7 +70,7 @@ such as \code{"<2000"}.
 As discussed in \code{\link{date_to_cohort_year}},
 single-year labels such as \code{"2000"} are ambiguous.
 Correctly aligning single-year and multi-year cohorts
-requires knowing which month cohorts start on,
+requires knowing which month the single-year cohorts start on,
 and whether single-year cohorts are labelled according
 to the calendar year at the start of the cohort or the end.
 \code{format_cohort_multi} assumes that
@@ -78,6 +78,15 @@ cohorts start in January, and that single-year cohorts
 are labelled by calendar year at the start. These
 settings can be changed using \code{month_start}
 and \code{label_year_start}.
+
+The multi-year labels produced
+by \code{format_cohort_multi} are less ambiguous,
+in that they always show a pair of years: the calendar
+year at the start of the cohort and the calendar year at
+the-end-of-the-cohort-plus-one-day. For instance, if a cohort
+starts on 1 January 2000 and ends on 31 December 2000,
+then the end of the cohort plus one day is 1 January 2001,
+and the label is \code{"2000-2001"}.
 
 \code{open_first} defaults to \code{TRUE}
 if a value for \code{break_min} is supplied,

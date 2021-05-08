@@ -18,7 +18,7 @@ format_cohort_custom(
 
 \item{breaks}{A vector of strictly increasing integer values.}
 
-\item{open_first}{Whether the first cohort
+\item{open_first}{Whether the oldest cohort
 has no lower limit.}
 }
 \value{

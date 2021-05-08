@@ -119,14 +119,14 @@ test_that("'parse_quarters' gives correct answer with valid inputs", {
                           is_open_last = c(FALSE, FALSE, FALSE, FALSE, FALSE),
                           break_min = as.Date("2020-04-01"),
                           break_max = as.Date("2020-10-01")))
-    expect_identical(parse_quarters(c("2010 Q4", "<2000 Q3"),
+    expect_identical(parse_quarters(c("2010 Q4", "<2000 Q3", "2010 Q3+"),
                                     name = "x"),
-                     list(low = as.Date(c("2010-10-01", NA)),
-                          up = as.Date(c("2011-01-01", "2000-07-01")),
-                          is_open_first = c(FALSE, TRUE),
-                          is_open_last = c(FALSE, FALSE),
+                     list(low = as.Date(c("2010-10-01", NA, "2010-07-01")),
+                          up = as.Date(c("2011-01-01", "2000-07-01", NA)),
+                          is_open_first = c(FALSE, TRUE, FALSE),
+                          is_open_last = c(FALSE, FALSE, TRUE),
                           break_min = as.Date("2000-07-01"),
-                          break_max = as.Date("2011-01-01")))
+                          break_max = as.Date("2010-07-01")))
 })
 
 test_that("'parse_integers' throws correct error with invalid inputs", {
@@ -147,14 +147,14 @@ test_that("'parse_months' gives correct answer with valid inputs", {
                           is_open_last = c(FALSE, FALSE, FALSE, FALSE, FALSE),
                           break_min = as.Date("2020-03-01"),
                           break_max = as.Date("2020-09-01")))
-    expect_identical(parse_months(c("2010 Nov", "<2000 Jul"),
+    expect_identical(parse_months(c("2010 Nov", "<2000 Jul", "2010 Oct+"),
                                   name = "x"),
-                     list(low = as.Date(c("2010-11-01", NA)),
-                          up = as.Date(c("2010-12-01", "2000-07-01")),
-                          is_open_first = c(FALSE, TRUE),
-                          is_open_last = c(FALSE, FALSE),
+                     list(low = as.Date(c("2010-11-01", NA, "2010-10-01")),
+                          up = as.Date(c("2010-12-01", "2000-07-01", NA)),
+                          is_open_first = c(FALSE, TRUE, FALSE),
+                          is_open_last = c(FALSE, FALSE, TRUE),
                           break_min = as.Date("2000-07-01"),
-                          break_max = as.Date("2010-12-01")))
+                          break_max = as.Date("2010-10-01")))
 })
 
 test_that("'parse_integers' throws correct error with invalid inputs", {
