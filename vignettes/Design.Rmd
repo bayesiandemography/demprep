@@ -61,3 +61,6 @@ knitr::opts_chunk$set(
 
 
 
+## Messages
+
+- whenever a value for a formal argument is set internally by a function, send a message - eg 'break_min' in format_cohort* functions

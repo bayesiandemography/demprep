@@ -37,7 +37,7 @@ labels for cohorts
 that are open on the left, such as \code{"<2000"}.
 \code{x} must not contain
 multi-year intervals such
-as \code{"2000--2005"}
+as \code{"2000-2005"}
 
 \code{open_first} defaults to \code{TRUE}
 if a value for \code{break_min} is supplied,

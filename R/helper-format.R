@@ -1,6 +1,7 @@
 
 ## date_to_month_label --------------------------------------------------------
 
+## HAS_TESTS
 date_to_month_label <- function(date) {
     format(date, format = "%Y %b")
 }
@@ -8,6 +9,7 @@ date_to_month_label <- function(date) {
 
 ## date_to_month_label --------------------------------------------------------
 
+## HAS_TESTS
 date_to_quarter_label <- function(date) {
     year <- format(date, format = "%Y")
     quarter <- quarters(date)
@@ -149,7 +151,8 @@ format_age_month_quarter_year <- function(x,
     ans
 }
 
-## NO_TESTS
+
+## HAS_TESTS
 ## 'break_min' is a bit fiddly because it is numeric
 ## (eg 2000) if unit is years, and character
 ## (eg "2000 Q1" or "2000 Jan") if quarter or month

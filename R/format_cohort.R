@@ -17,7 +17,7 @@
 #' that are open on the left, such as \code{"<2000"}.
 #' \code{x} must not contain
 #' multi-year intervals such
-#' as \code{"2000--2005"}
+#' as \code{"2000-2005"}
 #'
 #' \code{open_first} defaults to \code{TRUE}
 #' if a value for \code{break_min} is supplied,
@@ -105,10 +105,10 @@ format_cohort_year <- function(x,
 #' levels for the earliest and latest cohorts
 #' in \code{x}, and for all cohorts in between.
 #' For instance, if the earliest cohort in \code{x}
-#' is \code{"1990--1995"}, and the latest is \code{"2005--2010"},
+#' is \code{"1990-1995"}, and the latest is \code{"2005-2010"},
 #' then \code{format_cohort_multi} creates a factor
-#' with levels \code{"1990--1995"}, \code{"1995--2000"},
-#' \code{"2000--2005"}, and \code{"2005--2010"}.
+#' with levels \code{"1990-1995"}, \code{"1995-2000"},
+#' \code{"2000-2005"}, and \code{"2005-2010"}.
 #' All cohorts, with the possible exception of
 #' a first "open" cohort, have the same width,
 #' which is controlled by the \code{width} argument.
@@ -119,7 +119,7 @@ format_cohort_year <- function(x,
 #' 
 #' The elements of \code{x} can be
 #' single-year labels such as \code{"2020"},
-#' multi-year labels such as \code{"1950--1960"},
+#' multi-year labels such as \code{"1950-1960"},
 #' and intervals that are open on the left,
 #' such as \code{"<2000"}.
 #'
@@ -181,36 +181,36 @@ format_cohort_year <- function(x,
 #' for constructing labels for cohorts.
 #'
 #' @examples
-#' format_cohort_multi(x = c("2000", "2005--2010", NA, "1995--1999"))
+#' format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"))
 #'
 #' ## contains open interval
-#' format_cohort_multi(x = c("2000", "2005--2010", NA, "<1995"))
+#' format_cohort_multi(x = c("2000", "2005-2010", NA, "<1995"))
 #'
 #' ## changing the interpretation of the labels results in the
 #' ## reclassification of cohort "2000"
-#' format_cohort_multi(x = c("2000", "2005--2010", NA, "1995--1999"),
+#' format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
 #'                     month_start = "Jul",
 #'                     label_year_start = FALSE)
 #' 
 #' ## 'break_min' is higher than the minimum of 'x'
-#' format_cohort_multi(x = c("2000", "2005--2010", NA, "1995--1999"),
+#' format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
 #'                     break_min = 2005)
 #'
 #' ## 'break_min' is lower then the minimum of 'x'
-#' format_cohort_multi(x = c("2000", "2005--2010", NA, "1995--1999"),
+#' format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
 #'                     break_min = 1990)
 #'
 #' ## 'break_min' supplied, but 'open_first' is FALSE
-#' format_cohort_multi(x = c("2000", "2005--2010", NA, "1995--1999"),
+#' format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
 #'                     break_min = 1990,
 #'                     open_first = FALSE)
 #'
 #' ## non-default value for 'width'
-#' format_cohort_multi(x = c("2000", "2005--2010", NA, "1995--1999"),
+#' format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
 #'                     width = 10)
 #'
 #' ## non-default value for 'origin', to shift labels by one year
-#' format_cohort_multi(x = c("2000", "2005--2010", NA, "1995--1999"),
+#' format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
 #'                     width = 10,
 #'                     origin = 2001)
 #' @export 
@@ -230,9 +230,12 @@ format_cohort_multi <- function(x,
     if (has_break_min) {
         break_min <- demcheck::err_tdy_integer_scalar(x = break_min,
                                                       name = "break_min")
-        origin <- break_min
-        message(gettextf("setting '%s' to %d",
-                         "origin", origin))
+        requires_new_origin <- (break_min - origin) %% width != 0L
+        if (requires_new_origin) {
+            origin <- break_min
+            message(gettextf("setting '%s' to %d",
+                             "origin", origin))
+        }
     }
     else {
         origin <- demcheck::err_tdy_integer_scalar(x = origin,
@@ -277,32 +280,44 @@ format_cohort_multi <- function(x,
                       "x", labels_x[[i_open_last]]),
              call. = FALSE)
     }
-    ## deal with situations where 'open_first' was supplied
-    if (has_open_first) {
-        ## if 'open_first' is TRUE, and 'break_min' is supplied, and there are open intervals,
-        ## check that the open intervals all start at or below 'break_min'
-        if (open_first && has_break_min && any(is_open_first)) {
-            is_too_high <- is_open_first & (up > break_min)
-            i_too_high <- match(TRUE, is_too_high, nomatch = 0L)
-            if (i_too_high > 0L) {
-                stop(gettextf("'%s' has open interval [\"%s\"] that ends above '%s' [%d]",
-                              "x", labels_x[[i_too_high]], "break_min", break_min),
-                     call. = FALSE)
-            }
-        }
-        ## if 'open_first' is FALSE, check that there are no open intervals
-        if (!open_first) {
-            i_is_open <- match(TRUE, is_open_first, nomatch = 0L)
-            if (i_is_open > 0L)
-                stop(gettextf("'%s' is %s but '%s' has open interval [\"%s\"]",
-                              "open_first", "FALSE", "x", labels_x[[i_is_open]]),
-                     call. = FALSE)
-        }
-    }
-    else { ## where 'open_first' not supplied, assign a default value
+    ## where 'open_first' not supplied, assign a default value
+    if (!has_open_first) {
         open_first <- any(is_open_first) || has_break_min
         message(gettextf("setting '%s' to %s",
                          "open_first", open_first))
+    }
+    ## if 'open_first' is TRUE, and 'break_min' is supplied, and there are open intervals,
+    ## check that the open intervals all start at or below 'break_min'
+    if (open_first && has_break_min && any(is_open_first)) {
+        is_too_high <- is_open_first & (up > break_min)
+        i_too_high <- match(TRUE, is_too_high, nomatch = 0L)
+        if (i_too_high > 0L) {
+            stop(gettextf("'%s' has open interval [\"%s\"] that ends above '%s' [%d]",
+                          "x", labels_x[[i_too_high]], "break_min", break_min),
+                 call. = FALSE)
+        }
+    }
+    ## if 'open_first' is FALSE, check that there are no open intervals
+    if (!open_first) {
+        i_is_open <- match(TRUE, is_open_first, nomatch = 0L)
+        if (i_is_open > 0L)
+            stop(gettextf("'%s' is %s but '%s' has open interval [\"%s\"]",
+                          "open_first", "FALSE", "x", labels_x[[i_is_open]]),
+                 call. = FALSE)
+    }
+    ## if 'open_first' is FALSE, check that all intervals start at or above 'break_min'
+    if (!open_first && has_break_min) {
+        is_too_low <- low < break_min
+        i_too_low <- match(TRUE, is_too_low, nomatch = 0L)
+        if (i_too_low > 0L)
+            stop(gettextf("'%s' is %s but '%s' has interval [\"%s\"] that starts below '%s' [%s]",
+                          "open_first",
+                          "FALSE",
+                          "x",
+                          labels_x[[i_too_low]],
+                          "break_min",
+                          break_min),
+                 call. = FALSE)
     }
     ## make 'break_min', 'break_max'
     if (!has_break_min) {
@@ -322,26 +337,33 @@ format_cohort_multi <- function(x,
     if (remainder_max == 0L)
         break_max <- break_max_x
     else
-        break_max <- break_max_x - remainder + width
+        break_max <- break_max_x - remainder_max + width
     ## make 'breaks'
     breaks <- seq.int(from = break_min,
                       to = break_max,
                       by = width)
     ## check that all intervals fall within implied breaks
     i_interval <- make_i_interval(low = low,
-                                up = up,
-                                breaks = breaks,
-                                open_first = open_first,
-                                open_last = FALSE)
+                                  up = up,
+                                  breaks = breaks,
+                                  open_first = open_first,
+                                  open_last = FALSE)
     is_multiple_intervals <- i_interval == -1L
     i_multiple_intervals <- match(TRUE, is_multiple_intervals, nomatch = 0L)
     if (i_multiple_intervals > 0L)
-        stop(gettextf("label \"%\" from '%s' intersects two or more intervals formed using '%s' = %d and '%s' = %d",
-                      labels_x[[i_multiple_intervals ]], "x", "origin", origin, "width", width),
+        stop(gettextf(paste("label \"%s\" from '%s' intersects two or more intervals formed",
+                            "using '%s = %d' and '%s = %d'"),
+                      labels_x[[i_multiple_intervals]],
+                      "x",
+                      "origin",
+                      origin,
+                      "width",
+                      width),
              call. = FALSE)
     ## make labels
     include_na <- anyNA(labels_x)
-    labels_new <- make_labels_period_custom(breaks = breaks,
+    labels_new <- make_labels_cohort_custom(breaks = breaks,
+                                            open_first = open_first,
                                             include_na = include_na)
     ## assign new labels to x and return
     ans <- labels_new[i_interval]

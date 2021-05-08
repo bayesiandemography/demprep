@@ -23,46 +23,84 @@ test_that("format_cohort_year works with valid input", {
 
 test_that("format_cohort_year gives correct error with invalid inputs", {
     expect_error(format_cohort_year(x = c("2000", "2010", NA, "wrong")),
-                 "\"wrong\" is not a valid label")
+                 "'x' has invalid label \\[\"wrong\"\\]")
 })
 
 
 ## format_cohort_multi --------------------------------------------------------
 
 test_that("format_cohort_multi works with valid input", {
-    expect_identical(format_cohort_multi(x = c("2000-2001", "2010-2015", NA, "2004-2005")),
+    ## all defaults
+    expect_identical(format_cohort_multi(x = c("2000", "2010-2015", NA, "2004")),
                      factor(c("2000-2005", "2010-2015", NA, "2000-2005"),
                             levels = c("2000-2005", "2005-2010", "2010-2015", NA),
                             exclude = NULL))
-    expect_identical(format_cohort_multi(x = c("2000-2001", "2010-2011", NA, "2004-2005"),
+    ## 'month_start' is "Jul", but 'label_year_start' is TRUE (so labels unaffected)
+    expect_identical(format_cohort_multi(x = c("2000", "2010-2015", NA, "2004"),
+                                         month_start = "Jul",
+                                         label_year_start = TRUE),
+                     factor(c("2000-2005", "2010-2015", NA, "2000-2005"),
+                            levels = c("2000-2005", "2005-2010", "2010-2015", NA),
+                            exclude = NULL))
+    ## 'month_start' is "Jul" and 'label_year_start' is FALSE (so labels affected)
+    expect_identical(format_cohort_multi(x = c("2000", "2010-2015", NA, "2004"),
+                                         month_start = "Jul",
+                                         label_year_start = FALSE),
+                     factor(c("1995-2000", "2010-2015", NA, "2000-2005"),
+                            levels = c("1995-2000", "2000-2005", "2005-2010", "2010-2015", NA),
+                            exclude = NULL))
+    ## width = 1; everything else default
+    expect_identical(format_cohort_multi(x = c("2000-2001", "2010-2011", NA, "2004"),
                                          width = 1),
                      factor(c("2000-2001", "2010-2011", NA, "2004-2005"),
                             levels = c(paste(2000:2010, 2001:2011, sep = "-"), NA_character_),
                             exclude = NULL))
-    expect_identical(format_cohort_multi(x = c("2000-2001", "2010-2015", NA, "2004-2005"),
+    ## width = 1; label_year_start is FALSE, but month_start is "Jan"
+    expect_identical(format_cohort_multi(x = c("2000", "2010", NA, "2004"),
+                                         width = 1,
+                                         month_start = "Jan",
+                                         label_year_start = FALSE),
+                     factor(c("2000-2001", "2010-2011", NA, "2004-2005"),
+                            levels = c(paste(2000:2010, 2001:2011, sep = "-"), NA_character_),
+                            exclude = NULL))
+    ## month_start is "Feb" and label_year_start is FALSE
+    expect_identical(format_cohort_multi(x = c("2000", "2010", NA, "2004"),
+                                         width = 1,
+                                         month_start = "Feb",
+                                         label_year_start = FALSE),
+                     factor(c("1999-2000", "2009-2010", NA, "2003-2004"),
+                            levels = c(paste(1999:2009, 2000:2010, sep = "-"), NA_character_),
+                            exclude = NULL))
+    ## set 'break_min' but not 'open_first'
+    expect_identical(format_cohort_multi(x = c("2001", "2010-2015", NA, "2004-2005"),
                                          break_min = 1995),
                      factor(c("2000-2005", "2010-2015", NA, "2000-2005"),
                             levels = c("<1995", "1995-2000", "2000-2005", "2005-2010", "2010-2015", NA),
                             exclude = NULL))
+    ## set 'open_first' but not 'break_min'
     expect_identical(format_cohort_multi(x = c("2000-2001", "2010-2015", NA, "2004-2005"),
                                          open_first = TRUE),
                      factor(c("2000-2005", "2010-2015", NA, "2000-2005"),
                             levels = c("<2000", "2000-2005", "2005-2010", "2010-2015", NA),
                             exclude = NULL))
+    ## set 'open_first' and 'break_min'
     expect_identical(format_cohort_multi(x = c("2000-2001", "2010-2015", NA, "2004-2005"),
                                          break_min = 1995,
                                          open_first = FALSE),
                      factor(c("2000-2005", "2010-2015", NA, "2000-2005"),
                             levels = c("1995-2000", "2000-2005", "2005-2010", "2010-2015", NA),
                             exclude = NULL))
+    ## choice of 'origin' shifts intervals
     expect_identical(format_cohort_multi(x = c("2000-2001", "2010-2015", NA, "2004-2005"),
                                          origin = 2004,
                                          width = 20),
                      factor(c("1984-2004", "2004-2024", NA, "2004-2024"),
                             levels = c("1984-2004", "2004-2024", NA),
                             exclude = NULL))
+    ## x has length 0
     expect_identical(format_cohort_multi(x = character()),
                      factor())
+    ## x has no non-NA values
     expect_identical(format_cohort_multi(x = c(NA, NA)),
                      factor(c(NA, NA),
                             levels = NA_character_,
@@ -70,8 +108,19 @@ test_that("format_cohort_multi works with valid input", {
 })
 
 test_that("format_cohort_multi gives correct error with invalid inputs", {
-    expect_error(format_cohort_multi(x = c("2000-2001", "2010-2005", NA, "wrong")),
-                 "\"wrong\" is not a valid label")
+    expect_error(format_cohort_multi(x = c("2000-2001", "2010-2015", NA, "wrong")),
+                 "'x' has invalid label \\[\"wrong\"\\]")
+    expect_error(format_cohort_multi(x = c("2000-2001", "2010-2015", NA, "<2000"),
+                                     open_first = FALSE),
+                 "'open_first' is FALSE but 'x' has open interval \\[\"<2000\"\\]")
+    expect_error(format_cohort_multi(x = c("2000-2001", "2010-2015", NA, "2000"),
+                                     break_min = 2005,
+                                     open_first = FALSE),
+                 "'open_first' is FALSE but 'x' has interval \\[\"2000-2001\"\\] that starts below 'break_min' \\[2005\\]")    
+    expect_error(format_cohort_multi(x = c("2000-2001", "2010-2015", NA, "2015-2025"),
+                                     break_min = 2005,
+                                     open_first = TRUE),
+                 "label \"2015-2025\" from 'x' intersects two or more intervals formed using 'origin = 2000' and 'width = 5'")
 })
 
 
@@ -105,7 +154,7 @@ test_that("format_cohort_custom gives correct error with invalid inputs", {
                  "'breaks' has length 0")
     expect_error(format_cohort_custom(x = c("2000-2001", "2010-2005", NA, "wrong"),
                                       breaks = c(2000, 2020)),
-                 "\"wrong\" is not a valid label")
+                 "'x' has invalid label \\[\"wrong\"\\]")
 })
 
 
@@ -138,9 +187,9 @@ test_that("format_cohort_quarter works with valid input", {
 
 test_that("format_cohort_quarter gives correct error with invalid inputs", {
     expect_error(format_cohort_quarter(x = c("2000 Q4", "2010 Q3", NA, "wrong")),
-                 "\"wrong\" is not a valid label")
+                 "'x' has invalid label \\[\"wrong\"\\]")
     expect_error(format_cohort_quarter(x = c("2000 Q5", "2010 Q3", NA)),
-                 "\"2000 Q5\" is not a valid label")
+                 "'x' has invalid label \\[\"2000 Q5\"\\]")
 })
 
 
@@ -168,7 +217,7 @@ test_that("format_cohort_month works with valid input", {
 
 test_that("format_cohort_month gives correct error with invalid inputs", {
     expect_error(format_cohort_month(x = c("2000 Jan", "2010 Feb", NA, "wrong")),
-                 "\"wrong\" is not a valid label")
+                 "'x' has invalid label \\[\"wrong\"\\]")
     expect_error(format_cohort_month(x = c("2000 JAN", "2010 Q3", NA)),
-                 "\"2000 JAN\" is not a valid label")
+                 "'x' has invalid label \\[\"2000 JAN\"\\]")
 })
