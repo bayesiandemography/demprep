@@ -50,16 +50,32 @@ and \code{<"1960"}.
 if any of the intervals in \code{x} is open,
 and to \code{FALSE} otherwise.
 
+If \code{breaks} has length 0, then
+\code{open_first} must be \code{FALSE}.
+If \code{breaks} has length 1, then
+\code{open_first} must be \code{TRUE}.
+
 If \code{x} contains \code{NA}, then the
 levels of the factor created by \code{format_cohort_custom}
 also contain \code{NA}.
 }
 \examples{
-format_cohort_custom(x = c("2000-2001", "2005-2010", "1995-1999"),
+format_cohort_custom(x = c(2019, 2011, 2000, 2015),
                      breaks = c(1990, 2000, 2020))
 
-format_cohort_custom(x = c("2000-2001", "2005-2010", "1995-1999"),
-                     breaks = c(1995, 2005, 2010, 2020))
+## change interpretation of single-year labels
+format_cohort_custom(x = c(2019, 2011, 2000, 2015),
+                     breaks = c(1990, 2000, 2020),
+                     month_start = "Jul",
+                     label_year_start = FALSE)
+
+## multi-year labels
+format_cohort_custom(x = c("2000", "2005-2010", "1995-1999"),
+                     breaks = c(1990, 2000, 2020))
+
+format_cohort_custom(x = c("2000", "2005-2010", "1995-1999"),
+                     breaks = c(1995, 2005, 2010, 2020),
+                     open_first = TRUE)
 }
 \seealso{
 Other functions for reformating

@@ -454,6 +454,12 @@ test_that("'make_i_interval' gives correct answer with valid inputs", {
                                      open_first = TRUE,
                                      open_last = TRUE),
                      c(1L, 2L, 2L, 3L, 3L, 4L, NA))
+    expect_identical(make_i_interval(low = NA_integer_,
+                                     up = 2000L, 
+                                     breaks = c(2000L, 2005L, 2020L),
+                                     open_first = TRUE,
+                                     open_last = FALSE),
+                     1L)
     expect_identical(make_i_interval(low = c(2002L, 2000L, 2005L, 2006L, 2020L, NA),
                                      up = c(2005L, 2001L, 2020L, 2019L, NA, NA),
                                      breaks = c(2000L, 2005L, 2020L),

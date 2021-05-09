@@ -466,8 +466,10 @@ make_i_interval <- function(low,
         | is_intersect_open_last
         | is_intersect_low_up)
     ans <- i_low
-    if (open_first)
+    if (open_first) {
         ans <- ans + 1L
+        ans[is_open_first] <- 1L
+    }
     ans[is_intersect] <- -1L
     ans
 }

@@ -110,6 +110,9 @@ test_that("format_cohort_multi works with valid input", {
 test_that("format_cohort_multi gives correct error with invalid inputs", {
     expect_error(format_cohort_multi(x = c("2000-2001", "2010-2015", NA, "wrong")),
                  "'x' has invalid label \\[\"wrong\"\\]")
+    expect_error(format_cohort_multi(x = c("2000-2001", "2010-2015", NA, "2015+"),
+                                     open_first = FALSE),
+                 "'x' has interval \\[\"2015\\+\"\\] that is open on the right")
     expect_error(format_cohort_multi(x = c("2000-2001", "2010-2015", NA, "<2000"),
                                      open_first = FALSE),
                  "'open_first' is FALSE but 'x' has open interval \\[\"<2000\"\\]")
@@ -120,29 +123,33 @@ test_that("format_cohort_multi gives correct error with invalid inputs", {
     expect_error(format_cohort_multi(x = c("2000-2001", "2010-2015", NA, "2015-2025"),
                                      break_min = 2005,
                                      open_first = TRUE),
-                 "label \"2015-2025\" from 'x' intersects two or more intervals formed using 'origin = 2000' and 'width = 5'")
+                 "'x' has interval \\[\"2015-2025\"\\] that intersects two or more intervals formed using 'origin = 2000' and 'width = 5'")
 })
 
 
 ## format_cohort_custom -------------------------------------------------------
 
 test_that("format_cohort_custom works with valid input", {
-    expect_identical(format_cohort_custom(x = c("<2000", "2000-2001", "2010-2015", NA, "2004-2005"),
+    ## includes open intervals
+    expect_identical(format_cohort_custom(x = c("<2000", "2000", "2010-2015", NA, "2004"),
                                           breaks = c(2000, 2003, 2006, 2020)),
                      factor(c("<2000", "2000-2003", "2006-2020", NA, "2003-2006"),
                             levels = c("<2000", "2000-2003", "2003-2006", "2006-2020", NA),
                             exclude = NULL))
-    expect_identical(format_cohort_custom(x = c("2000-2001", "2000-2001", "2010-2015", NA, "2004-2005"),
+    ## no open intervals
+    expect_identical(format_cohort_custom(x = c("2000", "2001", "2010-2015", NA, "2004-2005"),
                                           breaks = c(2000, 2003, 2006, 2020)),
                      factor(c("2000-2003", "2000-2003", "2006-2020", NA, "2003-2006"),
                             levels = c("2000-2003", "2003-2006", "2006-2020", NA),
                             exclude = NULL))
+    ## 'open_first' is TRUE
     expect_identical(format_cohort_custom(x = c("2000-2001", "2010-2015", NA, "2004-2005", "1990-1991"),
                                           breaks = c(2000, 2003, 2006, 2020),
                                           open_first = TRUE),
                      factor(c("2000-2003", "2006-2020", NA, "2003-2006", "<2000"),
                             levels = c("<2000", "2000-2003", "2003-2006", "2006-2020", NA),
                             exclude = NULL))
+    ## 'x' is length 0
     expect_identical(format_cohort_custom(x = character(),
                                           breaks = integer(),
                                           open_first = FALSE),
@@ -150,11 +157,32 @@ test_that("format_cohort_custom works with valid input", {
 })
 
 test_that("format_cohort_custom gives correct error with invalid inputs", {
-    expect_error(format_cohort_custom(x = "2000-2010", breaks = integer()),
+    expect_error(format_cohort_custom(x = "2000-2010",
+                                      breaks = integer()),
                  "'breaks' has length 0")
     expect_error(format_cohort_custom(x = c("2000-2001", "2010-2005", NA, "wrong"),
                                       breaks = c(2000, 2020)),
                  "'x' has invalid label \\[\"wrong\"\\]")
+    expect_error(format_cohort_custom(x = "2000+",
+                                      breaks = c(1990, 2000)),
+                 "'x' has interval \\[\"2000\\+\"\\] that is open on the right")
+    expect_error(format_cohort_custom(x = "<1995",
+                                      breaks = c(1990, 2000)),
+                 "'x' has open interval \\[\"<1995\"\\] that ends above minimum for 'breaks' \\[1990\\]")
+    expect_error(format_cohort_custom(x = "<1990",
+                                      breaks = c(1990, 2000),
+                                      open_first = FALSE),
+                 "'open_first' is FALSE but 'x' has open interval \\[\"<1990\"\\]")
+    expect_error(format_cohort_custom(x = "1980-1985",
+                                      breaks = c(1990, 2000),
+                                      open_first = FALSE),
+                 "'open_first' is FALSE but 'x' has interval \\[\"1980-1985\"\\] that starts below lowest value of 'breaks' \\[1990\\]")
+    expect_error(format_cohort_custom(x = "2000-2005",
+                                      breaks = c(1990, 2000)),
+                 "'x' has interval \\[\"2000-2005\"\\] that ends above highest value of 'breaks' \\[2000\\]")
+    expect_error(format_cohort_custom(x = "1994-1996",
+                                      breaks = c(1990, 1995, 2000)),
+                 "'x' has interval \\[\"1994-1996\"\\] that intersects two or more intervals formed using 'breaks'")
 })
 
 

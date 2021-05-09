@@ -52,7 +52,7 @@ also contain \code{NA}.
 ## note that the 'levels' contain all values from
 '2000' to '2005', even when these do not
 appear in the data
-format_cohort_year(x = c("2000", "2005", NA, "2004"))
+format_cohort_year(x = c(2000, 2005, NA, 2004))
 
 ## 'x' contains an open interval, so
 ## 'open_first' defaults to TRUE
@@ -60,17 +60,17 @@ format_cohort_year(x = c("<2000", "2005", NA, "2004"))
 
 ## specify 'break_min', which also makes
 ## 'open_first' default to TRUE
-format_cohort_year(x = c("2000", "2005", NA, "2004"),
+format_cohort_year(x = c(2000, 2005, NA, 2004),
                    break_min = 1998)
 
 ## set 'break_min' above minimum value of 'x'
-format_cohort_year(x = c("2000", "2005", NA, "2004"),
+format_cohort_year(x = c(2000, 2005, NA, 2004),
                    break_min = 2001)
 
 ## set 'open_first' to FALSE 
-format_cohort_year(x = c("2000", "2005", NA, "2004"),
+format_cohort_year(x = c(2000, 2005, NA, 2004),
                    open_first = FALSE)
-format_cohort_year(x = c("2000", "2005", NA, "2004"),
+format_cohort_year(x = c(2000, 2005, NA, 2004),
                    break_min = 1998,
                    open_first = FALSE)
 

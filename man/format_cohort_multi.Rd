@@ -98,6 +98,8 @@ levels of the factor created by \code{format_cohort_multi}
 also contain \code{NA}.
 }
 \examples{
+format_cohort_multi(x = c(2000, 2005, NA, 2004))
+
 format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"))
 
 ## contains open interval
@@ -105,6 +107,9 @@ format_cohort_multi(x = c("2000", "2005-2010", NA, "<1995"))
 
 ## changing the interpretation of the labels results in the
 ## reclassification of cohort "2000"
+format_cohort_multi(x = c(2000, 2005, NA, 2004),
+                    month_start = "Jul",
+                    label_year_start = FALSE)
 format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
                     month_start = "Jul",
                     label_year_start = FALSE)
