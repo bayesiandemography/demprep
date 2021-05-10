@@ -20,6 +20,115 @@ test_that("'date_to_quarter_label' gives correct answer with valid inputs", {
 })
 
 
+## format_age_month_quarter_year ----------------------------------------------
+
+test_that("'format_age_month_quarter_year' gives correct answer with valid inputs", {
+    ## 'x' is plain integers
+    x <- c(4, 11, NA)
+    ans_obtained <- format_age_month_quarter_year(x = x,
+                                                  break_min = 0,
+                                                  break_max = 100,
+                                                  open_last = TRUE)
+    ans_expected <- factor(x,
+                           levels = c(0:99, "100+", NA),
+                           exclude = NULL)
+    expect_identical(ans_obtained, ans_expected)
+    ## 'x' includes open intervals
+    x <- c(4, 11, NA, "100+", "110+")
+    ans_obtained <- format_age_month_quarter_year(x = x,
+                                                  break_min = 0,
+                                                  break_max = 100,
+                                                  open_last = TRUE)
+    ans_expected <- factor(c(4, 11, NA, "100+", "100+"),
+                           levels = c(0:99, "100+", NA),
+                           exclude = NULL)
+    expect_identical(ans_obtained, ans_expected)
+    ## 'break_min', 'break_max' both NULL
+    x <- c(4, 11, NA, "100+", "110+")
+    ans_obtained <- format_age_month_quarter_year(x = x,
+                                                  break_min = NULL,
+                                                  break_max = NULL,
+                                                  open_last = TRUE)
+    ans_expected <- factor(c(4, 11, NA, "100+", "100+"),
+                           levels = c(4:99, "100+", NA),
+                           exclude = NULL)
+    expect_identical(ans_obtained, ans_expected)
+    ## non-default 'open_first', 'break_min' and 'break_max'
+    x <- c(14, 11, NA, 10)
+    ans_obtained <- format_age_month_quarter_year(x = x,
+                                                  break_min = 10,
+                                                  break_max = 20,
+                                                  open_last = FALSE)
+    ans_expected <- factor(x,
+                           levels = c(10:19, NA),
+                           exclude = NULL)
+    expect_identical(ans_obtained, ans_expected)
+    ## 'x' has length 0, break_min and break_max both supplied
+    ans_obtained <- format_age_month_quarter_year(x = integer(),
+                                                  break_min = 0,
+                                                  break_max = 100,
+                                                  open_last = TRUE)
+    ans_expected <- factor(integer(),
+                           levels = c(0:99, "100+"))
+    expect_identical(ans_obtained, ans_expected)
+    ## 'x' has length 0, break_min is NULL
+    ans_obtained <- format_age_month_quarter_year(x = integer(),
+                                                  break_min = NULL,
+                                                  break_max = 100,
+                                                  open_last = TRUE)
+    ans_expected <- factor()
+    expect_identical(ans_obtained, ans_expected)
+    ## 'x' all NA, break_min and break_max both supplied
+    ans_obtained <- format_age_month_quarter_year(x = NA,
+                                                  break_min = 0,
+                                                  break_max = 100,
+                                                  open_last = TRUE)
+    ans_expected <- factor(NA,
+                           levels = c(0:99, "100+", NA),
+                           exclude = NULL)
+    expect_identical(ans_obtained, ans_expected)
+    ## 'x' all NA, break_min is NULL
+    ans_obtained <- format_age_month_quarter_year(x = NA,
+                                                  break_min = NULL,
+                                                  break_max = 100,
+                                                  open_last = TRUE)
+    ans_expected <- factor(NA,
+                           levels = NA,
+                           exclude = NULL)
+    expect_identical(ans_obtained, ans_expected)
+})
+        
+
+test_that("'format_age_month_quarter_year' throws correct error with invalid inputs - years", {
+    expect_error(format_age_month_quarter_year(x = c("10", "<5"),
+                                               break_min = NULL,
+                                               break_max = NULL,
+                                               open_last = TRUE),
+                 "'x' has interval \\[\"<5\"\\] that is open on the left")
+    expect_error(format_age_month_quarter_year(x = c("10", "0"),
+                                               break_min = 5,
+                                               break_max = NULL,
+                                               open_last = TRUE),
+                 "'x' has interval \\[\"0\"\\] that starts below 'break_min' \\[5\\]")
+    expect_error(format_age_month_quarter_year(x = c("5+", "0"),
+                                               break_min = 0,
+                                               break_max = 10,
+                                               open_last = TRUE),
+                 "'x' has open interval \\[\"5\\+\"\\] that starts below 'break_max' \\[10\\]")
+    expect_error(format_age_month_quarter_year(x = c("5+", "0"),
+                                               break_min = 0,
+                                               break_max = 10,
+                                               open_last = FALSE),
+                 "'open_last' is FALSE but 'x' has open interval \\[\"5\\+\"\\]")
+    expect_error(format_age_month_quarter_year(x = c("10", "0"),
+                                               break_min = 0,
+                                               break_max = 5,
+                                               open_last = FALSE),
+                 "'x' has interval \\[\"10\"\\] that ends above 'break_max' \\[5\\]")
+})
+
+
+
 ## format_cohort_month_quarter_year -------------------------------------------
 
 test_that("'format_cohort_month_quarter_year' gives correct answer with valid inputs - years", {

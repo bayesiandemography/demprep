@@ -19,7 +19,7 @@ date_to_quarter_label <- function(date) {
 
 ## format month quarter year --------------------------------------------------
 
-## NO_TESTS
+## HAS_TESTS
 format_age_month_quarter_year <- function(x,
                                          break_min,
                                          break_max,
@@ -39,22 +39,20 @@ format_age_month_quarter_year <- function(x,
                                 x2 = break_max,
                                 name1 = "break_min",
                                 name2 = "break_max")
-        demcheck::err_is_logical_flag(x = open_last,
-                                      name = "open_last")
     }
+    demcheck::err_is_logical_flag(x = open_last,
+                                  name = "open_last")
     ## deal with "empty" case where 'x' has no non-NA values
     ## and 'break_min' or 'break_max' is missing
     ## (so cannot construct levels)
-    n <- length(x)
-    if (n == 0L) {
-        ans <- factor()
-        return(ans)
-    }
-    if (all(is.na(x))) {
-        is_unbounded <- is.null(break_min) || is.null(break_max)
-        if (is_unbounded) {
-            ans <- rep(NA_character_, times = n)
-            ans <- factor(ans,
+    is_unbounded <- !has_break_min || !has_break_max
+    if (is_unbounded) {
+        if (length(x) == 0L) {
+            ans <- factor()
+            return(ans)
+        }
+        if (all(is.na(x))) {
+            ans <- factor(NA_character_,
                           levels = NA_character_,
                           exclude = NULL)
             return(ans)
@@ -62,7 +60,7 @@ format_age_month_quarter_year <- function(x,
     }
     ## put unique values in 'labels_x' vector
     labels_x <- unique(x)
-    ## turn labels into integers, and extract information about these integers
+    ## parse the labels
     parsed <- parse_integers(x = labels_x,
                              name = "x")
     low <- parsed$low # integer
@@ -110,7 +108,7 @@ format_age_month_quarter_year <- function(x,
     ## if 'open_last' is FALSE, and 'break_max' is supplied,
     ## make sure that all intervals less than 'break_max'
     if (!open_last && has_break_max) {
-        is_too_high <- up >= break_max
+        is_too_high <- up > break_max
         i_too_high <- match(TRUE, is_too_high, nomatch = 0L)
         if (i_too_high > 0L) {
             stop(gettextf("'%s' has interval [\"%s\"] that ends above '%s' [%d]",
@@ -133,14 +131,14 @@ format_age_month_quarter_year <- function(x,
     breaks <- seq.int(from = break_min,
                       to = break_max)
     ## make labels for these breaks
-    include_na <- anyNA(labels_old)
+    include_na <- anyNA(labels_x)
     labels_new <- make_labels_age(breaks = breaks,
                                   open_last = open_last,
                                   include_na = include_na)
     ## make return value
     if (open_last) {
-        n <- length(labels_new)
-        i <- match(x, labels_new, nomatch = n)  # unrecognized labels belong to open interval
+        i_open <- length(labels_new) - include_na
+        i <- match(x, labels_new, nomatch = i_open)  # unrecognized labels belong to open interval
         ans <- labels_new[i]
     }
     else
