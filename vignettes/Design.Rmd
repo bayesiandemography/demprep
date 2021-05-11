@@ -50,13 +50,16 @@ knitr::opts_chunk$set(
 | \code{format_period_year}    | \code{parse_integers}            | integers | \code{make_labels_period_year}    |
 | \code{format_period_multi}   | \code{parse_integers_intervals}  | integers | \code{make_labels_period_custom}  |
 | \code{format_period_custom}  | \code{parse_integers_intervals}  | integers | \code{make_labels_period_custom}  |
-| \code{format_period_quarter} | \code{parse_quarters}            p| dates    | \code{make_labels_period_quarter} |
+| \code{format_period_quarter} | \code{parse_quarters}            | dates    | \code{make_labels_period_quarter} |
 | \code{format_period_month}   | \code{parse_months}              | dates    | \code{make_labels_period_month}   |
 
 
 
 
 
+## why are format* functions so long?
+
+tried making them shorter by putting calculations, messages into helper functions. But the resulting functions were very complicated, because complicated logic of different ways of handling breaks, open intervals etc. Decided better to put logic in format functions themselves. The functions are *not* just straightforward cut-and-paste of each other. There are lots of subtle differences.
 
 
 
