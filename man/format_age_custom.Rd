@@ -2,8 +2,7 @@
 % Please edit documentation in R/format_age.R
 \name{format_age_custom}
 \alias{format_age_custom}
-\title{Put age group labels into format required
-for customized age groups}
+\title{Format age group labels into customized age groups}
 \usage{
 format_age_custom(x, breaks = NULL, open_last = TRUE)
 }
@@ -34,11 +33,17 @@ each age group starts and finishes. If
 the last value for \code{breaks}, then the oldest
 age group is \code{[b, Inf)} years. 
 If \code{open_last} is \code{FALSE}, \code{a} is the
-second-to-last value for \code{breaks} and \code{b}
+second-to-last value for \code{breaks}, and \code{b}
 is the last value, then the oldest age
 group is \code{[a, b)} years.
+
+If \code{x} contains \code{NA}, then the
+levels of the factor created by \code{format_age_custom}
+also contain \code{NA}.
 }
 \examples{
+format_age_custom(x = c(22, 11, 85),
+                  breaks = c(0, 15, 45, 70))
 format_age_custom(x = c("90+", "19-40", "22", NA),
                   breaks = c(0, 15, 60))
 format_age_custom(x = c("50-59", "19-40", "31"),
@@ -56,7 +61,4 @@ and \code{\link{format_age_month}}.
 
 \code{\link{date_to_custom}} creates
 customized age groups from dates.
-
-\code{\link{make_labels_age}} describes the rules
-for constructing labels for age groups.
 }

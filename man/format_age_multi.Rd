@@ -38,7 +38,8 @@ Given a vector of age group labels, create a factor
 that contains levels for all ages between \code{break_min}
 and \code{break_max}, and that may contain an open age group
 (ie an age group with no upper limit.)
-Apart from the open age group, the age groups all
+Apart from the open age group, the age groups
+produced by \code{format_age_multi} all
 have the width specified by \code{width}.
 If, for instance, \code{break_min} is \code{0},
 \code{break_max} is \code{100}, \code{width} is \code{5},
@@ -47,7 +48,7 @@ then \code{format_age_multi} creates
 a factor with levels \code{"0-4"}, \code{"5-9"},
 \dots, \code{"95-99"}, \code{"100+"}. Even when an age
 group between \code{break_min} and \code{break_max}
-is not included in the data \code{x}, \code{factor_age_year}
+is not included in \code{x}, \code{factor_age_year}
 still creates a level for it.
 }
 \details{
@@ -58,8 +59,14 @@ finds the narrowest range that accommodates the data.
 All age groups in \code{x} must fall within the intervals
 determined by \code{break_min} and \code{width},
 except for age groups above \code{break_max}.
+
+If \code{x} contains \code{NA}, then the
+levels of the factor created by \code{format_age_multi}
+also contain \code{NA}.
 }
 \examples{
+format_age_multi(x = c(22, 11, 99, NA))
+
 format_age_multi(x = c("10-14", "3", "100+", "77-79"))
 
 format_age_multi(x = c("10-14", "3", "100+", "77-79"),
@@ -99,7 +106,4 @@ and \code{\link{format_age_month}}.
 
 \code{\link{date_to_age_multi}} creates
 multi-year age groups from dates.
-
-\code{\link{make_labels_age}} describes the rules
-for constructing labels for age groups.
 }

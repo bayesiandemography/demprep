@@ -34,7 +34,7 @@ If, for instance, \code{break_min} is \code{0},
 creates a factor with levels \code{"0"}, \code{"1"},
 \dots, \code{"99"}, \code{"100+"}. Even when an age
 group between \code{break_min} and \code{break_max}
-is not included in the data \code{x}, \code{factor_age_year}
+is not included in \code{x}, \code{factor_age_year}
 still creates a level for it.
 }
 \details{
@@ -43,19 +43,18 @@ rather than to a specific value, then \code{format_age_year}
 finds the narrowest range that accommodates the data.
 
 All age groups in \code{x} must be single-year age groups,
-except for age groups above \code{break_max}.
+except for any open age groups.
+
+If \code{x} contains \code{NA}, then the
+levels of the factor created by \code{format_age_year}
+also contain \code{NA}.
 }
 \examples{
 format_age_year(x = c("10", "3", "100+", "77"))
 
-## multi-year age groups are allowed,
-## provided they are above 'break_max'
-format_age_year(x = c("15", "30-39", "35+"),
-                break_max = 30)
-
 ## allow 'break_min' and 'break_max' to be
 ## determined by the data
-format_age_year(x = c("22", "7", "30"),
+format_age_year(x = c(22, 7, 30),
                 break_min = NULL,
                 break_max = NULL)
 
@@ -66,7 +65,7 @@ format_age_year(x = c("17", "10+"),
                 break_max = NULL)
 
 ## oldest age group is closed
-format_age_year(x = c("10", "3", "77"),
+format_age_year(x = c(10, 3, 77),
                 open_last = FALSE)
 }
 \seealso{
@@ -81,7 +80,4 @@ and \code{\link{format_age_month}}.
 
 \code{\link{date_to_age_year}} creates
 one-year age groups from dates.
-
-\code{\link{make_labels_age}} describes the rules
-for constructing labels for age groups.
 }

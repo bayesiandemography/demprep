@@ -34,6 +34,10 @@ age group is derived from the data.
 All age groups in \code{x} must fall within the intervals
 \code{"0"}, \code{"1-4"}, \code{"5-9"}, \dots,
 except for age groups above \code{break_max}.
+
+If \code{x} contains \code{NA}, then the
+levels of the factor created by \code{format_age_lifetab}
+also contain \code{NA}.
 }
 \examples{
 format_age_lifetab(x = c("100+", "14", "1-4"))
@@ -54,7 +58,4 @@ and \code{\link{format_age_month}}.
 
 \code{\link{date_to_age_lifetab}} creates
 lifetable age groups from dates.
-
-\code{\link{make_labels_age}} describes the rules
-for constructing labels for age groups.
 }

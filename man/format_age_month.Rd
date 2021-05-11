@@ -20,11 +20,7 @@ Defaults to 1200.}
 has no upper limit. Defaults to \code{TRUE}.}
 }
 \value{
-If \code{as_factor} is \code{TRUE}, then the return
-value is a factor; otherwise it is a character vector.
-The length of the return value equals the length
-of \code{date} or the length of \code{dob}, whichever
-is greater.
+A factor with the same length as \code{x}.
 }
 \description{
 Given a vector of age group labels, create a factor
@@ -55,9 +51,15 @@ finds the narrowest range that accommodates the data.
 All age groups in \code{x} must be single-quarter age groups,
 except above \code{break_max}, where open age groups
 are allowed.
+
+If \code{x} contains \code{NA}, then the
+levels of the factor created by \code{format_age_month}
+also contain \code{NA}.
 }
 \examples{
-format_age_month(x = c("3", "12", "1400+"))
+format_age_month(x = c(22, 0, 300))
+
+format_age_month(x = c("3", NA, "12", "1400+"))
 
 ## specify highest age group
 format_age_month(x = c("3", "12", "1400+"),
@@ -82,7 +84,4 @@ Other functions for creating age groups are
 \code{\link{format_age_births}},
 \code{\link{format_age_custom}},
 \code{\link{format_age_quarter}}.
-
-\code{\link{make_labels_month}} describes the rules
-for constructing labels for month age groups.
 }

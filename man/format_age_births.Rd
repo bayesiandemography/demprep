@@ -73,15 +73,21 @@ Recoding of parents' ages outside the expected range
 is controlled by parameters \code{recode_up}
 and \code{recode_down}. The default
 is for no recoding to occur.
+
+If \code{x} contains \code{NA}, then the
+levels of the factor created by \code{format_age_births}
+also contain \code{NA}.
 }
 \examples{
+format_age_births(x = c(22, 34, 19))
+
 format_age_births(x = c("20-24", "37", NA, "32", "21-24"))
 
 format_age_births(x = c("20-24", "37", "32", "21-24"),
                   width = 10,
                   break_min = 20)
 
-format_age_births(x = c("20", "37", "15"),
+format_age_births(x = c(20, 37, 15),
                   width = 1,
                   break_max = 45)
 
@@ -92,7 +98,7 @@ format_age_births(x = c("21", "33", "22-24"),
                   break_max = NULL)
 
 ## recode ages outside the expected range
-format_age_births(x = c("22", "13", "54"),
+format_age_births(x = c("22", "13-14", "55", "10-19"),
                   recode_up = TRUE,
                   recode_down = TRUE)
 }
@@ -107,7 +113,4 @@ and \code{\link{format_age_month}}.
 
 \code{\link{date_to_age_births}} creates
 reproductive age groups from dates.
-
-\code{\link{make_labels_age}} describes the rules
-for constructing labels for age groups.
 }

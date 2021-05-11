@@ -169,8 +169,8 @@ test_that("format_age_lifetab gives expected errors when given invalid inputs", 
 ## format_age_births --------------------------------------------------
 
 test_that("format_age_births gives correct answers with valid inputs", {
-    expect_identical(format_age_births(x = c("18-19", "25-29", NA, "29")),
-                     factor(c("15-19", "25-29", NA, "25-29"),
+    expect_identical(format_age_births(x = c("18-19", "25-29", NA, "29", "18-19")),
+                     factor(c("15-19", "25-29", NA, "25-29", "15-19"),
                             levels = c("15-19", "20-24", "25-29", "30-34",
                                        "35-39", "40-44", "45-49", NA),
                             exclude = NULL))
@@ -186,12 +186,12 @@ test_that("format_age_births gives correct answers with valid inputs", {
                                        width = 1),
                      factor(c("15", "25", "29"),
                             levels = 15:49))
-    expect_identical(format_age_births(x = c("15-19", "29", "46"),
+    expect_identical(format_age_births(x = c("15-19", "29", "46", "18-23"),
                                        break_min = 20,
                                        break_max = 40,
                                        recode_up = TRUE,
                                        recode_down = TRUE),
-                     factor(c("20-24", "25-29", "35-39"),
+                     factor(c("20-24", "25-29", "35-39", "20-24"),
                             levels = c("20-24", "25-29", "30-34", "35-39")))
     expect_identical(format_age_births(x = c(NA, NA, NA),
                                        break_min = 20,
@@ -201,29 +201,44 @@ test_that("format_age_births gives correct answers with valid inputs", {
                      factor(rep(NA_character_, 3),
                             levels = c("20-24", "25-29", "30-34", "35-39", NA),
                             exclude = NULL))
+    expect_identical(format_age_births(x = character(),
+                                       break_min = 20,
+                                       break_max = 40,
+                                       recode_up = TRUE,
+                                       recode_down = TRUE),
+                     factor(character(),
+                            levels = c("20-24", "25-29", "30-34", "35-39")))
+    expect_identical(format_age_births(x = character(),
+                                       break_min = NULL,
+                                       break_max = NULL,
+                                       recode_up = TRUE,
+                                       recode_down = TRUE),
+                     factor())
 })
 
 test_that("format_age_births throws correct errors with invalid inputs", {
     expect_error(format_age_births(x = "20+"),
-                 "'x' contains open age group \\[\"20\\+\"]")
+                 "'x' has open interval \\[\"20\\+\"]")
     expect_error(format_age_births(x = "22",
                                    width = 3),
                  "difference between 'break_max' \\[50\\] and 'break_min' \\[15\\] not divisible by 'width' \\[3\\]")
     expect_error(format_age_births(x = "15",
                                    break_min = 20),
-                 "age group \"15\" less than 'break_min' \\[20\\] and 'recode_up' is FALSE")
+                 "'x' has interval \\[\"15\"\\] that starts below 'break_min' \\[20\\] and 'recode_up' is FALSE")
     expect_error(format_age_births(x = c("20", "50-54"),
                                    break_max = 45),
-                 paste("age group \"50-54\" greater than 'break_max' \\[45\\] and 'recode_down' is FALSE"))
+                 paste("'x' has interval \\[\"50-54\"\\] that ends above 'break_max' \\[45\\] and 'recode_down' is FALSE"))
+    expect_error(format_age_births(x = "20-29"),
+                 "'x' has interval \\[\"20-29\"\\] that intersects two or more intervals formed using 'break_min = 15', 'break_max = 50', and 'width = 5'")
 })
 
 
 ## format_age_custom ---------------------------------------------------
 
 test_that("format_age_custom gives correct answers with valid inputs", {
-    expect_identical(format_age_custom(x = c(NA, "0", "23-24", "100+"),
+    expect_identical(format_age_custom(x = c(NA, "0", "23-24", "100+", "0"),
                                        breaks = c(0, 10, 30)),
-                     factor(c(NA, "0-9", "10-29", "30+"),
+                     factor(c(NA, "0-9", "10-29", "30+", "0-9"),
                             levels = c("0-9", "10-29", "30+", NA),
                             exclude = NULL))
     expect_identical(format_age_custom(x = c("0", "1", "5-29"),
@@ -243,6 +258,16 @@ test_that("format_age_custom gives correct answers with valid inputs", {
                      factor(c(NA, NA),
                             levels = c("0-9", "10-19", NA),
                             exclude = NULL))
+    expect_identical(format_age_custom(x = character(),
+                                       breaks = c(0, 10, 20),
+                                       open_last = FALSE),
+                     factor(character(),
+                            levels = c("0-9", "10-19"),
+                            exclude = NULL))
+    expect_identical(format_age_custom(x = character(),
+                                       breaks = integer(),
+                                       open_last = FALSE),
+                     factor())
 })
 
 test_that("format_age_custom throws correct errors with invalid inputs", {
@@ -250,17 +275,21 @@ test_that("format_age_custom throws correct errors with invalid inputs", {
                                    breaks = integer(),
                                    open_last = FALSE),
                  "'breaks' has length 0")
+    expect_error(format_age_custom(x = c("5", "<10"),
+                                   breaks = c(0, 10),
+                                   open_last = FALSE),
+                 "'x' has interval \\[\"<10\"\\] that is open on the left")
     expect_error(format_age_custom(x = "1-4",
                                    breaks = c(5, 10, 30)),
-                 "age group \"1-4\" is below minimum value for 'breaks' \\[5\\]")
+                 "'x' has interval \\[\"1-4\"\\] that starts below the minimum value for 'breaks' \\[5\\]")
     expect_error(format_age_custom(x = "15-29",
                                    breaks = c(0, 10, 20),
                                    open_last = FALSE),
-                 "age group \"15-29\" is above maximum value for 'breaks' \\[20\\]")
-    expect_error(format_age_custom(x = "1",
-                                   breaks = integer(),
+                 "'x' has interval \\[\"15-29\"\\] that ends above the maximum value for 'breaks' \\[20\\]")
+    expect_error(format_age_custom(x = "4-6",
+                                   breaks = c(0, 5, 10),
                                    open_last = FALSE),
-                 "'breaks' has length 0")
+                 "'x' has interval \\[\"4-6\"\\] that intersects two or more intervals formed using 'breaks'")
 })
 
 

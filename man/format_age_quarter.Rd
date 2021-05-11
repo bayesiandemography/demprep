@@ -48,10 +48,16 @@ rather than to a specific value, then \code{format_age_year}
 finds the narrowest range that accommodates the data.
 
 All age groups in \code{x} must be single-quarter age groups,
-except above \code{break_max}, where open age groups
-are allowed.
+except those starting at or above \code{break_max},
+where open age groups are allowed.
+
+If \code{x} contains \code{NA}, then the
+levels of the factor created by \code{format_age_quarter}
+also contain \code{NA}.
 }
 \examples{
+format_age_quarter(x = c(0, 21, 5))
+
 format_age_quarter(x = c("10", "22", "500+"))
 
 ## specify highest age group
@@ -77,7 +83,4 @@ Other functions for creating age groups are
 \code{\link{format_age_births}},
 \code{\link{format_age_custom}},
 and \code{\link{format_age_month}}.
-
-\code{\link{make_labels_quarter}} describes the rules
-for constructing labels for quarter age groups.
 }

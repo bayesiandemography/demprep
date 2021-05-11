@@ -448,9 +448,11 @@ format_age_lifetab <- function(x, break_max = 100) {
     is_multiple_intervals <- i_interval == -1L
     i_multiple_intervals <- match(TRUE, is_multiple_intervals, nomatch = 0L)
     if (i_multiple_intervals > 0L)
-        stop(gettextf("'%s' has interval [\"%s\"] that intersects two or more intervals",
+        stop(gettextf("'%s' has interval [\"%s\"] that intersects two or more intervals formed using '%s = %d",
                       "x",
-                      labels_x[[i_multiple_intervals ]]),
+                      labels_x[[i_multiple_intervals ]],
+                      "break_max",
+                      break_max),
              call. = FALSE)
     ## make labels for these breaks
     include_na <- anyNA(labels_x)
@@ -536,13 +538,15 @@ format_age_lifetab <- function(x, break_max = 100) {
 #' reproductive age groups from dates.
 #'
 #' @examples
+#' format_age_births(x = c(22, 34, 19))
+#' 
 #' format_age_births(x = c("20-24", "37", NA, "32", "21-24"))
 #' 
 #' format_age_births(x = c("20-24", "37", "32", "21-24"),
 #'                   width = 10,
 #'                   break_min = 20)
 #'
-#' format_age_births(x = c("20", "37", "15"),
+#' format_age_births(x = c(20, 37, 15),
 #'                   width = 1,
 #'                   break_max = 45)
 #'
@@ -553,7 +557,7 @@ format_age_lifetab <- function(x, break_max = 100) {
 #'                   break_max = NULL)
 #'
 #' ## recode ages outside the expected range
-#' format_age_births(x = c("22", "13", "54"),
+#' format_age_births(x = c("22", "13-14", "55", "10-19"),
 #'                   recode_up = TRUE,
 #'                   recode_down = TRUE)
 #' @export
@@ -594,17 +598,14 @@ format_age_births <- function(x,
     ## deal with "empty" case where 'x' has no non-NA values
     ## and 'break_min' or 'break_max' is missing
     ## (so cannot construct levels)
-    n <- length(x)
-    if (n == 0L) {
-        ans <- factor()
-        return(ans)
-    }
-    if (all(is.na(x))) {
-        is_unbounded <- !has_break_min || !has_break_max
-        if (is_unbounded) {
-            ans <- rep(NA_character_, times = n)
-            ans <- factor(ans,
-                          levels = NA_character_,
+    is_unbounded <- is.null(break_min) || is.null(break_max)
+    if (is_unbounded) {
+        if (length(x) == 0L) {
+            ans <- factor()
+            return(ans)
+        }
+        if (all(is.na(x))) {
+            ans <- factor(x,
                           exclude = NULL)
             return(ans)
         }
@@ -636,9 +637,13 @@ format_age_births <- function(x,
                 up[is_lt_min] <- pmax(up[is_lt_min], low[is_lt_min] + 1L)
             }
             else {
-                stop(gettextf("age group \"%s\" less than 'break_min' [%d] and 'recode_up' is FALSE",
+                stop(gettextf("'%s' has interval [\"%s\"] that starts below '%s' [%d] and '%s' is FALSE",
+                              "x",
                               labels_x[[i_lt_min]],
-                              break_min),
+                              "break_min",
+                              break_min,
+                              "recode_up",
+                              "FALSE"),
                      call. = FALSE)
             }
         }
@@ -652,9 +657,13 @@ format_age_births <- function(x,
                 low[is_gt_max] <- pmin(low[is_gt_max], up[is_gt_max] - 1L)
             }
             else {
-                stop(gettextf("age group \"%s\" greater than 'break_max' [%d] and 'recode_down' is FALSE",
+                stop(gettextf("'%s' has interval [\"%s\"] that ends above '%s' [%d] and '%s' is %s",
+                              "x",
                               labels_x[[i_gt_max]],
-                              break_max),
+                              "break_max",
+                              break_max,
+                              "recode_down",
+                              "FALSE"),
                      call. = FALSE)
             }
         }
@@ -680,16 +689,16 @@ format_age_births <- function(x,
                       by = width)
     ## check that all intervals fall within implied breaks
     i_interval <- make_i_interval(low = low,
-                                up = up,
-                                breaks = breaks,
-                                open_first = FALSE,
-                                open_last = FALSE)
+                                  up = up,
+                                  breaks = breaks,
+                                  open_first = FALSE,
+                                  open_last = FALSE)
     is_multiple_intervals <- i_interval == -1L
     i_multiple_intervals <- match(TRUE, is_multiple_intervals, nomatch = 0L)
     if (i_multiple_intervals > 0L)
-        stop(gettextf("label \"%\" from '%s' intersects two or more intervals formed using '%s' = %d, '%s' = %d, and '%s' = %d",
-                      labels_x[[i_multiple_intervals ]],
+        stop(gettextf("'%s' has interval [\"%s\"] that intersects two or more intervals formed using '%s = %d', '%s = %d', and '%s = %d'",
                       "x",
+                      labels_x[[i_multiple_intervals ]],                      
                       "break_min",
                       break_min,
                       "break_max",
@@ -703,7 +712,7 @@ format_age_births <- function(x,
                                   open_last = FALSE,
                                   include_na = include_na)
     ## return result
-    ans <- labels_new[i_interval]
+    ans <- labels_new[i_interval][match(x, labels_x)]
     ans <- factor(x = ans,
                   levels = labels_new,
                   exclude = NULL)
@@ -712,8 +721,7 @@ format_age_births <- function(x,
 
 
 ## HAS_TESTS
-#' Put age group labels into format required
-#' for customized age groups
+#' Format age group labels into customized age groups
 #'
 #' Given a vector of age group labels, create a factor
 #' that contains levels for all age groups
@@ -729,7 +737,7 @@ format_age_births <- function(x,
 #' the last value for \code{breaks}, then the oldest
 #' age group is \code{[b, Inf)} years. 
 #' If \code{open_last} is \code{FALSE}, \code{a} is the
-#' second-to-last value for \code{breaks} and \code{b}
+#' second-to-last value for \code{breaks}, and \code{b}
 #' is the last value, then the oldest age
 #' group is \code{[a, b)} years.
 #'
@@ -754,6 +762,8 @@ format_age_births <- function(x,
 #' customized age groups from dates.
 #'
 #' @examples
+#' format_age_custom(x = c(22, 11, 85),
+#'                   breaks = c(0, 15, 45, 70))
 #' format_age_custom(x = c("90+", "19-40", "22", NA),
 #'                   breaks = c(0, 15, 60))
 #' format_age_custom(x = c("50-59", "19-40", "31"),
@@ -761,8 +771,8 @@ format_age_births <- function(x,
 #'                   open_last = FALSE)
 #' @export
 format_age_custom <- function(x,
-                          breaks = NULL,
-                          open_last = TRUE) {
+                              breaks = NULL,
+                              open_last = TRUE) {
     ## check arguments
     breaks <- demcheck::err_tdy_breaks_integer_age(breaks = breaks,
                                                    open_last = open_last)
@@ -801,7 +811,8 @@ format_age_custom <- function(x,
     is_lt_min <- low < breaks[[1L]]
     i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
     if (i_lt_min > 0L) {
-        stop(gettextf("age group \"%s\" is below minimum value for '%s' [%d]",
+        stop(gettextf("'%s' has interval [\"%s\"] that starts below the minimum value for '%s' [%d]",
+                      "x",
                       labels_x[[i_lt_min]],
                       "breaks",
                       breaks[[1L]]),
@@ -811,7 +822,8 @@ format_age_custom <- function(x,
         is_gt_max <- up > breaks[[n_break]]
         i_gt_max <- match(TRUE, is_gt_max, nomatch = 0L)
         if (i_gt_max > 0L) {
-            stop(gettextf("age group \"%s\" is above maximum value for '%s' [%d]",
+            stop(gettextf("'%s' has interval [\"%s\"] that ends above the maximum value for '%s' [%d]",
+                          "x",
                           labels_x[[i_gt_max]],
                           "breaks",
                           breaks[[n_break]]),
@@ -820,16 +832,16 @@ format_age_custom <- function(x,
     }
     ## check that all intervals fall within implied breaks
     i_interval <- make_i_interval(low = low,
-                                up = up,
-                                breaks = breaks,
-                                open_first = FALSE,
-                                open_last = open_last)
+                                  up = up,
+                                  breaks = breaks,
+                                  open_first = FALSE,
+                                  open_last = open_last)
     is_multiple_intervals <- i_interval == -1L
     i_multiple_intervals <- match(TRUE, is_multiple_intervals, nomatch = 0L)
     if (i_multiple_intervals > 0L)
-        stop(gettextf("label \"%\" from '%s' intersects two or more intervals formed using '%s'",
-                      labels_x[[i_multiple_intervals ]],
+        stop(gettextf("'%s' has interval [\"%s\"] that intersects two or more intervals formed using '%s'",
                       "x",
+                      labels_x[[i_multiple_intervals]],
                       "breaks"),
              call. = FALSE)
     ## make labels for breaks
@@ -838,7 +850,7 @@ format_age_custom <- function(x,
                                   open_last = open_last,
                                   include_na = include_na)
     ## return result
-    ans <- labels_new[i_intervals]
+    ans <- labels_new[i_interval][match(x, labels_x)]
     ans <- factor(x = ans,
                   levels = labels_new,
                   exclude = NULL)
@@ -874,8 +886,8 @@ format_age_custom <- function(x,
 #' finds the narrowest range that accommodates the data.
 #'
 #' All age groups in \code{x} must be single-quarter age groups,
-#' except above \code{break_max}, where open age groups
-#' are allowed.
+#' except those starting at or above \code{break_max},
+#' where open age groups are allowed.
 #'
 #' If \code{x} contains \code{NA}, then the
 #' levels of the factor created by \code{format_age_quarter}
@@ -896,6 +908,8 @@ format_age_custom <- function(x,
 #' and \code{\link{format_age_month}}.
 #'
 #' @examples
+#' format_age_quarter(x = c(0, 21, 5))
+#' 
 #' format_age_quarter(x = c("10", "22", "500+"))
 #'
 #' ## specify highest age group
@@ -963,11 +977,7 @@ format_age_quarter <- function(x,
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 1200.
 #'
-#' @return If \code{as_factor} is \code{TRUE}, then the return
-#' value is a factor; otherwise it is a character vector.
-#' The length of the return value equals the length
-#' of \code{date} or the length of \code{dob}, whichever
-#' is greater.
+#' @return A factor with the same length as \code{x}.
 #'
 #' @seealso Other functions for creating age groups are
 #' \code{\link{format_age_year}},
@@ -978,7 +988,9 @@ format_age_quarter <- function(x,
 #' \code{\link{format_age_quarter}}.
 #'
 #' @examples
-#' format_age_month(x = c("3", "12", "1400+"))
+#' format_age_month(x = c(22, 0, 300))
+#'
+#' format_age_month(x = c("3", NA, "12", "1400+"))
 #'
 #' ## specify highest age group
 #' format_age_month(x = c("3", "12", "1400+"),
