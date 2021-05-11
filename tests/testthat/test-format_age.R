@@ -4,7 +4,7 @@ context("format_age")
 ## format_age_year --------------------------------------------------
 
 test_that("format_age_year gives correct answers with alternative finite values for 'break_max'", {
-    expect_identical(format_age_year(x = c("0", "10", "4")),
+    expect_identical(format_age_year(x = c(0, 10, 4)),
                      factor(c(0, 10, 4), levels = c(0:99, "100+")))
     expect_identical(format_age_year(x = c("0", "10+", "4"),
                                       break_max = 10),
@@ -57,7 +57,7 @@ test_that("format_age_year gives correct answers when 'x' has length 0", {
 test_that("format_age_year gives expected errors when given invalid inputs", {
     expect_error(format_age_year(x = c("0", "10", "5+"),
                                  break_max = 10),
-                 "lower limit of open interval \"5\\+\" is less than 'break_max' \\[10\\]")
+                 "'x' has open interval \\[\"5\\+\"\\] that starts below 'break_max' \\[10\\]")
 })
 
 
@@ -66,6 +66,10 @@ test_that("format_age_year gives expected errors when given invalid inputs", {
 test_that("format_age_multi gives correct answers with valid inputs", {
     expect_identical(format_age_multi(x = c("0", "10-12", "0-4")),
                      factor(c("0-4", "10-14", "0-4"),
+                            levels = c(paste(seq(0, 95, 5), seq(4, 99, 5), sep = "-"),
+                                       "100+")))
+    expect_identical(format_age_multi(x = c("0", "0", "0-4")),
+                     factor(c("0-4", "0-4", "0-4"),
                             levels = c(paste(seq(0, 95, 5), seq(4, 99, 5), sep = "-"),
                                        "100+")))
     expect_identical(format_age_multi(x = c("1", "11+", "4"),
@@ -105,12 +109,32 @@ test_that("format_age_multi gives correct answers with valid inputs", {
                             exclude = NULL))
 })
 
+test_that("format_age_multi gives expected errors when given invalid inputs", {
+    expect_error(format_age_multi(x = c("0", "10", "<5"),
+                                  break_max = 10),
+                 "'x' has interval \\[\"<5\"\\] that is open on the left")
+    expect_error(format_age_multi(x = c("0", "9", "5"),
+                                  break_min = 5,
+                                  break_max = 10),
+                 "'x' has interval \\[\"0\"\\] that starts below 'break_min' \\[5\\]")
+    expect_error(format_age_multi(x = c("0", "10", "5+"),
+                                  break_max = 10),
+                 "'x' has open interval \\[\"5\\+\"\\] that starts below 'break_max' \\[10\\]")
+    expect_error(format_age_multi(x = c("0", "9", "10-14"),
+                                  break_max = 10,
+                                  open_last = FALSE),
+                 "'x' has interval \\[\"10-14\"\\] that ends above 'break_max' \\[10\\]")
+    expect_error(format_age_multi(x = c("0", "10", "4-6"),
+                                  break_max = 10),
+                 "'x' has interval \\[\"4-6\"\\] that intersects two or more intervals formed using 'break_min = 0', 'break_max = 10', and 'width = 5'")
+})
+
 
 ## format_age_lifetab --------------------------------------------------
 
 test_that("format_age_lifetab gives correct answers with valid inputs", {
-    expect_identical(format_age_lifetab(x = c("1", "10-14", "3")),
-                     factor(c("1-4", "10-14", "1-4"),
+    expect_identical(format_age_lifetab(x = c("1", "10-14", "3", "1")),
+                     factor(c("1-4", "10-14", "1-4", "1-4"),
                             levels = c("0", "1-4", paste(seq(5, 95, 5), seq(9, 99, 5), sep = "-"),
                                        "100+")))
     expect_identical(format_age_lifetab(x = c("0", "100", "1", NA),
@@ -128,6 +152,18 @@ test_that("format_age_lifetab gives correct answers with valid inputs", {
                      factor(rep(NA_character_, 3),
                             levels = NA,
                             exclude = NULL))
+})
+
+test_that("format_age_lifetab gives expected errors when given invalid inputs", {
+    expect_error(format_age_lifetab(x = c("0", "10", "<5"),
+                                    break_max = 10),
+                 "'x' has interval \\[\"<5\"\\] that is open on the left")
+    expect_error(format_age_lifetab(x = c("0", "10", "5+"),
+                                    break_max = 10),
+                 "'x' has open interval \\[\"5\\+\"\\] that starts below 'break_max' \\[10\\]")
+    expect_error(format_age_lifetab(x = c("0", "10", "4-6"),
+                                    break_max = 10),
+                 "'x' has interval \\[\"4-6\"\\] that intersects two or more intervals")
 })
 
 ## format_age_births --------------------------------------------------

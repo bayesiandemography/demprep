@@ -29,6 +29,10 @@ test_that("format_period_multi works with valid input", {
                      factor(c("2000-2005", "2010-2015", NA, "2000-2005"),
                             levels = c("2000-2005", "2005-2010", "2010-2015", NA),
                             exclude = NULL))
+    expect_identical(format_period_multi(x = c("2000", "2000", NA, "2010-2015", NA, "2004-2005")),
+                     factor(c("2000-2005", "2000-2005", NA, "2010-2015", NA, "2000-2005"),
+                            levels = c("2000-2005", "2005-2010", "2010-2015", NA),
+                            exclude = NULL))
     expect_identical(format_period_multi(x = c("2000-2001", "2010-2015", NA, "2004-2005"),
                                          origin = 2004,
                                          width = 20),
@@ -61,6 +65,11 @@ test_that("format_period_custom works with valid input", {
     expect_identical(format_period_custom(x = c("2000-2001", "2010-2015", NA, "2004-2005"),
                                           breaks = c(2000, 2003, 2006, 2020)),
                      factor(c("2000-2003", "2006-2020", NA, "2003-2006"),
+                            levels = c("2000-2003", "2003-2006", "2006-2020", NA),
+                            exclude = NULL))
+    expect_identical(format_period_custom(x = c("2000-2001", "2000-2001", NA, NA),
+                                          breaks = c(2000, 2003, 2006, 2020)),
+                     factor(c("2000-2003", "2000-2003", NA, NA),
                             levels = c("2000-2003", "2003-2006", "2006-2020", NA),
                             exclude = NULL))
     expect_identical(format_period_custom(x = character(), breaks = integer()),

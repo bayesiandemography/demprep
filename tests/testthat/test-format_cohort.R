@@ -35,6 +35,11 @@ test_that("format_cohort_multi works with valid input", {
                      factor(c("2000-2005", "2010-2015", NA, "2000-2005"),
                             levels = c("2000-2005", "2005-2010", "2010-2015", NA),
                             exclude = NULL))
+    ## has repeated values
+    expect_identical(format_cohort_multi(x = c("2000", "2000", NA, "2004")),
+                     factor(c("2000-2005", "2000-2005", NA, "2000-2005"),
+                            levels = c("2000-2005", NA),
+                            exclude = NULL))
     ## 'month_start' is "Jul", but 'label_year_start' is TRUE (so labels unaffected)
     expect_identical(format_cohort_multi(x = c("2000", "2010-2015", NA, "2004"),
                                          month_start = "Jul",
@@ -147,6 +152,13 @@ test_that("format_cohort_custom works with valid input", {
                                           breaks = c(2000, 2003, 2006, 2020),
                                           open_first = TRUE),
                      factor(c("2000-2003", "2006-2020", NA, "2003-2006", "<2000"),
+                            levels = c("<2000", "2000-2003", "2003-2006", "2006-2020", NA),
+                            exclude = NULL))
+    ## has repeated values
+    expect_identical(format_cohort_custom(x = c("2000-2001", "2000-2001", NA, "2004-2005", "1990-1991"),
+                                          breaks = c(2000, 2003, 2006, 2020),
+                                          open_first = TRUE),
+                     factor(c("2000-2003", "2000-2003", NA, "2003-2006", "<2000"),
                             levels = c("<2000", "2000-2003", "2003-2006", "2006-2020", NA),
                             exclude = NULL))
     ## 'x' is length 0

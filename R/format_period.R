@@ -188,7 +188,6 @@ format_period_multi <- function(x,
     }
     if (all(is.na(x))) {
         ans <- factor(x,
-                      levels = NA_character_,
                       exclude = NULL)
         return(ans)
     }
@@ -239,7 +238,7 @@ format_period_multi <- function(x,
     labels_new <- make_labels_period_custom(breaks = breaks,
                                             include_na = include_na)
     ## assign new labels to x and return
-    ans <- labels_new[i_interval]
+    ans <- labels_new[i_interval][match(x, labels_x)]
     ans <- factor(x = ans,
                   levels = labels_new,
                   exclude = NULL)
@@ -370,7 +369,7 @@ format_period_custom <- function(x,
     labels_new <- make_labels_period_custom(breaks = breaks,
                                             include_na = include_na)
     ## return result
-    ans <- labels_new[i_interval]
+    ans <- labels_new[i_interval][match(x, labels_x)]
     ans <- factor(x = ans,
                   levels = labels_new,
                   exclude = NULL)

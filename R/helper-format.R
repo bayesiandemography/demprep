@@ -52,8 +52,7 @@ format_age_month_quarter_year <- function(x,
             return(ans)
         }
         if (all(is.na(x))) {
-            ans <- factor(NA_character_,
-                          levels = NA_character_,
+            ans <- factor(x,
                           exclude = NULL)
             return(ans)
         }
@@ -75,7 +74,7 @@ format_age_month_quarter_year <- function(x,
                       "x", labels_x[[i_open_first]]),
              call. = FALSE)
     }
-    ## if 'break_min' is supplied, make sure that all intervals finish
+    ## if 'break_min' is supplied, make sure that all intervals start
     ## at or above 'break_min'
     if (has_break_min) {
         is_too_low_min <- low < break_min
@@ -181,7 +180,6 @@ format_cohort_month_quarter_year <- function(x,
     }
     if (all(is.na(x))) {
         ans <- factor(x,
-                      levels = NA_character_,
                       exclude = NULL)
         return(ans)
     }

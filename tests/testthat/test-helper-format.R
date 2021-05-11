@@ -33,6 +33,16 @@ test_that("'format_age_month_quarter_year' gives correct answer with valid input
                            levels = c(0:99, "100+", NA),
                            exclude = NULL)
     expect_identical(ans_obtained, ans_expected)
+    ## 'x' is has repeated value
+    x <- c(4, 11, NA, 11)
+    ans_obtained <- format_age_month_quarter_year(x = x,
+                                                  break_min = 0,
+                                                  break_max = 100,
+                                                  open_last = TRUE)
+    ans_expected <- factor(x,
+                           levels = c(0:99, "100+", NA),
+                           exclude = NULL)
+    expect_identical(ans_obtained, ans_expected)
     ## 'x' includes open intervals
     x <- c(4, 11, NA, "100+", "110+")
     ans_obtained <- format_age_month_quarter_year(x = x,
@@ -142,6 +152,19 @@ test_that("'format_cohort_month_quarter_year' gives correct answer with valid in
                                                      labels_fun = make_labels_cohort_year)
     ans_expected <- factor(x,
                            levels = c(1990:2005, NA),
+                           exclude = NULL)
+    expect_identical(ans_obtained, ans_expected)
+    ## repeated values
+    x <- c("2000", "2000", NA, "1990", NA)
+    ans_obtained <- format_cohort_month_quarter_year(x = x,
+                                                     break_min = NULL,
+                                                     open_first = FALSE,
+                                                     break_min_tdy_fun = demcheck::err_tdy_non_negative_integer_scalar,
+                                                     break_min_lab_fun = I,
+                                                     parse_fun = parse_integers,
+                                                     labels_fun = make_labels_cohort_year)
+    ans_expected <- factor(x,
+                           levels = c(1990:2000, NA),
                            exclude = NULL)
     expect_identical(ans_obtained, ans_expected)
     x <- c("2000", "2005", "1990", NA)
