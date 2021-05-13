@@ -10,23 +10,27 @@
 #' must be single-year, except for any open age groups.
 #'
 #' \code{open_last} determines whether the
-#' triangles need to account for an
-#' open age group, and \code{break_max}
+#' allocation of triangles needs to
+#' account for an open age group, and \code{break_max}
 #' specifies the cut-off for the open age group.
 #' See \code{\link{format_age_year}} for a description
 #' of how \code{open_last} and \code{break_max}
 #' control age groups.
 #'
-#' \code{format_triangle_year} leaves the labels
-#' in \code{x} unchanged, except for labels
-#' corresponding to ages\code{break_max + 1} and higher,
-#' which are recoded to \code{"Upper"}
-#' (assuming \code{open_last} is \code{TRUE}.)
+#' When \code{break_max} is \code{NULL},
+#' the return value from \code{format_triangle_year}
+#' is identical to \code{x}. When \code{break_max}
+#' is non-\code{NULL}, the return value is as follows.
 #'
-#' The return value is a factor with levels
-#' \code{"Lower"}, \code{"Upper"}, and
-#' (if the return value has \code{NA}s)
-#' \code{NA}.
+#' \tabular{lll}{
+#'   \code{x} \tab \code{age} \tab return value \cr
+#'   \code{"Lower"} \tab \code{<= break_min} \tab \code{"Lower"} \cr
+#'   \code{"Lower"} \tab \code{> break_min} \tab \code{"Upper"} \cr
+#'   \code{"Lower"} \tab \code{NA} \tab \code{NA} \cr
+#'   \code{"Upper"} \tab \code{<= break_min} \tab \code{"Upper"} \cr
+#'   \code{"Upper"} \tab \code{> break_min} \tab \code{"Upper"} \cr
+#'   \code{"Upper"} \tab \code{NA} \tab \code{"Upper"} \cr
+#' }
 #' 
 #' @param x A vector of Lexis triangle labels.
 #' @param age A vector of age groups, the same length
@@ -238,14 +242,6 @@ format_triangle_multi <- function(x,
                       levels = c("Lower", "Upper"))
         return(ans)
     }
-    is_na_any <- is.na(x) | is.na(age) | is.na(period)
-    if (all(is_na_any)) {
-        ans <- rep(NA_character_, times = n)
-        ans <- factor(ans,
-                      levels = c("Lower", "Upper", NA),
-                      exclude = NULL)
-        return(ans)
-    }
     ## put unique values in 'labels' vectors
     labels_x <- unique(x)
     labels_age <- unique(age)
@@ -292,11 +288,30 @@ format_triangle_multi <- function(x,
     ## if 'open_last' is TRUE and 'break_max' is supplied, check that
     ## all open age groups start at or above 'break_max'
     if (open_last && has_break_max) {
-        is_too_low_age <- is_open_last_age & (low_age < break_min)
+        is_too_low_age <- is_open_last_age & (low_age < break_max)
         i_too_low_age <- match(TRUE, is_too_low_age, nomatch = 0L)
         if (i_too_low_age > 0L) {
             stop(gettextf("'%s' has open interval [\"%s\"] that starts below '%s' [%d]",
                           "age", labels_age[[i_too_low_age]], "break_max", break_max),
+                 call. = FALSE)
+        }
+    }
+    ## if 'open_last' is FALSE, check that there are no open intervals
+    if (!open_last) {
+        i_open_last_age <- match(TRUE, is_open_last_age, nomatch = 0L)
+        if (i_open_last_age > 0L)
+            stop(gettextf("'%s' is %s but '%s' has open interval [\"%s\"]",
+                          "open_last", "FALSE", "age", labels_age[[i_open_last_age]]),
+                 call. = FALSE)
+    }
+    ## if 'open_last' is FALSE, and 'break_max' is supplied,
+    ## make sure that all intervals less than 'break_max'
+    if (!open_last && has_break_max) {
+        is_too_high_age <- up_age > break_max
+        i_too_high_age <- match(TRUE, is_too_high_age, nomatch = 0L)
+        if (i_too_high_age > 0L) {
+            stop(gettextf("'%s' has interval [\"%s\"] that ends above '%s' [%d]",
+                          "age", labels_age[[i_too_high]], "break_max", break_max),
                  call. = FALSE)
         }
     }
@@ -325,9 +340,9 @@ format_triangle_multi <- function(x,
     is_multiple_intervals_age <- i_interval_age == -1L
     i_multiple_intervals_age <- match(TRUE, is_multiple_intervals_age, nomatch = 0L)
     if (i_multiple_intervals_age > 0L)
-        stop(gettextf("label \"%\" from '%s' intersects two or more intervals formed using '%s' = %d and '%s' = %d",
-                      labels_age[[i_multiple_intervals_age]],
+        stop(gettextf("'%s' has interval [\"%s\"] that intersects two or more intervals formed using '%s = %d' and '%s = %d'",
                       "age",
+                      labels_age[[i_multiple_intervals_age]],
                       "break_max",
                       break_max,
                       "width",
@@ -352,12 +367,12 @@ format_triangle_multi <- function(x,
                                          breaks = breaks_period,
                                          open_first = FALSE,
                                          open_last = FALSE)
-    is_multiple_intervals <- i_interval == -1L
-    i_multiple_intervals <- match(TRUE, is_multiple_intervals, nomatch = 0L)
-    if (i_multiple_intervals > 0L)
-        stop(gettextf("label \"%\" from '%s' intersects two or more intervals formed using '%s' = %d and '%s' = %d",
-                      labels_period[[i_multiple_intervals_period]],
+    is_multiple_intervals_period <- i_interval_period == -1L
+    i_multiple_intervals_period <- match(TRUE, is_multiple_intervals_period, nomatch = 0L)
+    if (i_multiple_intervals_period > 0L)
+        stop(gettextf("'%s' has interval [\"%s\"] that intersects two or more intervals formed using '%s = %d' and '%s = %d'",
                       "period",
+                      labels_period[[i_multiple_intervals_period]],
                       "origin",
                       origin,
                       "width",
@@ -370,9 +385,9 @@ format_triangle_multi <- function(x,
     low_period_all <- low_period[i_labels_period]
     up_age_all <- up_age[i_labels_age]
     up_period_all <- up_period[i_labels_period]
-    height <- up_age_all - low_age_all
-    width <- up_period_all - low_period_all
-    is_square <- height == width
+    height_all <- up_age_all - low_age_all
+    width_all <- up_period_all - low_period_all
+    is_square <- height_all == width_all
     i_not_square <- match(FALSE, is_square, nomatch = 0L)
     if (i_not_square > 0L)
         stop(gettextf("element %d of '%s' [\"%s\"] and element %d of '%s' [\"%s\"] have different widths, so do not form a Lexis square",
@@ -390,17 +405,23 @@ format_triangle_multi <- function(x,
     offset_low_age <- low_age_all - break_age
     offset_low_period <- low_period_all - break_period
     offset_up_age <- up_age_all - break_age
-    is_break_max_plus_width <- low_age_all >= break_max + width
-    is_on_diag <- !is_na_any & (offset_low_age == offset_low_period)
-    is_all_below_diag <- !is_na_any & (offset_up_age <= offset_low_period)
-    is_all_above_diag <- !is_na_any & (offset_low_age >= offset_low_period)
-    is_off_diag_crosses <- !(is_na_any
-        | is_break_max_plus_width
-        | is_on_diag
-        | is_below_diag
-        | is_above_diag)
-    i_off_diag_crosses <- match(TRUE, is_off_diag_crosses, nomatch = 0L)
-    if (i_off_diag_crosses > 0L)
+    offset_up_period <- up_period_all - break_period
+    is_na_x <- is.na(x)
+    is_na_age <- is.na(age)
+    is_na_period <- is.na(period)
+    is_na_age_period <- is_na_age | is_na_period
+    is_na_any <- is_na_x | is_na_age | is_na_period
+    is_ge_break_max_plus_width <- !is_na_age & (low_age_all >= break_max + width)
+    is_unambig_if_lower <- !is_na_age_period & (offset_low_age <= offset_low_period)
+    is_unambig_if_upper <- !is_na_age_period & (offset_low_age >= offset_low_period)
+    is_lower <- !is_na_x & (x == "Lower")
+    is_upper <- !is_na_x & (x == "Upper")
+    is_ambig <- !(is_na_any
+        | is_ge_break_max_plus_width
+        | (is_unambig_if_lower & is_lower)
+        | (is_unambig_if_upper & is_upper))
+    i_ambig <- match(TRUE, is_off_diag_crosses, nomatch = 0L)
+    if (i_ambig > 0L)
         stop(gettextf("old Lexis triangles formed by element %d of '%s' [\"%s\"] and element %d of '%s' [\"%s\"] cannot be assigned unambiguously to new Lexis triangles",
                       i_off_diag_crosses,
                       "age",
@@ -414,7 +435,7 @@ format_triangle_multi <- function(x,
     ans[is_on_diag] <- x[is_on_diag]
     ans[is_all_below_diag] <- "Lower"
     ans[is_all_above_diag] <- "Upper"
-    ans[is_break_max_plus_width] <- "Upper"
+    ans[is_ge_break_max_plus_width] <- "Upper"
     ## return result
     levels <- c("Lower", "Upper")
     if (anyNA(ans))

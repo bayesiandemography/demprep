@@ -108,7 +108,6 @@ test_that("'format_age_month_quarter_year' gives correct answer with valid input
     expect_identical(ans_obtained, ans_expected)
 })
         
-
 test_that("'format_age_month_quarter_year' throws correct error with invalid inputs - years", {
     expect_error(format_age_month_quarter_year(x = c("10", "<5"),
                                                break_min = NULL,
@@ -576,6 +575,94 @@ test_that("'format_period_month_quarter_year' throws correct error with invalid 
                  "'x' has open interval \\[\"<2001 Jun\"\\]")
 })
   
+
+## format_triangle_month_quarter_year -------------------------------------------
+
+test_that("'format_triangle_month_quarter_year' gives correct answer with valid inputs", {
+    ## 'break_max' supplied, and 'open_last' is TRUE 
+    x <- c("Upper", "Lower", "Upper", NA, "Lower", "Lower", "Lower")
+    age <- c(0, 105, 20, 108, 100, NA, "100+")
+    ans_obtained <- format_triangle_month_quarter_year(x = x,
+                                                       age = age,
+                                                       break_max = 100,
+                                                       open_last = TRUE)
+    ans_expected <- factor(c("Upper", "Upper", "Upper", "Upper", "Lower", NA, "Lower"),
+                           levels = c("Lower", "Upper", NA),
+                           exclude = NULL)
+    expect_identical(ans_obtained, ans_expected)
+    ## 'break_max' supplied, and 'open_last' is FALSE 
+    x <- c("Upper", "Lower", "Upper", NA, "Lower", "Lower")
+    age <- c(0, 105, 20, 108, 100, NA)
+    ans_obtained <- format_triangle_month_quarter_year(x = x,
+                                                       age = age,
+                                                       break_max = 110,
+                                                       open_last = TRUE)
+    ans_expected <- factor(c("Upper", "Lower", "Upper", NA, "Lower", NA),
+                           levels = c("Lower", "Upper", NA),
+                           exclude = NULL)
+    expect_identical(ans_obtained, ans_expected)
+    ## 'break_max' is NULL
+    x <- c("Upper", "Lower", "Upper", NA, "Lower", "Lower")
+    age <- c(0, 105, 20, 108, 100, NA)
+    ans_obtained <- format_triangle_month_quarter_year(x = x,
+                                                       age = age,
+                                                       break_max = NULL,
+                                                       open_last = TRUE)
+    ans_expected <- factor(x,
+                           levels = c("Lower", "Upper", NA),
+                           exclude = NULL)
+    expect_identical(ans_obtained, ans_expected)
+    ## 'x' has length 0
+    x <- character()
+    age <- integer()
+    ans_obtained <- format_triangle_month_quarter_year(x = x,
+                                                       age = age,
+                                                       break_max = NULL,
+                                                       open_last = TRUE)
+    ans_expected <- factor(character(),
+                           levels = c("Lower", "Upper"))
+    expect_identical(ans_obtained, ans_expected)
+    ## 'x' or 'age' all NA
+    x <- c("Lower", NA)
+    age <- c(NA, 20)
+    ans_obtained <- format_triangle_month_quarter_year(x = x,
+                                                       age = age,
+                                                       break_max = 100,
+                                                       open_last = TRUE)
+    ans_expected <- factor(c(NA, NA),
+                           levels = c("Lower", "Upper", NA),
+                           exclude = NULL)
+    expect_identical(ans_obtained, ans_expected)
+})
+
+test_that("'format_triangle_month_quarter_year' throws correct error with invalid inputs - years", {
+    expect_error(format_triangle_month_quarter_year(x = c("Lower", "wrong"),
+                                                    age = c("10", "50"),
+                                                    break_max = 100,
+                                                    open_last = TRUE),
+                 "'x' has invalid value for Lexis triangle \\[\"wrong\"\\]")
+    expect_error(format_triangle_month_quarter_year(x = c("Lower", NA),
+                                                    age = c("10", "<5"),
+                                                    break_max = NULL,
+                                                    open_last = TRUE),
+                 "'age' has interval \\[\"<5\"\\] that is open on the left")
+    expect_error(format_triangle_month_quarter_year(x = c("Lower", "Upper"),
+                                                    age = c("5+", "0"),
+                                                    break_max = 10,
+                                                    open_last = TRUE),
+                 "'age' has open interval \\[\"5\\+\"\\] that starts below 'break_max' \\[10\\]")
+    expect_error(format_triangle_month_quarter_year(x = c("Lower", "Upper"),
+                                                    age = c("5+", "0"),
+                                                    break_max = 10,
+                                                    open_last = FALSE),
+                 "'open_last' is FALSE but 'age' has open interval \\[\"5\\+\"\\]")
+    expect_error(format_triangle_month_quarter_year(x = c("Lower", "Upper"),
+                                                    age = c("10", "0"),
+                                                    break_max = 5,
+                                                    open_last = FALSE),
+                 "'age' has interval \\[\"10\"\\] that ends above 'break_max' \\[5\\]")
+})
+
 
 ## make_i_interval ------------------------------------------------------------
 

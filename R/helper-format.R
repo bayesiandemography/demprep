@@ -318,6 +318,7 @@ format_period_month_quarter_year <- function(x,
 }
 
 
+## HAS_TESTS
 format_triangle_month_quarter_year <- function(x,
                                                age,
                                                break_max,
@@ -336,19 +337,11 @@ format_triangle_month_quarter_year <- function(x,
     }
     demcheck::err_is_logical_flag(x = open_last,
                                   name = "open_last")
-    ## deal with "empty" case where 'x' has no non-NA values
+    ## deal with "empty" case where 'x' is length 0
     n <- length(x)
     if (n == 0L) {
         ans <- factor(character(),
                       levels = c("Lower", "Upper"))
-        return(ans)
-    }
-    is_na_any <- is.na(x) | is.na(age)
-    if (all(is_na_any)) {
-        ans <- rep(NA_character_, times = n)
-        ans <- factor(ans,
-                      levels = c("Lower", "Upper", NA),
-                      exclude = NULL)
         return(ans)
     }
     ## put unique values in 'labels' vectors
@@ -365,6 +358,7 @@ format_triangle_month_quarter_year <- function(x,
     parsed <- parse_integers(x = labels_age,
                              name = "age")
     low <- parsed$low # integer
+    up <- parsed$up # integer
     is_open_first <- parsed$is_open_first
     is_open_last <- parsed$is_open_last
     break_max_age <- parsed$break_max # integer
@@ -381,7 +375,7 @@ format_triangle_month_quarter_year <- function(x,
         i_too_low <- match(TRUE, is_too_low, nomatch = 0L)
         if (i_too_low > 0L) {
             stop(gettextf("'%s' has open interval [\"%s\"] that starts below '%s' [%d]",
-                          "age", labels_age[[i_too_low]], "break_min", break_min),
+                          "age", labels_age[[i_too_low]], "break_max", break_max),
                  call. = FALSE)
         }
     }
@@ -396,7 +390,7 @@ format_triangle_month_quarter_year <- function(x,
     ## if 'open_last' is FALSE, and 'break_max' is supplied,
     ## make sure that all intervals less than 'break_max'
     if (!open_last && has_break_max) {
-        is_too_high <- up >= break_max
+        is_too_high <- up > break_max
         i_too_high <- match(TRUE, is_too_high, nomatch = 0L)
         if (i_too_high > 0L) {
             stop(gettextf("'%s' has interval [\"%s\"] that ends above '%s' [%d]",
@@ -404,7 +398,7 @@ format_triangle_month_quarter_year <- function(x,
                  call. = FALSE)
         }
     }
-    ## make 'break_max'
+    ## make 'break_max' if not supplied
     if (!has_break_max) {
         break_max <- break_max_age
         message(gettextf("setting '%s' to %d",
@@ -419,6 +413,10 @@ format_triangle_month_quarter_year <- function(x,
         low_all <- low[match(age, labels_age)]
         is_open_not_first <- !is.na(age) & (low_all >= break_max + 1L)
         ans[is_open_not_first] <- "Upper"
+        ## if 'x' "Lower" and 'age' is NA,
+        ## set answer to NA, since the value
+        ## potentially should be recoded
+        ans[(x == "Lower") & is.na(age)] <- NA
     }
     ## return result
     levels <- c("Lower", "Upper")

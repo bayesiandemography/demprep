@@ -32,23 +32,27 @@ in \code{x} belongs. All age groups in \code{age}
 must be single-year, except for any open age groups.
 
 \code{open_last} determines whether the
-triangles need to account for an
-open age group, and \code{break_max}
+allocation of triangles needs to
+account for an open age group, and \code{break_max}
 specifies the cut-off for the open age group.
 See \code{\link{format_age_year}} for a description
 of how \code{open_last} and \code{break_max}
 control age groups.
 
-\code{format_triangle_year} leaves the labels
-in \code{x} unchanged, except for labels
-corresponding to ages\code{break_max + 1} and higher,
-which are recoded to \code{"Upper"}
-(assuming \code{open_last} is \code{TRUE}.)
+When \code{break_max} is \code{NULL},
+the return value from \code{format_triangle_year}
+is identical to \code{x}. When \code{break_max}
+is non-\code{NULL}, the return value is as follows.
 
-The return value is a factor with levels
-\code{"Lower"}, \code{"Upper"}, and
-(if the return value has \code{NA}s)
-\code{NA}.
+\tabular{lll}{
+  \code{x} \tab \code{age} \tab return value \cr
+  \code{"Lower"} \tab \code{<= break_min} \tab \code{"Lower"} \cr
+  \code{"Lower"} \tab \code{> break_min} \tab \code{"Upper"} \cr
+  \code{"Lower"} \tab \code{NA} \tab \code{NA} \cr
+  \code{"Upper"} \tab \code{<= break_min} \tab \code{"Upper"} \cr
+  \code{"Upper"} \tab \code{> break_min} \tab \code{"Upper"} \cr
+  \code{"Upper"} \tab \code{NA} \tab \code{"Upper"} \cr
+}
 }
 \examples{
 ## we construct 'x' and 'age' from
