@@ -311,7 +311,7 @@ format_triangle_multi <- function(x,
         i_too_high_age <- match(TRUE, is_too_high_age, nomatch = 0L)
         if (i_too_high_age > 0L) {
             stop(gettextf("'%s' has interval [\"%s\"] that ends above '%s' [%d]",
-                          "age", labels_age[[i_too_high]], "break_max", break_max),
+                          "age", labels_age[[i_too_high_age]], "break_max", break_max),
                  call. = FALSE)
         }
     }
@@ -411,30 +411,36 @@ format_triangle_multi <- function(x,
     is_na_period <- is.na(period)
     is_na_age_period <- is_na_age | is_na_period
     is_na_any <- is_na_x | is_na_age | is_na_period
-    is_ge_break_max_plus_width <- !is_na_age & (low_age_all >= break_max + width)
-    is_unambig_if_lower <- !is_na_age_period & (offset_low_age <= offset_low_period)
-    is_unambig_if_upper <- !is_na_age_period & (offset_low_age >= offset_low_period)
     is_lower <- !is_na_x & (x == "Lower")
     is_upper <- !is_na_x & (x == "Upper")
+    lower_stays_lower <- !is_na_age_period & (offset_low_age <= offset_low_period)
+    upper_stays_upper <- !is_na_age_period & (offset_low_age >= offset_low_period)
+    lower_flips_to_upper <- !is_na_age_period & (offset_low_age >= offset_up_period)
+    upper_flips_to_lower <- !is_na_age_period & (offset_up_age <= offset_low_period)
+    is_ge_break_max_plus_width <- !is_na_age & (low_age_all >= break_max + width)
     is_ambig <- !(is_na_any
-        | is_ge_break_max_plus_width
-        | (is_unambig_if_lower & is_lower)
-        | (is_unambig_if_upper & is_upper))
-    i_ambig <- match(TRUE, is_off_diag_crosses, nomatch = 0L)
+        | (lower_stays_lower & is_lower)
+        | (upper_stays_upper & is_upper)
+        | (lower_flips_to_upper & is_lower)
+        | (upper_flips_to_lower & is_upper)
+        | is_ge_break_max_plus_width)
+    i_ambig <- match(TRUE, is_ambig, nomatch = 0L)
     if (i_ambig > 0L)
-        stop(gettextf("old Lexis triangles formed by element %d of '%s' [\"%s\"] and element %d of '%s' [\"%s\"] cannot be assigned unambiguously to new Lexis triangles",
-                      i_off_diag_crosses,
+        stop(gettextf("element %d of '%s' [\"%s\"], for which '%s' is \"%s\" and '%s' is \"%s\", falls within two or more newly-created Lexis triangles",
+                      i_ambig,
+                      "x",
+                      x[[i_ambig]],
                       "age",
-                      age[[i_off_diag_crosses]],
-                      i_off_diag_crosses,
+                      age[[i_ambig]],
                       "period",
-                      period[[i_off_diag_crosses]]),
+                      period[[i_ambig]]),
              call. = FALSE)
     ## allocate triangles
     ans <- rep(NA_character_, times = length(x))
-    ans[is_on_diag] <- x[is_on_diag]
-    ans[is_all_below_diag] <- "Lower"
-    ans[is_all_above_diag] <- "Upper"
+    ans[lower_stays_lower & is_lower] <- "Lower"
+    ans[upper_stays_upper & is_upper] <- "Upper"
+    ans[lower_flips_to_upper & is_lower] <- "Upper"
+    ans[upper_flips_to_lower & is_upper] <- "Lower"
     ans[is_ge_break_max_plus_width] <- "Upper"
     ## return result
     levels <- c("Lower", "Upper")
