@@ -47,20 +47,20 @@ age group.}
 A factor with the same length as \code{x}.
 }
 \description{
-Create labels for Lexis triangles used,
-along with age groups and periods,
-for tabulating births.
-The age groups and periods must all have the same
-length.
+Format labels for Lexis triangles to be used with
+age groups and periods for tabulating births.
+These age groups and periods must all have the same
+length, which is set by the \code{width} parameter.
 }
 \details{
 \code{age} and \code{period} define the
 age groups and periods to which the
 Lexis triangles
-in \code{x} belong. Age groups can be single-year
-(eg \code{"23"}) or multi-year (eg \code{"20-24"}).
-Periods can also be single-year
-(eg \code{"2023"}), multi-year (eg \code{"2020-2025"}).
+in \code{x} belong. These age groups and periods
+can be narrower than \code{width}.
+Age groups and periods can be single-year
+(\code{"23"}, \code{"2023"}) or
+multi-year (\code{"20-24"}, \code{"2020-2025"}).
 
 \code{break_min} and \code{break_max} specify
 the range of ages over which reproduction
@@ -69,40 +69,62 @@ is assumed to occur, and \code{recode_up} and
 ages outside this range are handled. See
 \code{\link{date_to_age_births}} for details.
 
-\code{format_triangle_births} returns different labels
-from \code{x} in two situations: (i) when the intervals
-in \code{age} and \code{period} are narrower than
-\code{width}, so that aggregation is required, and
-(ii) when ages lie outside the range set
-by \code{break_min} and \code{break_max}.
-If an age is recoded upwards to fall within
+The values for \code{width}, \code{break_min},
+\code{break_max}, and \code{origin} together define a new system
+of Lexis triangles. \code{format_triangle_births}
+calculates where the triangles defined by
+\code{x}, \code{age}, and \code{period} fall within
+this new system. For instance, if an upper triangle
+defined by \code{x}, \code{age}, and \code{period}
+falls entirely within a lower triangle in the new
+system, then \code{format_triangle_births}
+returns \code{"Lower"}.
+
+If \code{recode_up} is \code{TRUE} and
+an age is recoded upwards to fall within
 the youngest reproductive age group,
 then the corresponding Lexis triangle is set to
-\code{"Lower"}. If an age is recoded downwards to
+\code{"Lower"}. If \code{recode_down} is \code{FALSE}
+and an age is recoded downwards to
 fall within the lowest reproductive age group, then
 the corresponding Lexis triangle is set to \code{"Upper"}.
 }
 \examples{
-format_age_births(x = c("20-24", "37", NA, "32", "21-24"))
+## we construct 'x', 'age', and 'period'
+## from dates information ourselves before
+## calling 'format_triangle_multi'
+date_birth <- c("2024-03-27", "2022-11-09")
+dob_mother <- "2000-01-01"
+x <- date_to_triangle_births(date = date_birth,
+                            dob = dob_mother,
+                            month_start = "Jul")
+age <- date_to_age_births(date = date_birth,
+                          dob = dob_mother)
+period <- date_to_period_births(date = date_birth,
+                                month_start = "Jul")
+format_triangle_births(x = x,
+                       age = age,
+                       period = period)
 
-format_age_births(x = c("20-24", "37", "32", "21-24"),
-                  width = 10,
-                  break_min = 20)
+## someone else has constructed
+## 'x', 'age', and 'period' from
+## dates information
+x_processed <- c("Lower", "Upper", "Upper")
+age_processed <- c("20", "30-34", "25")
+period_processed <- c("2002", "2015-2020", "2011)
+format_triangle_multi(x = x_processed,
+                      age = age_processed,
+                      period = period_processed)
 
-format_age_births(x = c("20", "37", "15"),
-                  width = 1,
-                  break_max = 45)
-
-## allow youngest and oldest age groups to be
-## determined by the data
-format_age_births(x = c("21", "33", "22-24"),
-                  break_min = NULL,
-                  break_max = NULL)
-
-## recode ages outside the expected range
-format_age_births(x = c("22", "13", "54"),
-                  recode_up = TRUE,
-                  recode_down = TRUE)
+## recode up and down
+x <- c("Upper", "Lower", "Upper")
+age <- c("10", "50-54", "25")
+period <- c("2002", "2015-2020", "2011)
+format_triangle_multi(x = x,
+                      age = age,
+                      period = period,
+                      recode_up = TRUE,
+                      recode_down = TRUE)
 }
 \seealso{
 Other functions for creating Lexis triangles are

@@ -36,28 +36,33 @@ A factor with the same length as
 \code{x}.
 }
 \description{
-Create labels for multi-year Lexis triangles to
+Format labels for multi-year Lexis triangles to
 be used with multi-year age groups and periods.
-The age groups and periods must all have the same
-length.
+These age groups and periods (apart from a
+possible open age group) all have the same width,
+which is set by the \code{width} parameter.
 }
 \details{
 \code{age} and \code{period} define the
 age groups and periods to which the
-Lexis triangles
-in \code{x} belong. Age groups can be single-year
-(eg \code{"23"}), multi-year (eg \code{"20-24"})
-or open (eg \code{"100+"}).
-Periods can be single-year
-(eg \code{"2023"}), multi-year (eg \code{"2020-2025"}).
+Lexis triangles in \code{x} belong. These age groups
+and periods can be narrower than \code{width},
+Age groups can be single-year (\code{"23"}),
+multi-year (\code{"20-24"})
+or open (\code{"100+"}), and periods 
+can be single-year (\code{"2023"})
+or multi-year (\code{"2020-2025"}).
 
-\code{format_triangle_multi} returns different labels
-from \code{x} in two situations: (i) when the intervals
-in \code{age} and \code{period} are narrower than
-\code{width}, so that aggregation is required, and
-(ii) when the age groups are older than
-\code{break_max + width}, in which case lower
-triangles are recoded to upper.
+The values for \code{width}, \code{break_max}, \code{open_last},
+and \code{origin} together define a new system
+of Lexis triangles. \code{format_triangle_multi}
+calculates where the triangles defined by
+\code{x}, \code{age}, and \code{period} fall within
+this new system. For instance, if an upper triangle
+defined by \code{x}, \code{age}, and \code{period}
+falls entirely within a lower triangle in the new
+system, then \code{format_triangle_multi}
+returns \code{"Lower"}.
 
 \code{open_last} determines whether the
 triangles need to account for an
@@ -68,7 +73,7 @@ of how \code{open_last} and \code{break_max}
 determine age groups.
 
 \code{x} and \code{period} must be based on the same
-starting month, e.g. if \code{x} uses years that
+starting month, so that if \code{x} uses years that
 start in July and end in June,
 then \code{period} must do so too. If
 \code{x} was created using function
@@ -88,33 +93,39 @@ months of the year were used.
 ## we construct 'x', 'age', and 'period'
 ## from dates information ourselves before
 ## calling 'format_triangle_multi'
-x <- date_to_triangle_multi(date = c("2024-03-27",
-                                     "2022-11-09"),
-                            dob = "2020-01-01",
+date_original <- c("2024-03-27", "2022-11-09")
+dob_original <- "2020-01-01"
+x <- date_to_triangle_multi(date = date_original,
+                            dob = dob_original,
                             month_start = "Jul")
-age <- date_to_age_multi(date = c("2024-03-27",
-                                  "2022-11-09"),
-                         dob = "2020-01-01")
-period <- date_to_period_multi(date = c("2024-03-27",
-                                        "2022-11-09"))
-                               month_start = "Jul") ## same as above
+age <- date_to_age_multi(date = date_original,
+                         dob = dob_original)
+period <- date_to_period_multi(date = date_original,
+                               month_start = "Jul")
 format_triangle_multi(x = x,
                       age = age,
                       period = period)
-format_triangle_multi(x = x,
-                      age = age,
-                      period = period,
-                      break_max = 10)
 
 ## someone else has constructed
 ## 'x', 'age', and 'period' from
 ## dates information
-x <- c("Lower", "Lower", "Lower")
-age <- c("10", "15+", "5")
-period <- c(2002, 2015, 2011)
-format_triangle_multi(x = x,
-                      age = age,
-                      period = period,
+x_processed <- c("Lower", "Lower", "Lower")
+age_processed <- c("10", "15+", "5")
+period_processed <- c(2002, 2015, 2011)
+format_triangle_multi(x = x_processed,
+                      age = age_processed,
+                      period = period_processed)
+
+## alternative value for 'width'
+format_triangle_multi(x = x_processed,
+                      age = age_processed,
+                      period = period_processed,
+                      width = 10)
+
+## alternative value for 'break_max'
+format_triangle_multi(x = x_processed,
+                      age = age_processed,
+                      period = period_processed,
                       break_max = 10)
 }
 \seealso{

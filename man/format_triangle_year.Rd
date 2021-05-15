@@ -46,38 +46,42 @@ is non-\code{NULL}, the return value is as follows.
 
 \tabular{lll}{
   \code{x} \tab \code{age} \tab return value \cr
-  \code{"Lower"} \tab \code{<= break_min} \tab \code{"Lower"} \cr
-  \code{"Lower"} \tab \code{> break_min} \tab \code{"Upper"} \cr
+  \code{"Lower"} \tab \code{<= break_max} \tab \code{"Lower"} \cr
+  \code{"Lower"} \tab \code{> break_max} \tab \code{"Upper"} \cr
   \code{"Lower"} \tab \code{NA} \tab \code{NA} \cr
-  \code{"Upper"} \tab \code{<= break_min} \tab \code{"Upper"} \cr
-  \code{"Upper"} \tab \code{> break_min} \tab \code{"Upper"} \cr
+  \code{"Upper"} \tab \code{<= break_max} \tab \code{"Upper"} \cr
+  \code{"Upper"} \tab \code{> break_max} \tab \code{"Upper"} \cr
   \code{"Upper"} \tab \code{NA} \tab \code{"Upper"} \cr
+  \code{NA} \tab \code{<= break_max} \tab \code{NA} \cr
+  \code{NA} \tab \code{> break_max} \tab \code{"Upper"} \cr
+  \code{NA} \tab \code{NA} \tab \code{NA} \cr
 }
 }
 \examples{
 ## we construct 'x' and 'age' from
 ## dates information ourselves before
 ## calling 'format_triangle_year'
-x <- date_to_triangle_year(date = c("2024-03-27",
-                                    "2022-11-09"),
-                           dob = "2020-01-01",
+date_original <- c("2024-03-27", "2022-11-09")
+dob_original <- "2020-01-01"
+x <- date_to_triangle_year(date = date_original,
+                           dob = dob_original,
                            month_start = "Jul")
-age <- date_to_age_year(date = c("2024-03-27",
-                                 "2022-11-09"),
-                        dob = "2020-01-01")
+age <- date_to_age_year(date = date_original,
+                        dob = dob_original)
 format_triangle_year(x = x,
                      age = age)
-format_triangle_year(x = x,
-                     age = age,
-                     break_max = 5)
 
 ## someone else has constructed
 ## 'x' and 'age' from
 ## dates information
-x <- c("Lower", "Lower", "Lower")
-age <- c("10", "15+", "5")
-format_triangle_year(x = x,
-                     age = age,
+x_processed <- c("Lower", "Lower", "Lower")
+age_processed <- c("10", "15+", "5")
+format_triangle_year(x = x_processed,
+                     age = age_processed)
+
+## alternative value for 'break_max'
+format_triangle_year(x = x_processed,
+                     age = age_processed,
                      break_max = 10)
 }
 \seealso{
