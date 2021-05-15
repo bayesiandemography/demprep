@@ -603,14 +603,6 @@ format_triangle_births <- function(x,
                       levels = c("Lower", "Upper"))
         return(ans)
     }
-    is_na_any <- is.na(x) | is.na(age) | is.na(period)
-    if (all(is_na_any)) {
-        ans <- rep(NA_character_, times = n)
-        ans <- factor(ans,
-                      levels = c("Lower", "Upper", NA),
-                      exclude = NULL)
-        return(ans)
-    }
     ## put unique values in 'labels' vectors
     labels_x <- unique(x)
     labels_age <- unique(age)
@@ -658,38 +650,109 @@ format_triangle_births <- function(x,
     }
     ## Check that ages lie within limits implied by 'break_min' and 'break_max',
     ## and recode where necessary. (Triangles recoded later.)
-    if (!has_break_min) {
-        is_lt_min <- low_age < break_min
-        i_lt_min <- match(TRUE, is_lt_min, nomatch = 0L)
-        if (i_lt_min > 0L) {
-            if (recode_up) {
-                low_age[is_lt_min] <- break_min
-                age_up[is_lt_min] <- pmax(age_up[is_lt_min], low_age[is_lt_min] + 1L)
-            }
-            else {
-                stop(gettextf("age group \"%s\" less than 'break_min' [%d] and 'recode_up' is FALSE",
-                              labels_old[[i_lt_min]],
-                              break_min),
+    if (has_break_min) {
+        is_lt_min_age <- low_age < break_min
+        i_lt_min_age <- match(TRUE, is_lt_min_age, nomatch = 0L)
+        if (i_lt_min_age > 0L) {
+            if (!recode_up) {
+                stop(gettextf("'%s' has interval [\"%s\"] that starts below '%s' [%d] and '%s' is %s",
+                              "age",
+                              labels_age[[i_lt_min_age]],
+                              "break_min",
+                              break_min,
+                              "recode_up",
+                              "FALSE"),
                      call. = FALSE)
             }
         }
+    }
+    if (has_break_max) {
+        is_gt_max_age <- up_age > break_max
+        i_gt_max_age <- match(TRUE, is_gt_max_age, nomatch = 0L)
+        if (i_gt_max_age > 0L) {
+            if (!recode_down) {
+                stop(gettextf("'%s' has interval [\"%s\"] that ends above '%s' [%d] and '%s' is %s",
+                              "age",
+                              labels_age[[i_gt_max_age]],
+                              "break_max",
+                              break_max,
+                              "recode_down",
+                              "FALSE"),
+                     call. = FALSE)
+            }
+        }
+    }
+    ## make 'break_min', 'break_max' if not supplied
+    if (!has_break_min) {
+        remainder_min <- break_min_age %% width
+        break_min <- break_min_age - remainder_min
+        message(gettextf("setting '%s' to %d",
+                         "break_min", break_min))
     }
     if (!has_break_max) {
-        is_gt_max <- age_up > break_max
-        i_gt_max <- match(TRUE, is_gt_max, nomatch = 0L)
-        if (i_gt_max > 0L) {
-            if (recode_down) {
-                age_up[is_gt_max] <- break_max
-                low_age[is_gt_max] <- pmin(low_age[is_gt_max], age_up[is_gt_max] - 1L)
-            }
-            else {
-                stop(gettextf("age group \"%s\" greater than 'break_max' [%d] and 'recode_down' is FALSE",
-                              labels_old[[i_gt_max]],
-                              break_max),
-                     call. = FALSE)
-            }
-        }
+        remainder_max <- break_max_age %% width
+        if (remainder_max == 0L)
+            break_max <- break_max_age
+        else
+            break_max <- break_max_age - remainder_max + width
+        message(gettextf("setting '%s' to %d",
+                         "break_max", break_max))
     }
+    ## make breaks for age
+    breaks_age <- seq.int(from = break_min,
+                          to = break_max,
+                          by = width)
+    ## Check that all age intervals fall within implied breaks.
+    ## (Checking now gives more informative error messages
+    ## then waiting for attempt to form Lexis triangles.)
+    i_interval_age <- make_i_interval(low = low_age,
+                                      up = up_age,
+                                      breaks = breaks_age,
+                                      open_first = FALSE,
+                                      open_last = FALSE)
+    is_multiple_intervals_age <- i_interval_age == -1L
+    i_multiple_intervals_age <- match(TRUE, is_multiple_intervals_age, nomatch = 0L)
+    if (i_multiple_intervals_age > 0L)
+        stop(gettextf("'%s' has interval [\"%s\"] that intersects two or more intervals formed using '%s = %d', '%s = %d', and '%s = %d'",
+                      "age",
+                      labels_age[[i_multiple_intervals_age]],
+                      "break_min",
+                      break_min,
+                      "break_max",
+                      break_max,
+                      "width",
+                      width),
+             call. = FALSE)
+    ## make breaks for period
+    remainder_min_period <- (break_min_period - origin) %% width
+    break_min_period <- break_min_period - remainder_min_period
+    remainder_max_period <- (break_max_period - origin) %% width
+    if (remainder_max_period == 0L)
+        break_max_period <- break_max_period
+    else
+        break_max_period <- break_max_period - remainder_max_period + width
+    ## Check that all intervals fall within implied period breaks.
+    ## (Checking now gives more informative error messages
+    ## then waiting for attempt to form Lexis triangles.)
+    breaks_period <- seq.int(from = break_min_period,
+                             to = break_max_period,
+                             by = width)
+    i_interval_period <- make_i_interval(low = low_period,
+                                         up = up_period,
+                                         breaks = breaks_period,
+                                         open_first = FALSE,
+                                         open_last = FALSE)
+    is_multiple_intervals_period <- i_interval_period == -1L
+    i_multiple_intervals_period <- match(TRUE, is_multiple_intervals_period, nomatch = 0L)
+    if (i_multiple_intervals_period > 0L)
+        stop(gettextf("'%s' has interval [\"%s\"] that intersects two or more intervals formed using '%s = %d' and '%s = %d'",
+                      "period",
+                      labels_period[[i_multiple_intervals_period]],
+                      "origin",
+                      origin,
+                      "width",
+                      width),
+             call. = FALSE)
     ## Construct and classify Lexis squares from existing labels
     i_labels_age <- match(age, labels_age)
     i_labels_period <- match(period, labels_period)
@@ -697,12 +760,12 @@ format_triangle_births <- function(x,
     low_period_all <- low_period[i_labels_period]
     up_age_all <- up_age[i_labels_age]
     up_period_all <- up_period[i_labels_period]
-    is_reclassified_up <- is_lt_min[i_labels_age]
-    is_reclassified_down <- is_gt_mad[i_labels_age]
-    is_reclassified <- is_reclassifed_up | is_reclassified_down
-    height <- age_up_all - low_age_all
-    width <- up_period_all - low_period_all
-    is_not_square <- (height != width) & !is_reclassified
+    is_reclassified_up <- if (has_break_min) is_lt_min_age[i_labels_age] else FALSE
+    is_reclassified_down <- if (has_break_max) is_gt_max_age[i_labels_age] else FALSE
+    is_reclassified <- is_reclassified_up | is_reclassified_down
+    height_all <- up_age_all - low_age_all
+    width_all <- up_period_all - low_period_all
+    is_not_square <- height_all != width_all
     i_not_square <- match(TRUE, is_not_square, nomatch = 0L)
     if (i_not_square > 0L)
         stop(gettextf("element %d of '%s' [\"%s\"] and element %d of '%s' [\"%s\"] have different widths, so do not form a Lexis square",
@@ -720,32 +783,41 @@ format_triangle_births <- function(x,
     offset_low_age <- low_age_all - break_age
     offset_low_period <- low_period_all - break_period
     offset_up_age <- up_age_all - break_age
-    is_break_max_plus_width <- low_age_all >= break_max + width
-    is_on_diag <- !is_na_any & (offset_low_age == offset_low_period)
-    is_all_below_diag <- !is_na_any & (offset_up_age <= offset_low_period)
-    is_all_above_diag <- !is_na_any & (offset_low_age >= offset_low_period)
-    is_off_diag_crosses <- !(is_na_any
+    offset_up_period <- up_period_all - break_period
+    is_na_x <- is.na(x)
+    is_na_age <- is.na(age)
+    is_na_period <- is.na(period)
+    is_na_age_period <- is_na_age | is_na_period
+    is_na_any <- is_na_x | is_na_age | is_na_period
+    is_lower <- !is_na_x & (x == "Lower")
+    is_upper <- !is_na_x & (x == "Upper")
+    lower_stays_lower <- !is_na_age_period & (offset_low_age <= offset_low_period)
+    upper_stays_upper <- !is_na_age_period & (offset_low_age >= offset_low_period)
+    lower_flips_to_upper <- !is_na_age_period & (offset_low_age >= offset_up_period)
+    upper_flips_to_lower <- !is_na_age_period & (offset_up_age <= offset_low_period)
+    is_ambig <- !(is_na_any
         | is_reclassified
-        | is_break_max_plus_width
-        | is_on_diag
-        | is_below_diag
-        | is_above_diag)
-    i_off_diag_crosses <- match(TRUE, is_off_diag_crosses, nomatch = 0L)
-    if (i_off_diag_crosses > 0L)
-        stop(gettextf("old Lexis triangles formed by element %d of '%s' [\"%s\"] and element %d of '%s' [\"%s\"] cannot be assigned unambiguously to new Lexis triangles",
-                      i_off_diag_crosses,
+        | (lower_stays_lower & is_lower)
+        | (upper_stays_upper & is_upper)
+        | (lower_flips_to_upper & is_lower)
+        | (upper_flips_to_lower & is_upper))
+    i_ambig <- match(TRUE, is_ambig, nomatch = 0L)
+    if (i_ambig > 0L)
+        stop(gettextf("element %d of '%s' [\"%s\"], for which '%s' is \"%s\" and '%s' is \"%s\", falls within two or more newly-created Lexis triangles",
+                      i_ambig,
+                      "x",
+                      x[[i_ambig]],
                       "age",
-                      age[[i_off_diag_crosses]],
-                      i_off_diag_crosses,
+                      age[[i_ambig]],
                       "period",
-                      period[[i_off_diag_crosses]]),
+                      period[[i_ambig]]),
              call. = FALSE)
     ## allocate triangles
     ans <- rep(NA_character_, times = length(x))
-    ans[is_on_diag] <- x[is_on_diag]
-    ans[is_all_below_diag] <- "Lower"
-    ans[is_all_above_diag] <- "Upper"
-    ans[is_break_max_plus_width] <- "Upper"
+    ans[lower_stays_lower & is_lower] <- "Lower"
+    ans[upper_stays_upper & is_upper] <- "Upper"
+    ans[lower_flips_to_upper & is_lower] <- "Upper"
+    ans[upper_flips_to_lower & is_upper] <- "Lower"
     ans[is_reclassified_up] <- "Lower"
     ans[is_reclassified_down] <- "Upper"
     ## return result

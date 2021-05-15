@@ -679,7 +679,7 @@ format_age_births <- function(x,
         if (remainder_max == 0L)
             break_max <- break_max_x
         else
-            break_max <- break_max_x - remainder + width
+            break_max <- break_max_x - remainder_max + width
         message(gettextf("setting '%s' to %d",
                          "break_max", break_max))
     }
