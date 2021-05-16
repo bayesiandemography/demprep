@@ -2,7 +2,7 @@
 % Please edit documentation in R/format_triangle.R
 \name{format_triangle_month}
 \alias{format_triangle_month}
-\title{Format labels for one-month Lexis triangles}
+\title{Format labels for quarter Lexis triangles}
 \usage{
 format_triangle_month(x, age, break_max = 1200, open_last = TRUE)
 }
@@ -13,7 +13,7 @@ format_triangle_month(x, age, break_max = 1200, open_last = TRUE)
 as \code{x}.}
 
 \item{break_max}{An integer or \code{NULL}.
-Defaults to 1200.}
+Defaults to 400.}
 
 \item{open_last}{Whether the final age group
 has no upper limit. Defaults to \code{TRUE}.}
@@ -23,47 +23,67 @@ A factor with the same length as
 \code{x}.
 }
 \description{
-Create labels for one-month Lexis triangles
-to be used with labels for one-month
+Format labels for one-month
+Lexis triangles to be used with one-month
 age groups and periods.
 }
 \details{
 \code{age} gives the age group to which each triangle
 in \code{x} belongs. All age groups in \code{age}
-must be single-month, except for any open age groups.
-The lower limit of open age groups in \code{age} must
-be at least as high as \code{break_min}
-(if \code{break_min} is non-\code{NULL}).
+must have a width of one month,
+except for any open age groups.
 
-\code{break_max} and \code{open_first}
-control the boundaries of Lexis triangles
-for the oldest age group.
+\code{open_last} determines whether the
+allocation of triangles needs to
+account for an open age group, and \code{break_max}
+specifies the cut-off for the open age group.
+See \code{\link{format_age_month}} for a description
+of how \code{open_last} and \code{break_max}
+control age groups.
+
+When \code{break_max} is \code{NULL},
+the return value from \code{format_triangle_year}
+is identical to \code{x}. When \code{break_max}
+is non-\code{NULL}, the return value is as follows.
+
+\tabular{lll}{
+  \code{x} \tab \code{age} \tab return value \cr
+  \code{"Lower"} \tab \code{<= break_max} \tab \code{"Lower"} \cr
+  \code{"Lower"} \tab \code{> break_max} \tab \code{"Upper"} \cr
+  \code{"Lower"} \tab \code{NA} \tab \code{NA} \cr
+  \code{"Upper"} \tab \code{<= break_max} \tab \code{"Upper"} \cr
+  \code{"Upper"} \tab \code{> break_max} \tab \code{"Upper"} \cr
+  \code{"Upper"} \tab \code{NA} \tab \code{"Upper"} \cr
+  \code{NA} \tab \code{<= break_max} \tab \code{NA} \cr
+  \code{NA} \tab \code{> break_max} \tab \code{"Upper"} \cr
+  \code{NA} \tab \code{NA} \tab \code{NA} \cr
+}
 }
 \examples{
 ## we construct 'x' and 'age' from
 ## dates information ourselves before
 ## calling 'format_triangle_month'
-x <- date_to_triangle_month(date = c("2024-03-27",
-                                     "2022-11-09"),
-                            dob = "2020-01-01",
-                            month_start = "Jul")
-age <- date_to_age_month(date = c("2024-03-27",
-                                  "2022-11-09"),
-                         dob = "2020-01-01")
+date_original <- c("2024-03-27", "2022-11-09")
+dob_original <- "2020-01-01"
+x <- date_to_triangle_month(date = date_original,
+                            dob = dob_original)
+age <- date_to_age_month(date = date_original,
+                         dob = dob_original)
 format_triangle_month(x = x,
                       age = age)
-format_triangle_month(x = x,
-                      age = age,
-                      break_max = 12)
 
 ## someone else has constructed
 ## 'x' and 'age' from
 ## dates information
-x <- c("Lower", "Lower", "Lower")
-age <- c("10", "12+", "6")
-format_triangle_month(x = x,
-                      age = age,
-                      break_max = 12)
+x_processed <- c("Lower", "Lower", "Lower")
+age_processed <- c("10", "15+", "5")
+format_triangle_month(x = x_processed,
+                      age = age_processed)
+
+## alternative value for 'break_max'
+format_triangle_month(x = x_processed,
+                      age = age_processed,
+                      break_max = 120)
 }
 \seealso{
 Other functions for reformating

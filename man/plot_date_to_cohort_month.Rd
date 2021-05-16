@@ -5,7 +5,7 @@
 \title{Depict the intervals created by
 function 'date_to_cohort_month'}
 \usage{
-plot_date_to_cohort_month(date, break_min = NULL, open_first = NULL)
+plot_date_to_cohort_month(date)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}
@@ -23,9 +23,5 @@ actual data analysis.
 plot_date_to_cohort_month(date = c("2024-03-27",
                                    "2023-08-13",
                                    "2023-11-09"))
-plot_date_to_cohort_month(date = c("2024-03-27",
-                                   "2023-08-13",
-                                   "2023-11-09"),
-                          break_min = "2023-10-01")
 }
 \keyword{internal}

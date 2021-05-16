@@ -5,7 +5,7 @@
 \title{Depict the intervals created by
 function 'date_to_cohort_quarter'}
 \usage{
-plot_date_to_cohort_quarter(date, break_min = NULL, open_first = NULL)
+plot_date_to_cohort_quarter(date)
 }
 \arguments{
 \item{date}{Dates of events or measurements.}
@@ -21,9 +21,5 @@ actual data analysis.
 plot_date_to_cohort_quarter(date = c("2024-03-27",
                                      "2022-05-13",
                                      "2022-11-09"))
-plot_date_to_cohort_quarter(date = c("2024-03-27",
-                                     "2022-05-13",
-                                     "2022-11-09"),
-                            break_min = "2022-01-01")
 }
 \keyword{internal}

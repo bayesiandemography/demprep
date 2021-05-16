@@ -44,9 +44,5 @@ plot_date_to_cohort_year(date = c("2024-03-27",
                                   "2022-11-09"),
                          month_start = "Jul",
                          label_year_start = FALSE)
-
-## specify oldest cohort, with 'open_first'
-## at default value of 'TRUE', so first cohort
-## has no lower limit
 }
 \keyword{internal}

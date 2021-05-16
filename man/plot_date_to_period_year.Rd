@@ -8,7 +8,10 @@ function 'date_to_period_year'}
 plot_date_to_period_year(date, month_start = "Jan", label_year_start = TRUE)
 }
 \arguments{
-\item{date}{Dates of events or measurements.}
+\item{date}{Dates of events or measurements.
+A vector of class \code{\link[base]{Date}},
+or a vector than can be coerced to class \code{Date}
+via function \code{\link[base]{as.Date}}.}
 
 \item{month_start}{An element of \code{\link[base]{month.name}},
 or \code{\link[base]{month.abb}}. Each period starts on
@@ -16,8 +19,7 @@ the first day of this month.}
 
 \item{label_year_start}{Whether to label a period
 by the calendar year at the beginning of the period
-or the calendar year at the end. Not needed for periods
-that start on 1 January. Defaults to \code{TRUE}.}
+or the calendar year at the end. Defaults to \code{TRUE}.}
 }
 \description{
 Create plot illustrating how function

@@ -11,13 +11,15 @@
 #' actual data analysis.
 #'
 #' @param date Dates of events or measurements.
+#' A vector of class \code{\link[base]{Date}},
+#' or a vector than can be coerced to class \code{Date}
+#' via function \code{\link[base]{as.Date}}.
 #' @param month_start An element of \code{\link[base]{month.name}},
 #' or \code{\link[base]{month.abb}}. Each period starts on
 #' the first day of this month.
 #' @param label_year_start Whether to label a period
 #' by the calendar year at the beginning of the period
-#' or the calendar year at the end. Not needed for periods
-#' that start on 1 January. Defaults to \code{TRUE}.
+#' or the calendar year at the end. Defaults to \code{TRUE}.
 #'
 #' @examples
 #' plot_date_to_period_year(date = c("2024-03-27",
@@ -39,28 +41,9 @@
 plot_date_to_period_year <- function(date,
                                      month_start = "Jan",
                                      label_year_start = TRUE) {
-    ## check arguments and/or apply defaults
-    demcheck::err_positive_length(x = date,
-                                  name = "date")
-    demcheck::err_has_non_na(x = date,
-                             name = "date")
-    date <- demcheck::err_tdy_date_vector(x = date,
-                                          name = "date")
-    month_start <- demcheck::err_tdy_month_start(x = month_start,
-                                                 name = "month_start")
-    demcheck::err_is_logical_flag(x = label_year_start,
-                                  name = "label_year_start")
-    ## create sequence of breaks
-    breaks <- make_breaks_date_to_date_year(date = date,
-                                            month_start = month_start)
-    ## create labels
-    labels <- make_labels_period(breaks = breaks,
-                                 label_year_start = label_year_start,
-                                 include_na = FALSE)
-    ## make plot
-    plot_date_to_period(date = date,
-                        breaks = breaks,
-                        labels = labels)
+    plot_date_to_cohort_period_year(date = date,
+                                    month_start = month_start,
+                                    label_year_start = label_year_start)
 }
 
 
@@ -83,29 +66,9 @@ plot_date_to_period_year <- function(date,
 #' @keywords internal
 #' @export
 plot_date_to_period_quarter <- function(date) {
-    ## check arguments and/or apply defaults
-    demcheck::err_positive_length(x = date,
-                                  name = "date")
-    demcheck::err_has_non_na(x = date,
-                             name = "date")
-    date <- demcheck::err_tdy_date_vector(x = date,
-                                          name = "date")
-    ## create sequence of breaks
-    breaks <- make_breaks_date_to_date_quarter(date = date,
-                                               break_min = NULL,
-                                               has_break_min_arg = FALSE)
-    ## make labels for these breaks
-    n <- length(breaks)
-    break_min <- breaks[[1L]]
-    break_max <- breaks[[n]]
-    labels <- make_labels_period_quarter(break_min = break_min,
-                                         break_max = break_max,
-                                         include_na = FALSE)
-    ## make plot
-    plot_date_to_period(date = date,
-                        breaks = breaks,
-                        labels = labels)
+    plot_date_to_cohort_period_quarter(date = date)
 }
+
 
 ## NO_TESTS
 #' Depict the intervals created by
@@ -126,26 +89,5 @@ plot_date_to_period_quarter <- function(date) {
 #' @keywords internal
 #' @export
 plot_date_to_period_month <- function(date) {
-    ## check arguments and/or apply defaults
-    demcheck::err_positive_length(x = date,
-                                  name = "date")
-    demcheck::err_has_non_na(x = date,
-                             name = "date")
-    date <- demcheck::err_tdy_date_vector(x = date,
-                                          name = "date")
-    ## create sequence of breaks
-    breaks <- make_breaks_date_to_date_month(date = date,
-                                             break_min = NULL,
-                                             has_break_min_arg = FALSE)
-    ## make labels for these breaks
-    n <- length(breaks)
-    break_min <- breaks[[1L]]
-    break_max <- breaks[[n]]
-    labels <- make_labels_period_month(break_min = break_min,
-                                       break_max = break_max,
-                                       include_na = FALSE)
-    ## make plot
-    plot_date_to_period(date = date,
-                        breaks = breaks,
-                        labels = labels)
+    plot_date_to_cohort_period_month(date = date)
 }

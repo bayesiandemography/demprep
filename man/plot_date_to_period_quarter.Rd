@@ -8,7 +8,10 @@ function 'date_to_period_quarter'}
 plot_date_to_period_quarter(date)
 }
 \arguments{
-\item{date}{Dates of events or measurements.}
+\item{date}{Dates of events or measurements.
+A vector of class \code{\link[base]{Date}},
+or a vector than can be coerced to class \code{Date}
+via function \code{\link[base]{as.Date}}.}
 }
 \description{
 Create plot illustrating how function

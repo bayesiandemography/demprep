@@ -205,7 +205,7 @@ is_lower_within_month <- function(date_ymd, dob_ymd) {
     ((date_ymd$d - 1L) %/% 2L) >= (dob_ymd$d %/% 2L)
 }
 
-## HAS_TESTS
+## NO_TESTS
 make_breaks_date_to_date_month <- function(date) {
     ## break_min
     date_min <- min(date, na.rm = TRUE)
@@ -219,7 +219,7 @@ make_breaks_date_to_date_month <- function(date) {
     date_max_ymd <- as_ymd(date_max)
     year_max <- date_max_ymd$y
     month_max <- date_max_ymd$m
-    month_to <- month_max + 1L
+    month_max <- month_max + 1L
     if (month_max > 12L) {
         year_max <- year_max + 1L
         month_max <- 1L
@@ -232,7 +232,7 @@ make_breaks_date_to_date_month <- function(date) {
              by = "month")
 }
 
-## HAS_TESTS
+## NO_TESTS
 make_breaks_date_to_date_quarter <- function(date) {
     ## break_min
     date_min <- min(date, na.rm = TRUE)
@@ -248,7 +248,7 @@ make_breaks_date_to_date_quarter <- function(date) {
     year_max <- date_max_ymd$y
     month_max <- date_max_ymd$m
     month_max <- ((month_max - 1L) %/% 3L + 1L) * 3L + 1L
-    if (month_to > 12L) {
+    if (month_max > 12L) {
         year_max <- year_max + 1L
         month_max <- 1L
     }
@@ -260,7 +260,7 @@ make_breaks_date_to_date_quarter <- function(date) {
              by = "quarter")
 }
 
-## HAS_TESTS
+## NO_TESTS
 make_breaks_date_to_date_year <- function(date,
                                           month_start) {
     month_start_int <- match(month_start, month.abb)

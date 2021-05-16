@@ -23,7 +23,7 @@ A factor with the same length as
 \code{x}.
 }
 \description{
-Create labels for one-year Lexis triangles
+Format labels for one-year Lexis triangles
 to be used with one-year age groups and periods.
 }
 \details{

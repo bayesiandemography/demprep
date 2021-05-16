@@ -23,7 +23,7 @@ A factor with the same length as
 \code{x}.
 }
 \description{
-Create labels for one-quarter (three-month)
+Format labels for one-quarter (three-month)
 Lexis triangles to be used with one-quarter
 age groups and periods.
 }
@@ -33,34 +33,57 @@ in \code{x} belongs. All age groups in \code{age}
 must have a width of one quarter,
 except for any open age groups.
 
-\code{break_max} and \code{open_first}
-control the boundaries of Lexis triangles
-for the oldest age group.
+\code{open_last} determines whether the
+allocation of triangles needs to
+account for an open age group, and \code{break_max}
+specifies the cut-off for the open age group.
+See \code{\link{format_age_quarter}} for a description
+of how \code{open_last} and \code{break_max}
+control age groups.
+
+When \code{break_max} is \code{NULL},
+the return value from \code{format_triangle_year}
+is identical to \code{x}. When \code{break_max}
+is non-\code{NULL}, the return value is as follows.
+
+\tabular{lll}{
+  \code{x} \tab \code{age} \tab return value \cr
+  \code{"Lower"} \tab \code{<= break_max} \tab \code{"Lower"} \cr
+  \code{"Lower"} \tab \code{> break_max} \tab \code{"Upper"} \cr
+  \code{"Lower"} \tab \code{NA} \tab \code{NA} \cr
+  \code{"Upper"} \tab \code{<= break_max} \tab \code{"Upper"} \cr
+  \code{"Upper"} \tab \code{> break_max} \tab \code{"Upper"} \cr
+  \code{"Upper"} \tab \code{NA} \tab \code{"Upper"} \cr
+  \code{NA} \tab \code{<= break_max} \tab \code{NA} \cr
+  \code{NA} \tab \code{> break_max} \tab \code{"Upper"} \cr
+  \code{NA} \tab \code{NA} \tab \code{NA} \cr
+}
 }
 \examples{
 ## we construct 'x' and 'age' from
 ## dates information ourselves before
 ## calling 'format_triangle_quarter'
-x <- date_to_triangle_quarter(date = c("2024-03-27",
-                                    "2022-11-09"),
-                              dob = "2020-01-01")
-age <- date_to_age_quarter(date = c("2024-03-27",
-                                    "2022-11-09"),
-                           dob = "2020-01-01")
+date_original <- c("2024-03-27", "2022-11-09")
+dob_original <- "2020-01-01"
+x <- date_to_triangle_quarter(date = date_original,
+                              dob = dob_original)
+age <- date_to_age_quarter(date = date_original,
+                           dob = dob_original)
 format_triangle_quarter(x = x,
                         age = age)
-format_triangle_quarter(x = x,
-                        age = age,
-                        break_max = 5)
 
 ## someone else has constructed
 ## 'x' and 'age' from
 ## dates information
-x <- c("Lower", "Lower", "Lower")
-age <- c("10", "15+", "5")
-format_triangle_quarter(x = x,
-                        age = age,
-                        break_max = 10)
+x_processed <- c("Lower", "Lower", "Lower")
+age_processed <- c("10", "15+", "5")
+format_triangle_quarter(x = x_processed,
+                        age = age_processed)
+
+## alternative value for 'break_max'
+format_triangle_quarter(x = x_processed,
+                        age = age_processed,
+                        break_max = 40)
 }
 \seealso{
 Other functions for reformating
