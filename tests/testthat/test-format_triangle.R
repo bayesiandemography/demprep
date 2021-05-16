@@ -280,3 +280,31 @@ test_that("format_triangle_births throws correct errors with invaid inputs", {
                                        period = "2000-2004"),
                  "element 1 of 'x' \\[\"Lower\"\\], for which 'age' is \"21-24\" and 'period' is \"2000-2004\", falls within two or more newly-created Lexis triangles")
 })
+
+
+## format_triangle_quarter ----------------------------------------------------
+
+test_that("format_triangle_quarter gives correct answers with default values", {
+    x <- c("Lower", "Upper", "Lower", NA, "Lower", NA)
+    age <- c(0, 400, 400, 400, 401, 401)
+    ans_obtained <- format_triangle_quarter(x = x,
+                                            age = age)
+    ans_expected <- factor(c("Lower", "Upper", "Lower", NA, "Upper", "Upper"),
+                           levels = c("Lower", "Upper", NA),
+                           exclude = NULL)
+    expect_identical(ans_obtained, ans_expected)
+})
+
+
+## format_triangle_month ------------------------------------------------------
+
+test_that("format_triangle_month gives correct answers with default values", {
+    x <- c("Lower", "Upper", "Lower", NA, "Lower", NA)
+    age <- c(0, 1200, 1200, 1200, 1201, 1201)
+    ans_obtained <- format_triangle_month(x = x,
+                                          age = age)
+    ans_expected <- factor(c("Lower", "Upper", "Lower", NA, "Upper", "Upper"),
+                           levels = c("Lower", "Upper", NA),
+                           exclude = NULL)
+    expect_identical(ans_obtained, ans_expected)
+})
