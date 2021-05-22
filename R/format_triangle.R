@@ -74,7 +74,7 @@
 #' ## 'x' and 'age' from
 #' ## dates information
 #' x_processed <- c("Lower", "Lower", "Lower")
-#' age_processed <- c("10", "15+", "5")
+#' age_processed <- c("10", "15", "5")
 #' format_triangle_year(x = x_processed,
 #'                      age = age_processed)
 #'
@@ -154,10 +154,21 @@ format_triangle_year <- function(x,
 #' as \code{x}.
 #' @param period A vector of periods, the same length
 #' as \code{x}.
+#' @param width The width, in whole years, of the
+#' triangles to be created. Defaults to 5.
 #' @param break_max An integer or \code{NULL}.
 #' Defaults to 100.
 #' @param open_last Whether the final age group
 #' has no upper limit. Defaults to \code{TRUE}.
+#' @param origin An integer. Defaults to 2000.
+#' @param month_start An element of \code{\link[base]{month.name}},
+#' or \code{\link[base]{month.abb}}. Periods start on
+#' the first day of this month.
+#' @param label_year_start Logical. Whether a single-year
+#' period in \code{x} is labelled using the calendar year
+#' at the beginning of the period
+#' or the calendar year at the end.
+#' Defaults to \code{TRUE}.
 #'
 #' @return A factor with the same length as
 #' \code{x}.
@@ -178,13 +189,13 @@ format_triangle_year <- function(x,
 #' ## calling 'format_triangle_multi'
 #' date_original <- c("2024-03-27", "2022-11-09")
 #' dob_original <- "2020-01-01"
-#' x <- date_to_triangle_multi(date = date_original,
-#'                             dob = dob_original,
-#'                             month_start = "Jul")
-#' age <- date_to_age_multi(date = date_original,
-#'                          dob = dob_original)
-#' period <- date_to_period_multi(date = date_original,
-#'                                month_start = "Jul")
+#' x <- date_to_triangle_year(date = date_original,
+#'                            dob = dob_original,
+#'                            month_start = "Jul")
+#' age <- date_to_age_year(date = date_original,
+#'                         dob = dob_original)
+#' period <- date_to_period_year(date = date_original,
+#'                               month_start = "Jul")
 #' format_triangle_multi(x = x,
 #'                       age = age,
 #'                       period = period)
@@ -193,17 +204,19 @@ format_triangle_year <- function(x,
 #' ## 'x', 'age', and 'period' from
 #' ## dates information
 #' x_processed <- c("Lower", "Lower", "Lower")
-#' age_processed <- c("10", "15+", "5")
+#' age_processed <- c("10", "20+", "5")
 #' period_processed <- c(2002, 2015, 2011)
 #' format_triangle_multi(x = x_processed,
 #'                       age = age_processed,
-#'                       period = period_processed)
+#'                       period = period_processed,
+#'                       break_max = 20)
 #'
 #' ## alternative value for 'width'
 #' format_triangle_multi(x = x_processed,
 #'                       age = age_processed,
 #'                       period = period_processed,
-#'                       width = 10)
+#'                       width = 10,
+#'                       break_max = 20)
 #'
 #' ## alternative value for 'break_max'
 #' format_triangle_multi(x = x_processed,
@@ -544,8 +557,8 @@ format_triangle_multi <- function(x,
 #' date_birth <- c("2024-03-27", "2022-11-09")
 #' dob_mother <- "2000-01-01"
 #' x <- date_to_triangle_births(date = date_birth,
-#'                             dob = dob_mother,
-#'                             month_start = "Jul")
+#'                              dob = dob_mother,
+#'                              month_start = "Jul")
 #' age <- date_to_age_births(date = date_birth,
 #'                           dob = dob_mother)
 #' period <- date_to_period_births(date = date_birth,
@@ -559,7 +572,7 @@ format_triangle_multi <- function(x,
 #' ## dates information
 #' x_processed <- c("Lower", "Upper", "Upper")
 #' age_processed <- c("20", "30-34", "25")
-#' period_processed <- c("2002", "2015-2020", "2011)
+#' period_processed <- c("2002", "2015-2020", "2011")
 #' format_triangle_multi(x = x_processed,
 #'                       age = age_processed,
 #'                       period = period_processed)
@@ -567,7 +580,7 @@ format_triangle_multi <- function(x,
 #' ## recode up and down
 #' x <- c("Upper", "Lower", "Upper")
 #' age <- c("10", "50-54", "25")
-#' period <- c("2002", "2015-2020", "2011)
+#' period <- c("2002", "2015-2020", "2011")
 #' format_triangle_multi(x = x,
 #'                       age = age,
 #'                       period = period,
@@ -944,14 +957,15 @@ format_triangle_births <- function(x,
 #' ## 'x' and 'age' from
 #' ## dates information
 #' x_processed <- c("Lower", "Lower", "Lower")
-#' age_processed <- c("10", "15+", "5")
+#' age_processed <- c("10", "16+", "5")
 #' format_triangle_quarter(x = x_processed,
-#'                         age = age_processed)
+#'                         age = age_processed,
+#'                         break_max = NULL)
 #' 
 #' ## alternative value for 'break_max'
 #' format_triangle_quarter(x = x_processed,
 #'                         age = age_processed,
-#'                         break_max = 40)
+#'                         break_max = NULL)
 #' @export
 format_triangle_quarter <- function(x,
                                     age,
@@ -1041,14 +1055,15 @@ format_triangle_quarter <- function(x,
 #' ## 'x' and 'age' from
 #' ## dates information
 #' x_processed <- c("Lower", "Lower", "Lower")
-#' age_processed <- c("10", "15+", "5")
+#' age_processed <- c("10", "12+", "5")
 #' format_triangle_month(x = x_processed,
-#'                       age = age_processed)
+#'                       age = age_processed,
+#'                       break_max = NULL)
 #' 
 #' ## alternative value for 'break_max'
 #' format_triangle_month(x = x_processed,
 #'                       age = age_processed,
-#'                       break_max = 120)
+#'                       break_max = NULL)
 #' @export
 format_triangle_month <- function(x,
                                  age,

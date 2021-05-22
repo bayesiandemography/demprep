@@ -75,7 +75,7 @@ format_triangle_year(x = x,
 ## 'x' and 'age' from
 ## dates information
 x_processed <- c("Lower", "Lower", "Lower")
-age_processed <- c("10", "15+", "5")
+age_processed <- c("10", "15", "5")
 format_triangle_year(x = x_processed,
                      age = age_processed)
 

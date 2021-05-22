@@ -5,18 +5,12 @@
 \title{Depict the Lexis triangles created by
 function 'date_to_triangle_month'}
 \usage{
-plot_date_to_triangle_month(date, dob, break_max = 1200, open_last = TRUE)
+plot_date_to_triangle_month(date, dob)
 }
 \arguments{
 \item{date}{Dates of events.}
 
 \item{dob}{Dates of birth.}
-
-\item{break_max}{An integer or \code{NULL}.
-Defaults to 1200.}
-
-\item{open_last}{Whether the final age group
-has no upper limit. Defaults to \code{TRUE}.}
 }
 \description{
 Create plot illustrating how function
@@ -31,7 +25,6 @@ actual data analysis.
 plot_date_to_triangle_month(date = c("2024-03-27",
                                      "2024-11-09"),
                             dob = c("2023-10-05",
-                                    "2024-03-11"),
-                            break_max = 12)
+                                    "2024-03-11"))
 }
 \keyword{internal}

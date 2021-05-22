@@ -5,14 +5,7 @@
 \title{Depict the intervals created by
 function 'date_to_age_quarter'}
 \usage{
-plot_date_to_age_quarter(
-  date,
-  dob,
-  break_min = 0,
-  break_max = 400,
-  open_last = TRUE,
-  show_months = FALSE
-)
+plot_date_to_age_quarter(date, dob, show_months = FALSE)
 }
 \arguments{
 \item{date}{Dates of events or measurements.
@@ -24,15 +17,6 @@ or a vector that can be coerced to class
 A vector of class \code{\link[base]{Date}},
 or a vector that can be coerced to class
 \code{Date} using function \code{\link[base]{as.Date}}.}
-
-\item{break_min}{An integer or \code{NULL}.
-Defaults to 0.}
-
-\item{break_max}{An integer or \code{NULL}.
-Defaults to 400.}
-
-\item{open_last}{Whether the final age group
-has no upper limit. Defaults to \code{TRUE}.}
 
 \item{show_months}{Whether to include vertical
 lines showing boundaries between months.
@@ -51,19 +35,6 @@ actual data analysis.
 plot_date_to_age_quarter(date = c("2004-03-27",
                                   "2002-11-09"),
                          dob = c("2001-03-21",
-                                 "2000-07-13"),
-                         break_max = 12)
-
-## alternative specifications for oldest age group
-plot_date_to_age_quarter(date = "2019-09-22",
-                         dob = "2018-01-01",
-                         break_max = 4)
-plot_date_to_age_quarter(date = "2019-09-22",
-                         dob = "2018-01-01",
-                         break_max = NULL)
-plot_date_to_age_quarter(date = "2019-09-22",
-                         dob = "2018-01-01",
-                         break_max = NULL,
-                         open_last = FALSE)
+                                 "2000-07-13"))
 }
 \keyword{internal}

@@ -40,9 +40,17 @@ coord_lifeline <- function(date1, dob1) {
 ## partial tests via the examples and vignettes.
 
 ## NO_TESTS
-plot_date_to_age_triangle <- function(date, dob, unit, breaks_time = NULL, breaks_age,
-                                      open_last, labels_time = NULL, labels_age,
-                                      show_months, show_vert, show_diag, cex = 0.8) {
+plot_date_to_age_triangle <- function(date,
+                                      dob,
+                                      unit,
+                                      breaks_time,
+                                      breaks_age,
+                                      labels_time,
+                                      labels_age,
+                                      show_months,
+                                      show_vert,
+                                      show_diag,
+                                      cex = 0.8) {
     old_par <- graphics::par(mar = c(6, 3, 2, 1),
                              mgp = c(0, 0, 0),
                              cex = cex)
@@ -66,10 +74,6 @@ plot_date_to_age_triangle <- function(date, dob, unit, breaks_time = NULL, break
     width_date <- date_max - date_min
     age_approx <- as.integer(date - dob) / days_per_unit
     age_max <- max(breaks_age, 1.05 * age_approx)
-    if (open_last) {
-        width <- breaks_age[[n_br_age]] - breaks_age[[n_br_age - 1L]]
-        age_max  <- max(age_max, breaks_age[[n_br_age]] + width)
-    }
     x_plot <- c(date_min - 0.15 * width_date, date_max)
     y_plot <- c(0, age_max)
     ## empty plotting frame
@@ -127,7 +131,7 @@ plot_date_to_age_triangle <- function(date, dob, unit, breaks_time = NULL, break
     ## diagonal lines to show Lexis triangles (optional)
     if (show_diag) {
         ## diagonal lines starting at horizontal axis
-        n_age <- n_br_age + open_last
+        n_age <- n_br_age
         date_diag_start <- breaks_time[-n_br_time]
         i_date_diag_end <- seq.int(from = n_age,
                                    along.with = date_diag_start)
@@ -153,16 +157,9 @@ plot_date_to_age_triangle <- function(date, dob, unit, breaks_time = NULL, break
             }
         }
         ## diagonal lines starting at left
-        if (open_last) {
-            date_diag_start <- rep(breaks_time[[1L]], times = n_br_age - 1L)
-            i_end <- pmin(n_br_age : 2L, n_br_time)
-            date_diag_end <- breaks_time[i_end]
-        }
-        else {
-            date_diag_start <- rep(breaks_time[[1L]], times = n_br_age - 2L)
-            i_end <- pmin((n_br_age - 1L) : 2L, n_br_time)
-            date_diag_end <- breaks_time[i_end]
-        }
+        date_diag_start <- rep(breaks_time[[1L]], times = n_br_age - 2L)
+        i_end <- pmin((n_br_age - 1L) : 2L, n_br_time)
+        date_diag_end <- breaks_time[i_end]
         for (i in seq_along(date_diag_start)) {
             date1 <- date_diag_end[[i]]
             dob1 <- date_diag_start[[i]]
@@ -198,10 +195,6 @@ plot_date_to_age_triangle <- function(date, dob, unit, breaks_time = NULL, break
     ## labels for age groups
     labels_age <- sprintf('"%s"', labels_age)
     y_labels_age <- breaks_age[-n_br_age] + 0.5 * diff_br_age
-    if (open_last) {
-        y_open <- breaks_age[[n_br_age]] + 0.5 * diff_br_age[[n_br_age - 1L]]
-        y_labels_age <- c(y_labels_age, y_open)
-    }
     graphics::text(x = date_min - 0.04 * width_date,
                    y = y_labels_age,
                    labels = labels_age,
@@ -263,7 +256,6 @@ plot_date_to_age_triangle <- function(date, dob, unit, breaks_time = NULL, break
     graphics::par(old_par)
     invisible(NULL)
 }
-
 
 
 
@@ -406,7 +398,7 @@ plot_date_to_cohort_period_quarter <- function(date) {
 }
 
 ## NO_TESTS
-plot_date_to_period_month <- function(date) {
+plot_date_to_cohort_period_month <- function(date) {
     ## check arguments and/or apply defaults
     demcheck::err_positive_length(x = date,
                                   name = "date")

@@ -38,9 +38,9 @@ labels as follows:
 \examples{
 x <- list(as.Date(c("2020-10-15", "2021-02-28")),
           as.Date(c(NA, "2020-01-31")),
-          as.Date(c(NA_character_, NA__character_)),
+          as.Date(c(NA_character_, NA_character_)),
           as.Date(c("2025-01-01", NA)),
-          as.Date(c("2023-01-01", "2023-01-01")))
+          as.Date(c("2023-01-01", "2023-01-02")))
 make_labels_dateranges(x)
 }
 \seealso{

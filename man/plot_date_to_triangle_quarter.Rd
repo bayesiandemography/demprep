@@ -5,24 +5,12 @@
 \title{Depict the Lexis triangles created by
 function 'date_to_triangle_quarter'}
 \usage{
-plot_date_to_triangle_quarter(
-  date,
-  dob,
-  break_max = 400,
-  open_last = TRUE,
-  show_months = FALSE
-)
+plot_date_to_triangle_quarter(date, dob, show_months = FALSE)
 }
 \arguments{
 \item{date}{Dates of events.}
 
 \item{dob}{Dates of birth.}
-
-\item{break_max}{An integer or \code{NULL}.
-Defaults to 400.}
-
-\item{open_last}{Whether the final age group
-has no upper limit. Defaults to \code{TRUE}.}
 
 \item{show_months}{Whether to include vertical
 lines showing boundaries between months.
@@ -41,7 +29,6 @@ actual data analysis.
 plot_date_to_triangle_quarter(date = c("2024-03-27",
                                        "2022-11-09"),
                               dob = c("2020-05-01",
-                                      "2021-06-22"),
-                              break_max = 20)
+                                      "2021-06-22"))
 }
 \keyword{internal}

@@ -5,14 +5,7 @@
 \title{Depict the intervals created by
 function 'date_to_age_year'}
 \usage{
-plot_date_to_age_year(
-  date,
-  dob,
-  break_min = 0,
-  break_max = 100,
-  open_last = TRUE,
-  show_months = FALSE
-)
+plot_date_to_age_year(date, dob, show_months = FALSE)
 }
 \arguments{
 \item{date}{Dates of events or measurements.
@@ -24,15 +17,6 @@ or a vector that can be coerced to class
 A vector of class \code{\link[base]{Date}},
 or a vector that can be coerced to class
 \code{Date} using function \code{\link[base]{as.Date}}.}
-
-\item{break_min}{An integer or \code{NULL}.
-Defaults to 0.}
-
-\item{break_max}{An integer or \code{NULL}.
-Defaults to 100.}
-
-\item{open_last}{Whether the final age group
-has no upper limit. Defaults to \code{TRUE}.}
 
 \item{show_months}{Whether to include vertical
 lines showing boundaries between months.
@@ -51,13 +35,11 @@ actual data analysis.
 plot_date_to_age_year(date = c("2002-11-09",
                                "2004-04-27"),
                       dob = c("2000-07-13",
-                              "2001-03-21"),
-                      break_max = 2)
+                              "2001-03-21"))
 plot_date_to_age_year(date = c("2002-11-09",
                                "2004-04-27"),
                       dob = c("2000-07-13",
                               "2001-03-21"),
-                      break_max = 4,
-                      open_last = FALSE)
+                      show_months = TRUE)
 }
 \keyword{internal}

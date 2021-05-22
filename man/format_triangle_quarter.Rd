@@ -76,14 +76,15 @@ format_triangle_quarter(x = x,
 ## 'x' and 'age' from
 ## dates information
 x_processed <- c("Lower", "Lower", "Lower")
-age_processed <- c("10", "15+", "5")
+age_processed <- c("10", "16+", "5")
 format_triangle_quarter(x = x_processed,
-                        age = age_processed)
+                        age = age_processed,
+                        break_max = NULL)
 
 ## alternative value for 'break_max'
 format_triangle_quarter(x = x_processed,
                         age = age_processed,
-                        break_max = 40)
+                        break_max = NULL)
 }
 \seealso{
 Other functions for reformating

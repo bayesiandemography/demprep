@@ -20,6 +20,14 @@ format_cohort_custom(
 
 \item{open_first}{Whether the oldest cohort
 has no lower limit.}
+
+\item{month_start}{An element of \code{\link[base]{month.name}},
+or \code{\link[base]{month.abb}}. Cohorts start on
+the first day of this month.}
+
+\item{label_year_start}{Logical. Whether to label a cohort
+by the calendar year at the beginning of the cohort
+or the calendar year at the end. Defaults to \code{TRUE}.}
 }
 \value{
 A factor with the same length as

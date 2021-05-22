@@ -265,7 +265,7 @@ make_labels_integers <- function(x) {
 #' x <- list(c(2000L, 2010L),
 #'           c(2011L, 2012L),
 #'           c(NA, 2000L),
-#'           c(NA_integer_, NA__integer_),
+#'           c(NA_integer_, NA_integer_),
 #'           c(2030L, NA),
 #'           c(2020L, 2030L))
 #' make_labels_intervals(x)
@@ -335,7 +335,7 @@ make_labels_intervals <- function(x) {
 #' x <- list(c(0L, 1L),
 #'           c(1L, 5L),
 #'           c(NA, 0L),
-#'           c(NA_integer_, NA__integer_),
+#'           c(NA_integer_, NA_integer_),
 #'           c(20L, NA),
 #'           c(10L, 20L))
 #' make_labels_quantities(x)
@@ -406,7 +406,7 @@ make_labels_quantities <- function(x) {
 #' @examples
 #' x <- list(as.Date(c("2020-10-01", "2021-01-01")),
 #'           as.Date(c(NA, "2020-01-01")),
-#'           as.Date(c(NA_character_, NA__character_)),
+#'           as.Date(c(NA_character_, NA_character_)),
 #'           as.Date(c("2025-01-01", NA)),
 #'           as.Date(c("2020-01-01", "2020-04-01")))
 #' make_labels_quarters(x)
@@ -490,7 +490,7 @@ make_labels_quarters <- function(x) {
 #' @examples
 #' x <- list(as.Date(c("2020-12-01", "2021-01-01")),
 #'           as.Date(c(NA, "2020-01-01")),
-#'           as.Date(c(NA_character_, NA__character_)),
+#'           as.Date(c(NA_character_, NA_character_)),
 #'           as.Date(c("2025-01-01", NA)),
 #'           as.Date(c("2020-01-01", "2020-02-01")))
 #' make_labels_months(x)
@@ -569,9 +569,9 @@ make_labels_months <- function(x) {
 #' @examples
 #' x <- list(as.Date(c("2020-10-15", "2021-02-28")),
 #'           as.Date(c(NA, "2020-01-31")),
-#'           as.Date(c(NA_character_, NA__character_)),
+#'           as.Date(c(NA_character_, NA_character_)),
 #'           as.Date(c("2025-01-01", NA)),
-#'           as.Date(c("2023-01-01", "2023-01-01")))
+#'           as.Date(c("2023-01-01", "2023-01-02")))
 #' make_labels_dateranges(x)
 #' @keywords internal
 #' @export

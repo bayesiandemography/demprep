@@ -53,8 +53,8 @@
 #'
 #' @examples
 #' ## note that the 'levels' contain all values from
-#' '2000' to '2005', even when these do not
-#' appear in the data
+#' ## '2000' to '2005', even when these do not
+#' ## appear in the data
 #' format_cohort_year(x = c(2000, 2005, NA, 2004))
 #'
 #' ## 'x' contains an open interval, so
@@ -416,6 +416,12 @@ format_cohort_multi <- function(x,
 #'
 #' @inheritParams format_cohort_year
 #' @param breaks A vector of strictly increasing integer values.
+#' @param month_start An element of \code{\link[base]{month.name}},
+#' or \code{\link[base]{month.abb}}. Cohorts start on
+#' the first day of this month.
+#' @param label_year_start Logical. Whether to label a cohort
+#' by the calendar year at the beginning of the cohort
+#' or the calendar year at the end. Defaults to \code{TRUE}.
 #'
 #' @return A factor with the same length as
 #' \code{x}.

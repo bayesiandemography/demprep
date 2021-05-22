@@ -41,7 +41,7 @@ labels as follows:
 x <- list(c(2000L, 2010L),
           c(2011L, 2012L),
           c(NA, 2000L),
-          c(NA_integer_, NA__integer_),
+          c(NA_integer_, NA_integer_),
           c(2030L, NA),
           c(2020L, 2030L))
 make_labels_intervals(x)

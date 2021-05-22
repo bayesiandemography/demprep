@@ -8,9 +8,8 @@ function 'date_to_triangle_year'}
 plot_date_to_triangle_year(
   date,
   dob,
-  break_max = 100,
-  open_last = TRUE,
   month_start = "Jan",
+  label_year_start = TRUE,
   show_months = FALSE
 )
 }
@@ -18,12 +17,6 @@ plot_date_to_triangle_year(
 \item{date}{Dates of events.}
 
 \item{dob}{Dates of birth.}
-
-\item{break_max}{An integer or \code{NULL}.
-Defaults to 100.}
-
-\item{open_last}{Whether the final age group
-has no upper limit. Defaults to \code{TRUE}.}
 
 \item{month_start}{An element of \code{\link[base]{month.name}},
 or \code{\link[base]{month.abb}}. The period starts on
@@ -46,23 +39,13 @@ actual data analysis.
 plot_date_to_triangle_year(date = c("2024-05-27",
                                     "2024-11-09"),
                            dob = c("2020-03-13",
-                                   "2021-08-24"),
-                           break_max = 5)
-
-## final age group closed
-plot_date_to_triangle_year(date = c("2024-05-27",
-                                    "2024-11-09"),
-                           dob = c("2020-03-13",
-                                   "2021-08-24"),
-                           break_max = 5,
-                           open_last = FALSE)
+                                   "2021-08-24"))
 
 ## start on 1 July, rather than 1 January
 plot_date_to_triangle_year(date = c("2024-05-27",
                                     "2024-11-09"),
                            dob = c("2020-03-13",
                                    "2021-08-24"),
-                           break_max = 5,
                            month_start = "July")
 }
 \keyword{internal}

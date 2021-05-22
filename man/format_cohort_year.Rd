@@ -50,8 +50,8 @@ also contain \code{NA}.
 }
 \examples{
 ## note that the 'levels' contain all values from
-'2000' to '2005', even when these do not
-appear in the data
+## '2000' to '2005', even when these do not
+## appear in the data
 format_cohort_year(x = c(2000, 2005, NA, 2004))
 
 ## 'x' contains an open interval, so

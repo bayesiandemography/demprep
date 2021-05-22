@@ -40,7 +40,7 @@ labels as follows:
 \examples{
 x <- list(as.Date(c("2020-12-01", "2021-01-01")),
           as.Date(c(NA, "2020-01-01")),
-          as.Date(c(NA_character_, NA__character_)),
+          as.Date(c(NA_character_, NA_character_)),
           as.Date(c("2025-01-01", NA)),
           as.Date(c("2020-01-01", "2020-02-01")))
 make_labels_months(x)

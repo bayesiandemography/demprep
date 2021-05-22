@@ -41,7 +41,7 @@ labels as follows:
 x <- list(c(0L, 1L),
           c(1L, 5L),
           c(NA, 0L),
-          c(NA_integer_, NA__integer_),
+          c(NA_integer_, NA_integer_),
           c(20L, NA),
           c(10L, 20L))
 make_labels_quantities(x)

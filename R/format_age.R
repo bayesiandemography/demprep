@@ -130,8 +130,8 @@ format_age_year <- function(x,
 #' \code{\link{format_age_quarter}},
 #' and \code{\link{format_age_month}}.
 #'
-#' \code{\link{date_to_age_multi}} creates
-#' multi-year age groups from dates.
+#' \code{\link{date_to_age_year}} creates
+#' ages from dates.
 #'
 #' @examples
 #' format_age_multi(x = c(22, 11, 99, NA))
@@ -424,7 +424,7 @@ format_age_lifetab <- function(x, break_max = 100) {
         if (remainder_max == 0L)
             break_max <- break_max_x
         else
-            break_max <- break_max_x - remainder + width
+            break_max <- break_max_x - remainder_max + 5L
         message(gettextf("setting '%s' to %d",
                          "break_max", break_max))
     }
@@ -444,7 +444,7 @@ format_age_lifetab <- function(x, break_max = 100) {
                                 up = up,
                                 breaks = breaks,
                                 open_first = FALSE,
-                                open_last = open_last)
+                                open_last = TRUE)
     is_multiple_intervals <- i_interval == -1L
     i_multiple_intervals <- match(TRUE, is_multiple_intervals, nomatch = 0L)
     if (i_multiple_intervals > 0L)

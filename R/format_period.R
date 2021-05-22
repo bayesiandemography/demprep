@@ -48,8 +48,8 @@
 #'
 #' @examples
 #' ## note that the 'levels' contain all values from
-#' '2000' to '2010', even when these do not
-#' appear in the data
+#' ## '2000' to '2010', even when these do not
+#' ## appear in the data
 #' format_period_year(x = c("2000", "2010"))
 #'
 #' format_period_year(x = c("2000", "2005", NA, "2004"))
