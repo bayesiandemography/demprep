@@ -153,6 +153,6 @@ triangle labels are
 \code{\link{format_triangle_quarter}},
 and \code{\link{format_triangle_month}}.
 
-\code{\link{date_to_triangle_multi}} creates
-multi-year Lexis triangles from dates.
+\code{\link{date_to_triangle_year}} creates
+Lexis triangles from dates.
 }

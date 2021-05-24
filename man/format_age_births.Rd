@@ -53,7 +53,7 @@ is \code{50}, all births are assumed to
 occur to women aged 15 to 49 (inclusive).
 
 If \code{break_min} or \code{break_max} is set to \code{NULL},
-rather than to a specific value, then \code{date_to_age_births}
+rather than to a specific value, then \code{format_age_births}
 finds the narrowest range that accommodates the values
 in \code{x}.
 
@@ -111,6 +111,6 @@ Other functions for creating age groups are
 \code{\link{format_age_quarter}},
 and \code{\link{format_age_month}}.
 
-\code{\link{date_to_age_births}} creates
-reproductive age groups from dates.
+\code{\link{date_to_age_year}} calculates
+ages from dates.
 }

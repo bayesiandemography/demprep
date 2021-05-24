@@ -56,6 +56,6 @@ age group labels are
 \code{\link{format_age_quarter}},
 and \code{\link{format_age_month}}.
 
-\code{\link{date_to_age_lifetab}} creates
-lifetable age groups from dates.
+\code{\link{date_to_age_year}} calculates
+ages from dates.
 }

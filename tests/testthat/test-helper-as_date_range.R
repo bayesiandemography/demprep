@@ -1,6 +1,41 @@
 
 context("helper-as_date_range")
 
+## as_date_range_month_quarter -------------------------------------------------
+
+test_that("'as_date_range_month_quarter' gives correct answer with valid inputs", {
+    x <- c("2000 Q2", NA, "<2000 Q1", "2000 Q2")
+    expect_identical(as_date_range_month_quarter(x, parse_fun = parse_quarters),
+                     factor(c("[2000-04-01, 2000-06-30]",
+                              NA,
+                              "(-Inf, 1999-12-31]",
+                              "[2000-04-01, 2000-06-30]"),
+                            levels = c("(-Inf, 1999-12-31]",
+                                       "[2000-04-01, 2000-06-30]",
+                                       NA),
+                            exclude = NULL))
+    x <- c("2000 Feb", NA, "<2000 Jan", "2000 Feb")
+    expect_identical(as_date_range_month_quarter(x, parse_fun = parse_months),
+                     factor(c("[2000-02-01, 2000-02-29]",
+                              NA,
+                              "(-Inf, 1999-12-31]",
+                              "[2000-02-01, 2000-02-29]"),
+                            levels = c("(-Inf, 1999-12-31]",
+                                       "[2000-02-01, 2000-02-29]",
+                                       NA),
+                            exclude = NULL))
+    expect_identical(as_date_range_month_quarter(character(), parse_fun = parse_quarters),
+                     factor())
+    expect_identical(as_date_range_month_quarter(NA, parse_fun = parse_quarters),
+                     factor(NA, exclude = NULL ))
+})
+
+test_that("'as_date_range_month_quarter' throws correct error with invalid inputs", {
+    expect_error(as_date_range_month_quarter("2000 Mar+", parse_fun = parse_months),
+                 "'x' has interval \\[\"2000 Mar\\+\"\\] that is open on the right")
+})
+
+
 ## order_low_up ---------------------------------------------------------------
 
 test_that("'order_low_up' gives correct answer with valid inputs", {

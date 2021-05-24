@@ -3,7 +3,7 @@
 \name{clean_age}
 \alias{clean_age}
 \alias{clean_age_df}
-\title{Reformat age group labels}
+\title{Tidy age group labels}
 \usage{
 clean_age(x, language = "English")
 
@@ -41,7 +41,7 @@ other languages can be specified using
 the \code{language} argument. Current choices are
 ADD OVER TIME.
 
-\code{clean_age} checks for two special
+\code{clean_age} also checks for two special
 cases: (i) when the labels consist entirely of numbers
 \code{0}, \code{5}, \code{10}, \dots,
 \code{A}, and (ii) when the labels consist entirely
@@ -53,7 +53,7 @@ of the numbers \code{0}, \code{1}, \code{5},
 the labels are converted to the life table age groups
 \code{"0"}, \code{"1-4"}, \code{"5-9"},
 \dots, \code{"A+"}. In both cases, \code{A}
-must be at least 50. 
+must be at least 50.
 
 Function \code{clean_age_df} returns a data frame
 showing how each unique element in \code{x} is
@@ -88,8 +88,4 @@ x <- sample(c(0, 1, seq(5, 80, 5)))
 x
 clean_age(x)
 clean_age_df(x)
-}
-\seealso{
-\code{\link{make_labels_age}} describes the
-rules for formating age group labels in the dem packages.
 }

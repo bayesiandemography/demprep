@@ -172,8 +172,86 @@ as_date_range_year <- function(x,
 #' @export
 as_date_range_multi <- function(x,
                                 month_start = "Jan") {
-    as_date_range_custom_multi(x = x,
-                               month_start = month_start)
+    ## check arguments
+    if (!is.vector(x))
+        stop(gettextf("'%s' has class \"%s\"",
+                      "x", class(x)))
+    month_start <- demcheck::err_tdy_month_start(x = month_start,
+                                                 name = "month_start")
+    ## deal with "empty" cases where 'x'
+    ## has length 0 or is all NA
+    if (length(x) == 0L) {
+        ans <- factor()
+        return(ans)
+    }
+    if (all(is.na(x))) {
+        ans <- factor(x,
+                      exclude = NULL)
+        return(ans)
+    }
+    ## put unique values in 'levels_x' vector
+    if (is.factor(x))
+        levels_x <- levels(x)
+    else
+        levels_x <- unique(x)
+    ## parse the labels
+    parsed <- parse_intervals(x = levels_x,
+                              name = "x")
+    year_low <- parsed$low
+    year_up <- parsed$up
+    is_open_first <- parsed$is_open_first
+    is_open_last <- parsed$is_open_last
+    i_open_last <- match(TRUE, is_open_last, nomatch = 0L)
+    if (i_open_last > 0L) {
+        stop(gettextf("'%s' has interval [\"%s\"] that is open on the right",
+                      "x", levels_x[[i_open_last]]),
+             call. = FALSE)
+    }
+    ## check that widths equal
+    widths_low_up <- year_up - year_low
+    i_non_na <- match(FALSE, is.na(widths_low_up), nomatch = 0L)
+    if (i_non_na > 0L) {
+        width <- widths_low_up[[i_non_na]]
+        i_unequal_width <- match(FALSE, width == widths_low_up, nomatch = 0L)
+        if (i_unequal_width > 0L)
+            stop(gettextf("intervals \"%s\" and \"%s\" in '%s' have different widths",
+                          levels_x[[i_non_na]], levels_x[[i_unequal_width]], "x"))
+        lowup <- as.integer(rbind(year_low, year_up))
+        diff_lowup <- diff(lowup)
+        is_uneven <- (diff_lowup %% width) != 0L
+        i_uneven <- match(TRUE, is_uneven, nomatch = 0L)
+        if (i_uneven > 0L) {
+            i_first <- i_uneven / 2L
+            stop(gettextf("gaps between intervals \"%s\" and \"%s\" in '%s' not divisible by width of intervals [%d]",
+                          levels_x[[i_first]],
+                          levels_x[[i_first + 1L]],
+                          "x",
+                          width))
+        }
+    }
+    ## create dates
+    date_low <- ifelse(is.na(year_low),
+                       NA,
+                       paste(year_low, month_start, 1))
+    date_up <- ifelse(is.na(year_up),
+                      NA,
+                      paste(year_up, month_start, 1))
+    date_low <- as.Date(date_low, format = "%Y %b %d")
+    date_up <- as.Date(date_up, format = "%Y %b %d")
+    ## make new labels
+    x_new <- mapply(c, date_low, date_up, SIMPLIFY = FALSE)
+    levels_x_new <- make_labels_dateranges(x_new)
+    ## put in order
+    i <- order_low_up(low = year_low,
+                      up = year_up)
+    levels_x_ordered <- levels_x[i]
+    levels_x_new_ordered <- levels_x_new[i]
+    ## make return value
+    ans <- factor(x,
+                  levels = levels_x_ordered,
+                  labels = levels_x_new_ordered,
+                  exclude = NULL)
+    ans
 }
     
 
@@ -226,8 +304,64 @@ as_date_range_multi <- function(x,
 #' @export
 as_date_range_custom <- function(x,
                                  month_start = "Jan") {
-    as_date_range_custom_multi(x = x,
-                               month_start = month_start)
+    ## check arguments
+    if (!is.vector(x))
+        stop(gettextf("'%s' has class \"%s\"",
+                      "x", class(x)))
+    month_start <- demcheck::err_tdy_month_start(x = month_start,
+                                                 name = "month_start")
+    ## deal with "empty" cases where 'x'
+    ## has length 0 or is all NA
+    if (length(x) == 0L) {
+        ans <- factor()
+        return(ans)
+    }
+    if (all(is.na(x))) {
+        ans <- factor(x,
+                      exclude = NULL)
+        return(ans)
+    }
+    ## put unique values in 'levels_x' vector
+    if (is.factor(x))
+        levels_x <- levels(x)
+    else
+        levels_x <- unique(x)
+    ## parse the labels
+    parsed <- parse_intervals(x = levels_x,
+                              name = "x")
+    year_low <- parsed$low
+    year_up <- parsed$up
+    is_open_first <- parsed$is_open_first
+    is_open_last <- parsed$is_open_last
+    i_open_last <- match(TRUE, is_open_last, nomatch = 0L)
+    if (i_open_last > 0L) {
+        stop(gettextf("'%s' has interval [\"%s\"] that is open on the right",
+                      "x", levels_x[[i_open_last]]),
+             call. = FALSE)
+    }
+    ## create dates
+    date_low <- ifelse(is.na(year_low),
+                       NA,
+                       paste(year_low, month_start, 1))
+    date_up <- ifelse(is.na(year_up),
+                      NA,
+                      paste(year_up, month_start, 1))
+    date_low <- as.Date(date_low, format = "%Y %b %d")
+    date_up <- as.Date(date_up, format = "%Y %b %d")
+    ## make new labels
+    x_new <- mapply(c, date_low, date_up, SIMPLIFY = FALSE)
+    levels_x_new <- make_labels_dateranges(x_new)
+    ## put in order
+    i <- order_low_up(low = year_low,
+                      up = year_up)
+    levels_x_ordered <- levels_x[i]
+    levels_x_new_ordered <- levels_x_new[i]
+    ## make return value
+    ans <- factor(x,
+                  levels = levels_x_ordered,
+                  labels = levels_x_new_ordered,
+                  exclude = NULL)
+    ans
 }
 
 

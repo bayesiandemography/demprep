@@ -357,8 +357,8 @@ format_age_multi <- function(x,
 #' \code{\link{format_age_quarter}},
 #' and \code{\link{format_age_month}}.
 #'
-#' \code{\link{date_to_age_lifetab}} creates
-#' lifetable age groups from dates.
+#' \code{\link{date_to_age_year}} calculates
+#' ages from dates.
 #'
 #' @examples
 #' format_age_lifetab(x = c("100+", "14", "1-4"))
@@ -482,7 +482,7 @@ format_age_lifetab <- function(x, break_max = 100) {
 #' occur to women aged 15 to 49 (inclusive).
 #'
 #' If \code{break_min} or \code{break_max} is set to \code{NULL},
-#' rather than to a specific value, then \code{date_to_age_births}
+#' rather than to a specific value, then \code{format_age_births}
 #' finds the narrowest range that accommodates the values
 #' in \code{x}.
 #'
@@ -534,8 +534,8 @@ format_age_lifetab <- function(x, break_max = 100) {
 #' \code{\link{format_age_quarter}},
 #' and \code{\link{format_age_month}}.
 #'
-#' \code{\link{date_to_age_births}} creates
-#' reproductive age groups from dates.
+#' \code{\link{date_to_age_year}} calculates
+#' ages from dates.
 #'
 #' @examples
 #' format_age_births(x = c(22, 34, 19))
@@ -758,8 +758,8 @@ format_age_births <- function(x,
 #' \code{\link{format_age_quarter}},
 #' and \code{\link{format_age_month}}.
 #'
-#' \code{\link{date_to_custom}} creates
-#' customized age groups from dates.
+#' \code{\link{date_to_age_year}} calculates
+#' ages from dates.
 #'
 #' @examples
 #' format_age_custom(x = c(22, 11, 85),

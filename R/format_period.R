@@ -134,11 +134,8 @@ format_period_year <- function(x) {
 #' \code{\link{format_period_quarter}},
 #' and \code{\link{format_period_month}}.
 #'
-#' \code{\link{date_to_period_multi}} creates
-#' multi-year periods from dates.
-#'
-#' \code{\link{make_labels_period}} describes the rules
-#' for constructing labels for periods.
+#' \code{\link{date_to_period_year}} creates
+#'  periods from dates.
 #'
 #' @examples
 #' format_period_multi(x = c("2000-2001", "2005-2010", NA, "1996-1998"))
@@ -284,11 +281,9 @@ format_period_multi <- function(x,
 #' \code{\link{format_period_quarter}},
 #' and \code{\link{format_period_month}}.
 #'
-#' \code{\link{date_to_period_custom}} creates
-#' customized periods from dates.
+#' \code{\link{date_to_period_year}} creates
+#' periods from dates.
 #'
-#' \code{\link{make_labels_period}} describes the rules
-#' for constructing labels for periods.
 #' @examples
 #' format_period_custom(x = c("2000-2001", "2004", "2005-2010", "1996-1998"),
 #'                      breaks = c(1990, 2000, 2020))

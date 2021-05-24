@@ -15,19 +15,14 @@ A logical vector, the same length as \code{x}.
 \description{
 Identify the elements of a vector that are
 valid labels for age groups. Each element is assessed
-independently, so the labels are not necessarily
-consistent with each other.
+independently, so the labels can overlap.
 }
 \details{
-\code{NA}s are treated as valid age groups.
+\code{NA}s are treated as valid labels.
 }
 \examples{
 ## years
 x <- c("1-4", "12-10", "100+", "old", NA)
-is_valid_age(x)
-
-## mix of years, quarters, and months
-x <- c("2000-2010", "44q", "100q+", "0m")
 is_valid_age(x)
 
 ## age groups are allowed to overlap,
@@ -35,8 +30,4 @@ is_valid_age(x)
 ## label is valid
 x <- c("10-19", "15-19", "5+")
 is_valid_age(x)
-}
-\seealso{
-\code{\link{make_labels_age}} describes the rules
-governing labels for age groups.
 }

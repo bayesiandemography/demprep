@@ -48,9 +48,6 @@
 #' \code{\link{date_to_cohort_year}} creates
 #' single-year cohorts from dates.
 #'
-#' \code{\link{make_labels_cohort}} describes the rules
-#' for constructing labels for cohorts.
-#'
 #' @examples
 #' ## note that the 'levels' contain all values from
 #' ## '2000' to '2005', even when these do not
@@ -174,11 +171,8 @@ format_cohort_year <- function(x,
 #' \code{\link{format_cohort_quarter}},
 #' and \code{\link{format_cohort_month}}.
 #'
-#' \code{\link{date_to_cohort_multi}} creates
-#' multi-year cohorts from dates.
-#'
-#' \code{\link{make_labels_cohort}} describes the rules
-#' for constructing labels for cohorts.
+#' \code{\link{date_to_cohort_year}} calculates
+#' cohorts from dates.
 #'
 #' @examples
 #' format_cohort_multi(x = c(2000, 2005, NA, 2004))
@@ -433,11 +427,9 @@ format_cohort_multi <- function(x,
 #' \code{\link{format_cohort_quarter}},
 #' and \code{\link{format_cohort_month}}.
 #'
-#' \code{\link{date_to_cohort_custom}} creates
-#' customized cohorts from dates.
+#' \code{\link{date_to_cohort_year}} calculates
+#' cohorts from dates.
 #'
-#' \code{\link{make_labels_cohort}} describes the rules
-#' for constructing labels for cohorts.
 #' @examples
 #' format_cohort_custom(x = c(2019, 2011, 2000, 2015),
 #'                      breaks = c(1990, 2000, 2020))
@@ -631,8 +623,8 @@ format_cohort_custom <- function(x,
 #' \code{\link{format_cohort_custom}},
 #' and \code{\link{format_cohort_month}}.
 #'
-#' \code{\link{date_to_cohort_quarter}} creates
-#' quarter cohorts from dates.
+#' \code{\link{date_to_cohort_year}} calculates
+#' cohorts from dates.
 #'
 #' @examples
 #' format_cohort_quarter(x = c("2000 Q4", "2005 Q1", NA, "2004 Q3"))

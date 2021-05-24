@@ -90,7 +90,4 @@ and \code{\link{format_cohort_month}}.
 
 \code{\link{date_to_cohort_year}} creates
 single-year cohorts from dates.
-
-\code{\link{make_labels_cohort}} describes the rules
-for constructing labels for cohorts.
 }

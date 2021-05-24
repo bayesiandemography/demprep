@@ -59,6 +59,6 @@ Other functions for creating age groups are
 \code{\link{format_age_quarter}},
 and \code{\link{format_age_month}}.
 
-\code{\link{date_to_custom}} creates
-customized age groups from dates.
+\code{\link{date_to_age_year}} calculates
+ages from dates.
 }

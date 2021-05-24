@@ -62,9 +62,6 @@ period labels are
 \code{\link{format_period_quarter}},
 and \code{\link{format_period_month}}.
 
-\code{\link{date_to_period_custom}} creates
-customized periods from dates.
-
-\code{\link{make_labels_period}} describes the rules
-for constructing labels for periods.
+\code{\link{date_to_period_year}} creates
+periods from dates.
 }

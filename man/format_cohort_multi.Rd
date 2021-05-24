@@ -144,9 +144,6 @@ cohort labels are
 \code{\link{format_cohort_quarter}},
 and \code{\link{format_cohort_month}}.
 
-\code{\link{date_to_cohort_multi}} creates
-multi-year cohorts from dates.
-
-\code{\link{make_labels_cohort}} describes the rules
-for constructing labels for cohorts.
+\code{\link{date_to_cohort_year}} calculates
+cohorts from dates.
 }

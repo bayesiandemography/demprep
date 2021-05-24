@@ -180,8 +180,8 @@ format_triangle_year <- function(x,
 #' \code{\link{format_triangle_quarter}},
 #' and \code{\link{format_triangle_month}}.
 #'
-#' \code{\link{date_to_triangle_multi}} creates
-#' multi-year Lexis triangles from dates.
+#' \code{\link{date_to_triangle_year}} creates
+#' Lexis triangles from dates.
 #'
 #' @examples
 #' ## we construct 'x', 'age', and 'period'
@@ -504,7 +504,7 @@ format_triangle_multi <- function(x,
 #' is assumed to occur, and \code{recode_up} and
 #' \code{recode_down} control the way that reported
 #' ages outside this range are handled. See
-#' \code{\link{date_to_age_births}} for details.
+#' \code{\link{format_age_births}} for details.
 #' 
 #' The values for \code{width}, \code{break_min},
 #' \code{break_max}, and \code{origin} together define a new system
@@ -547,7 +547,7 @@ format_triangle_multi <- function(x,
 #' \code{\link{format_triangle_quarter}},
 #' and \code{\link{format_triangle_month}}.
 #'
-#' \code{\link{date_to_triangle_births}} creates
+#' \code{\link{date_to_triangle_year}} creates
 #' Lexis triangles from dates.
 #'
 #' @examples
@@ -556,13 +556,13 @@ format_triangle_multi <- function(x,
 #' ## calling 'format_triangle_multi'
 #' date_birth <- c("2024-03-27", "2022-11-09")
 #' dob_mother <- "2000-01-01"
-#' x <- date_to_triangle_births(date = date_birth,
-#'                              dob = dob_mother,
-#'                              month_start = "Jul")
-#' age <- date_to_age_births(date = date_birth,
-#'                           dob = dob_mother)
-#' period <- date_to_period_births(date = date_birth,
-#'                                 month_start = "Jul")
+#' x <- date_to_triangle_year(date = date_birth,
+#'                            dob = dob_mother,
+#'                            month_start = "Jul")
+#' age <- date_to_age_year(date = date_birth,
+#'                         dob = dob_mother)
+#' period <- date_to_period_year(date = date_birth,
+#'                               month_start = "Jul")
 #' format_triangle_births(x = x,
 #'                        age = age,
 #'                        period = period)
@@ -573,19 +573,19 @@ format_triangle_multi <- function(x,
 #' x_processed <- c("Lower", "Upper", "Upper")
 #' age_processed <- c("20", "30-34", "25")
 #' period_processed <- c("2002", "2015-2020", "2011")
-#' format_triangle_multi(x = x_processed,
-#'                       age = age_processed,
-#'                       period = period_processed)
+#' format_triangle_births(x = x_processed,
+#'                        age = age_processed,
+#'                        period = period_processed)
 #'
 #' ## recode up and down
 #' x <- c("Upper", "Lower", "Upper")
 #' age <- c("10", "50-54", "25")
 #' period <- c("2002", "2015-2020", "2011")
-#' format_triangle_multi(x = x,
-#'                       age = age,
-#'                       period = period,
-#'                       recode_up = TRUE,
-#'                       recode_down = TRUE)
+#' format_triangle_births(x = x,
+#'                        age = age,
+#'                        period = period,
+#'                        recode_up = TRUE,
+#'                        recode_down = TRUE)
 #' @export
 format_triangle_births <- function(x,
                                    age,

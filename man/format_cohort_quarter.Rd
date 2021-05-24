@@ -79,6 +79,6 @@ cohort labels are
 \code{\link{format_cohort_custom}},
 and \code{\link{format_cohort_month}}.
 
-\code{\link{date_to_cohort_quarter}} creates
-quarter cohorts from dates.
+\code{\link{date_to_cohort_year}} calculates
+cohorts from dates.
 }
