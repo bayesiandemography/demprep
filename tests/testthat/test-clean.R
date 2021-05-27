@@ -1,6 +1,5 @@
 
-context("is_valid")
-
+context("clean")
 
 ## clean_age ------------------------------------------------------------------
 
@@ -16,6 +15,7 @@ test_that("'clean_age' works with mix of valid and invalid labels", {
     x <- c("lesinfants", "one", "two", "three")
     ans_obtained <- clean_age(x)
     ans_expected <- c("lesinfants", "1", "2", "3")
+    expect_identical(ans_obtained, ans_expected)
 })
 
 test_that("'clean_age' works with multiples of 5", {
@@ -58,6 +58,18 @@ test_that("clean_age_df works", {
 })
 
 
+## clean_cohort ---------------------------------------------------------------
 
+test_that("'clean_cohort' works with mix of valid and invalid labels", {
+    x <- c("2020", "2020 to 2025", "<February 2021", "third quarter 2022", NA)
+    expect_identical(clean_cohort(x),
+                     c("2020", "2020-2025", "<2021 Feb", "2022 Q3", NA))
+    x <- c("up to 2020", "2020--2025", "less than Jun 2021", "wrong", "")
+    expect_identical(clean_cohort(x),
+                     c("<2020", "2020-2025", "<2021 Jun", "wrong", ""))
+    x <- c("q2 2020", "January 2025", "2021-February", "before second quarter 2020")
+    expect_identical(clean_cohort(x),
+                     c("2020 Q2", "2025 Jan", "2021 Feb", "<2020 Q2"))
+})
     
-
+    

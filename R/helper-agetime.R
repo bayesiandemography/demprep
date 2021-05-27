@@ -263,7 +263,7 @@ make_breaks_date_to_date_quarter <- function(date) {
 ## NO_TESTS
 make_breaks_date_to_date_year <- function(date,
                                           month_start) {
-    month_start_int <- match(month_start, month.abb)
+    month_start_int <- match(month_start, base::month.abb)
     ## obtain 'break_min'
     date_min <- min(date, na.rm = TRUE)
     date_min_ymd <- as_ymd(date_min)
@@ -595,7 +595,7 @@ rollback_year <- function(date, month_start) {
     if (identical(length(date), 0L))
         return(as.Date(character()))
     date <- as.POSIXlt(date)
-    i_month_start <- match(month_start, month.abb) - 1L
+    i_month_start <- match(month_start, base::month.abb) - 1L
     is_before_month_start <- !is.na(date) & (date$mon < i_month_start)
     date$year[is_before_month_start] <- date$year[is_before_month_start] - 1L
     date$mon <- i_month_start

@@ -5,7 +5,6 @@ context("helper-clean")
 ## clean_age_5 ----------------------------------------------------------------
 
 test_that("'clean_age_5' returns cleaned 'x' when 'x' denotes 5-year age groups", {
-    clean_age_5 <- demprep:::clean_age_5
     ## no NAs
     x <- seq(0, 100, 5)
     x <- rep(x, each = 10)
@@ -30,7 +29,6 @@ test_that("'clean_age_5' returns cleaned 'x' when 'x' denotes 5-year age groups"
 })
 
 test_that("'clean_age_5' returns NULL when 'x' does not denote 5-year age groups", {
-    clean_age_5 <- demprep:::clean_age_5
     ## length 0
     expect_null(clean_age_5(character()))
     ## no NAs
@@ -52,7 +50,6 @@ test_that("'clean_age_5' returns NULL when 'x' does not denote 5-year age groups
 ## clean_age_guess ------------------------------------------------------------
 
 test_that("'clean_age_guess' correctly interprets valid labels", {
-    clean_age_guess <- demprep:::clean_age_guess
     x <- c("0 Year", "1 to 4 Years", "5 to 9 Years", "10 Years And Over")
     ans_obtained <- clean_age_guess(x, language = "English")
     ans_expected <- c("0", "1-4", "5-9", "10+")
@@ -71,11 +68,11 @@ test_that("'clean_age_guess' correctly interprets valid labels", {
     expect_identical(ans_obtained, ans_expected)
     x <- c("one month", "2 months", "zero months", "100 m and over")
     ans_obtained <- clean_age_guess(x, language = "English")
-    ans_expected <- c("1m", "2m", "0m", "100m+")
+    ans_expected <- c("1month", "2months", "0months", "100m+")
     expect_identical(ans_obtained, ans_expected)
     x <- c("11 qtrs", "five quarters or more", "0 qu", "100  quarter")
     ans_obtained <- clean_age_guess(x, language = "English")
-    ans_expected <- c("11q", "5q+", "0q", "100q")
+    ans_expected <- c("11qtrs", "5quarters+", "0qu", "100quarter")
     expect_identical(ans_obtained, ans_expected)
 })
 
@@ -83,7 +80,6 @@ test_that("'clean_age_guess' correctly interprets valid labels", {
 ## clean_age_lifetab ----------------------------------------------------------
 
 test_that("'clean_age_lifetab' returns cleaned 'x' when 'x' denotes 5-year age groups", {
-    clean_age_lifetab <- demprep:::clean_age_lifetab
     ## no NAs
     x <- c(1L, seq(0, 100, 5))
     x <- rep(x, each = 10)
@@ -114,7 +110,6 @@ test_that("'clean_age_lifetab' returns cleaned 'x' when 'x' denotes 5-year age g
 })
 
 test_that("'clean_age_lifetab' returns NULL when 'x' does not denote life table age groups", {
-    clean_age_lifetab <- demprep:::clean_age_lifetab
     ## length 0
     expect_null(clean_age_lifetab(character()))
     ## no NAs
@@ -133,3 +128,25 @@ test_that("'clean_age_lifetab' returns NULL when 'x' does not denote life table 
 })
 
 
+## clean_cohort_period_guess --------------------------------------------------
+
+test_that("'clean_age_guess' correctly interprets valid labels", {
+    x <- c("2000 -  2005", "Up to 2000", "2005 to 2010", "2021  ")
+    ans_obtained <- clean_cohort_period_guess(x,
+                                              language = "English",
+                                              open_first = TRUE)
+    ans_expected <- c("2000-2005", "<2000", "2005-2010", "2021")
+    expect_identical(ans_obtained, ans_expected)
+    x <- c("2000 q1", "2000    QUARTER2", "BEFORE FIRST QUARTER 2005", "qu3 2020")
+    ans_obtained <- clean_cohort_period_guess(x,
+                                              language = "English",
+                                              open_first = TRUE)
+    ans_expected <- c("2000 Q1", "2000 Q2", "<2005 Q1", "2020 Q3")
+    expect_identical(ans_obtained, ans_expected)
+    x <- c("2000 October", "2000 OCT", "up to 2005 dec", "January 2020")
+    ans_obtained <- clean_cohort_period_guess(x,
+                                              language = "English",
+                                              open_first = TRUE)
+    ans_expected <- c("2000 Oct", "2000 Oct", "<2005 Dec", "2020 Jan")
+    expect_identical(ans_obtained, ans_expected)
+})

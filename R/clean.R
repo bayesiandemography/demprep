@@ -5,13 +5,6 @@
 #' labels and convert them
 #' to the format used by the dem packages.
 #'
-#' The basic strategy followed by \code{clean_age}
-#' is to strip off redundant words such as "years",
-#' and to translate to formats
-#' used by the dem packages, such as translating
-#' \code{"and over"} to \code{"+"} or "months"
-#' to "m".
-#'
 #' By default, \code{clean_age} assumes that any
 #' text labels are written in English. However,
 #' other languages can be specified using
@@ -40,6 +33,10 @@
 #' used to check whether \code{clean_age} is
 #' giving the desired results.
 #'
+#' \code{clean_age} does not remove month or quarter
+#' labels, as this could result in ambiguity when
+#' different age groups use different units.
+#'
 #' @param x A numeric or character vector.
 #' @param language The language in which text
 #' labels are written. Defaults to English.
@@ -58,7 +55,7 @@
 #'        "infants",
 #'        "untranslatable",
 #'        "10-19",
-#'        "100 quarters or more",
+#'        "100 quarters",
 #'        "also untranslatable",
 #'        "three months")
 #' x
@@ -102,6 +99,81 @@ clean_age_df <- function(x, language = "English") {
     input <- x[!is_duplicated]
     output <- x_processed[!is_duplicated]
     is_valid <- is_valid_age(output)
+    data.frame(input = input,
+               output = output,
+               is_valid = is_valid)
+}
+
+
+#' Tidy cohort labels
+#'
+#' Try to parse cohort
+#' labels and convert them
+#' to the format used by the dem packages.
+#'
+#' By default, \code{clean_cohort} assumes that any
+#' text labels are written in English. However,
+#' other languages can be specified using
+#' the \code{language} argument. Current choices are
+#' ADD OVER TIME.
+#'
+#' Function \code{clean_cohort_df} returns a data frame
+#' showing how each unique element in \code{x} is
+#' interpreted by function \code{clean_cohort} and whether
+#' the element can be interpreted as a valid
+#' cohort label. \code{clean_cohort_df} can be
+#' used to check whether \code{clean_cohort} is
+#' giving the desired results.
+#'
+#' @inheritParams clean_age
+#'
+#' @return
+#' \code{clean_cohort} returns a character vector with the same
+#' length as \code{x} in which labels that have been
+#' parsed are translated to dem formats.
+#' \code{clean_cohort_df} returns a data frame with columns
+#' \code{"input"}, \code{"output"}, and \code{"is_valid"}.
+#'
+#' @examples
+#' x <- c("before 2000",
+#'        "Millenials",
+#'        "2020 Jan",
+#'        "Gen Z",
+#'        "Q3 2020",
+#'        "January 2020",
+#'        "2025 first quarter",
+#'        "also untranslatable",
+#'        "2020-2025")
+#' x
+#' clean_cohort(x)
+#' clean_cohort_df(x)
+#' @name clean_cohort
+NULL
+
+## NO_TESTS
+#' @export
+#' @rdname clean_cohort
+clean_cohort <- function(x, language = "English") {
+    language <- match.arg(language)
+    ans <- x
+    x_guess <- clean_cohort_period_guess(x = x,
+                                         language = language,
+                                         open_first = TRUE)
+    is_valid <- is_valid_cohort(x_guess)
+    ans[is_valid] <- x_guess[is_valid]
+    ans
+}
+
+## NO_TESTS
+#' @export
+#' @rdname clean_cohort
+clean_cohort_df <- function(x, language = "English") {
+    x_processed <- clean_cohort(x = x,
+                                language = language)
+    is_duplicated <- duplicated(x)
+    input <- x[!is_duplicated]
+    output <- x_processed[!is_duplicated]
+    is_valid <- is_valid_cohort(output)
     data.frame(input = input,
                output = output,
                is_valid = is_valid)
