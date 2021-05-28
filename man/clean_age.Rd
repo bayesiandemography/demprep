@@ -28,12 +28,10 @@ labels and convert them
 to the format used by the dem packages.
 }
 \details{
-The basic strategy followed by \code{clean_age}
-is to strip off redundant words such as "years",
-and to translate to formats
-used by the dem packages, such as translating
-\code{"and over"} to \code{"+"} or "months"
-to "m".
+Intervals that are open on the right
+such as \code{"80+"} are
+allowed. Intervals that are open on the left
+such as \code{"<20"} are not.
 
 By default, \code{clean_age} assumes that any
 text labels are written in English. However,
@@ -62,15 +60,20 @@ the element can be interpreted as a valid
 age group label. \code{clean_age_df} can be
 used to check whether \code{clean_age} is
 giving the desired results.
+
+\code{clean_age} does not remove month or quarter
+labels, as this could result in ambiguity when
+different age groups use different units.
 }
 \examples{
-x <- c("100 and over",
+x <- c("100 and over", ## open on right
+       "<10",          ## open on left
        "infants",
        "10 to 19 years",
        "infants",
        "untranslatable",
        "10-19",
-       "100 quarters or more",
+       "100 quarters",
        "also untranslatable",
        "three months")
 x

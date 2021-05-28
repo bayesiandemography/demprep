@@ -5,6 +5,11 @@
 #' labels and convert them
 #' to the format used by the dem packages.
 #'
+#' Intervals that are open on the right
+#' such as \code{"80+"} are
+#' allowed. Intervals that are open on the left
+#' such as \code{"<20"} are not.
+#'
 #' By default, \code{clean_age} assumes that any
 #' text labels are written in English. However,
 #' other languages can be specified using
@@ -49,7 +54,8 @@
 #' \code{"input"}, \code{"output"}, and \code{"is_valid"}.
 #'
 #' @examples
-#' x <- c("100 and over",
+#' x <- c("100 and over", ## open on right
+#'        "<10",          ## open on left
 #'        "infants",
 #'        "10 to 19 years",
 #'        "infants",
@@ -111,6 +117,11 @@ clean_age_df <- function(x, language = "English") {
 #' labels and convert them
 #' to the format used by the dem packages.
 #'
+#' Intervals that are open on the left
+#' such as \code{"<2000"} are
+#' allowed. Intervals that are open on the right
+#' such as \code{"2000+"} are not.
+#'
 #' By default, \code{clean_cohort} assumes that any
 #' text labels are written in English. However,
 #' other languages can be specified using
@@ -135,14 +146,14 @@ clean_age_df <- function(x, language = "English") {
 #' \code{"input"}, \code{"output"}, and \code{"is_valid"}.
 #'
 #' @examples
-#' x <- c("before 2000",
+#' x <- c("before 2000",  ## open on left
+#'        "after 2000",   ## open on right
 #'        "Millenials",
 #'        "2020 Jan",
-#'        "Gen Z",
 #'        "Q3 2020",
 #'        "January 2020",
 #'        "2025 first quarter",
-#'        "also untranslatable",
+#'        "untranslatable",
 #'        "2020-2025")
 #' x
 #' clean_cohort(x)
@@ -150,7 +161,7 @@ clean_age_df <- function(x, language = "English") {
 #' @name clean_cohort
 NULL
 
-## NO_TESTS
+## HAS_TESTS
 #' @export
 #' @rdname clean_cohort
 clean_cohort <- function(x, language = "English") {
@@ -164,7 +175,7 @@ clean_cohort <- function(x, language = "English") {
     ans
 }
 
-## NO_TESTS
+## HAS_TESTS
 #' @export
 #' @rdname clean_cohort
 clean_cohort_df <- function(x, language = "English") {
@@ -174,6 +185,83 @@ clean_cohort_df <- function(x, language = "English") {
     input <- x[!is_duplicated]
     output <- x_processed[!is_duplicated]
     is_valid <- is_valid_cohort(output)
+    data.frame(input = input,
+               output = output,
+               is_valid = is_valid)
+}
+
+
+#' Tidy period labels
+#'
+#' Try to parse period
+#' labels and convert them
+#' to the format used by the dem packages.
+#'
+#' Open intervals such as \code{"<2020"}
+#' or \code{"2020+"} are not allowed.
+#'
+#' By default, \code{clean_period} assumes that any
+#' text labels are written in English. However,
+#' other languages can be specified using
+#' the \code{language} argument. Current choices are
+#' ADD OVER TIME.
+#'
+#' Function \code{clean_period_df} returns a data frame
+#' showing how each unique element in \code{x} is
+#' interpreted by function \code{clean_period} and whether
+#' the element can be interpreted as a valid
+#' period label. \code{clean_period_df} can be
+#' used to check whether \code{clean_period} is
+#' giving the desired results.
+#'
+#' @inheritParams clean_age
+#'
+#' @return
+#' \code{clean_period} returns a character vector with the same
+#' length as \code{x} in which labels that have been
+#' parsed are translated to dem formats.
+#' \code{clean_period_df} returns a data frame with columns
+#' \code{"input"}, \code{"output"}, and \code{"is_valid"}.
+#'
+#' @examples
+#' x <- c("before 2000", ## open on left
+#'        "after 2000",  ## open on right
+#'        "2020 Jan",
+#'        "Q3 2020",
+#'        "January 2020",
+#'        "2025 first quarter",
+#'        "untranslatable",
+#'        "2020-2025")
+#' x
+#' clean_period(x)
+#' clean_period_df(x)
+#' @name clean_period
+NULL
+
+## HAS_TESTS
+#' @export
+#' @rdname clean_period
+clean_period <- function(x, language = "English") {
+    language <- match.arg(language)
+    ans <- x
+    x_guess <- clean_cohort_period_guess(x = x,
+                                         language = language,
+                                         open_first = FALSE)
+    is_valid <- is_valid_period(x_guess)
+    ans[is_valid] <- x_guess[is_valid]
+    ans
+}
+
+## HAS_TESTS
+#' @export
+#' @rdname clean_period
+clean_period_df <- function(x, language = "English") {
+    x_processed <- clean_period(x = x,
+                                language = language)
+    is_duplicated <- duplicated(x)
+    input <- x[!is_duplicated]
+    output <- x_processed[!is_duplicated]
+    is_valid <- is_valid_period(output)
     data.frame(input = input,
                output = output,
                is_valid = is_valid)
