@@ -3,91 +3,128 @@
 \docType{package}
 \name{demprep}
 \alias{demprep}
-\title{demprep: Tools for preparing demographic data}
+\title{demprep: Prepare demographic data}
 \description{
-General-purpose tools for preparing data
-for demographic analysis. Typically, the
-hardest part of preparing
-data for demographic analysis is defining
-age and time labels, so \code{demprep} focuses
-particularly on these.
+Prepare demographic data for subsequent analysis,
+focussing particularly on the specification of
+age, period, and cohort
 }
-\section{Groups of functions}{
+\section{Calculating ages, cohorts, and periods from dates}{
 
 
-\strong{Calculating ages, cohorts, and periods from dates}
-
+The following functions calculate ages, cohorts, and periods from dates.
 \tabular{lll}{
-  \strong{age} \tab \strong{time} \tab \strong{cohort} \cr
+  \strong{age} \tab \strong{period} \tab \strong{cohort} \cr
   \code{\link{date_to_age_year}} \tab \code{\link{date_to_period_year}} \tab \code{\link{date_to_cohort_year}} \cr
   \code{\link{date_to_age_quarter}} \tab \code{\link{date_to_period_quarter}} \tab \code{\link{date_to_cohort_quarter}} \cr
   \code{\link{date_to_age_month}} \tab \code{\link{date_to_period_month}} \tab \code{\link{date_to_cohort_month}} \cr
 }
 
-\tabular{l}{
-  \code{\link{date_to_triangle_year}} \cr
-  \code{\link{date_to_triangle_quarter}} \cr
-  \code{\link{date_to_triangle_month}} \cr
+In addition, functions \code{\link{date_to_triangle_year}},
+\code{\link{date_to_triangle_quarter}}, and 
+\code{\link{date_to_triangle_month}} can be used to assign
+events to "Lexis triangles". (For a definition of Lexis triangles, 
+see the vignette for this package.)
+
+Functions \code{\link{impute_date}} and \code{\link{impute_dob}} can be used to
+impute dates when details such as day of birth are missing.
 }
 
-\code{\link{impute_date}}, \code{\link{impute_dob}}
+\section{Tidying existing labels}{
 
 
-\strong{Putting existing labels into the expected format}
+Functions \code{\link{clean_age}}, \code{\link{clean_period}},
+and \code{\link{clean_cohort}} labels can be used to reformat
+existing age, period, and cohort labels to match the 
+conventions used in the \strong{dem} packages.
 
-\code{\link{clean_age}}, \code{\link{clean_cohort}}, \code{\link{clean_period}}
-
-\code{\link{clean_age_df}}, \code{\link{clean_cohort_df}}, \code{\link{clean_period_df}}
-
-\code{\link{is_valid_age}}, \code{\link{is_valid_cohort}}, \code{\link{is_valid_period}}
-
-
-\strong{Generating a complete set of labels}
-
-\tabular{llll}{
-  Width \tab \strong{age} \tab \strong{time} \tab \strong{cohort} \cr
-  Single year \tab \code{\link{format_age_year}} \tab \code{\link{format_period_year}} \tab \code{\link{format_cohort_year}} \cr
-  Multi year, constant \tab \code{\link{format_age_multi}} \tab \code{\link{format_period_multi}} \tab \code{\link{format_cohort_multi}} \cr
-  Multi year, varying \tab \code{\link{format_age_custom}} \tab \code{\link{format_period_custom}} \tab \code{\link{format_cohort_custom}} \cr
-  Single quarter \tab \code{\link{format_age_quarter}} \tab \code{\link{format_period_quarter}} \tab \code{\link{format_cohort_quarter}} \cr
-  Single month \tab \code{\link{format_age_month}} \tab \code{\link{format_period_month}} \tab \code{\link{format_cohort_month}} \cr
-  Life table \tab \code{\link{format_age_lifetab}} \tab  \tab \cr
-  Births \tab \code{\link{format_age_births}} \tab  \tab
+Functions \code{\link{clean_age_df}}, \code{\link{clean_period_df}}
+\code{\link{clean_cohort_df}},  \code{\link{is_valid_age}}, 
+\code{\link{is_valid_period}}, and \code{\link{is_valid_cohort}}
+can be used to make the reformatting of labels more robust.
 }
 
+\section{Generating a complete, consistent set of labels}{
 
-\strong{Converting labels that use explicit dates}
 
-\code{\link{as_date_range_year}}, \code{\link{as_date_range_quarter}}, \code{\link{as_date_range_month}} 
+Calling the following functions on exising labels (including
+labels created by the \code{date_to} and \code{clean} functions
+in \strong{demprep}) results in labels that are consistent
+and complete.
 
-- note that can also be used to encode other periods/cohorts, eg weekly or daily data; irregular lenths.
+\tabular{lll}{
+  \strong{age} \tab \strong{period} \tab \strong{cohort} \cr
+  \code{\link{format_age_year}} \tab \code{\link{format_period_year}} \tab \code{\link{format_cohort_year}} \cr
+  \code{\link{format_age_multi}} \tab \code{\link{format_period_multi}} \tab \code{\link{format_cohort_multi}} \cr
+  \code{\link{format_age_custom}} \tab \code{\link{format_period_custom}} \tab \code{\link{format_cohort_custom}} \cr
+  \code{\link{format_age_quarter}} \tab \code{\link{format_period_quarter}} \tab \code{\link{format_cohort_quarter}} \cr
+  \code{\link{format_age_month}} \tab \code{\link{format_period_month}} \tab \code{\link{format_cohort_month}} \cr
+  \code{\link{format_age_lifetab}} \tab  \tab \cr
+  \code{\link{format_age_births}} \tab  \tab
+}
 
-\strong{Tabulating data}
+Functions ending in \code{year}, \code{quarter},
+and \code{month} create single-year, single-quarter, and single-month
+intervals. Functions ending in \code{multi} and \code{custom} 
+create multiple-year intervals. Functions \code{format_age_lifetab} and 
+\code{format_age_births} create age groups for life tables and
+tabulations of births.
+}
+
+\section{Creating labels that use explicit dates}{
+
+
+Standard demographic conventions for labelling 
+periods and cohorts, which are implemented by the \code{format_period}
+and \code{format_cohort} functions, can be ambiguous. 
+Functions \code{\link{as_date_range_year}}, 
+\code{\link{as_date_range_multi}}, 
+\code{\link{as_date_range_custom}}, 
+\code{\link{as_date_range_quarter}}, and
+ \code{\link{as_date_range_month}} convert labels into
+a format that uses exact dates.
+}
+
+\section{Tabulation}{
+
 
 Once the cross-classifying variables are all in the required format,
 the data can be cross-tabulated into a multi-way
-\code{\link[base]{array}}.
-
-If (i) the data is at the individual level, but does not have
-survey weights, or (ii) the data has already been aggregated,
-then cross-tabulation can be carried out using
-function \code{\link{dtabs}}.
-
-If the data is at the individual level and does have survey weights,
-then it may be better to use function \code{\link{dtabs_survey}}.
+\code{\link[base]{array}}. This is done using function
+\code{\link{dtabs}}, except in the case of individual-level
+survey data with survey weights, where \code{\link{dtabs_survey}}
+is used instead.
 }
 
-\section{Typical workflows}{
+\section{Some typical workflows}{
 
 
-\strong{Individual-level data that uses dates of events}
+\strong{Using individual-level survey data with
+ dates and survey weights
+ to make tabulation with 5-year age groups and 1-year periods}
 
-\strong{Individual-level data that uses incomplete labels}
+\itemize{
+  \item \code{\link{date_to_age_year}} and
+   \code{\link{date_to_period_year}}
+  to calculate ages and periods
+  \item \code{\link{format_age_multi}} and
+   \code{\link{format_period_year}}
+  to create age and period labels
+  \item \code{\link{dtabs_survey}} to tabulate
+}
 
-\strong{"Life table" age groups}
+\strong{Using aggregate data with labels to make
+ tabulation with 5-year age groups, 
+ periods, and Lexis triangles}
 
-\strong{Births by age of monther}
-
-\strong{Monthly data}
+\itemize{
+  \item \code{\link{clean_age}} and \code{\link{clean_period}}
+  to tidy original labels
+  \item  \code{\link{format_age_multi}}, 
+   \code{\link{format_period_multi}}, and
+   \code{format_triangle_multi}
+  to form 5-year age groups, periods, and Lexis triangles
+  \item \code{\link{dtabs}} to tabulate
+}
 }
 
