@@ -158,7 +158,44 @@ text(x = date,
 ```
 
 
-# Measuring age with months that that have different lengths
+## Measuring age
+
+In ordinary English, "age" means "age in completed years" or "age at last birthday". Demographers typically adopt this same rule when specifying ages in years. For instance, demographers describe as a person who was born 5 years and 57 days ago as "5 years old", and describe a person who was born 2 days ago as 0 years old.
+
+Demographers extend the same rule to measuring age in months. Thus, for instance, demographers describe a person who was born 3 months as 23 days ago as "3 months old".
+
+Some applications require describing ages in three-month units called "quarters". The age-in-completed-units approach can be applied to quarters. A person who was born 3 months and 23 days ago can be referred to as "1 quarter old".
+
+Whether using years, months, or quarters, however, the measurement of age is complicated by the fact that some months are longer than others. April has 30 days, while May has 31, for instance, and February has 29 days in leap years and 28 days in non-leap years. The question of when a person born on 31 January 2001 turns 1 month old is difficult to answer because February is shorter than January. 
+
+One approach to the problem of measuring ages with unequal months is to define new month-like units consisting of, say, 365/12 days, and use these instead. While this approach might be suitable for some purposes, it is unsuitable for most tasks in applied demography, where people want to know what has happened, or will happen, during conventionally-labelled months or years. Using artificial months that were 365/12 days long would mean that reaching three months of age always required experiencing three times as many days as reaching one month of age. However, because the new artificial months would not line up with standard months, any recording system based on these months would be unable to answer the questions that most users of demographic statistics were likely to ask. Users of monthly birth statistics want to know, for instance, how many births occurred during 1 June--30 June, for instance, not some artificial period of 365/12 days that approximately aligns with 1 June--30 June.
+
+To obtain data that respects the boundaries between standard months and years, we need to incorporate these months and years into our calculations of variables such as age. In **demprep** we calculate age in months using the formula
+\begin{equation}
+\begin{split}
+\text{age in completed months} & = 12 \times (\text{year of event} - \text{year of birth}) \\
+& \quad + \text{month of event} - \text{month of birth} \\
+& \quad - I\{\text{day of event} \ge \text{day of birth}\}.
+\end{split}
+\end{equation}
+The $I\{\text{day of event} \ge \text{day of birth}\}$ translates as "1 if the day of event is greater than or equal to day of birth, and 0 otherwise".
+
+Consider, for instance, a person born on 2 January 2020 who emigrates on 13 March 2030. We calculate the age of the person at the time of the emigration as follows:
+\begin{align} 
+  \text{age in completed months} & = 12 \times (2030 - 2020) + (3 - 1) + 1 \\
+                                 & = 123.
+\end{align}
+
+Using this approach a child who was born in 31 January 2001 is 0 months old on 28 February, and 1 month old on 1 March. The approach therefore implies that the child turns one month old on 1 March, which is a different answer from the one implied by function `seq.Date`.
+
+Age in completed years can be obtained by dividing age in completed months by 12, and discarding any remainder. If a person is aged 123 in completed months, then the person is aged 10 in completed years. (The corresponding *R* operation is integer division, obtained through the `%/%` operator.)
+
+Similarly, age in completed quarters can be obtained by dividing age in completed months by 3 and dividing any remainder. If a person is aged 123 in completed months, then that person is aged 41 in completed quaters.
+
+
+# Labels for age groups, periods, cohorts, and Lexis triangles
+
+
 
 Table: Intervals that the period or cohort label "2020" can refer to
 
@@ -177,42 +214,8 @@ Table: Intervals that the period or cohort label "2020" can refer to
 | 1 Dec 2020 - 30 Nov 2021 | 1 Dec 2019 - 30 Nov 2020 |
 
 
-#' \tabular{cccc}{
-#'   \code{month_start} \tab \code{label_year_start} \tab Period \tab Label \cr
-#'   \code{"Jan"} \tab \code{TRUE}  \tab 1 Jan 2020 - 31 Dec 2020 \tab \code{"2020"} \cr
-#'   \code{"Jan"} \tab \code{FALSE} \tab 1 Jan 2020 - 31 Dec 2020 \tab \code{"2020"} \cr
-#'   \code{"Feb"} \tab \code{TRUE}  \tab 1 Feb 2020 - 31 Jan 2021 \tab \code{"2020"} \cr
-#'   \code{"Feb"} \tab \code{FALSE} \tab 1 Feb 2020 - 31 Jan 2021 \tab \code{"2021"} \cr
-#'   \code{"Mar"} \tab \code{TRUE}  \tab 1 Mar 2020 - 28 Feb 2021 \tab \code{"2020"} \cr
-#'   \code{"Mar"} \tab \code{FALSE} \tab 1 Mar 2020 - 28 Feb 2021 \tab \code{"2021"} \cr
-#'   \code{"Apr"} \tab \code{TRUE}  \tab 1 Apr 2020 - 31 Mar 2021 \tab \code{"2020"} \cr
-#'   \code{"Apr"} \tab \code{FALSE} \tab 1 Apr 2020 - 31 Mar 2021 \tab \code{"2021"} \cr
-#'   \code{"May"} \tab \code{TRUE}  \tab 1 May 2020 - 30 Apr 2021 \tab \code{"2020"} \cr
-#'   \code{"May"} \tab \code{FALSE} \tab 1 May 2020 - 30 Apr 2021 \tab \code{"2021"} \cr
-#'   \code{"Jun"} \tab \code{TRUE}  \tab 1 Jun 2020 - 31 May 2021 \tab \code{"2020"} \cr
-#'   \code{"Jun"} \tab \code{FALSE} \tab 1 Jun 2020 - 31 May 2021 \tab \code{"2021"} \cr
-#'   \code{"Jul"} \tab \code{TRUE}  \tab 1 Jul 2019 - 30 Jun 2020 \tab \code{"2019"} \cr
-#'   \code{"Jul"} \tab \code{FALSE} \tab 1 Jul 2019 - 30 Jun 2020 \tab \code{"2020"} \cr
-#'   \code{"Aug"} \tab \code{TRUE}  \tab 1 Aug 2019 - 31 Jul 2020 \tab \code{"2019"} \cr
-#'   \code{"Aug"} \tab \code{FALSE} \tab 1 Aug 2019 - 31 Jul 2020 \tab \code{"2020"} \cr
-#'   \code{"Sep"} \tab \code{TRUE}  \tab 1 Sep 2019 - 31 Aug 2020 \tab \code{"2019"} \cr
-#'   \code{"Sep"} \tab \code{FALSE} \tab 1 Sep 2019 - 31 Aug 2020 \tab \code{"2020"} \cr
-#'   \code{"Oct"} \tab \code{TRUE}  \tab 1 Oct 2019 - 30 Sep 2020 \tab \code{"2019"} \cr
-#'   \code{"Oct"} \tab \code{FALSE} \tab 1 Oct 2019 - 30 Sep 2020 \tab \code{"2020"} \cr
-#'   \code{"Nov"} \tab \code{TRUE}  \tab 1 Nov 2019 - 31 Oct 2020 \tab \code{"2019"} \cr
-#'   \code{"Nov"} \tab \code{FALSE} \tab 1 Nov 2019 - 31 Oct 2020 \tab \code{"2020"} \cr
-#'   \code{"Dec"} \tab \code{TRUE}  \tab 1 Dec 2019 - 30 Nov 2020 \tab \code{"2019"} \cr
-#'   \code{"Dec"} \tab \code{FALSE} \tab 1 Dec 2019 - 30 Nov 2020 \tab \code{"2020"}
-#' }
 
 
-# Labels for age groups, periods, and cohorts
-
-
-
-
-
-# Age and time in demography
 
 
 **Measuring periods using using dates attained, rather than days elapsed***
@@ -226,14 +229,6 @@ In the case of months, periods are defined by lining up days of the month and th
 Sometimes, however, it is not possible to align days and months. If we want to go one year forward from 29 February 2020, we there is no 29 February 2021 to align to. As noted above, a similar problem arises when trying to go one month forward from 31 January in any year. These sorts of problems arise for days of the month, such as the 31st, that occur in some months but not others.
 
 **demprep** sidesteps the problem of irregular days of the month by requiring that all periods start on the first of the month. For example, year-long periods can begin on any month of the year, but they must always begin on the first day of the month. A period beginning on 1 December is allowed, but a period beginning on 2 January is not. This restriction makes the practice of defining periods simpler and more predictable, and is consistent with what most producers of data do in any case.
-
-
-
-# Labels
-
-## Age
-
-## Period and cohort
 
 
 
