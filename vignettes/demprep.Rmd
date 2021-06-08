@@ -158,7 +158,7 @@ text(x = date,
 ```
 
 
-## Measuring age
+## How **demprep** measures age
 
 In ordinary English, "age" means "age in completed years" or "age at last birthday". Demographers typically adopt this same rule when specifying ages in years. For instance, demographers describe as a person who was born 5 years and 57 days ago as "5 years old", and describe a person who was born 2 days ago as 0 years old.
 
@@ -193,7 +193,28 @@ Age in completed years can be obtained by dividing age in completed months by 12
 Similarly, age in completed quarters can be obtained by dividing age in completed months by 3 and dividing any remainder. If a person is aged 123 in completed months, then that person is aged 41 in completed quaters.
 
 
-# Labels for age groups, periods, and cohorts
+# **demprep** labels for age groups, periods, and cohorts
+
+The conventions that **demprep** uses for labelling age groups, periods, and cohorts are summarised in the following table.
+
+
+Table: Examples of **demprep** labels for age groups, periods, and cohorts
+
+| Unit  | Type   | Age group | Period     | Cohort       |
+|:------|:-------|:----------|:-----------|:-------------|
+| year  | single | `"0"`     | `"2020"`   | `"2020"`     |
+| year  | multiple |  `"5-9"` | `"2025-2030"` | `"2025-2030"` |
+| year  | open left |  |  | `"<2020"` |
+| year  | open right | `"100+"` |  |  |
+| quarter | single | `"12"` | `"2020 Q1"` | `"2020 Q1"` |
+| quarter  | multiple |  |  |  |
+| quarter | open left |  |  | `"<2020 Q1"` |
+| quarter | open right | `"12+"` |  |  |
+| month | single | `"12"` | `"2020 Q1"` | `"2020 Q1"` |
+| month  | multiple |  |  |  |
+| month | open left |  |  | `"<2020 Jan"` |
+| month | open right | `"36+"` |  |  |
+
 
 Choosing appropriate labels for age groups, periods, and cohorts is non-trivial. Demographers have never developed a universally-accepted set of labelling conventions. Moreover, the conventions that do exist lead to labels that are ambiguous.
 
@@ -221,14 +242,6 @@ Table: Intervals that the period or cohort label "2020" can refer to
 | 1 Oct 2020 - 30 Sep 2021 | 1 Nov 2019 - 31 Oct 2020 |
 | 1 Dec 2020 - 30 Nov 2021 | 1 Dec 2019 - 30 Nov 2020 |
 
-
-Table: Valid interval labels
-
-| Units| Age     | Period   | Cohort     |
-|:-----|---------|----------|------------|
-| years | `"0"`, `"5-9"`, `"100+"` | `"2020"`, `"2025-2030"` | `"<2010"`, `"2020"`, `"2025-2030"` |
-| quarters | `"12"`, `"400+"` | `"2020 Q1"` | `"<2010 Q3"`, `"2020 Q1"` |
-| months | `"36"`, `"1200+"` | `"2020 Jan"` | `"<2010 Jul"`, `"2020 Jan"` |
 
 
 
