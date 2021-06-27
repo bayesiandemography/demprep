@@ -433,7 +433,7 @@ dtabs_survey <- function (data = parent.frame(),
                 design_effect <- 1 + (sd_weights / mean_weights)^2
                 design_effect <- design_effect[trials_unweighted >= 2L]
                 FUN <- switch(method,
-                              gg_med = median,
+                              gg_med = stats::median,
                               gg_mean = mean,
                               stop(gettextf("unexpected value for '%s' [\"%s\"]",
                                             "method", method)))                          
