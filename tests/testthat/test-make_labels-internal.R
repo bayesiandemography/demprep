@@ -1,6 +1,4 @@
 
-context("make_labels-internal")
-
 ## Age ------------------------------------------------------------------------
 
 test_that("'make_labels_age' gives correct answer with valid inputs", {

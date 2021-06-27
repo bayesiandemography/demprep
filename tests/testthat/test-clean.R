@@ -1,6 +1,4 @@
 
-context("clean")
-
 ## clean_age ------------------------------------------------------------------
 
 test_that("'clean_age' works with mix of valid and invalid labels", {

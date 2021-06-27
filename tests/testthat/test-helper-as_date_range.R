@@ -1,6 +1,4 @@
 
-context("helper-as_date_range")
-
 ## as_date_range_month_quarter -------------------------------------------------
 
 test_that("'as_date_range_month_quarter' gives correct answer with valid inputs", {

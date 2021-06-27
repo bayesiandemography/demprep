@@ -1,6 +1,4 @@
 
-context("test-helper-dtabs")
-
 ## make_fill ------------------------------------------------------------------
 
 test_that("'make_fill' gives correct answer with valid inputs", {

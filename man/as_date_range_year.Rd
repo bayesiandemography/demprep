@@ -27,7 +27,7 @@ such as "2020", "2001", or "<2005" to
 labels that give precise date ranges
 such as \code{"[2020-01-01, 2020-12-31]"},
 \code{"[2001-10-01, 2002-10-01]"},
-or \code{"(-Inf, , 2005-06-30]"}.
+or \code{"(-Inf, 2005-06-30]"}.
 }
 \details{
 The vector of period or cohort labels \code{x} is typically

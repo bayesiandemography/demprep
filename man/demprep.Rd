@@ -25,6 +25,10 @@ In addition, functions \code{\link{date_to_triangle_year}},
 \code{\link{date_to_triangle_month}} can be used to assign
 events to "Lexis triangles". (For a definition of Lexis triangles, 
 see the vignette for this package.)
+}
+
+\section{Imputing dates}{
+
 
 Functions \code{\link{impute_date}} and \code{\link{impute_dob}} can be used to
 impute dates when details such as day of birth are missing.
@@ -96,7 +100,7 @@ survey data with survey weights, where \code{\link{dtabs_survey}}
 is used instead.
 }
 
-\section{Some typical workflows}{
+\section{Typical workflows}{
 
 
 \strong{Using individual-level survey data with
@@ -122,7 +126,7 @@ is used instead.
   to tidy original labels
   \item  \code{\link{format_age_multi}}, 
    \code{\link{format_period_multi}}, and
-   \code{format_triangle_multi}
+   \code{\link{format_triangle_multi}}
   to form 5-year age groups, periods, and Lexis triangles
   \item \code{\link{dtabs}} to tabulate
 }

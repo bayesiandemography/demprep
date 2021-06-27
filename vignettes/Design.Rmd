@@ -24,6 +24,9 @@ knitr::opts_chunk$set(
 
 - small composable functions
 
+# Labels
+- period/cohort labels for single years use [first_date, last_date], and period/cohort labels for multiple years use [first_date, last_date+1)
+
 
 # Naming conventions
 

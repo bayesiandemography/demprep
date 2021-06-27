@@ -1,6 +1,4 @@
 
-context("date_to_triangle")
-
 ## date_to_triangle_year --------------------------------------------------
 
 test_that("date_to_triangle_year gives correct answers with valid inputs - month_start is Jan", {

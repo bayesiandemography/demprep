@@ -1,6 +1,4 @@
 
-context("format_triangle")
-
 ## format_triangle_year -------------------------------------------------------
 
 test_that("format_triangle_year gives correct answers with default values", {

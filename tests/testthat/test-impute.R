@@ -1,6 +1,4 @@
 
-context("impute")
-
 ## impute_dob ------------------------------------------------------
 
 test_that("impute_dob gives correct answers with valid inputs", {

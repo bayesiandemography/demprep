@@ -1,6 +1,4 @@
 
-context("helper-parse")
-
 ## parse_integers -------------------------------------------------------------
 
 test_that("'parse_integers' gives correct answer with valid inputs", {

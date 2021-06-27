@@ -1,6 +1,4 @@
 
-context("format_period")
-
 ## format_period_year ---------------------------------------------------------
 
 test_that("format_period_year works with valid input", {

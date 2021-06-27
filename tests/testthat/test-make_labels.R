@@ -1,6 +1,4 @@
 
-context("make_labels")
-
 ## Categories -----------------------------------------------------------------
 
 test_that("'make_labels_categories' gives correct answer with valid inputs", {

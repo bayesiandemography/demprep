@@ -15,12 +15,13 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     demcheck,
-    stats,
-    methods
+    methods,
+    stats
 Suggests: 
-    testthat,
+    dplyr,
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat    
 Remotes:
     bayesiandemography/demcheck
 RoxygenNote: 7.1.1

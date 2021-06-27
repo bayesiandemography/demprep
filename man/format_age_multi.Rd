@@ -48,7 +48,7 @@ then \code{format_age_multi} creates
 a factor with levels \code{"0-4"}, \code{"5-9"},
 \dots, \code{"95-99"}, \code{"100+"}. Even when an age
 group between \code{break_min} and \code{break_max}
-is not included in \code{x}, \code{factor_age_year}
+is not included in \code{x}, \code{format_age_multi}
 still creates a level for it.
 }
 \details{

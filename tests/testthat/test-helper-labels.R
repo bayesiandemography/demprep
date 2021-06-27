@@ -1,7 +1,4 @@
 
-context("helper-labels")
-
-
 ## breaks_to_pairs ------------------------------------------------------------
 
 test_that("'breaks_to_pairs' gives correct answer with valid inputs - integers", {

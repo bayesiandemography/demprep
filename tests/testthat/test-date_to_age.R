@@ -1,6 +1,4 @@
 
-context("date_to_age")
-
 ## date_to_age_year --------------------------------------------------
 
 test_that("date_to_age_year gives correct answers with valid inputs", {

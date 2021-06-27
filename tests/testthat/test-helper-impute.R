@@ -1,6 +1,4 @@
 
-context("helper-impute")
-
 ## impute_date_day ------------------------------------------------------
 
 test_that("impute_date_day gives correct answers with valid inputs", {

@@ -21,6 +21,8 @@
 #' events to "Lexis triangles". (For a definition of Lexis triangles, 
 #' see the vignette for this package.)
 #'
+#' @section Imputing dates:
+#'
 #' Functions \code{\link{impute_date}} and \code{\link{impute_dob}} can be used to
 #' impute dates when details such as day of birth are missing.
 #'

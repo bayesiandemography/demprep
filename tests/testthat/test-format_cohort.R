@@ -1,6 +1,4 @@
 
-context("format_cohort")
-
 ## format_cohort_year ---------------------------------------------------------
 
 test_that("format_cohort_year works with valid input", {

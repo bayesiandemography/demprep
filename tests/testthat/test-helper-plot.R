@@ -1,6 +1,4 @@
 
-context("helper-plot")
-
 ## coord_lifeline -------------------------------------------------------------
 
 test_that("'coord_lifeline' gives correct answer with valid inputs", {

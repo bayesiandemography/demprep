@@ -1,6 +1,4 @@
 
-context("date_to_age")
-
 ## as_date_range_year ---------------------------------------------------------
 
 test_that("as_date_range_year gives correct answers with default values for 'month_start', 'label_year_start'", {

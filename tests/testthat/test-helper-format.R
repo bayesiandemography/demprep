@@ -1,6 +1,4 @@
 
-context("helper-format")
-
 ## date_to_month --------------------------------------------------------------
 
 test_that("'date_to_month_label' gives correct answer with valid inputs", {

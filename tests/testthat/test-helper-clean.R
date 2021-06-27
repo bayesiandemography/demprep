@@ -1,7 +1,4 @@
 
-context("helper-clean")
-
-
 ## clean_age_5 ----------------------------------------------------------------
 
 test_that("'clean_age_5' returns cleaned 'x' when 'x' denotes 5-year age groups", {

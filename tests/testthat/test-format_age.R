@@ -1,6 +1,4 @@
 
-context("format_age")
-
 ## format_age_year --------------------------------------------------
 
 test_that("format_age_year gives correct answers with alternative finite values for 'break_max'", {

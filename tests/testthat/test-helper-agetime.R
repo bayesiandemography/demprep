@@ -1,6 +1,4 @@
 
-context("helper-agetime")
-
 ## add_months ----------------------------------------------------------------
 
 test_that("'add_months' gives correct answer with valid inputs", {

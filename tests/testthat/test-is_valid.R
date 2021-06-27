@@ -1,6 +1,4 @@
 
-context("is_valid")
-
 ## is_valid_age ---------------------------------------------------------------
 
 test_that("'is_valid_age' codes valid age groups as TRUE", {

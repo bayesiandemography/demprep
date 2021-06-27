@@ -1,0 +1,10 @@
+|                             | `xtabs`     | `dtabs`     |
+|-----------------------------+-------------+-------------|
+| Position of `data` argument | first       | second      |
+| Treatment of `NA`           | complicated | extra level |
+| Has `subset` argument       | yes         | no          |
+| Drop unused levels          | sometimes   | never       |
+
+
+
+
