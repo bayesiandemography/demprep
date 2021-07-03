@@ -77,7 +77,24 @@ package **demprep** provides functions for processing demographic data to the po
 
 in this vignette, we start with some definitions and conventions, including the rules that **demprep** follows for measuring age and constructing labels. next we examine each of the main groups of functions. we then show how these functions can be used in practice, through two realistic case studies.  we conclude by describing how functions in **demprep** can be used alongside functions from base *r* and from other packages, when preparing demographic data.
 
-# definining age groups, periods, cohorts, and lexis triangles
+
+
+# Typical workflows
+
+![Typical workflow](workflow.png)
+
+
+
+# Relationship to other packages
+
+**lubridate**, **zoo**
+
+
+**tsibble**
+
+**survey** more sophisticated treatment of weighted data.
+
+# Definining age groups, periods, cohorts, and lexis triangles
 
 when describing individual people or events, we can use precise ages or times: this person is 11 years and 5 days old, or this event happened on 2 february 2021. but when describing groups of people or events, we use intervals: these people are between 10 and 15 years old, or these events occurred during the year 2021. 
 
@@ -853,10 +870,6 @@ A final difference between `xtabs` and `dtabs` is that `xtabs` allows the user t
 **demprep** has a specialised version of `dtabs`, called `dtabs_survey` for tabulating survey data on binary (yes-no) outcomes. `dtabs_survey` calculates "effective" numbers of trials and successes that allow data from a complex survey to be analysed as if it came from a simple random survey. Doing so sacrifices some accuracy in return for a large increase in convenience.
 
 
-# Typical workflows
-
-
-
 
 # Examples
 
@@ -988,14 +1001,6 @@ births_array
 ```
 
 
-# Relationship to other packages
-
-**lubridate**, **zoo**
-
-
-**tsibble**
-
-**survey** more sophisticated treatment of weighted data.
 
 # References
 

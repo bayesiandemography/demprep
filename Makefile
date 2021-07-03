@@ -31,3 +31,16 @@ README.md : README.rmd
 documentation:
 	Rscript -e "devtools::document()"
 
+
+## Vignette
+
+vignettes/workflow.pdf: vignettes/workflow.tex
+	pdflatex --interaction=batchmode $<
+	mv workflow.pdf vignettes/workflow.pdf
+	rm workflow.aux workflow.log
+
+vignettes/workflow.png: vignettes/workflow.pdf
+	convert -strip -density 400  -background white -alpha off $< $@
+
+vignettes/demprep.html: vignettes/demprep.Rmd
+	R -e 'rmarkdown::render("$<")'
