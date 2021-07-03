@@ -1,6 +1,4 @@
 
-## Functions to help with tabulation that end users do not use directly.
-
 ## HAS_TESTS
 make_fill <- function(fill, X, INDEX) {
     stopifnot(is.data.frame(INDEX))
@@ -15,10 +13,16 @@ make_fill <- function(fill, X, INDEX) {
             if (length(X_obs) > 0L) {
                 is_pos <- X_obs > 0L
                 is_int <- X_obs == round(X_obs)
-                if (all(is_pos & is_int))
+                if (all(is_pos & is_int)) {
+                    message(gettextf("setting '%s' to %d",
+                                     "fill", 0L))
                     return(0L)
-                if (any(!is_pos))
+                }
+                if (any(!is_pos)) {
+                    message(gettextf("setting '%s' to %s",
+                                     "fill", NA))
                     return(NA_integer_)
+                }
             }
         }
         n_possible_combn <- prod(sapply(INDEX, nlevels))

@@ -194,7 +194,8 @@ format_period_multi <- function(x,
     parsed <- parse_integers_intervals(x = labels_x,
                                        name = "x",
                                        month_start = month_start,
-                                       label_year_start = label_year_start)
+                                       label_year_start = label_year_start,
+                                       label_open_multi = FALSE) # avoids error message
     low <- parsed$low # integer
     up <- parsed$up   # integer
     is_open_first <- parsed$is_open_first
@@ -321,7 +322,8 @@ format_period_custom <- function(x,
     parsed <- parse_integers_intervals(x = labels_x,
                                        name = "x",
                                        month_start = month_start,
-                                       label_year_start = label_year_start)
+                                       label_year_start = label_year_start,
+                                       label_open_multi = FALSE) # avoids error message
     low <- parsed$low # integer
     up <- parsed$up   # integer
     is_open_first <- parsed$is_open_first

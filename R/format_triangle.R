@@ -169,7 +169,7 @@ format_triangle_year <- function(x,
 #' at the beginning of the period
 #' or the calendar year at the end.
 #' Defaults to \code{TRUE}.
-#'
+#' 
 #' @return A factor with the same length as
 #' \code{x}.
 #'
@@ -299,7 +299,8 @@ format_triangle_multi <- function(x,
     parsed_period <- parse_integers_intervals(x = labels_period,
                                               name = "period",
                                               month_start = month_start,
-                                              label_year_start = label_year_start)
+                                              label_year_start = label_year_start,
+                                              label_open_multi = FALSE)
     low_period <- parsed_period$low # integer
     up_period <- parsed_period$up   # integer
     is_open_first_period <- parsed_period$is_open_first
@@ -684,7 +685,8 @@ format_triangle_births <- function(x,
     parsed_period <- parse_integers_intervals(x = labels_period,
                                               name = "period",
                                               month_start = month_start,
-                                              label_year_start = label_year_start)
+                                              label_year_start = label_year_start,
+                                              label_open_multi = FALSE)
     low_period <- parsed_period$low # integer
     up_period <- parsed_period$up   # integer
     is_open_first_period <- parsed_period$is_open_first

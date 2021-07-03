@@ -12,7 +12,8 @@ format_cohort_multi(
   break_min = NULL,
   open_first = NULL,
   month_start = "Jan",
-  label_year_start = TRUE
+  label_year_start = TRUE,
+  label_open_multi = NULL
 )
 }
 \arguments{
@@ -37,6 +38,10 @@ the first day of this month.}
 \item{label_year_start}{Logical. Whether to label a cohort
 by the calendar year at the beginning of the cohort
 or the calendar year at the end. Defaults to \code{TRUE}.}
+
+\item{label_open_multi}{Whether intervals that are open
+on the left should be interpreted as multi-year
+or single-year labels.}
 }
 \value{
 A factor with the same length as
@@ -96,6 +101,31 @@ and to \code{FALSE} otherwise.
 If \code{x} contains \code{NA}, then the
 levels of the factor created by \code{format_cohort_multi}
 also contain \code{NA}.
+
+There is a combination of settings that make an open
+interval such as \code{"<2010"} ambiguous.
+The settings are
+\enumerate{
+  \item \code{x} contains a mix of single-year labels
+such as \code{"2018"} and multi-year labels such as
+\code{"2020-2025"}
+  \item \code{month_start} is not January.
+  \item \code{label_year_start} is \code{FALSE}.
+}
+With these settings, it is unclear whether \code{"<2010"}
+should be treated as a type of single-year label,
+in which case it refers to the period before
+\code{"2009-<month_start>-01"}, or as a type of
+multi-year label, in which case it refers to the
+period before \code{"2010-<month_start>-01"}.
+Supplying a value for \code{label_open_multi}
+removes the ambiguity.
+When \code{label_open_multi} is \code{TRUE},
+open intervals
+interpreted as a type of multi-year label,
+and when \code{label_open_multi} is \code{FALSE} they
+open intervals' are interpreted as
+a type of single-year label.
 }
 \examples{
 format_cohort_multi(x = c(2000, 2005, NA, 2004))
@@ -135,6 +165,13 @@ format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
 format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
                     width = 10,
                     origin = 2001)
+
+## supply value for 'label_open_multi' to remove
+## ambiguity of the "<2000" label
+format_cohort_multi(x = c("2025", "2030-2035", "<2021"),
+                    month_start = "Jul",
+                    label_year_start = FALSE,
+                    label_open_multi = FALSE)
 }
 \seealso{
 Other functions for reformating

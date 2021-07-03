@@ -27,11 +27,8 @@ devtools::install_github("bayesiandemography/demprep")
 
 ```r
 library(demprep)
-date_to_age_group_year(date = "2019-03-07",
-                       dob = "2001-02-18")
-make_labels_period(breaks = c("2001-07-01",
-                              "2006-07-01",
-			                        "2011-07-01"))
+date_to_age_year(date = "2019-03-07",
+                 dob = "2001-02-18")
 ```
 
 

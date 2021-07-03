@@ -37,7 +37,7 @@ clean_age_5 <- function(x) {
 clean_age_guess <- function(x, language) {
     if (language == "English") {
         year <- "year|years|yr|yrs"
-        infant <- "^infants$|^in 1st$|^less than 1$|^under 1$|^less than one$"
+        infant <- "^infants$|^infant$|^in 1st$|^less than 1$|^under 1$|^less than one$"
         plus <- "and over|plus|and above|and older|or more"
         num <- c("zero", "one", "two", "three", "four",
                  "five", "six", "seven", "eight", "nine")

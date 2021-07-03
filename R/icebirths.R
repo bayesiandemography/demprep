@@ -14,6 +14,6 @@
 #'   \item{dob_father}{The (imputed) date of birth of the father.}
 #' }
 #'
-#' @source Dataset MAN05102, downloaded from the Statistics Iceland
-#' website of 22 February 2021.
+#' @source A modified version of dataset MAN05102, downloaded from the Statistics Iceland
+#' website on 22 February 2021.
 "icebirths"

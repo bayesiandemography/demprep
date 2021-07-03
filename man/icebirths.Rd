@@ -12,8 +12,8 @@ A data frame with 167,830 rows and two columns:
 }
 }
 \source{
-Dataset MAN05102, downloaded from the Statistics Iceland
-website of 22 February 2021.
+A modified version of dataset MAN05102, downloaded from the Statistics Iceland
+website on 22 February 2021.
 }
 \usage{
 icebirths

@@ -97,11 +97,12 @@ parse_intervals <- function(x,
 }
 
 
-## HAS_TESTS
+## NO_TESTS
 parse_integers_intervals <- function(x,
                                      name,
                                      month_start,
-                                     label_year_start) {
+                                     label_year_start,
+                                     label_open_multi) {
     ## whether to subtract 1 from single-year labels
     ## to get implied calendar years
     subtract_1 <- (month_start != "Jan") && !label_year_start
@@ -117,6 +118,15 @@ parse_integers_intervals <- function(x,
         stop(gettextf("'%s' has invalid label [\"%s\"]",
                       name, x[[i_invalid]]),
              call. = FALSE)
+    ## check that 'label_open_multi' is supplied if needed
+    need_label_open_multi <- (subtract_1
+        && any(is_single)
+        && any(is_low_up)
+        && any(is_open_first))
+    have_label_open_multi <- !is.null(label_open_multi)
+    if (need_label_open_multi && !have_label_open_multi)
+        stop(gettextf("value for '%s' needed to interpret ambiguous label \"%s\"",
+                      "label_open_multi", x[is_open_first][[1L]]))
     ## extract 'low' and 'up'
     n <- length(x)
     low <- rep(NA_integer_, times = n)
@@ -136,6 +146,8 @@ parse_integers_intervals <- function(x,
                       name, x[is_low_up][[i_up_le_low]]),
              call. = FALSE)
     up[is_open_first] <- as.integer(sub("<", "", x[is_open_first]))
+    if (need_label_open_multi && !label_open_multi)
+        up[is_open_first] <- up[is_open_first] - 1L
     low[is_open_last] <- as.integer(sub("\\+", "", x[is_open_last]))
     ## find 'break_min' and 'break_max'
     if (all(is_na)) {

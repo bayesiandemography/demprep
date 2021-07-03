@@ -150,6 +150,31 @@ format_cohort_year <- function(x,
 #' levels of the factor created by \code{format_cohort_multi}
 #' also contain \code{NA}.
 #'
+#' There is a combination of settings that make an open
+#' interval such as \code{"<2010"} ambiguous.
+#' The settings are
+#' \enumerate{
+#'   \item \code{x} contains a mix of single-year labels
+#' such as \code{"2018"} and multi-year labels such as
+#' \code{"2020-2025"}
+#'   \item \code{month_start} is not January.
+#'   \item \code{label_year_start} is \code{FALSE}.
+#' }
+#' With these settings, it is unclear whether \code{"<2010"}
+#' should be treated as a type of single-year label,
+#' in which case it refers to the period before
+#' \code{"2009-<month_start>-01"}, or as a type of
+#' multi-year label, in which case it refers to the
+#' period before \code{"2010-<month_start>-01"}.
+#' Supplying a value for \code{label_open_multi}
+#' removes the ambiguity.
+#' When \code{label_open_multi} is \code{TRUE},
+#' open intervals
+#' interpreted as a type of multi-year label,
+#' and when \code{label_open_multi} is \code{FALSE} they
+#' open intervals' are interpreted as
+#' a type of single-year label. 
+#'
 #' @inheritParams format_cohort_year
 #' @param width The width, in whole years, of the cohorts
 #' to be created. Defaults to 5.
@@ -160,6 +185,9 @@ format_cohort_year <- function(x,
 #' @param label_year_start Logical. Whether to label a cohort
 #' by the calendar year at the beginning of the cohort
 #' or the calendar year at the end. Defaults to \code{TRUE}.
+#' @param label_open_multi Whether intervals that are open
+#' on the left should be interpreted as multi-year
+#' or single-year labels.
 #'
 #' @return A factor with the same length as
 #' \code{x}.
@@ -212,6 +240,13 @@ format_cohort_year <- function(x,
 #' format_cohort_multi(x = c("2000", "2005-2010", NA, "1995-1999"),
 #'                     width = 10,
 #'                     origin = 2001)
+#'
+#' ## supply value for 'label_open_multi' to remove
+#' ## ambiguity of the "<2000" label
+#' format_cohort_multi(x = c("2025", "2030-2035", "<2021"),
+#'                     month_start = "Jul",
+#'                     label_year_start = FALSE,
+#'                     label_open_multi = FALSE)
 #' @export 
 format_cohort_multi <- function(x,
                                 width = 5,
@@ -219,7 +254,8 @@ format_cohort_multi <- function(x,
                                 break_min = NULL,
                                 open_first = NULL,
                                 month_start = "Jan",
-                                label_year_start = TRUE) {
+                                label_year_start = TRUE,
+                                label_open_multi = NULL) {
     ## see if arguments supplied
     has_break_min <- !is.null(break_min)
     has_open_first <- !is.null(open_first)
@@ -248,6 +284,9 @@ format_cohort_multi <- function(x,
                                                  name = "month_start")
     demcheck::err_is_logical_flag(x = label_year_start,
                                   name = "label_year_start")
+    if (!is.null(label_open_multi))
+        demcheck::err_is_logical_flag(x = label_open_multi,
+                                      name = "label_open_multi")
     ## deal with "empty" cases where 'x'
     ## has length 0 or is all NA
     if (length(x) == 0L) {
@@ -265,7 +304,8 @@ format_cohort_multi <- function(x,
     parsed <- parse_integers_intervals(x = labels_x,
                                        name = "x",
                                        month_start = month_start,
-                                       label_year_start = label_year_start)
+                                       label_year_start = label_year_start,
+                                       label_open_multi = label_open_multi)
     low <- parsed$low # integer
     up <- parsed$up   # integer
     is_open_first <- parsed$is_open_first
@@ -408,6 +448,31 @@ format_cohort_multi <- function(x,
 #' levels of the factor created by \code{format_cohort_custom}
 #' also contain \code{NA}.
 #'
+#' There is a combination of settings that make an open
+#' interval such as \code{"<2010"} ambiguous.
+#' The settings are
+#' \enumerate{
+#'   \item \code{x} contains a mix of single-year labels
+#' such as \code{"2018"} and multi-year labels such as
+#' \code{"2020-2025"}
+#'   \item \code{month_start} is not January.
+#'   \item \code{label_year_start} is \code{FALSE}.
+#' }
+#' With these settings, it is unclear whether \code{"<2010"}
+#' should be treated as a type of single-year label,
+#' in which case it refers to the period before
+#' \code{"2009-<month_start>-01"}, or as a type of
+#' multi-year label, in which case it refers to the
+#' period before \code{"2010-<month_start>-01"}.
+#' Supplying a value for \code{label_open_multi}
+#' removes the ambiguity.
+#' When \code{label_open_multi} is \code{TRUE},
+#' open intervals
+#' interpreted as a type of multi-year label,
+#' and when \code{label_open_multi} is \code{FALSE} they
+#' open intervals' are interpreted as
+#' a type of single-year label. 
+#'
 #' @inheritParams format_cohort_year
 #' @param breaks A vector of strictly increasing integer values.
 #' @param month_start An element of \code{\link[base]{month.name}},
@@ -416,6 +481,9 @@ format_cohort_multi <- function(x,
 #' @param label_year_start Logical. Whether to label a cohort
 #' by the calendar year at the beginning of the cohort
 #' or the calendar year at the end. Defaults to \code{TRUE}.
+#' @param label_open_multi Whether intervals that are open
+#' on the left should be interpreted as multi-year
+#' or single-year labels.
 #'
 #' @return A factor with the same length as
 #' \code{x}.
@@ -447,12 +515,21 @@ format_cohort_multi <- function(x,
 #' format_cohort_custom(x = c("2000", "2005-2010", "1995-1999"),
 #'                      breaks = c(1995, 2005, 2010, 2020),
 #'                      open_first = TRUE)
+#'
+#' ## supply value for 'label_open_multi' to remove
+#' ## ambiguity of the "<2000" label
+#' format_cohort_custom(x = c("2025", "2030-2035", "<2021"),
+#'                      breaks = c(2020, 2040),
+#'                      month_start = "Jul",
+#'                      label_year_start = FALSE,
+#'                      label_open_multi = FALSE)
 #' @export 
 format_cohort_custom <- function(x,
                                  breaks,
                                  open_first = NULL,
                                  month_start = "Jan",
-                                 label_year_start = TRUE) {
+                                 label_year_start = TRUE,
+                                 label_open_multi = NULL) {
     ## see if arguments supplied
     has_open_first <- !is.null(open_first)
     ## check arguments
@@ -466,6 +543,9 @@ format_cohort_custom <- function(x,
                                                  name = "month_start")
     demcheck::err_is_logical_flag(x = label_year_start,
                                   name = "label_year_start")
+    if (!is.null(label_open_multi))
+        demcheck::err_is_logical_flag(x = label_open_multi,
+                                      name = "label_open_multi")
     ## deal with "empty" case where 'breaks' has length 0
     n_break <- length(breaks)
     n_x <- length(x)
@@ -489,7 +569,8 @@ format_cohort_custom <- function(x,
     parsed <- parse_integers_intervals(x = labels_x,
                                        name = "x",
                                        month_start = month_start,
-                                       label_year_start = label_year_start)
+                                       label_year_start = label_year_start,
+                                       label_open_multi = label_open_multi)
     low <- parsed$low # integer
     up <- parsed$up   # integer
     is_open_first <- parsed$is_open_first

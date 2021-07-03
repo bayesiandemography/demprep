@@ -27,9 +27,10 @@ icebirths <- read_csv("data-raw/icebirths/MAN05102.csv",
     mutate(dob_child = impute_date(year = year),
            dob_father = impute_dob(date = dob_child, age_years = age_father)) %>%
     select(dob_child, dob_father) %>%
-    arrange(dob_child)
+    arrange(dob_child) %>%
+    as.data.frame()
 
 save(icebirths,
      file = "data/icebirths.rda",
-     compress = "xz")
+     compress = "bzip2")
 

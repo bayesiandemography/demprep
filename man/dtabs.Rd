@@ -4,7 +4,7 @@
 \alias{dtabs}
 \title{Cross-tabulation}
 \usage{
-dtabs(data = parent.frame(), formula = ~., na_rm = FALSE, fill = NULL)
+dtabs(data = parent.frame(), formula = ~., fill = NULL, na_rm = FALSE)
 }
 \arguments{
 \item{data}{A data frame or matrix.}
@@ -13,13 +13,13 @@ dtabs(data = parent.frame(), formula = ~., na_rm = FALSE, fill = NULL)
 with or without a response. See below
 for examples, and also the documentation for \code{\link{xtabs}}.}
 
-\item{na_rm}{Whether to remove \code{NA}s from the
-response before tabulating it.
-Defaults to \code{FALSE}.}
-
 \item{fill}{The value to use in cells representing
 combinations of cross-classifying variables
 that do not occur in \code{data}.}
+
+\item{na_rm}{Whether to remove \code{NA}s from the
+response before tabulating it.
+Defaults to \code{FALSE}.}
 }
 \value{
 An array.

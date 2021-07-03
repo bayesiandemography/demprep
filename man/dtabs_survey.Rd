@@ -19,9 +19,9 @@ in Bayesian hierarchical models for small area estimation.
 dtabs_survey(
   data = parent.frame(),
   formula,
-  weights,
-  na_rm = FALSE,
-  method = c("gg_med", "gg_mean")
+  wt,
+  method = c("gg_med", "gg_mean"),
+  na_rm = FALSE
 )
 }
 \arguments{
@@ -31,14 +31,14 @@ dtabs_survey(
 The formula must contain a response, and that
 response must be a binary varibale.}
 
-\item{weights}{A vector of weights. Required.}
+\item{wt}{A vector of weights. Required.}
+
+\item{method}{The method used to calculate
+the overall design effect. Defaults to \code{"gg_med"}.}
 
 \item{na_rm}{Whether to remove \code{NA}s from the
 response before tabulating it.
 Defaults to \code{FALSE}.}
-
-\item{method}{The method used to calculate
-the overall design effect. Defaults to \code{"gg_med"}.}
 }
 \value{
 A list of two arrays. The first
@@ -87,7 +87,7 @@ A dot on the right hand side
 is shorthand for "all variables not included
 on the left hand side".
 
-The \code{weights} vector is typically a column
+The \code{wt} vector is typically a column
 within \code{data}. It should consist entirely
 of non-negative values. If a record has a weight
 of 0, the record is removed from the dataset
@@ -160,7 +160,7 @@ df <- data.frame(is_obese = rbinom(n = 25,
                             max = 40))
 
 ## obtain tabulations
-dtabs_survey(df, is_obese ~ age + sex, weights = wt)
+dtabs_survey(df, is_obese ~ age + sex, wt = wt)
 
 ## just for comparison, obtain tabulations without
 ## accounting for survey design

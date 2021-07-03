@@ -71,13 +71,13 @@
 #' @param formula A \code{\link[stats]{formula}},
 #' with or without a response. See below
 #' for examples, and also the documentation for \code{\link{xtabs}}.
-#' @param na_rm Whether to remove \code{NA}s from the
-#' response before tabulating it.
-#' Defaults to \code{FALSE}.
 #' @param fill The value to use in cells representing
 #' combinations of cross-classifying variables
 #' that do not occur in \code{data}.
-#'
+#' @param na_rm Whether to remove \code{NA}s from the
+#' response before tabulating it.
+#' Defaults to \code{FALSE}.
+#' 
 #' @return An array.
 #'
 #' @seealso \code{\link{xtabs}}, \code{\link{dtabs_survey}} 
@@ -116,8 +116,10 @@
 #' @export
 dtabs <- function (data = parent.frame(),
                    formula = ~.,
-                   na_rm = FALSE,
-                   fill = NULL) {
+                   fill = NULL,
+                   na_rm = FALSE) {
+    if (inherits(data, "formula"))
+        stop(gettext("first argument is a formula : should be a data frame"))
     formula <- stats::as.formula(formula)
     if (!inherits(formula, "formula")) 
         stop(gettextf("'%s' missing or incorrect",
@@ -132,10 +134,10 @@ dtabs <- function (data = parent.frame(),
     call <- match.call()
     if (is.matrix(eval(call$data, parent.frame()))) 
         call$data <- as.data.frame(data)
-    call$na.action  <- quote(na.pass)
-    i_arg <- match(c("data", "formula", "na.action"), names(call))
-    call <- call[c(1L, i_arg)]
+    i_arg <- match(c("data", "formula"), names(call))
+    call <- call[c(1L, i_arg, NA)] ## NA to create element for 'na.action'
     call[[1L]] <- quote(stats::model.frame)
+    names(call)[[4L]] <- "na.action"
     model_frame <- eval(call, parent.frame())
     has_response <- length(formula) > 2L
     if (has_response) {
@@ -153,7 +155,7 @@ dtabs <- function (data = parent.frame(),
         INDEX <- model_frame
     }
     not_fac <- !vapply(INDEX, is.factor, TRUE)
-    INDEX[not_fac] <- lapply(INDEX[not_fac], factor)
+    INDEX[not_fac] <- lapply(INDEX[not_fac], factor, exclude = NULL)
     fill <- make_fill(fill = fill,
                       X = X,
                       INDEX = INDEX)
@@ -209,7 +211,7 @@ dtabs <- function (data = parent.frame(),
 #' is shorthand for "all variables not included
 #' on the left hand side".
 #'
-#' The \code{weights} vector is typically a column
+#' The \code{wt} vector is typically a column
 #' within \code{data}. It should consist entirely
 #' of non-negative values. If a record has a weight
 #' of 0, the record is removed from the dataset
@@ -270,9 +272,12 @@ dtabs <- function (data = parent.frame(),
 #' @param formula A \code{\link[stats]{formula}}.
 #' The formula must contain a response, and that
 #' response must be a binary varibale.
-#' @param weights A vector of weights. Required.
+#' @param wt A vector of weights. Required.
 #' @param method The method used to calculate
 #' the overall design effect. Defaults to \code{"gg_med"}.
+#' @param na_rm Whether to remove \code{NA}s from the
+#' response before tabulating it.
+#' Defaults to \code{FALSE}.
 #'
 #' @return A list of two arrays. The first
 #' array is named \code{"successes"}
@@ -310,7 +315,7 @@ dtabs <- function (data = parent.frame(),
 #'                             max = 40))
 #'
 #' ## obtain tabulations
-#' dtabs_survey(df, is_obese ~ age + sex, weights = wt)
+#' dtabs_survey(df, is_obese ~ age + sex, wt = wt)
 #'
 #' ## just for comparison, obtain tabulations without
 #' ## accounting for survey design
@@ -318,10 +323,12 @@ dtabs <- function (data = parent.frame(),
 #' @export
 dtabs_survey <- function (data = parent.frame(),
                           formula,
-                          weights,
-                          na_rm = FALSE,
-                          method = c("gg_med", "gg_mean")) {
+                          wt,
+                          method = c("gg_med", "gg_mean"),
+                          na_rm = FALSE) {
     ## check and tidy inputs
+    if (inherits(data, "formula"))
+        stop(gettext("first argument is a formula : should be a data frame"))
     formula <- stats::as.formula(formula)
     if (!inherits(formula, "formula")) 
         stop(gettextf("'%s' missing or incorrect",
@@ -335,32 +342,32 @@ dtabs_survey <- function (data = parent.frame(),
         stop(gettextf("formula '%s' has interactions",
                       paste(deparse(formula), collapse = " ")),
              call. = FALSE)
-    if (missing(weights))
+    if (missing(wt))
         stop(gettextf("argument '%s' is missing with no default",
-                      "weights"),
+                      "wt"),
              call. = FALSE)
+    method <- match.arg(method)
     demcheck::err_is_logical_flag(x = na_rm,
                                   name = "na_rm")
-    method <- match.arg(method)
     call <- match.call()
     if (is.matrix(eval(call$data, parent.frame()))) 
         call$data <- as.data.frame(data)
     ## create model frame
-    call$na.action  <- quote(na.pass)
-    i_args <- match(c("formula", "data", "weights", "na.action"), names(call))
-    call <- call[c(1L, i_args)]
+    i_args <- match(c("formula", "data", "wt"), names(call))
+    call <- call[c(1L, i_args, NA)] ## NA to create element for 'na.action'
     call[[1L]] <- quote(stats::model.frame)
+    names(call)[[5L]] <- "na.action"
     model_frame <- eval(call, parent.frame())
-    ## check weights
-    i_wt <- match("(weights)", names(model_frame))
+    ## check wt
+    i_wt <- match("(wt)", names(model_frame))
     wt <- model_frame[[i_wt]]
     demcheck::err_not_na_vector(x = wt,
-                                name = "weights")
+                                name = "wt")
     demcheck::err_non_negative_vector(x = wt,
-                                      name = "weights")
+                                      name = "wt")
     if (all(wt == 0L))
         stop(gettextf("'%s' all zero",
-                      "weights"))
+                      "wt"))
     ## check response
     i_response <- attr(attr(model_frame, "terms"), "response")
     response <- model_frame[[i_response]]
@@ -377,11 +384,11 @@ dtabs_survey <- function (data = parent.frame(),
     if (method %in% c("gg_med", "gg_mean")) {
         INDEX <- model_frame[-c(i_response, i_wt)]
         not_fac <- !vapply(INDEX, is.factor, TRUE)
-        INDEX[not_fac] <- lapply(INDEX[not_fac], factor)
+        INDEX[not_fac] <- lapply(INDEX[not_fac], factor, exclude = NULL)
         response <- response[wt > 0L]
         INDEX <- INDEX[wt > 0L, , drop = FALSE]
         wt <- wt[wt > 0L]
-        weights_identical <- length(wt) == 1L || all(wt[-1L] == wt[[1L]])
+        wt_identical <- length(wt) == 1L || all(wt[-1L] == wt[[1L]])
         ones <- rep(1L, times = nrow(INDEX))
         trials_unweighted <- tapply(X = ones,
                                     INDEX = INDEX,
@@ -389,7 +396,7 @@ dtabs_survey <- function (data = parent.frame(),
                                     na.rm = FALSE,
                                     default = 0L,
                                     simplify = TRUE)
-        if (weights_identical) {
+        if (wt_identical) {
             successes_unweighted <- tapply(X = response,
                                            INDEX = INDEX,
                                            FUN = sum,
@@ -415,22 +422,22 @@ dtabs_survey <- function (data = parent.frame(),
                                       na.rm = FALSE,
                                       default = NA,
                                       simplify = TRUE)
-            mean_weights <- tapply(X = wt,
-                                   INDEX = INDEX,
-                                   FUN = mean,
-                                   na.rm = FALSE,
-                                   default = NA,
-                                   simplify = TRUE)
-            sd_weights <- tapply(X = wt,
-                                 INDEX = INDEX,
-                                 FUN = stats::sd,
-                                 na.rm = FALSE,
-                                 default = NA,
-                                 simplify = TRUE)
-            if (all(sd_weights == 0))
+            mean_wt <- tapply(X = wt,
+                              INDEX = INDEX,
+                              FUN = mean,
+                              na.rm = FALSE,
+                              default = NA,
+                              simplify = TRUE)
+            sd_wt <- tapply(X = wt,
+                            INDEX = INDEX,
+                            FUN = stats::sd,
+                            na.rm = FALSE,
+                            default = NA,
+                            simplify = TRUE)
+            if (all(sd_wt == 0))
                 mean_design_effect <- 1L
             else {
-                design_effect <- 1 + (sd_weights / mean_weights)^2
+                design_effect <- 1 + (sd_wt / mean_wt)^2
                 design_effect <- design_effect[trials_unweighted >= 2L]
                 FUN <- switch(method,
                               gg_med = stats::median,

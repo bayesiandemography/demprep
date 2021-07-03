@@ -26,6 +26,74 @@ test_that("'parse_integers' throws correct error with invalid inputs", {
 })
 
 
+## parse_integers_intervals ---------------------------------------------------
+
+test_that("'parse_integers_intervals' gives correct answer with valid inputs - 'label_open_multi' not needed", {
+    expect_identical(parse_integers_intervals(c("10-11", "14", "<5", NA, "20+", "1-5"),
+                                              name = "x",
+                                              month_start = "Jan",
+                                              label_year_start = TRUE,
+                                              label_open_multi = NULL),
+                     list(low = c(10L, 14L, NA, NA, 20L, 1L),
+                          up = c(11L, 15L, 5L, NA, NA, 5L),
+                          is_open_first = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE),
+                          is_open_last = c(FALSE, FALSE, FALSE, FALSE, TRUE, FALSE),
+                          break_min = 5L,
+                          break_max = 20L))
+})
+
+
+test_that("'parse_integers_intervals' gives correct answer with valid inputs - 'label_open_multi' is TRUE", {
+    expect_identical(parse_integers_intervals(c("10-11", "14", "<5", NA, "20+", "1-5"),
+                                              name = "x",
+                                              month_start = "Feb",
+                                              label_year_start = FALSE,
+                                              label_open_multi = FALSE),
+                     list(low = c(10L, 13L, NA, NA, 20L, 1L),
+                          up = c(11L, 14L, 4L, NA, NA, 5L),
+                          is_open_first = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE),
+                          is_open_last = c(FALSE, FALSE, FALSE, FALSE, TRUE, FALSE),
+                          break_min = 4L,
+                          break_max = 20L))
+})
+
+test_that("'parse_integers_intervals' gives correct answer with valid inputs - 'label_open_multi' is TRUE", {
+    expect_identical(parse_integers_intervals(c("10-11", "14", "<5", NA, "20+", "1-5"),
+                                              name = "x",
+                                              month_start = "Feb",
+                                              label_year_start = FALSE,
+                                              label_open_multi = TRUE),
+                     list(low = c(10L, 13L, NA, NA, 20L, 1L),
+                          up = c(11L, 14L, 5L, NA, NA, 5L),
+                          is_open_first = c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE),
+                          is_open_last = c(FALSE, FALSE, FALSE, FALSE, TRUE, FALSE),
+                          break_min = 5L,
+                          break_max = 20L))
+})
+
+test_that("'parse_integers_intervals' throws correct error with invalid inputs", {
+    expect_error(parse_integers_intervals(c("10-14", "<5", NA, "20-20", "1-5"),
+                                          name = "x",
+                                          month_start = "Jan",
+                                          label_year_start = TRUE,
+                                          label_open_multi = TRUE),
+                 "'x' has label with upper limit less than or equal to lower limit \\[\"20-20\"\\]")
+    expect_error(parse_integers_intervals(c("10-14", "5-4", NA, "20-21", "1-5"),
+                                          name = "x",
+                                          month_start = "Jan",
+                                          label_year_start = TRUE,
+                                          label_open_multi = TRUE),
+                 "'x' has label with upper limit less than or equal to lower limit \\[\"5-4\"\\]")
+    expect_error(parse_integers_intervals(c("10-14", "<0", NA, "20-21", "1"),
+                                          name = "x",
+                                          month_start = "Mar",
+                                          label_year_start = FALSE,
+                                          label_open_multi = NULL),
+                 "value for 'label_open_multi' needed to interpret ambiguous label \"<0\"")
+})
+
+
+
 ## parse_intervals ---------------------------------------------------
 
 test_that("'parse_intervals' gives correct answer with valid inputs", {

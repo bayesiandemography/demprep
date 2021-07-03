@@ -717,6 +717,10 @@ age <- c("22", "56", "103")
 format_triangle_year(x = x, age = age)
 ```
 
+## Flipping year labels
+
+
+
 
 # Converting to labels that use explicit dates
 
@@ -751,28 +755,237 @@ as_date_range_year(x,
 
 # Tabulation
 
-Once all the variables have been put into the required formats, we can tabulate the data. The nicest tabulation function in base **R** is `xtabs`. **demprep** has a simpler alternative to `xtabs` called `dtabs`, designed specifically for constructing arrays of demgoraphic data. The differences between `xtabs` and `dtabs` are 
+## Ordinary tabulation
 
-|                             | `xtabs`     | `dtabs`     |
-|-----------------------------+-------------+-------------|
-| Position of `data` argument | first       | second      |
-| Treatment of `NA`           | complicated | extra level |
-| Has `subset` argument       | yes         | no          |
-| Drop unused levels          | sometimes   | never       |
+Once all the variables have been put into the required formats, we can tabulate the data. The most powerful tabulation function in base **R** is `xtabs`.  **demprep** contains a modified version of `xtabs` called `dtabs`. `dtabs` is designed to be simpler and safer than `xtabs`, particularly for constructing demographic arrays. The differences between `xtabs` and `dtabs` are 
 
-For convenience when using the pipe, `dtabs` puts the `data` argument first.
+|                                        | `xtabs`         | `dtabs`         |
+|----------------------------------------+-----------------+-----------------|
+| Position of `data` argument            | first           | second          |
+| Suppress `NA` in classifying variables | yes             | no              |
+| Suppress `NA` in response variable     | by default, yes | by default, no  |
+| Combinations not in data               | always 0        | can be 0, NA    |
+| `subset` argument                      | yes             | no              |
+| Drop unused levels                     | sometimes       | never           |
 
-Whereas `xtabs` has several different options for dealing with `NA`s in the data, `dtabs` always includes `NA` as a separate level. The idea is that the `NA`s should be made as visible as possible, so that the user needs to explicitly exclude them, or deal with them through some sort of imputation process. 
+Using a pipe (`%>%` or `|>`) is slightly easier when the `data` argument comes first than when it comes second. In `xtabs` the `data` argument comes second,
+```{r}
+df <- data.frame(y = c(1, 2, 1),
+                 x = c("a", "b", "b"))
+df %>%
+  xtabs(y ~ x, .) # need '.' as placeholder for data
+```
 
-`xtabs` allows the user to take subsets of the data, or drop unused levels from factors, as part of the tabulation. `dtabs` does not have these options, so that users are forced to make separate calls to functions such as `subset` or `droplevels`. This is less concise, but clearer.
+In `dtabs`, the `data` argument comes first,
+```{r}
+df %>%
+  dtabs(y ~ x)
+```
 
-One thing that `dtabs` has in common with `xtabs`, however, is that it is designed for unweighted data, such as data from a census or an administrative census. It is not desgined for 
+When an `NA` appears in a cross-classifying variable, `xtabs` by default silently suppresses it,
+```{r}
+df <- data.frame(y = c(1, 2, 1),
+                 x = c("a", "b", NA))
+df %>%
+  xtabs(y ~ x, .)
+```
+
+`dtabs`, in contrast, treats the `NA` as an extra level,
+```{r}
+df <- data.frame(y = c(1, 2, 1),
+                 x = c("a", "b", NA))
+df %>%
+  dtabs(y ~ x)
+```
+
+Similarly, when an `NA` appears in the response variable, `xtabs` silently suppresses it
+```{r}
+df <- data.frame(y = c(1, 2, NA),
+                 x = c("a", "b", "a"))
+df %>%
+  xtabs(y ~ x, .)
+```
+
+`dtabs`, in contrast, defaults to keeping the `NA`,
+```{r}
+df <- data.frame(y = c(1, 2, NA),
+                 x = c("a", "b", "a"))
+df %>%
+  dtabs(y ~ x)
+```
+(though the `NA` can be dropped by setting `na_rm` to `TRUE`.)
+
+The reason for forcing users to explicitly deal with `NA`s is that treatment of `NA`s is an important methodological that deserves the user's attention.  "Complete case analyses", where `NA`s are simply dropped from the data, can be seriously misleading (see Little and Rubin, 2019.) 
+
+Another important difference between `xtabs` and `dtabs` is the way that the two functions handle combinations of cross-classifying variables that do not appear in the data. `xtabs` always gives missing combinations a value of 0. For instance, when a dataset has no one who is aged 5-9 years and also male, then it assigns a 0 to this combination,
+```{r}
+df <- data.frame(y = c(1, 2, 3),
+                 age = c("0-4", "5-9", "0-4"),
+                 sex = c("Female", "Female", "Male"))
+df %>%
+  xtabs(y ~ age + sex, .)
+```
+This is the correct behaviour when using `xtabs` for iss original purpose, which to tabulate counts. But it is not when we want if we are using `xtabs` to convert a data frame of non-count values into an array. In the following example, `0` is *not* a sensible value for the missing combination.
+```{r}
+df <- data.frame(y = c(33.3, -4.1, 22.9),
+                 age = c("0-4", "5-9", "0-4"),
+                 sex = c("Female", "Female", "Male"))
+df %>%
+  xtabs(y ~ age + sex, .)
+```
+
+`dtabs` allows users specify the value that is used for combinations of variables that do not appear in the data. The value is specified via the `fill` argument,
+```{r}
+df <- data.frame(y = c(33.3, -4.1, 22.9),
+                 age = c("0-4", "5-9", "0-4"),
+                 sex = c("Female", "Female", "Male"))
+df %>%
+  dtabs(y ~ age + sex, fill = NA)
+```
+
+If no value for `fill` is supplied, then `xtabs` will try to infer the correct value. If there is no response variable, or if the response variable consists entirely of positive integers, then `dtabs` assumes that the data consists of counts, and sets `fill` to `0`. If the response variable has one or more zeros or negative numbers, then `dtabs` assumes the response variable is not counts, and sets `fill` to `NA`. If neither of these conditions are met, then `dtabs` throws an error.
+
+A final difference between `xtabs` and `dtabs` is that `xtabs` allows the user to take subsets of the data, or drop unused levels from factors, as part of the tabulation while `dtabs` does not. Limiting the options in `dtabs` makes the function easier to understand. It also forces the users to write seperate calls to funtions such as `subset` or `droplevels`, which makes the code easier to understand.
+
+
+## Tabulation of survey data on binary outcomes
+
+**demprep** has a specialised version of `dtabs`, called `dtabs_survey` for tabulating survey data on binary (yes-no) outcomes. `dtabs_survey` calculates "effective" numbers of trials and successes that allow data from a complex survey to be analysed as if it came from a simple random survey. Doing so sacrifices some accuracy in return for a large increase in convenience.
 
 
 # Typical workflows
 
 
+
+
 # Examples
+
+
+```{r}
+set.seed(0)
+```
+
+
+## Deaths in New Zealand
+
+```{r}
+deaths <- demprep::nzdeaths
+deaths %>%
+  sample_n(5)
+```
+
+```{r}
+unique(deaths$age)
+```
+
+```{r}
+deaths <- deaths %>%
+  filter(age != "Total all ages") %>%
+  mutate(age = clean_age(age))
+unique(deaths$age)
+```
+
+```{r}
+deaths <- deaths %>%
+  mutate(age = format_age_multi(age, width = 10))
+unique(deaths$age)
+```
+
+
+```{r}
+deaths <- deaths %>%
+  mutate(year = flip_year_label(year))
+unique(deaths$year)
+```
+
+```{r}
+deaths <- deaths %>%
+  dtabs(count ~ age + sex + year)
+deaths
+```
+
+
+
+## Births in Iceland
+
+Births in the calendary years 1981 to 2019. Want array of birth by period of birth, age of father, Lexis triangle of father. Five-year age groups and periods. Start in 1981.
+
+
+```{r}
+births <- demprep::icebirths
+births %>%
+  sample_n(5)
+```
+
+```{r}
+births <- births %>%
+  mutate(period1 = date_to_period_year(dob_child))
+births %>%
+  sample_n(5)
+```
+
+
+```{r}
+births <- births %>%
+  mutate(age1 = date_to_age_year(date = dob_child,
+                                 dob = dob_father))
+births %>%
+  sample_n(5)
+```
+
+```{r}
+births <- births %>%
+  mutate(triangle1 = date_to_triangle_year(date = dob_child,
+                                           dob = dob_father))
+births %>%
+  sample_n(5)
+```
+
+
+```{r}
+births <- births %>%
+  mutate(period = format_period_multi(period1,
+                                      origin = 1981))
+births %>% 
+  sample_n(5)
+```
+
+
+```{r}
+births <- births %>%
+  mutate(age = format_age_births(x = age1, 
+                                 width = 5,
+                                 break_min = 15,
+                                 break_max = NULL,
+                                 recode_up = TRUE))
+births %>% 
+  sample_n(5)
+```
+
+
+```{r}
+births <- births %>%
+  mutate(triangle = format_triangle_multi(triangle1,
+                                          age = age1,
+                                          period = period1,
+                                          origin = 1981))
+births %>% 
+  sample_n(10)
+```
+```{r}
+births %>%
+  filter(triangle != triangle1) %>%
+  sample_n(5)
+```
+
+
+```{r}
+births_array <- births %>%
+  filter(period != "2016-2021") %>%
+  dtabs(~ age + triangle + period)
+dimnames(births_array)
+births_array
+```
 
 
 # Relationship to other packages
@@ -783,3 +996,7 @@ One thing that `dtabs` has in common with `xtabs`, however, is that it is design
 **tsibble**
 
 **survey** more sophisticated treatment of weighted data.
+
+# References
+
+Little, R. J., & Rubin, D. B. (2019). *Statistical analysis with missing data*. John Wiley & Sons.
