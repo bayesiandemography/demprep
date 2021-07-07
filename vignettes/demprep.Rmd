@@ -24,9 +24,6 @@ opts_chunk$set(
   fig.width = 6.5,
   fig.align = "center"
 )
-deaths <- data.frame(name = c("Anwar", "Baptiste", "Candice"),
-                     date_birth = c("2014-02-17", "2012-01-10", "2019-04-29"),
-                     date_death = c("2019-10-11", "2020-02-27", "2020-08-01"))
 
 births_in <- data.frame(date_child = c("2020-05-18", "2020-07-02", "2020-10-05"),
                         date_parent = c("2000-02-14", "2002-05-18", "1990-12-18"))
@@ -71,7 +68,7 @@ kable(deaths_semiclean,
       caption = "Counts of deaths by age group and year")
 ```
 
-Getting from raw, or semi-raw, data to tabulations ready for demographic analysis can be harder than it looks. When, for instance, does a person who was born on 31 January 2001 turn one month old? According to the base *R* function `seq.Date`, the answer is 3 March 2001:
+Getting from raw, or semi-raw, data to tabulations ready for demographic analysis can be harder than it looks. When, for instance, does a person who was born on 31 January 2001 turn one month old? According to the base R function `seq.Date`, the answer is 3 March 2001:
 ```{r one-month}
 seq.Date(from = as.Date("2001-01-31"), 
          by = "month",
@@ -238,7 +235,7 @@ Table: Twenty-two interpretations of the period label "2020"
 
 **0. Read in data and do initial tidying using non-demprep functions**
 
-Use functions from base *R* or elsewhere to read the data into a data frame, put any date variables into a "year-month-day" format, and tidy any variables not related to age, period, or cohort.
+Use functions from base R or elsewhere to read the data into a data frame, put any date variables into a "year-month-day" format, and tidy variables not related to age, period, or cohort.
 
 **1. Create or clean age, period, cohort, and triangle labels**
 
@@ -261,10 +258,11 @@ include_graphics("workflow.png",
 ```
 
 
-## `date_to` functions
+## The `date_to` functions
 
 ### Overview
-Suppose that we have some raw data on dates of birth and dates of enrolment in a health care scheme:
+
+Suppose that we have some raw, individual-level data on dates of birth and dates of enrolment in a health care scheme,
 
 ```{r, echo = FALSE}
 dates_df <- data.frame(date_of_birth = c("2000-03-07", "2010-12-25", "2007-02-28"),
@@ -272,15 +270,7 @@ dates_df <- data.frame(date_of_birth = c("2000-03-07", "2010-12-25", "2007-02-28
 dates_df		       
 ```
 
-Suppose also that we want to calculate people's age at the time they enrolled, and the quarters in which they enrolled.
-
-```{r, echo = FALSE}
-dates_df %>%
-  mutate(age = date_to_age_year(date = date_of_enrolment, dob = date_of_birth),
-         quarter = date_to_period_quarter(date = date_of_enrolment))
-```
-
-We can do these calculations, and others like them, using the `date_to` functions in **demprep**.
+We want to calculate people's age at the time they enrolled, and the quarter in which they enrolled. We can do calculations, and others like them, using the `date_to` functions.
 
 
 | Age groups            | Periods                  | Cohorts                  | Lexis triangles            |
@@ -294,10 +284,13 @@ The `year`, `quarter`, and `month` suffixes in the function names describe the m
 To demonstrate the use of the `date_to` functions, we will be using the data frame `deaths`:
 
 ```{r}
+deaths <- data.frame(name = c("Anwar", "Baptiste", "Candice"),
+                     date_birth = c("2014-02-17", "2012-01-10", "2019-04-29"),
+                     date_death = c("2019-10-11", "2020-02-27", "2020-08-01"))
 deaths
 ```
 
-Before proceeding, we need to load packages **demprep** and (for the pipe `%>%` and for functions `mutate` and `select`) **dplyr**.
+Before running, we need to load packages **demprep** and (for the pipe `%>%` and various data manipulation functions) **dplyr**.
 
 ```{r}
 library(demprep)
@@ -318,34 +311,7 @@ deaths %>%
                                         dob = date_birth))
 ```
 
-The calculations are done using the formulas discussed above, which are based on years, months, and days-within-months attained, rather than on absolute durations. Thus for example, a person born on 31 January 2001 turns one month old 29 days later,
-
-```{r}
-born_31_jan_01 <- data.frame(date_measure_age = c("2001-02-28", "2001-03-01"),
-                             date_birth = c("2001-01-31", "2001-01-31"))
-born_31_jan_01 %>%
-  mutate(age_months = date_to_age_month(date = date_measure_age,
-                                        dob = date_birth))
-as.Date("2001-03-01") - as.Date("2001-01-31")					
-```
-while a person born on 31 January 2000 turns one month old 30 days later,
-```{r}
-born_31_jan_00 <- data.frame(date_measure_age = c("2000-02-29", "2000-03-01"),
-                             date_birth = c("2000-01-31", "2000-01-31"))
-born_31_jan_00 %>%
-  mutate(age_months = date_to_age_month(date = date_measure_age,
-                                        dob = date_birth))
-as.Date("2000-03-01") - as.Date("2000-01-31")					
-```
-and a person born on 1 March 2001 turns one month old 31 days later,
-```{r}
-born_01_mar_01 <- data.frame(date_measure_age = c("2001-03-31", "2001-04-01"),
-                             date_birth = c("2001-03-01", "2001-03-01"))
-born_01_mar_01 %>%
-  mutate(age_months = date_to_age_month(date = date_measure_age,
-                                        dob = date_birth))
-as.Date("2001-04-01") - as.Date("2001-03-01")					
-```
+Age is calculated using the approach discussed in Section 2.1, which looks at months and days-within-months attained, rather than absolute number of days. Thus, for example, a person born on 31 January 2001 turns one month old 29 days later, while a person born on 1 February 2001 turns on month old 28 days later.
 
 
 ### Periods
@@ -356,7 +322,7 @@ deaths %>%
   select(-date_birth) %>%
   mutate(year_start_jan = date_to_period_year(date = date_death))
 ```
-that look something like this
+which we might depict as
 ```{r, echo = FALSE, fig.height = 1.75}
 demprep:::plot_date_to_period_year(date = deaths$date_death)
 ```
@@ -373,8 +339,7 @@ demprep:::plot_date_to_period_year(date = deaths$date_death,
                                    month_start = "Apr")
 ```
 
-By default, `date_to_period_year` labels years according to the calendar year of the first day of the period. However, when `label_year_start` to `FALSE`,
-`date_to_period_year` uses the last day of the period.
+As discussed in Section 2.3, some people base the labels of single-year periods on the calendar year at the start of the period, and others base them on the calendar year at the end. By default, `date_to_period_year` uses the calendar year on the first day of the period. Setting `label_year_start` to `FALSE` makes it use the calendar year on the last day.
 ```{r}
 deaths %>%
   select(-date_birth) %>%
@@ -385,14 +350,14 @@ deaths %>%
                                               label_year_start = FALSE))
 ```
 
-Function `date_to_period_quarter`, in contrast, implements a single set of start dates (1 January, 1 April, 1 July, and 1 October), and implements a single labelling style.
+Labeling quarters and months is simpler. Function `date_to_period_quarter` implements a single set of start dates (1 January, 1 April, 1 July, and 1 October), and a single labeling style.
 ```{r}
 deaths %>%
   select(-date_birth) %>%
   mutate(quarter = date_to_period_quarter(date_death))
 ```
 
-Function `date_to_period_month` is similarly simple/inflexible.
+`date_to_period_month` is similarly simple/inflexible.
 ```{r}
 deaths %>%
   select(-date_birth) %>%
@@ -402,7 +367,7 @@ deaths %>%
 
 ### Cohorts
 
-The `date_to_cohort` functions behave exactly like their `date_to_period` equivalents. For birth cohorts, we set `date` equal to date of birth.
+The `date_to_cohort` functions behave exactly like their `date_to_period` equivalents. To obtain birth cohorts, for instance, we set `date` equal to date of birth.
 ```{r}
 deaths %>%
   select(-date_death) %>%
@@ -416,56 +381,35 @@ demprep:::plot_date_to_cohort_year(date = deaths$date_birth)
 ```
 
 
-
 ### Lexis triangles
 
-The `date_to_triangle` functions all have `date` and `dob` arguments. 
+To calculate Lexis triangles, we need dates of events and dates of birth,
 ```{r}
 deaths %>%
   mutate(triangle = date_to_triangle_year(date = date_death,
-	                                  dob = date_birth))
+	                                        dob = date_birth))
 ```
 ```{r, echo = FALSE, fig.height = 6.5}
 demprep:::plot_date_to_triangle_year(date = deaths$date_death,
                                      dob = deaths$date_birth)
 ```
 
-Like `date_to_period_year`, and `date_to_cohort_year`, function `date_to_triangle_year` also has a `month_start` argument, which shifts the start date of the triangles.
+Like `date_to_period_year`, and `date_to_cohort_year`, function `date_to_triangle_year`  has a `month_start` argument, which shifts the start date of the triangles.
 ```{r}
 deaths %>%
   mutate(triangle = date_to_triangle_year(date = date_death,
-	                                  dob = date_birth,
-			                  month_start = "Jul"))
+	                                        dob = date_birth,
+			                                    month_start = "Jul"))
 ```
 ```{r, echo = FALSE, fig.height = 6.5}
 demprep:::plot_date_to_triangle_year(date = deaths$date_death,
                                      dob = deaths$date_birth,
-				     month_start = "Jul")
-```
-
-### Imputing dates
-
-Sometimes input data has incomplete data on dates, such as having the year and month of births but not the days. One way of dealing with incomplete data is to impute the missing information. This is what functions `impute_date` and `impute_dob` are for.
-
-The imputation is random, so, for repeatability, we set the random seed. 
-```{r}
-set.seed(0)
-```
-
-In our first example, we know the year and month of some events, but not the day, so we use `impute date`.
-```{r}
-impute_date(year = c(2000, 2005, 2003),
-            month = c("Feb", "Nov", "Apr"))
-```
-
-In our second example, we know the dates of events, and we know people's age in years at the time of the eevents, and we want to impute dates of birth.
-```{r}
-impute_dob(date = c("2021-03-23", "2021-02-13", "2020-04-25"),
-           age_years = c(3, 1, 0))
+                                     month_start = "Jul")
 ```
 
 
-## `clean` functions
+
+## The `clean` functions
 
 Published demographic demographic is usually already aggregated into age groups, periods, or cohorts, rather than giving the original dates of events. In this case, when preparing data for use in the **dem** packages, the first task is to edit the labels for the age groups, periods, cohorts, so that they follow **dem** convetions. The functions for editing existing labels, and for checking these edits, are as follows:
 
@@ -526,7 +470,7 @@ stopifnot(all(is_valid_period(x)))
 is useful to catch any unexpected inputs.
 
 
-## `format` functions
+## The `format` functions
 
 ### Overview
 
@@ -611,17 +555,17 @@ Alternative lower and upper limits can be specified via the `break_min` and `bre
 x <- c("35-38", "50-54", "77")
 format_age_multi(x,
                  width = 10,
-		 break_min = 20,
-		 break_max = 90)
+                 break_min = 20,
+                 break_max = 90)
 ```
 The open interval can be removed using the 'open_last' argument,
 ```{r}
 x <- c("35-38", "50-54", "77")
 format_age_multi(x,
                  width = 10,
-		 break_min = 20,
-		 break_max = 90,
-		 open_last = FALSE)
+                 break_min = 20,
+                 break_max = 90,
+                 open_last = FALSE)
 ```
 Setting `break_min` and `break_max` to `NULL` allows the limits to be set by the data.
 ```{r}
@@ -701,47 +645,15 @@ age <- c("22", "56", "103")
 format_triangle_year(x = x, age = age)
 ```
 
-### Flipping year labels
 
 
-## The `as_data_range` functions for converting to labels that use explicit dates
-
-The ambiguities of period and cohort labels do not normally cause any problems when working with a single dataset. When working with multiple datasets, however, aligning periods correctly can be confusing and error-prone.
-
-The functions
-
-|                    |
-|--------------------|
-| `as_date_range_year` |
-| `as_date_range_multi` |
-| `as_date_range_custom` |
-| `as_date_range_quarter` |
-| `as_date_range_month` |
-
-convert from standared period and cohort labels to nonstandard but unambiguous ones that use explicit dates.
-
-By default, `month_start` is set to `"Jan"` and `label_year_start` is set to `TRUE`
-```{r}
-x <- c("2022", "2028")
-as_date_range_year(x)
-```
-Different settings give different interpretations of the same labels,
-```{r}
-x <- c("2022", "2028")
-as_date_range_year(x, 
-                   month_start = "Mar",
-                   label_year_start = FALSE)
-```
-
-
-
-## `dtabs` functions
+## The `dtabs` functions
 
 ### The `dtabs` function for ordinary tabulation
 
 xtabs for tabulation, but nice formula-based way of turning general data frame into array.
 
-Once all the variables have been put into the required formats, we can tabulate the data. The most powerful tabulation function in base **R** is `xtabs`.  **demprep** contains a modified version of `xtabs` called `dtabs`. `dtabs` is designed to be simpler and safer than `xtabs`, particularly for constructing demographic arrays. The differences between `xtabs` and `dtabs` are 
+Once all the variables have been put into the required formats, we can tabulate the data. The most powerful tabulation function in base R is `xtabs`.  **demprep** contains a modified version of `xtabs` called `dtabs`. `dtabs` is designed to be simpler and safer than `xtabs`, particularly for constructing demographic arrays. The differences between `xtabs` and `dtabs` are 
 
 |                                        | `xtabs`         | `dtabs`         |
 |----------------------------------------+-----------------+-----------------|
@@ -835,6 +747,63 @@ A final difference between `xtabs` and `dtabs` is that `xtabs` allows the user t
 ### The `dtabs_survey` function for the tabulation of survey data on binary outcomes
 
 **demprep** has a specialised version of `dtabs`, called `dtabs_survey` for tabulating survey data on binary (yes-no) outcomes. `dtabs_survey` calculates "effective" numbers of trials and successes that allow data from a complex survey to be analysed as if it came from a simple random survey. Doing so sacrifices some accuracy in return for a large increase in convenience.
+
+## Other functions
+
+### Imputing dates
+
+Sometimes input data has incomplete data on dates, such as having the year and month of births but not the days. One way of dealing with incomplete data is to impute the missing information. This is what functions `impute_date` and `impute_dob` are for.
+
+The imputation is random, so, for repeatability, we set the random seed. 
+```{r}
+set.seed(0)
+```
+
+In our first example, we know the year and month of some events, but not the day, so we use `impute date`.
+```{r}
+impute_date(year = c(2000, 2005, 2003),
+            month = c("Feb", "Nov", "Apr"))
+```
+
+In our second example, we know the dates of events, and we know people's age in years at the time of the eevents, and we want to impute dates of birth.
+```{r}
+impute_dob(date = c("2021-03-23", "2021-02-13", "2020-04-25"),
+           age_years = c(3, 1, 0))
+```
+
+
+### Labels based on date rates
+
+The ambiguities of period and cohort labels do not normally cause any problems when working with a single dataset. When working with multiple datasets, however, aligning periods correctly can be confusing and error-prone.
+
+The functions
+
+|                    |
+|--------------------|
+| `as_date_range_year` |
+| `as_date_range_multi` |
+| `as_date_range_custom` |
+| `as_date_range_quarter` |
+| `as_date_range_month` |
+
+convert from standared period and cohort labels to nonstandard but unambiguous ones that use explicit dates.
+
+By default, `month_start` is set to `"Jan"` and `label_year_start` is set to `TRUE`
+```{r}
+x <- c("2022", "2028")
+as_date_range_year(x)
+```
+Different settings give different interpretations of the same labels,
+```{r}
+x <- c("2022", "2028")
+as_date_range_year(x, 
+                   month_start = "Mar",
+                   label_year_start = FALSE)
+```
+
+
+### Flipping year labels
+
 
 
 
