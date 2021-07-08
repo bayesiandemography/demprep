@@ -257,6 +257,22 @@ include_graphics("workflow.png",
                  auto_pdf = TRUE)
 ```
 
+There are, however, a few common data preparation tasks that do not fit neatly into the workflow above, that can be done using **demprep** functions:
+
+**Imputing dates**
+
+When only partial information on dates is provided, the missing information can be imputed using the `impute_date` and `impute_dob`.
+
+**Rotating age, period, cohort, and triangle labels**
+
+
+
+**Creating labels based on explicit dates**
+
+**Changing the labeling of one-year periods and cohorts**
+
+
+
 
 ## The `date_to` functions
 
@@ -394,7 +410,7 @@ demprep:::plot_date_to_triangle_year(date = deaths$date_death,
                                      dob = deaths$date_birth)
 ```
 
-Like `date_to_period_year`, and `date_to_cohort_year`, function `date_to_triangle_year`  has a `month_start` argument, which shifts the start date of the triangles.
+Like functions `date_to_period_year` and `date_to_cohort_year`, function `date_to_triangle_year`  has a `month_start` argument, which shifts the start date of the triangles.
 ```{r}
 deaths %>%
   mutate(triangle = date_to_triangle_year(date = date_death,
@@ -411,8 +427,7 @@ demprep:::plot_date_to_triangle_year(date = deaths$date_death,
 
 ## The `clean` functions
 
-Published demographic demographic is usually already aggregated into age groups, periods, or cohorts, rather than giving the original dates of events. In this case, when preparing data for use in the **dem** packages, the first task is to edit the labels for the age groups, periods, cohorts, so that they follow **dem** convetions. The functions for editing existing labels, and for checking these edits, are as follows:
-
+Most published demographic data provides age groups and periods, rather than precise dates. Preparing published demographic data for use typically requires cleaning up existing age group and period labels, rather than calculating new ones from scratch. **demprep** provides the following functions for cleaning up existing labels:
 
 | Age groups     | Periods           | Cohorts           | 
 | :-----------   | :--------         | :--------         | 
@@ -420,7 +435,7 @@ Published demographic demographic is usually already aggregated into age groups,
 | `clean_age_df` | `clean_period_df` | `clean_cohort_df` | 
 | `is_valid_age` | `is_vald_period`  | `is_valid_cohort` |
 
-Functions `clean_age`, `clean_period`, and `clean_cohort` try to parse vectors of labels and convert the labels, where necessary, into **dem** formats. If they cannot parse a label, or if a label is already valid, then the functions leave the label untouched.
+Functions `clean_age`, `clean_period`, and `clean_cohort` try to parse vectors of labels and, where the labels do not conform to **demprep** formats, convert them to these formats. If `clean_age`, `clean_period`, and `clean_cohort` encounter a label they cannot parse, they leave the label untouched.
 
 
 ```{r}
@@ -441,8 +456,7 @@ x
 clean_age(x)
 ```
 
-
-Functions `clean_cohort` and `clean_period` give identical results, except for intervals that are open on the left, which `clean_cohort` parses and `clean_period` does not.
+Functions `clean_cohort` and `clean_period` are identical to each other, except that `clean_cohort` accepts intervals that are open on the left, while `clean_period` does not.
 
 ```{r}
 x <- c("Q1 2020", "1922", "2010-2025", "before 2020")
@@ -450,29 +464,37 @@ clean_cohort(x)
 clean_period(x)
 ```
 
-It can sometimes be helpful to see what `clean_age`, `clean_period`, and `clean_cohort` have done, or will do. This is the purpose of functions `clean_age_df`, `clean_period_df`, and `clean_cohort_df`.
+To see how `clean_age`, `clean_period`, and `clean_cohort` have interpreted some labels, use functions`clean_age_df`, `clean_period_df`, and `clean_cohort_df`.
 
 ```{r}
 x <- c("2021", "2022-2025", "2021", "q2 2020")
 clean_period_df(x)
 ```
 
-It can also be helpful to be able to check whether `clean_age`, `clean_period`, and `clean_cohort` have been able to parse the entire vector. This is what functions `is_valid_age`, `is_valid_period`, and `is_valid_cohort` do.
+To check whether `clean_age`, `clean_period`, and `clean_cohort` have been able to parse the entire vector, use functions `is_valid_age`, `is_valid_period`, and `is_valid_cohort` do.
 
 ```{r}
 x <- c("2021", "the 1960s", "1960-1970")
 is_valid_period(x)
 ```
-In a production system, some version of
+
+To catch problematic inputs, some version of
 ```{r, eval = FALSE}
 stopifnot(all(is_valid_period(x)))
 ```
-is useful to catch any unexpected inputs.
+is often useful.
 
 
 ## The `format` functions
 
 ### Overview
+
+The `date_to` and `clean` functions typically do not  
+
+
+age, period, cohort, and triangle labels may not yet be in the 
+
+
 
 Demographic analyses usually require data to be arranged into age groups, periods, or cohorts, of standardised lengths, with all intermediate categories included. Tabulations should look like this
 
@@ -771,8 +793,12 @@ impute_dob(date = c("2021-03-23", "2021-02-13", "2020-04-25"),
            age_years = c(3, 1, 0))
 ```
 
+### Rotating age, period, cohort, Lexis triangle
 
-### Labels based on date rates
+
+
+
+### Labels based on date ranges
 
 The ambiguities of period and cohort labels do not normally cause any problems when working with a single dataset. When working with multiple datasets, however, aligning periods correctly can be confusing and error-prone.
 
