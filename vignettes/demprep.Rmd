@@ -673,7 +673,7 @@ x <- c("2050", "2050-2055")
 format_period_multi(x)
 ```
 
-By setting `month_start` to `July`, however, we can shift the start date for all periods to 1 July. The labels are then intepreted as follows.
+By setting `month_start` to `July`, however, we can shift the start date for all periods to 1 July. The labels are then interpreted as follows.
 
 Table: Interpretation of labels by `format_period_multi` when `month_start` is `"July"`
 | Label         | Interpretation              |
@@ -708,25 +708,41 @@ The behavior of labels such as "2050" or "2050-2055" can be confusing. Unfortuna
 
 ### Cohorts
 
-The `format_cohort` functions work exactly like the equivalent `format_period` functions, except that the `format_cohort` functions allow for the possibility of an interval that is open on the left.
+The `format_cohort` functions work exactly like the equivalent `format_period` functions, except that the `format_cohort` functions permit intervals to be open on the left.
 ```{r}
 x <- c("2003", "1998", "2015", "1984", "2002")
 format_cohort_year(x)
 format_cohort_year(x, break_min = 1990)
 ```
-A birth cohort with no lower limit is equivalent to an age group with no upper limit. On 31 December 2019, for instance, the cohort `"<1920" is equivalent to the age group 100+. 
+A birth cohort with no lower limit is equivalent to an age group with no upper limit. At the end of 2019, for instance, the cohort `"<1920" is equivalent to the age group 100+. 
 
 
 ### Lexis triangles
 
-The `format_triangle` functions produce Lexis triangles that have consistent lengths. To aggregate triangles, the `format_triangle` functions need information on age, and, in the case of `format_triangle_multi` and `format_triangle_births`, detailed information on periods.
+The `format_triangle` functions produce Lexis triangles to accompany the age groups and periods produced by the corresponding `format_age` and `format_period` functions. There is, however, an extra complication when reformatting Lexis triangles. Lexis triangle labels "Lower" and "Upper" can only be interpreted in combination with the relevant age groups and periods. The `format_triangle` functions therefore need to ask about the original age groups and periods that defined the original Lexis triangles.
+
+Consider, for instance, converting the following age groups, periods, and triangles so that they all use age-time steps of 5 years.
 ```{r}
-x <- c("Lower", "Upper", "Lower")
-age <- c("22", "56", "103")
-format_triangle_year(x = x, age = age)
+df <- data.frame(age = c("22", "50-54", "103"),
+                 period = c("2024", "2025-2030", "2021"),
+                 triangle = c("Upper", "Upper", "Lower"))
+df
 ```
-
-
+We convert `age` and `period`,
+```{r}
+df <- df %>%
+  mutate(age5 = format_age_multi(age),
+         period5 = format_period_multi(period))
+df
+```
+To convert the triangles, we need to provide the original (not the new) age groups and periods,
+```{r}
+df <- df %>%
+  mutate(triangle5 = format_triangle_multi(triangle,
+                                           age = age,
+                                           period = period))
+df
+```
 
 ## The `dtabs` functions
 
