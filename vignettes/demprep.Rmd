@@ -746,14 +746,16 @@ df
 
 ## The `dtabs` functions
 
-### The `dtabs` function for ordinary tabulation
+### `dtabs`  for ordinary tabulation
 
-xtabs for tabulation, but nice formula-based way of turning general data frame into array.
+The default data structure in R is the data frame, including on variants on data frames such as tibbles and data tables. However, data frames are not necessarily the most natural way to represent demographic data. Cross-classified counts or rates - such as birth counts classified by age and region, or death rates classified by age, ethnicity, and time - are sometimes better represented as multidimensional arrays. The **dem** packages use arrays, rather than data frames, as their default data structure.
 
-Once all the variables have been put into the required formats, we can tabulate the data. The most powerful tabulation function in base R is `xtabs`.  **demprep** contains a modified version of `xtabs` called `dtabs`. `dtabs` is designed to be simpler and safer than `xtabs`, particularly for constructing demographic arrays. The differences between `xtabs` and `dtabs` are 
+The `xtabs` function in base R is a standard way of constructing arrays out of data frames, with a convenient formula-based interface. `xtabs` is, however, aimed specifically at tabulating counts, which means it is not well suited to constructing arrays of rates. It also has a tendency to suppress missing values.
+
+The `dtabs` function in **demprep** is a modified version of `xtabs` designed specifically for constructing multidimensional arrays of counts or rates out of data in a data frame. The differences between `xtabs` and `dtabs` are:
 
 |                                        | `xtabs`         | `dtabs`         |
-|----------------------------------------+-----------------+-----------------|
+|----------------------------------------|:---------------:|:----------------:|
 | Position of `data` argument            | first           | second          |
 | Suppress `NA` in classifying variables | yes             | no              |
 | Suppress `NA` in response variable     | by default, yes | by default, no  |
@@ -761,16 +763,10 @@ Once all the variables have been put into the required formats, we can tabulate 
 | `subset` argument                      | yes             | no              |
 | Drop unused levels                     | sometimes       | never           |
 
-Using a pipe (`%>%` or `|>`) is slightly easier when the `data` argument comes first than when it comes second. In `xtabs` the `data` argument comes second,
+With `dtabs` the data argument comes first, which is convenient when using a pipe,
 ```{r}
 df <- data.frame(y = c(1, 2, 1),
                  x = c("a", "b", "b"))
-df %>%
-  xtabs(y ~ x, .) # need '.' as placeholder for data
-```
-
-In `dtabs`, the `data` argument comes first,
-```{r}
 df %>%
   dtabs(y ~ x)
 ```
@@ -782,35 +778,29 @@ df <- data.frame(y = c(1, 2, 1),
 df %>%
   xtabs(y ~ x, .)
 ```
-
-`dtabs`, in contrast, treats the `NA` as an extra level,
+while `dtabs` treats it as an extra level
 ```{r}
-df <- data.frame(y = c(1, 2, 1),
-                 x = c("a", "b", NA))
 df %>%
   dtabs(y ~ x)
 ```
 
-Similarly, when an `NA` appears in the response variable, `xtabs` silently suppresses it
+When an `NA` appears in the response variable, `xtabs` silently suppresses it,
 ```{r}
 df <- data.frame(y = c(1, 2, NA),
                  x = c("a", "b", "a"))
 df %>%
   xtabs(y ~ x, .)
 ```
-
-`dtabs`, in contrast, defaults to keeping the `NA`,
+while `dtabs` defauls to keeping it,
 ```{r}
-df <- data.frame(y = c(1, 2, NA),
-                 x = c("a", "b", "a"))
 df %>%
   dtabs(y ~ x)
 ```
 (though the `NA` can be dropped by setting `na_rm` to `TRUE`.)
 
-The reason for forcing users to explicitly deal with `NA`s is that treatment of `NA`s is an important methodological that deserves the user's attention.  "Complete case analyses", where `NA`s are simply dropped from the data, can be seriously misleading (see, for instance, Little's and Rubin's book *Statistical analysis with missing data*.)
+`xtabs` encourages users to simply drop records with NAs, an approach that statisticians refer to as "complete case analyses", and that can be seriously misleading. (For discussion see, for instance, Little and Rubin, *Statistical analysis with missing data*.)
 
-Another important difference between `xtabs` and `dtabs` is the way that the two functions handle combinations of cross-classifying variables that do not appear in the data. `xtabs` always gives missing combinations a value of 0. For instance, when a dataset has no one who is aged 5-9 years and also male, then it assigns a 0 to this combination,
+`xtabs` always gives combinations of variables that are do not appear in the data a value of 0.
 ```{r}
 df <- data.frame(y = c(1, 2, 3),
                  age = c("0-4", "5-9", "0-4"),
@@ -818,7 +808,7 @@ df <- data.frame(y = c(1, 2, 3),
 df %>%
   xtabs(y ~ age + sex, .)
 ```
-This is the correct behaviour when using `xtabs` for iss original purpose, which to tabulate counts. But it is not when we want if we are using `xtabs` to convert a data frame of non-count values into an array. In the following example, `0` is *not* a sensible value for the missing combination.
+This is fine for counts, but not for more general values. In the following example, `0` is *not* a sensible value for the missing combination.
 ```{r}
 df <- data.frame(y = c(33.3, -4.1, 22.9),
                  age = c("0-4", "5-9", "0-4"),
@@ -838,31 +828,38 @@ df %>%
 
 If no value for `fill` is supplied, then `xtabs` will try to infer the correct value. If there is no response variable, or if the response variable consists entirely of positive integers, then `dtabs` assumes that the data consists of counts, and sets `fill` to `0`. If the response variable has one or more zeros or negative numbers, then `dtabs` assumes the response variable is not counts, and sets `fill` to `NA`. If neither of these conditions are met, then `dtabs` throws an error.
 
-A final difference between `xtabs` and `dtabs` is that `xtabs` allows the user to take subsets of the data, or drop unused levels from factors, as part of the tabulation while `dtabs` does not. Limiting the options in `dtabs` makes the function easier to understand. It also forces the users to write seperate calls to funtions such as `subset` or `droplevels`, which makes the code easier to understand.
+A final difference between `xtabs` and `dtabs` is that `xtabs` allows the user to take subsets of the data, or drop unused levels from factors, as part of the tabulation while `dtabs` does not. Limiting the options in `dtabs` makes the function easier to understand. It also forces the users to write separate calls to functions such as `subset` or `droplevels`, which makes the code easier to understand.
 
 
-### The `dtabs_survey` function for survey data
+### `dtabs_survey` for survey data
 
-**demprep** has a specialised version of `dtabs`, called `dtabs_survey` for tabulating survey data on binary (yes-no) outcomes. `dtabs_survey` calculates "effective" numbers of trials and successes that allow data from a complex survey to be analysed as if it came from a simple random survey. Doing so sacrifices some accuracy in return for a large increase in convenience.
+`dtabs_survey` is a specialised version of `dtabs` for the situation when
+
+1. the data come from a survey with a complex design, and have survey weights, and
+1. the outcome of interest is binary (yes-no).
+
+
+`dtabs_survey` calculates the "effective" numbers of trials and successes for the outcome. These effective numbers can be analysed as if they come from a simple random sample. The resulting analysis should give results close to those from a more complicated analysis that fully accounted for the complex survey design.
+
 
 ## Other functions
 
 ### Imputing dates
 
-Sometimes input data has incomplete data on dates, such as having the year and month of births but not the days. One way of dealing with incomplete data is to impute the missing information. This is what functions `impute_date` and `impute_dob` are for.
+Sometimes dates information is incomplete, as when a data sources gives years and months of birth, but not days. One way of dealing with incomplete data is to impute the missing information, which is what functions `impute_date` and `impute_dob` do.
 
-The imputation is random, so, for repeatability, we set the random seed. 
+The imputation is random, so, for reproducibility, we set the random seed. 
 ```{r}
 set.seed(0)
 ```
 
-In our first example, we know the year and month of some events, but not the day, so we use `impute date`.
+To impute dates when we know the year and month, we use
 ```{r}
 impute_date(year = c(2000, 2005, 2003),
             month = c("Feb", "Nov", "Apr"))
 ```
 
-In our second example, we know the dates of events, and we know people's age in years at the time of the eevents, and we want to impute dates of birth.
+To impute dates of birth when we know ages at later events, we use
 ```{r}
 impute_dob(date = c("2021-03-23", "2021-02-13", "2020-04-25"),
            age_years = c(3, 1, 0))
@@ -875,9 +872,7 @@ impute_dob(date = c("2021-03-23", "2021-02-13", "2020-04-25"),
 
 ### Labels based on date ranges
 
-The ambiguities of period and cohort labels do not normally cause any problems when working with a single dataset. When working with multiple datasets, however, aligning periods correctly can be confusing and error-prone.
-
-The functions
+One way of dealing with the ambiguities of standard period and cohort labels is to switch to non-standard labels that are less ambiguous. The functions
 
 |                    |
 |--------------------|
@@ -887,14 +882,15 @@ The functions
 | `as_date_range_quarter` |
 | `as_date_range_month` |
 
-convert from standared period and cohort labels to nonstandard but unambiguous ones that use explicit dates.
+all convert standard labels into ones that use explicit dates.
 
 By default, `month_start` is set to `"Jan"` and `label_year_start` is set to `TRUE`
 ```{r}
 x <- c("2022", "2028")
 as_date_range_year(x)
 ```
-Different settings give different interpretations of the same labels,
+
+But these changed, to produce alternative translations of the same inputs.
 ```{r}
 x <- c("2022", "2028")
 as_date_range_year(x, 
@@ -902,9 +898,18 @@ as_date_range_year(x,
                    label_year_start = FALSE)
 ```
 
+Converting to date-range formats is useful when working with multiple data sources, where it can be difficult to keep track of different labeling conventions.
+
 
 ### Flipping year labels
 
+We sometimes need to convert single-year period or cohort labels from a calendar-year-at-start format to a calendar-year-at-end format, or vice versa. Because the labeling conventions are confusing, it is easy to get the conversion wrong. To avoid errors, it is safest to use function `flip_year_label` 
+```{r}
+x <- c("2001", "2006", "2013")
+flip_year_label(x, 
+                current_uses_start = FALSE,
+                month_start = "Apr")
+```
 
 
 
