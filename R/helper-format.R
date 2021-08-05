@@ -53,6 +53,7 @@ format_age_month_quarter_year <- function(x,
         }
         if (all(is.na(x))) {
             ans <- factor(x,
+                          levels = unique(x),
                           exclude = NULL)
             return(ans)
         }
@@ -180,6 +181,7 @@ format_cohort_month_quarter_year <- function(x,
     }
     if (all(is.na(x))) {
         ans <- factor(x,
+                      levels = unique(x),
                       exclude = NULL)
         return(ans)
     }

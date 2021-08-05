@@ -181,11 +181,11 @@ test_that("format_triangle_births gives correct answer - upper below the diagona
     x <- c("Upper", "Upper", "Upper")
     age <- c("40", "31-32", "20-21")
     period <- c("2001", "2003-2005", "2002-2004")
-    ans_obtained <- format_triangle_births(x = x,
-                                          age = age,
-                                          period = period,
-                                          break_min = NULL,
-                                          break_max = NULL)
+    ans_obtained <- suppressMessages(format_triangle_births(x = x,
+                                                            age = age,
+                                                            period = period,
+                                                            break_min = NULL,
+                                                            break_max = NULL))
     ans_expected <- factor(c("Lower", "Lower", "Lower"),
                            levels = c("Lower", "Upper"))
     expect_identical(ans_obtained, ans_expected)

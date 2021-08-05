@@ -13,6 +13,7 @@ as_date_range_month_quarter <- function(x, parse_fun) {
     }
     if (all(is.na(x))) {
         ans <- factor(x,
+                      levels = unique(x),
                       exclude = NULL)
         return(ans)
     }

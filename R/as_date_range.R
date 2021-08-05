@@ -72,6 +72,7 @@ as_date_range_year <- function(x,
     }
     if (all(is.na(x))) {
         ans <- factor(x,
+                      levels = unique(x),
                       exclude = NULL)
         return(ans)
     }
@@ -186,6 +187,7 @@ as_date_range_multi <- function(x,
     }
     if (all(is.na(x))) {
         ans <- factor(x,
+                      levels = unique(x),
                       exclude = NULL)
         return(ans)
     }
@@ -318,6 +320,7 @@ as_date_range_custom <- function(x,
     }
     if (all(is.na(x))) {
         ans <- factor(x,
+                      levels = unique(x),
                       exclude = NULL)
         return(ans)
     }

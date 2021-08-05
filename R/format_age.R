@@ -205,6 +205,7 @@ format_age_multi <- function(x,
         }
         if (all(is.na(x))) {
             ans <- factor(x,
+                          levels = unique(x),
                           exclude = NULL)
             return(ans)
         }
@@ -388,6 +389,7 @@ format_age_lifetab <- function(x, break_max = 100) {
         }
         if (all(is.na(x))) {
             ans <- factor(x,
+                          levels = unique(x),
                           exclude = NULL)
             return(ans)
         }
@@ -606,6 +608,7 @@ format_age_births <- function(x,
         }
         if (all(is.na(x))) {
             ans <- factor(x,
+                          levels = unique(x),
                           exclude = NULL)
             return(ans)
         }

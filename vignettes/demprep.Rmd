@@ -874,7 +874,7 @@ unique(deaths$age)
 
 ```{r}
 deaths <- deaths %>%
-  mutate(year = flip_year_label(year))
+  mutate(year = flip_to_start(year))
 unique(deaths$year)
 ```
 

@@ -13,12 +13,12 @@ test_that("format_age_year gives correct answers with alternative finite values 
 })
 
 test_that("format_age_year gives correct answers with no value supplied for 'break_max'", {
-    expect_identical(format_age_year(x = c("0", "10+", "4"),
-                                     break_max = NULL),
+    expect_identical(suppressMessages(format_age_year(x = c("0", "10+", "4"),
+                                                      break_max = NULL)),
                      factor(c(0, "10+", 4), levels = c(0:9, "10+")))
-    expect_identical(format_age_year(x = c("0", "10", "4"),
-                                     break_max = NULL,
-                                     open_last = FALSE),
+    expect_identical(suppressMessages(format_age_year(x = c("0", "10", "4"),
+                                                      break_max = NULL,
+                                                      open_last = FALSE)),
                      factor(c(0, "10", 4), levels = as.character(0:10)))
 })
 
@@ -78,24 +78,24 @@ test_that("format_age_multi gives correct answers with valid inputs", {
                                       width = 10,
                                       break_max = 10),
                      factor(c("0-9", "10+", "0-9"), levels = c("0-9", "10+")))
-    expect_identical(format_age_multi(x = c("0", "11", "0-4"),
-                                      break_max = NULL),
+    expect_identical(suppressMessages(format_age_multi(x = c("0", "11", "0-4"),
+                                                       break_max = NULL)),
                      factor(c("0-4", "10-14", "0-4"),
                             levels = c("0-4", "5-9", "10-14", "15+")))
-    expect_identical(format_age_multi(x = c("1-4", "14", "0"),
-                                      break_max = NULL,
-                                      open_last = FALSE),
+    expect_identical(suppressMessages(format_age_multi(x = c("1-4", "14", "0"),
+                                                       break_max = NULL,
+                                                       open_last = FALSE)),
                      factor(c("0-4", "10-14", "0-4"),
                             levels = c("0-4", "5-9", "10-14")))
-    expect_identical(format_age_multi(x = c("1-4", "14", "0", NA),
-                                      break_max = NULL,
-                                      open_last = FALSE),
+    expect_identical(suppressMessages(format_age_multi(x = c("1-4", "14", "0", NA),
+                                                       break_max = NULL,
+                                                       open_last = FALSE)),
                      factor(c("0-4", "10-14", "0-4", NA),
                             levels = c("0-4", "5-9", "10-14", NA),
                             exclude = NULL))
-    expect_identical(format_age_multi(x = rep(NA_character_, 3),
-                                      break_max = NULL,
-                                      open_last = FALSE),
+    expect_identical(suppressMessages(format_age_multi(x = rep(NA_character_, 3),
+                                                       break_max = NULL,
+                                                       open_last = FALSE)),
                      factor(rep(NA_character_, 3),
                             levels = NA,
                             exclude = NULL))
@@ -320,6 +320,7 @@ test_that("format_age_quarter gives correct answers with valid inputs", {
                             levels = c("0", "1", "2", NA),
                             exclude = NULL))
 })
+
 
 ## format_age_month ---------------------------------------------------
 

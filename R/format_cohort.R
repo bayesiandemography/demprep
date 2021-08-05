@@ -295,6 +295,7 @@ format_cohort_multi <- function(x,
     }
     if (all(is.na(x))) {
         ans <- factor(x,
+                      levels = unique(x),
                       exclude = NULL)
         return(ans)
     }

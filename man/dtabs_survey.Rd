@@ -20,7 +20,7 @@ dtabs_survey(
   data = parent.frame(),
   formula,
   wt,
-  method = c("gg_med", "gg_mean"),
+  method = c("ghitza_med", "ghitza_mean"),
   na_rm = FALSE
 )
 }
@@ -34,7 +34,7 @@ response must be a binary varibale.}
 \item{wt}{A vector of weights. Required.}
 
 \item{method}{The method used to calculate
-the overall design effect. Defaults to \code{"gg_med"}.}
+the overall design effect. Defaults to \code{"ghitza_med"}.}
 
 \item{na_rm}{Whether to remove \code{NA}s from the
 response before tabulating it.
@@ -96,7 +96,7 @@ before the calculations are made.
 The method for calculating design effects,
 and hence effective numbers of trials and
 successes, is specified by the \code{method}
-argument. The default method, \code{"gg_med"}
+argument. The default method, \code{"ghitza_med"}
 is based on Ghitza and Gelman (2013),
 and proceeds as follows:
 \enumerate{
@@ -125,7 +125,7 @@ the median, of the cell-level design effects.
 The mean is, however, sensitive to outliers, as
 can occur when cells have few observations.
 The original method can be obtained by setting
-\code{method} to \code{"gg_mean"}.
+\code{method} to \code{"ghitza_mean"}.
 
 The effective numbers of success and trials obtained
 in this way will not generally be integers. To

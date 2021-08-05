@@ -20,13 +20,13 @@ test_that("'make_fill' gives correct answer with valid inputs", {
                                X = X,
                                INDEX = INDEX),
                      NA_integer_)
-    expect_identical(make_fill(fill = NULL,
-                               X = X,
-                               INDEX = INDEX),
+    expect_identical(suppressMessages(make_fill(fill = NULL,
+                                                X = X,
+                                                INDEX = INDEX)),
                      0L)
-    expect_identical(make_fill(fill = NULL,
-                               X = -X,
-                               INDEX = INDEX),
+    expect_identical(suppressMessages(make_fill(fill = NULL,
+                                                X = -X,
+                                                INDEX = INDEX)),
                      NA_integer_)
     expect_identical(make_fill(fill = NULL,
                                X = rep(0.1, 5),

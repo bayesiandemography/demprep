@@ -220,7 +220,7 @@ dtabs <- function (data = parent.frame(),
 #' The method for calculating design effects,
 #' and hence effective numbers of trials and
 #' successes, is specified by the \code{method}
-#' argument. The default method, \code{"gg_med"}
+#' argument. The default method, \code{"ghitza_med"}
 #' is based on Ghitza and Gelman (2013),
 #' and proceeds as follows:
 #' \enumerate{
@@ -249,7 +249,7 @@ dtabs <- function (data = parent.frame(),
 #' The mean is, however, sensitive to outliers, as
 #' can occur when cells have few observations.
 #' The original method can be obtained by setting
-#' \code{method} to \code{"gg_mean"}.
+#' \code{method} to \code{"ghitza_mean"}.
 #'
 #' The effective numbers of success and trials obtained
 #' in this way will not generally be integers. To
@@ -274,7 +274,7 @@ dtabs <- function (data = parent.frame(),
 #' response must be a binary varibale.
 #' @param wt A vector of weights. Required.
 #' @param method The method used to calculate
-#' the overall design effect. Defaults to \code{"gg_med"}.
+#' the overall design effect. Defaults to \code{"ghitza_med"}.
 #' @param na_rm Whether to remove \code{NA}s from the
 #' response before tabulating it.
 #' Defaults to \code{FALSE}.
@@ -324,7 +324,7 @@ dtabs <- function (data = parent.frame(),
 dtabs_survey <- function (data = parent.frame(),
                           formula,
                           wt,
-                          method = c("gg_med", "gg_mean"),
+                          method = c("ghitza_med", "ghitza_mean"),
                           na_rm = FALSE) {
     ## check and tidy inputs
     if (inherits(data, "formula"))
@@ -381,7 +381,7 @@ dtabs_survey <- function (data = parent.frame(),
                       "TRUE", "FALSE", 1L, 0L),
              call. = FALSE)
     ## calculations
-    if (method %in% c("gg_med", "gg_mean")) {
+    if (method %in% c("ghitza_med", "ghitza_mean")) {
         INDEX <- model_frame[-c(i_response, i_wt)]
         not_fac <- !vapply(INDEX, is.factor, TRUE)
         INDEX[not_fac] <- lapply(INDEX[not_fac], factor, exclude = NULL)
@@ -440,8 +440,8 @@ dtabs_survey <- function (data = parent.frame(),
                 design_effect <- 1 + (sd_wt / mean_wt)^2
                 design_effect <- design_effect[trials_unweighted >= 2L]
                 FUN <- switch(method,
-                              gg_med = stats::median,
-                              gg_mean = mean,
+                              ghitza_med = stats::median,
+                              ghitza_mean = mean,
                               stop(gettextf("unexpected value for '%s' [\"%s\"]",
                                             "method", method)))                          
                 overall_design_effect <- FUN(design_effect, na.rm = TRUE)
@@ -455,7 +455,7 @@ dtabs_survey <- function (data = parent.frame(),
             ans <- list(successes = successes_effective,
                         trials = trials_effective)
         }
-    } # method %in% c("gg_med", "gg_mean")
+    } # method %in% c("ghitza_med", "ghitza_mean")
     ans
 }
 
