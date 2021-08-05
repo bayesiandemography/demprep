@@ -1,7 +1,6 @@
 ---
 title: "Preparing demographic data with the demprep package"
 author: John Bryant, Bayesian Demography Limited
-affiliation: Bayesian Demography Limited
 date: '`r format(Sys.time(), "%e %B %Y")`'
 output: 
   rmarkdown::html_vignette:
@@ -24,9 +23,6 @@ opts_chunk$set(
   fig.width = 6.5,
   fig.align = "center"
 )
-deaths <- data.frame(name = c("Anwar", "Baptiste", "Candice"),
-                     date_birth = c("2014-02-17", "2012-01-10", "2019-04-29"),
-                     date_death = c("2019-10-11", "2020-02-27", "2020-08-01"))
 
 births_in <- data.frame(date_child = c("2020-05-18", "2020-07-02", "2020-10-05"),
                         date_parent = c("2000-02-14", "2002-05-18", "1990-12-18"))
@@ -37,7 +33,7 @@ births_out <- data.frame(date_child = c("2020-03-14", "2020-08-22"),
 
 # Introduction
 
-Demographic analyses typically work with tabular data that uses standardized age groups and periods, like this:
+Demographic analyses typically use tabular data with standardised age groups and periods, like this:
 ```{r deaths-array, echo = FALSE}
 deaths_array <- matrix(c(3, 0, 1, 5, 0, 2, 4, 0, 2),
                        nrow = 3, 
@@ -49,7 +45,7 @@ kable(deaths_array,
       caption = "Counts of deaths by age group and year")
 ```
 
-Raw data from registration systems or surveys, however, typically consists of individual events, rather than counts, and the events themselves are attached to dates rather than age groups or periods:
+However, raw data from registration systems or surveys typically reports individual events, with dates rather than age groups or periods:
 ```{r deaths-raw, echo = FALSE}
 deaths_raw <- data.frame(name = c("Alice", "Bilal", "Clara", "Djeneba", "Ergi", "Faisal"),
                                date_of_birth = c("2022-04-17", "2009-12-03", "2020-07-01",
@@ -60,7 +56,7 @@ kable(deaths_raw,
       caption = "Deaths by date of birth and date of death")
 ```
  
-Even with processed data, the age groups or periods may not have the format we want, or may contain gaps:
+Even data that has been processed may use formats we do not want, or may contain gaps,
 ```{r deaths-semiclean, echo = FALSE}
 deaths_semiclean <- data.frame(age = c("Infant", "2 years", "12 years",
                                        "Infants", "1 year"),
@@ -71,28 +67,30 @@ kable(deaths_semiclean,
       caption = "Counts of deaths by age group and year")
 ```
 
-Getting from raw, or semi-raw, data to tabulations ready for demographic analysis can be harder than it looks. When, for instance, does a person who was born on 31 January 2001 turn one month old? According to the base *R* function `seq.Date`, the answer is 3 March 2001:
+Getting from raw or partly-processed data to data that is ready for demographic analysis can be deceptively difficult. Consider, for instance, the task of assigning people to one-month age groups. When does a person who was born on 31 January 2001 turn one month old? According to the base R function `seq.Date`, the answer is 3 March 2001:
 ```{r one-month}
 seq.Date(from = as.Date("2001-01-31"), 
          by = "month",
          length.out = 2)
 ```
 
-Package **demprep** provides functions for processing demographic data to the point where it is ready for analysis. **demprep** focuses in particular on getting data into the desired age-period-cohort format, since this is typically the hardest part of preparing demographic data. **demprep** is designed to work with the other **dem** packages (which are still being written) but can be used on its own.
+Package **demprep** provides functions for processing data to the point where it is ready for demographic analysis. **demprep** focuses in particular on ages and periods, since this is typically the hardest part of preparing demographic data. **demprep** is designed to work with the other **dem** packages (which are still being written) but can be used on its own.
 
 # Background
 
 ## Calculating age
 
-In demography, as in ordinary English, "age" normally means "age in completed years".  For instance, demographers describe a person who was born 5 years and 57 days ago as "5 years old". If, instead of years, demographers are using moths, then age means age in completed months. Demographers describe a person who was born 3 months and 23 days ago as "3 months old".
+In demography, as in ordinary English, "age" normally means "age in completed years".  For instance, demographers describe a person who was born 5 years and 57 days ago as 5 years old. If, instead of years, demographers are using moths, then age means age in completed months. Demographers describe a person who was born 3 months and 23 days ago as 3 months old.
 
-The measurement of age is, however, complicated by the fact that some the measurement units have different lengths. Leap years are one day longer than non-leap years, for instance, and May has one more day than April.
+Calculating ages is, however, complicated by the fact that length of the units, as measured days elapsed, is not constant. Leap years are one day longer than non-leap years, for instance, and May has one more day than April.
 
-The approach used in **demprep** is to say that a person gains a extra month of age each time that the person reaches the day-of-the-month that they were born. If a person was born on 5 March 2000, for instance, then the person turns one month old on 5 April 2000, turns 2 months old on May 2000, turns 12 months old on 5 March 2001, and so on. A peron gain an extra year of age each time the person reaches the month and day-of-the-month that they were born.
+The basic rule used by **demprep** is that a person gains a extra month of age each time the person attains the day-of-the-month that they were born. If a person was born on 5 March 2000, for instance, then the person turns one month old on 5 April 2000, turns 2 months old on May 2000, turns 12 months old on 5 March 2001, and so on. 
 
-What if the day-of-the-month that a person was born does not occur in the month in question? When, for instance, does the person who was born on 31 January 2000 turn one month old, given that February does not contain a 31st day? We adopt the rule that if the day-of-the-month on which a person was born does not occur in the month in question, then the person attains the extra month of age on the first day of the next month. We say, for instance, that a person born on 31 January attains the age of one month on 1 March. 
+The basic rule needs to be extended, however, to deal with cases when a month does not contain the day-of-the-month when a person was not born. The basic rule does not, for instance, allow us to say when a person who was born on 31 January turns one month old, since February does not contain a 31st day. 
 
-This approach to calculating age can be expressed as
+To deal with such cases, **demprep** follows the principle that if the day-of-the-month when a person was born does not occur during a month, then the person gains the the extra month of age on the first day of the next month. A person who is born on 31 January 2000 turns one month old on 1 March 2000.
+
+When provided with the year, month, and day of an event, and the year, month, and day of birth, **demprep** calculates age in completed months at the time of the event as follows:
 \begin{equation}
 \begin{split}
 \text{age in completed months} & = 12 \times (\text{year of event} - \text{year of birth}) \\
@@ -102,18 +100,18 @@ This approach to calculating age can be expressed as
 \end{equation}
 whre the $I\{\text{day of event} \ge \text{day of birth}\}$ means "1 if the day of event is greater than or equal to day of birth, and 0 otherwise".
 
-Age in completed years can be obtained by dividing age in completed months by 12, and discarding any remainder. If a person is aged 123 in completed months, then the person is aged 10 in completed years.
+Age in completed years can be obtained by dividing age in completed months by 12, and discarding any remainder. If a person is aged 123, measured in completed months, then the person is aged 10, measured in completed years.
 
-The **demprep** approach to calculating age sacrifices some uniformity, in that the same age measured in months can correspond to different ages measured in days, depending on the time of year. However, it has the more important virtue that it gives intuitive results when applied to typical problems in applied demography. It means, for instance, that a group of people who are aged $x$ months on 1 February are aged $x+1$ months on 1 March, and $x+2$ months on 1 April. Consistency between calendar time and age is helpful when calculating rates, or when linking changes in population to births, deaths, and migrations.
+The **demprep** approach to calculating age requires accepting some inconsistency, in that the same age measured in months can correspond to different ages measured in days, depending on the time of year. This inconsistency is, however, unavoidable, if ages and periods are to line up in the way that people typically expect them to. It is the approach we must take if, for instance, group of people who are aged $x$ months on 1 February are to be aged $x+1$ months on 1 March, and $x+2$ months on 1 April.
 
 
 ## Definining age groups, periods, cohorts, and Lexis triangles
 
-An age group is ages that falls within a specified interval: the age group "10-14" years for instance, 10-year-olds, 11-year-olds, 12-year-olds, 13-year-olds, and 14-year-olds. A period is any date that falls within an interval: the period "2020-2030" for instance, typically means any date from 1 January 2020 to 31 December 2030.
+Age groups are intervals involving age, such as all ages from 10 years to 14 years. Periods are intervals involving time, such as all times from 1 January 2030 to 31 December 2030. 
 
-A cohort is slightly more abstract: it is everyone who experienced a particular event during the specified period. The particular event is almost always births, so that a cohort is everyone born during the 1960s, for instance, or everyone born in 2007. However, cohorts can also be defined by other events, such as everyone who married during a particular decade, or everyone who started at an organization during a particular year.
+Although people sometimes use "age cohort" as a synonym for "age group", a cohort and an age group are in fact different things. A cohort is a group of people who all experienced a particular event during some specified period. The particular event is almost always births, so that a cohort is everyone born during the 1960s, for instance, or everyone born in 2007. However, cohorts can also be defined by other events, such as everyone who married during a particular decade, or everyone who started at an organization during a particular year.
 
-Lexis triangles are less commonly encountered than age groups, periods, and cohorts, but are useful in problems that require switching between periods and cohorts. Lexis triangles can be defined through a Lexis diagram such as the figure below. The horizontal axis in the figure measures calendar time, and the vertical axis measures age. The horizontal grid lines mark out age groups, the vertical grid lines mark out periods, and the diagonal grid lines mark out cohorts. Lexis triangles are the triangles formed by the combination of the horizontal, vertical, and diagonal grid lines. Within each square, the triangle below the diagonal line is referred to as the lower Lexis triangle, and the triangle above the diagonal line is referred to as the upper Lexis triangle.
+One way of visualising age groups, periods, and cohorts is through a Lexis diagram. The diagram below is an example. The horizontal axis represents time, and the vertical axis represent age. The horizontal grid lines mark out age groups. The age group "5-9" for instance, starts at exact age 5 and finishes just before exact age 10. The vertical grid lines mark out periods. The period "2005-2010", for instance, starts on 1 January 2005 and ends just before 1 January 2010. The diagonal lines mark out cohorts. The cohort "2000-2005", for instance, starts down the bottom left of the diagram, and ends at the top right, at which point the date is 1 January 2025 and people in the cohort are aged 20-24.
 
 ```{r agetime, echo = FALSE}
 date <- as.Date(c("2020-12-07", "2022-05-30"))
@@ -122,7 +120,7 @@ age <- c(19 + 4.5/12, 16 + 2.5/12)
 ```
 
 
-```{r lexis1, echo = FALSE, fig.width = 5, fig.height = 5, fig.cap = "A Lexis diagram"}
+```{r lexis1, echo = FALSE, fig.width = 5, fig.height = 4.7, fig.cap = "A Lexis diagram"}
 breaks_time <- seq.Date(from = as.Date("2000-01-01"),
                         to = as.Date("2025-01-01"), 
                         by = "5 years")
@@ -151,44 +149,44 @@ text(x = date,
      pos = 4)
 ```
 
-Lexis triangles provide the extra information needed to distinguish between cohorts when dealing with events that are categorised by age group and period. Consider, for instance, the black dots $A$ and $B$ in the diagram above. The dots represent deaths, and the black diagonal lines are "life lines" for the people experiencing these deaths. The two deaths belong to the same period (2020-2025) and the same age group (15-19). The deaths do not, however, belong to the same cohort: death $A$, however, belongs to cohort 2000-2005, while death $B$ belongs to cohort 2005-2010. Knowing the period and age group for deaths $A$ and $B$ is not enough, on its own, to assign each death to a cohort. If, however, we also know that death $A$ belongs to the upper Lexis triangle, and death $B$ belongs to the lower Lexis triangle, then we can assign the deaths to cohorts.
+The two black diagonal lines in the diagram above are "life lines". They depict the lives of individuals A and B from the time of their births, in periods 2000-2005 and 2005-2010, to the time of the deaths, in 2020-2025.
 
-Cohorts and Lexis triangles require time steps and age steps to have equal sizes. In the Lexis diagram above, for instance, the time steps and age steps are both 5 years. Demographic data does not always use the same size steps for age and time. The Lexis diagram beow, for instance, has 10-year time steps and 5-year age steps. When time steps and age steps are different lengths, defining cohorts and Lexis triangles is difficult.
+Individuals A and B died in the same period (2020-2025). They also belonged to the same age group (20-24) when they died. However, they belonged to two different cohorts: 2000-2005 versus 2005-2010. If all we knew about the deaths of A and B was the age group of the people dying and the period during which the deaths occurred, we would not be able to tell whether the deaths belonged to people in cohort 2000-2005 or to cohort 2005-2010. 
 
-```{r lexis2, echo = FALSE, fig.width = 5, fig.height = 5, fig.cap = "A Lexis diagram with time steps and age steps of different lengths"}
-breaks_time <- seq.Date(from = as.Date("2000-01-01"),
-                        to = as.Date("2030-01-01"), 
-                        by = "10 years")
-breaks_age <- seq.int(from = 0L, 
-                      to = 25L, 
-                      by = 5L)
-year <- as.integer(format(breaks_time, "%Y"))
-labels_time <- demprep:::make_labels_period_custom(year,
-                                                   include_na = FALSE)
-labels_age <- demprep:::make_labels_age(breaks = breaks_age,
-                                        open_last = FALSE,
-                                        include_na = FALSE)
-demprep:::plot_date_to_age_triangle(date = date,
-                                    dob = dob,
-                                    unit = "year",
-                                    breaks_time = breaks_time,
-                                    breaks_age = breaks_age,
-                                    labels_time = labels_time,
-                                    labels_age = labels_age,
-                                    show_vert = TRUE,
-                                    show_diag = FALSE,
-                                    show_months = FALSE)
-text(x = date,
-     y = age,
-     labels = expression(italic(A), italic(B)),
-     pos = 4)
-```
+Table: Assigning deaths to cohorts
+
+| Individual | Age group | Period    | Cohort |
+|:----------:|:---------:|:---------:|:------:|
+| A          | 20-24     | 2020-2025 | ?      |
+| B          | 20-24     | 2020-2025 | ?      |
+
+Ambiguities over cohorts are common: we often know the age group and period that events belong to, but cannot work out which of two possible cohorts we should assign the events to. This ambiguity can be removed if, in addition to age group and period, we also know the "Lexis triangle" to which the events belong. Lexis triangle is a technical demographic term that is not well known, but that turns out to be extremely useful in any analysis that requires working with age groups and cohorts. 
+
+Consider again the Lexis diagram above. Lexis triangles in the diagram are formed by the intersection of the horizontal, vertical, and diagonal lines. The triangles below the diagonal lines are known as lower Lexis triangles, and the triangles above the diagonal lines are known as upper Lexis triangles.
+
+The death of individual A in the Lexis diagram above belongs to the upper Lexis triangle, while the death of individual B belongs to the lower Lexis triangle. Events in the upper triangle belong to the earlier of the two possible cohorts, and events in the lower triangle belong to the later of the two. Supplementing information on age group and period with information on Lexis triangle allows us to unambiguously assign events to cohorts.
+
+Table: Assigning deaths to cohorts (with Lexis triangles)
+
+| Individual | Age group | Period    | Lexis triangle | Cohort    |
+|:----------:|:---------:|:---------:|:--------------:|:---------:|
+| A          | 20-24     | 2020-2025 | Upper          | 2000-2005 |
+| B          | 20-24     | 2020-2025 | Lower          | 2005-2010 |
+
+For many purposes, we can in fact dispense with Lexis triangles, by recording age group, period, and cohort, rather than age group period, and Lexis triangle. The [Human Mortality Database](https://www.mortality.org), for instance, used to report deaths by age group, period and Lexis triangle, but now reports them by age group, period, and cohort.
+
+Lexis triangles are, however,  more efficient, in the sense that they contain just enough information to convert between age groups and cohorts, but no more. This efficiency becomes visible making cross-tabulations of events. A cross-tabulation of events by age group, period, and Lexis triangle typically has values in almost every cell. A cross-tabulation of events by age group, period, and cohort consists mainly of zeros, since combinations of age group, period, and cohort are necessarily zero. (The number of deaths of people in age group 20-24, period 2020-2025, and cohort 2010-2015, for instance, is necessarily zero.)
+
+One point to note about our discussion of cohorts and Lexis triangles is that we have assumed that age groups and periods have equal lengths. In the Lexis diagram above, for instance, age groups and periods both have lengths of 5 years. Demographic data do not, in fact, always come in this form. It is common, for instance, to see data with 5-year age groups and 1-year periods. When data uses age groups and periods of different lengths, Lexis triangles cannot be defined, and there is no natural way of converting between age groups and cohorts.
+
 
 ## Labels for age groups, periods, and cohorts
 
-Different produces of demographic data use many different schemes for labeling age groups, periods, and cohorts. **demprep** implements a system of labeling that tries to reflect common practices, while also being concise. The table below summarises the system. Dashes indicate combinations that are not allowed.
+Demographers and other users of data on age groups and periods have not come up a consistent system for labeling age groups and periods. To make matters worse, the systems that used for labeling periods are ambiguous. **demprep** has some functions (the `as_date_range` functions) for constructing unambiguous period labels. But the main focus is on working with standard labels. 
 
-Table: **demprep** labels for age groups, periods, and cohorts
+The table below summarises the labeling system implemented by **demprep**. Dashes indicate combinations that are not allowed.
+
+Table: Examples of **demprep** labels for age groups, periods, and cohorts
 
 | Unit    | Type       | Age group   | Period        | Cohort         |
 | :------ | :-------   | :---------: | :----------:  | :------------: |
@@ -205,29 +203,33 @@ Table: **demprep** labels for age groups, periods, and cohorts
 | month   | open left  | -           | -             | `"<2020 Jan"`  |
 | month   | open right | `"1200+"`   | -             | -              |
 
-**demprep** caters to three types of units: years, quarters, and months. Age intervals can be open on the right, such as the age group consisting of people aged 100 years or more. Cohorts can be open on the left, such as the cohort consisting of people born before January 2020. Multi-year intervals, such as ages 5 to 9 years, are allowed, but multi-quarter or multi-month intervals are not.
+**demprep** accommodates three types of units: years, quarters, and months. Age groups can be open on the right, such as the age group consisting of people aged 100 years or more. Cohorts can be open on the left, such as the cohort consisting of people born before January 2020. Age groups, periods, or cohorts made up of multiple years, such as the age group 5-9 years, are allowed. However, age groups, periods, or cohorts made up of multiple quarters or months are not allowed.
 
-Reflecting standard practice, **demprep** treats  multi-year age groups and multi-year periods and cohorts differently. Labels for age groups refer to the last year of the current interval (eg the "9" in the 5-year age group "5-9"). Labels for periods and cohorts, in contrast, refer to the first year of the next interval (eg the "2030" in the 5-year period "2025-2030").
+Reflecting standard practice, **demprep** follows different rules for marking the end of multi-year age groups and multi-year periods and cohorts. Labels for age groups refer to the last year of the current interval (eg the "9" in the 5-year age group "5-9"). Labels for periods and cohorts, in contrast, refer to the first year of the next interval (eg the "2030" in the 5-year period "2025-2030").
 
-Standard period and cohort labels based on years, including the labels used in **demprep** are ambiguous. The first source of ambiguity is that labels based on years do not always start on the same day of the year. Periods and cohorts typically start on 1 January and end on 31 December. However, periods and cohorts that start on 1 July and end on 30 June are also common, and periods and cohorts that start on other dates, such as 1 April or 1 October, are also occasionally encountered. Labels such as "2015" or "2001-2006" do not distinguish between these various possibilities.
+Standard period and cohort labels based on years, including the labels used in **demprep** are ambiguous. The first source of ambiguity is that labels based on years do not always start on the same day of the year. Periods and cohorts often start on 1 January and end on 31 December. However, periods and cohorts that start on 1 July and end on 30 June are also common, and periods and cohorts that start on other dates, such as 1 April or 1 October, also sometimes occur. Labels such as "2015" or "2001-2006" do not distinguish between these possibilities.
 
-The second source of ambiguity is specific to one-year periods and cohorts. Some people label one-year periods and cohorts according to the calendar year at the start of the period or cohort, and others label it according to the calendar year at the end. For instance, some people label a year starting on 1 July 2020 and ending on 30 June 2021 as "2020" and others labels it as "2021". The year-at-start or year-at-end choice makes no difference if the period or cohort starts on 1 January and ends on 31 December, but for every other pair of start dates and end dates, it does make a difference. The table below, for instance, shows twenty-two different interpretations of "2020" (all assuming that the one-year periods start on the first day of the month.)
+The second source of ambiguity is specific to one-year periods and cohorts that do not start on 1 January. A one-year period or cohort that starts on a date other than 1 January overlaps with two calendar years. For instance, a one-year period that starts on 1 July 2020 and ends on 30 June 2021 belongs partly to calendear year 2020 and partly to calendar year 2021. Some produces of demographic data label one-year periods and cohorts according to the calendar year at the start of the period or cohort, and some label one-year periods and cohorts according to the calendar year at the end. For instance, some data producers label a period starting on 1 July 2020 and ending on 30 June 2021 as "2020" and others labels it as "2021". 
 
-Table: Twenty-two interpretations of the period label "2020"
+The lack of a convention for indicating starting point, or for indicating  whether a label refers to calendar year at the start or calendar year at the end, means that single-year period and cohort labels are inherently ambiguous. Consider, for instance, the label "2020". Restricting ourselves to periods that start on the first of the month, the label "2020" is consistent with 23 different interpretations: 
 
-| Label uses start year | Label uses end year   |
-|:----------------------:|:----------------------:|
-| 1 Jan 2020 - 31 Dec 2020 | 1 Feb 2019 - 31 Jan 2020 |
-| 1 Feb 2020 - 31 Jan 2021 | 1 Mar 2019 - 29 Feb 2020 |
-| 1 Mar 2020 - 28 Feb 2021 | 1 Apr 2019 - 31 Mar 2020 |
-| 1 Apr 2020 - 31 Mar 2021 | 1 May 2019 - 30 Apr 2020 |
-| 1 May 2020 - 30 Apr 2021 | 1 Jun 2019 - 31 May 2020 |
-| 1 Jun 2020 - 31 May 2021 | 1 Jul 2019 - 30 Jun 2020 |
-| 1 Jul 2020 - 30 Jun 2021 | 1 Aug 2019 - 31 Jul 2020 |
-| 1 Aug 2020 - 31 Jul 2021 | 1 Sep 2019 - 31 Aug 2020 |
-| 1 Sep 2020 - 31 Aug 2021 | 1 Oct 2019 - 30 Sep 2020 |
-| 1 Oct 2020 - 30 Sep 2021 | 1 Nov 2019 - 31 Oct 2020 |
-| 1 Dec 2020 - 30 Nov 2021 | 1 Dec 2019 - 30 Nov 2020 |
+Table: Twenty-three interpretations of the period label "2020"
+
+| Start month | Uses calendar year at start | Uses calendar year at end  |
+| :---------- | :------------------------:  | :------------------------: |
+| January     | 1 Jan 2020 - 31 Dec 2020    | 1 Jan 2020 - 31 Dec 2020   |
+| February    | 1 Feb 2020 - 31 Jan 2021    | 1 Feb 2019 - 31 Jan 2020   |
+| March       | 1 Mar 2020 - 28 Feb 2021    | 1 Mar 2019 - 29 Feb 2020   |
+| April       | 1 Apr 2020 - 31 Mar 2021    | 1 Apr 2019 - 31 Mar 2020   |
+| May         | 1 May 2020 - 30 Apr 2021    | 1 May 2019 - 30 Apr 2020   |
+| June        | 1 Jun 2020 - 31 May 2021    | 1 Jun 2019 - 31 May 2020   |
+| July        | 1 Jul 2020 - 30 Jun 2021    | 1 Jul 2019 - 30 Jun 2020   |
+| August      | 1 Aug 2020 - 31 Jul 2021    | 1 Aug 2019 - 31 Jul 2020   |
+| September   | 1 Sep 2020 - 31 Aug 2021    | 1 Sep 2019 - 31 Aug 2020   |
+| October     | 1 Oct 2020 - 30 Sep 2021    | 1 Oct 2019 - 30 Sep 2020   |
+| November    | 1 Nov 2020 - 31 Oct 2021    | 1 Nov 2019 - 31 Oct 2020   |
+| December    | 1 Dec 2020 - 30 Nov 2021    | 1 Dec 2019 - 30 Nov 2020   |
+
 
 
 # Functions in **demprep**
@@ -238,11 +240,11 @@ Table: Twenty-two interpretations of the period label "2020"
 
 **0. Read in data and do initial tidying using non-demprep functions**
 
-Use functions from base *R* or elsewhere to read the data into a data frame, put any date variables into a "year-month-day" format, and tidy any variables not related to age, period, or cohort.
+Use functions from base R or elsewhere to read the data into a data frame, put any date variables into a "year-month-day" format, and tidy variables not related to age, period, or cohort.
 
-**1. Create or clean age, period, cohort, and triangle labels**
+**1. Create or clean age, period, cohort, and Lexis triangle labels**
 
-If the original data contains dates, then use functions such as `date_to_age_year` or `date_to_period_multi` to construct age, period, cohort, and triangle labels. If the original data already contains age, period, cohort, and triangle labels, then use functions such as `clean_age` to convert them to **demprep** formats.
+If the original data contains dates, use functions such as `date_to_age_year` or `date_to_period_multi` to construct age, period, cohort, and Lexis triangle labels. If the original data already contains age, period, cohort, and triangle labels, use functions such as `clean_age` to convert them to **demprep** formats.
 
 **2. Ensure labels are consistent and complete**
 
@@ -260,27 +262,39 @@ include_graphics("workflow.png",
                  auto_pdf = TRUE)
 ```
 
+There are, however, a few common data preparation tasks that do not fit neatly into the workflow above, and that can be done using **demprep** functions:
 
-## `date_to` functions
+**Imputing dates**
+
+When only partial information on dates is provided, the missing information can be imputed using the `impute_date` and `impute_dob`.
+
+**Inferring age, period, cohort, or Lexis triangle**
+
+If we know any three elements the set ("age group", "period", "cohort", "Lexis triangle"), then we can calculate the fourth element.
+
+**Creating labels based on explicit dates**
+
+Create non-standard but unambiguous labels for periods or cohorts.
+
+**Changing the labeling of one-year periods and cohorts**
+
+Convert one-year period or cohort labels from using calender-year-at-start to calendar-year-at-end, or vice versa.
+
+
+## The `date_to` functions
 
 ### Overview
-Suppose that we have some raw data on dates of birth and dates of enrolment in a health care scheme:
 
-```{r, echo = FALSE}
-dates_df <- data.frame(date_of_birth = c("2000-03-07", "2010-12-25", "2007-02-28"),
-                       date_of_enrolment = c("2002-08-12", "2014-01-31", "2015-07-01"))
-dates_df		       
+Suppose that we have some raw, individual-level data on dates of birth and dates of death:
+
+```{r}
+deaths <- data.frame(name = c("Anwar", "Baptiste", "Candice"),
+                     date_birth = c("2014-02-17", "2012-01-10", "2019-04-29"),
+                     date_death = c("2019-10-11", "2020-02-27", "2020-08-01"))
+deaths
 ```
 
-Suppose also that we want to calculate people's age at the time they enrolled, and the quarters in which they enrolled.
-
-```{r, echo = FALSE}
-dates_df %>%
-  mutate(age = date_to_age_year(date = date_of_enrolment, dob = date_of_birth),
-         quarter = date_to_period_quarter(date = date_of_enrolment))
-```
-
-We can do these calculations, and others like them, using the `date_to` functions in **demprep**.
+We want to calculate the period when people were born, the period when they died, and their age at death. We can do calculations like these using the `date_to` functions.
 
 
 | Age groups            | Periods                  | Cohorts                  | Lexis triangles            |
@@ -291,13 +305,7 @@ We can do these calculations, and others like them, using the `date_to` function
 
 The `year`, `quarter`, and `month` suffixes in the function names describe the measurement units, so that, for example, `date_to_age_month` return's people's ages in months, and `date_to_cohort_year` returns people's year of birth.
 
-To demonstrate the use of the `date_to` functions, we will be using the data frame `deaths`:
-
-```{r}
-deaths
-```
-
-Before proceeding, we need to load packages **demprep** and (for the pipe `%>%` and for functions `mutate` and `select`) **dplyr**.
+Before running the functions, we need to load package **demprep** and (for the pipe `%>%` and various data manipulation functions) package **dplyr**.
 
 ```{r}
 library(demprep)
@@ -318,34 +326,9 @@ deaths %>%
                                         dob = date_birth))
 ```
 
-The calculations are done using the formulas discussed above, which are based on years, months, and days-within-months attained, rather than on absolute durations. Thus for example, a person born on 31 January 2001 turns one month old 29 days later,
+Age is calculated using the approach discussed in Section 2.1, which is based on months and days-of-month attained, rather than absolute number of days elapsed. Thus, for example, a person born on 31 January 2001 turns one month old 29 days after their birth, while a person born on 1 February 2001 turns on month old 28 days after their birth
 
-```{r}
-born_31_jan_01 <- data.frame(date_measure_age = c("2001-02-28", "2001-03-01"),
-                             date_birth = c("2001-01-31", "2001-01-31"))
-born_31_jan_01 %>%
-  mutate(age_months = date_to_age_month(date = date_measure_age,
-                                        dob = date_birth))
-as.Date("2001-03-01") - as.Date("2001-01-31")					
-```
-while a person born on 31 January 2000 turns one month old 30 days later,
-```{r}
-born_31_jan_00 <- data.frame(date_measure_age = c("2000-02-29", "2000-03-01"),
-                             date_birth = c("2000-01-31", "2000-01-31"))
-born_31_jan_00 %>%
-  mutate(age_months = date_to_age_month(date = date_measure_age,
-                                        dob = date_birth))
-as.Date("2000-03-01") - as.Date("2000-01-31")					
-```
-and a person born on 1 March 2001 turns one month old 31 days later,
-```{r}
-born_01_mar_01 <- data.frame(date_measure_age = c("2001-03-31", "2001-04-01"),
-                             date_birth = c("2001-03-01", "2001-03-01"))
-born_01_mar_01 %>%
-  mutate(age_months = date_to_age_month(date = date_measure_age,
-                                        dob = date_birth))
-as.Date("2001-04-01") - as.Date("2001-03-01")					
-```
+The `date` and `dob` arguments in the `date_to` functions can be `"Date"`  vectors (as described in the `Dates` help page for the R base package) or anything that can be safely converted to date vectors. A character vector can be safely converted to a date vector if it uses the format "year-month-day", as in `"2025-03-01"`. Other formats are not safe. For instance, it is not clear whether `"01-03-2025"` means 1 March 2025 (UK  style) or January 3, 2025 (US style), so supplying character vectors with these formats to the `date_to` functions will result in error messages.
 
 
 ### Periods
@@ -356,7 +339,7 @@ deaths %>%
   select(-date_birth) %>%
   mutate(year_start_jan = date_to_period_year(date = date_death))
 ```
-that look something like this
+which we might depict as
 ```{r, echo = FALSE, fig.height = 1.75}
 demprep:::plot_date_to_period_year(date = deaths$date_death)
 ```
@@ -373,8 +356,7 @@ demprep:::plot_date_to_period_year(date = deaths$date_death,
                                    month_start = "Apr")
 ```
 
-By default, `date_to_period_year` labels years according to the calendar year of the first day of the period. However, when `label_year_start` to `FALSE`,
-`date_to_period_year` uses the last day of the period.
+As discussed in Section 2.3, some data producers construct the labels of single-year periods from the calendar years at the start of the period, and others construct the labels from the calendar years at the end. By default, `date_to_period_year` uses the calendar year on the first day of the period. Setting `label_year_start` to `FALSE` makes it use the calendar year on the last day.
 ```{r}
 deaths %>%
   select(-date_birth) %>%
@@ -385,14 +367,14 @@ deaths %>%
                                               label_year_start = FALSE))
 ```
 
-Function `date_to_period_quarter`, in contrast, implements a single set of start dates (1 January, 1 April, 1 July, and 1 October), and implements a single labelling style.
+Labeling quarters and months is simpler. Function `date_to_period_quarter` implements a single set of start dates (1 January, 1 April, 1 July, and 1 October), and a single labeling style.
 ```{r}
 deaths %>%
   select(-date_birth) %>%
   mutate(quarter = date_to_period_quarter(date_death))
 ```
 
-Function `date_to_period_month` is similarly simple/inflexible.
+`date_to_period_month` is similarly simple/inflexible.
 ```{r}
 deaths %>%
   select(-date_birth) %>%
@@ -402,7 +384,7 @@ deaths %>%
 
 ### Cohorts
 
-The `date_to_cohort` functions behave exactly like their `date_to_period` equivalents. For birth cohorts, we set `date` equal to date of birth.
+The `date_to_cohort` functions work like their `date_to_period` equivalents. To obtain birth cohorts, for instance, we set `date` equal to date of birth.
 ```{r}
 deaths %>%
   select(-date_death) %>%
@@ -416,59 +398,37 @@ demprep:::plot_date_to_cohort_year(date = deaths$date_birth)
 ```
 
 
-
 ### Lexis triangles
 
-The `date_to_triangle` functions all have `date` and `dob` arguments. 
+To calculate Lexis triangles, we need dates of events and dates of birth,
 ```{r}
 deaths %>%
   mutate(triangle = date_to_triangle_year(date = date_death,
-	                                  dob = date_birth))
+	                                        dob = date_birth))
 ```
-```{r, echo = FALSE, fig.height = 6.5}
+```{r, echo = FALSE, fig.height = 6.2}
 demprep:::plot_date_to_triangle_year(date = deaths$date_death,
                                      dob = deaths$date_birth)
 ```
 
-Like `date_to_period_year`, and `date_to_cohort_year`, function `date_to_triangle_year` also has a `month_start` argument, which shifts the start date of the triangles.
+Like functions `date_to_period_year` and `date_to_cohort_year`, function `date_to_triangle_year`  has a `month_start` argument.
 ```{r}
 deaths %>%
   mutate(triangle = date_to_triangle_year(date = date_death,
-	                                  dob = date_birth,
-			                  month_start = "Jul"))
+	                                        dob = date_birth,
+			                                    month_start = "Jul"))
 ```
-```{r, echo = FALSE, fig.height = 6.5}
+```{r, echo = FALSE, fig.height = 6}
 demprep:::plot_date_to_triangle_year(date = deaths$date_death,
                                      dob = deaths$date_birth,
-				     month_start = "Jul")
-```
-
-### Imputing dates
-
-Sometimes input data has incomplete data on dates, such as having the year and month of births but not the days. One way of dealing with incomplete data is to impute the missing information. This is what functions `impute_date` and `impute_dob` are for.
-
-The imputation is random, so, for repeatability, we set the random seed. 
-```{r}
-set.seed(0)
-```
-
-In our first example, we know the year and month of some events, but not the day, so we use `impute date`.
-```{r}
-impute_date(year = c(2000, 2005, 2003),
-            month = c("Feb", "Nov", "Apr"))
-```
-
-In our second example, we know the dates of events, and we know people's age in years at the time of the eevents, and we want to impute dates of birth.
-```{r}
-impute_dob(date = c("2021-03-23", "2021-02-13", "2020-04-25"),
-           age_years = c(3, 1, 0))
+                                     month_start = "Jul")
 ```
 
 
-## `clean` functions
 
-Published demographic demographic is usually already aggregated into age groups, periods, or cohorts, rather than giving the original dates of events. In this case, when preparing data for use in the **dem** packages, the first task is to edit the labels for the age groups, periods, cohorts, so that they follow **dem** convetions. The functions for editing existing labels, and for checking these edits, are as follows:
+## The `clean` functions
 
+Most published demographic data uses age groups, periods, and cohorts, rather than precise dates of events. However, the age group, period, and cohort labels used by published datasets often require cleaning up before the data can be analysed. **demprep** provides the following functions for cleaning existing labels:
 
 | Age groups     | Periods           | Cohorts           | 
 | :-----------   | :--------         | :--------         | 
@@ -476,7 +436,7 @@ Published demographic demographic is usually already aggregated into age groups,
 | `clean_age_df` | `clean_period_df` | `clean_cohort_df` | 
 | `is_valid_age` | `is_vald_period`  | `is_valid_cohort` |
 
-Functions `clean_age`, `clean_period`, and `clean_cohort` try to parse vectors of labels and convert the labels, where necessary, into **dem** formats. If they cannot parse a label, or if a label is already valid, then the functions leave the label untouched.
+Functions `clean_age`, `clean_period`, and `clean_cohort` try to parse vectors of labels and, where the labels do not conform to **demprep** formats, convert them to these formats. If `clean_age`, `clean_period`, and `clean_cohort` encounter a label they cannot parse, they leave the label untouched.
 
 
 ```{r}
@@ -484,53 +444,53 @@ x <- c("20 years", "80 and over", "young", "20-24")
 clean_age(x)
 ```
 
-Function `clean_age` treats labels consisting entirely of multiples of 5 specially,
+Function `clean_age` assumes that when labels consist entirely of multiple of 5, the labels are for 5-year age groups,
 ```{r}
 x <- seq(0, 60, 5)
 x
 clean_age(x)
 ```
-And also labels that look like they come from a life table,
+It also assumes that when labels consist of the number 0, 1, 5, 10, ..., they come from a life table
 ```{r}
-x <- c(0, 1, seq(5, 80, 5))
+x <- c(0, 1, seq(60, 5, -5))
 x
 clean_age(x)
 ```
 
-
-Functions `clean_cohort` and `clean_period` give identical results, except for intervals that are open on the left, which `clean_cohort` parses and `clean_period` does not.
+Functions `clean_cohort` and `clean_period` are identical to each other, except that `clean_cohort` accepts intervals that are open on the left,
 
 ```{r}
 x <- c("Q1 2020", "1922", "2010-2025", "before 2020")
 clean_cohort(x)
+```
+while `clean_period` does not.
+```{r}
 clean_period(x)
 ```
 
-It can sometimes be helpful to see what `clean_age`, `clean_period`, and `clean_cohort` have done, or will do. This is the purpose of functions `clean_age_df`, `clean_period_df`, and `clean_cohort_df`.
-
+Functions`clean_age_df`, `clean_period_df`, and `clean_cohort_df` show how functions `clean_age`, `clean_period`, and `clean_cohort` interpret labels,
 ```{r}
 x <- c("2021", "2022-2025", "2021", "q2 2020")
 clean_period_df(x)
 ```
 
-It can also be helpful to be able to check whether `clean_age`, `clean_period`, and `clean_cohort` have been able to parse the entire vector. This is what functions `is_valid_age`, `is_valid_period`, and `is_valid_cohort` do.
-
+Functions `is_valid_age`, `is_valid_period`, and `is_valid_cohort` can be used to check whether individual labels are already in a valid **demprep** format,
 ```{r}
 x <- c("2021", "the 1960s", "1960-1970")
 is_valid_period(x)
 ```
-In a production system, some version of
+
+Some version of
 ```{r, eval = FALSE}
 stopifnot(all(is_valid_period(x)))
 ```
-is useful to catch any unexpected inputs.
+may be helpful for catching problems.
 
-
-## `format` functions
+## The `format` functions
 
 ### Overview
 
-Demographic analyses usually require data to be arranged into age groups, periods, or cohorts, of standardised lengths, with all intermediate categories included. Tabulations should look like this
+Even after the dates in a dataset have been converted into into ages and periods, and the labels have been converted to **demprep** style, the dataset may need further processing before it is ready for analysis. Among other things, age groups and periods may need to be consolidated and standardised, and gaps may need to be filled in. When tabulated, the data should look like
 
 |   Age | 2020-2025 | 2025-2030 |
 |-------+-----------+-----------|
@@ -538,7 +498,7 @@ Demographic analyses usually require data to be arranged into age groups, period
 |   5-9 |         4 |         8 |
 | 10-14 |         0 |         3 |
 
-rather than this
+rather than
 
 |   Age | 2020 | 2022-2023 | 2025-2030 |
 |-------+------+-----------+-----------|
@@ -548,7 +508,7 @@ rather than this
 | 10-12 |    0 |         0 |         2 |
 |    14 |    0 |         0 |         1 |.
 
-The `format` functions take vectors of age, period, cohort, and Lexis triangle labels that conform to **dem** package conventions, and return factors where the intervals have standardised lengths, and where all intermediate categories, including ones that do not appear in the data, are included.
+The `format` functions take vectors of age, period, cohort, and Lexis triangle labels that follow **demprep** conventions, and return factors where the intervals have standardised lengths, and where all intermediate categories, including ones that do not appear in the data, are included.
 
 | Age groups           | Periods                 | Cohorts                 | Lexis triangles           |
 | :-----------         | :--------               | :--------               | :----------------         |
@@ -560,7 +520,7 @@ The `format` functions take vectors of age, period, cohort, and Lexis triangle l
 | `format_age_quarter` | `format_period_quarter` | `format_cohort_quarter` | `format_triangle_quarter` |
 | `format_age_month`   | `format_period_month`   | `format_cohort_month`   | `format_triangle_month`   |
 
-The last part of the function names describe the units that are returned. Functions `format_age_year`, `format_age_quarter`, and `format_age_month`, for instance, create labels where the intervals have lengths of one year, one quarter, and one month. Functions ending in `multi` return labels where then intervals can span multiple years, provided that the intervals all have the same length. Function `format_period_multi` can be used, for instance, to create labels for periods with widths of 5 years. `Functions ending in `custom` also  return labels where the intervals can span multiple years, but the intervals do not all have to be the same length. Function `format_age_lifetab` deals with age groups used in life tables, and  function `format_age_births` deals with age groups used for describing births.
+As with the `date_to` functions, `format` functions whose name ends with `year`, `quarter` and `month` return labels denominated in years, quarters, and months. Functions ending in `multi` return create multi-year intervals, such as 5-year age groups or 10-year periods. Functions ending in `custom` also create multi-year labels, but, unlike functions ending in `custom` do not require intervals to all have the same length. Function `format_age_lifetab` creates special age groups for life tables, and  function `format_age_births` creates age groups for birth counts or rates.
 
 When, for example, `format_age_multi` is supplied with a vector that uses single years of age, by default it converts these into 5-year age group labels: 
 ```{r}
@@ -580,7 +540,7 @@ Tabulation functions such as `table`, `xtabs`, or `dtabs` (described below) make
 ```{r}
 table(reformatted)
 ```
-The tabulations include counts for all levels, including ones that do not appear in the data, which receive counts of zero. Including all levels is normally what we want when we are tabulating data for demographic analyses.
+The tabulations include counts for all levels, including ones that do not appear in the data. Including all levels is normally what we want in demographic analyses.
 
 If we convert the factor into a character vector, the special behaviour is lost.
 ```{r}
@@ -601,38 +561,38 @@ format_cohort_multi(x)
 
 ### Age groups
 
-Arguments `break_min`, `break_max`, and `open_last` can be used to control lower and upper limits of the age group labels. The default behavior for `format_age_year` and `format_age_multi`, for instance, is to create ordinary age groups between ages 0 and 100, and an open age group after that,
+Arguments `break_min`, `break_max`, and `open_last` can be used to set the lower and upper limits of the age group labels. The default behavior for `format_age_year` and `format_age_multi`, for instance, is to create ordinary age groups between ages 0 and 100, and an open age group after that,
 ```{r}
 x <- c("35-38", "50-54", "77")
 format_age_multi(x, width = 10)
 ```
-Alternative lower and upper limits can be specified via the `break_min` and `break_max` arguments,
+Setting `break_min` to `10` and `break_max` to `90` results in age groups between 10 and 90,
 ```{r}
 x <- c("35-38", "50-54", "77")
 format_age_multi(x,
                  width = 10,
-		 break_min = 20,
-		 break_max = 90)
+                 break_min = 20,
+                 break_max = 90)
 ```
-The open interval can be removed using the 'open_last' argument,
+The open interval `90+` can be removed using the 'open_last' argument,
 ```{r}
 x <- c("35-38", "50-54", "77")
 format_age_multi(x,
                  width = 10,
-		 break_min = 20,
-		 break_max = 90,
-		 open_last = FALSE)
+                 break_min = 20,
+                 break_max = 90,
+                 open_last = FALSE)
 ```
-Setting `break_min` and `break_max` to `NULL` allows the limits to be set by the data.
+Setting `break_min` and `break_max` to `NULL` allows the data to determine the limit.
 ```{r}
 x <- c("35-38", "50-54", "77")
 format_age_multi(x,
                  width = 10,
-		 break_min = NULL,
-		 break_max = NULL)
+		             break_min = NULL,
+		             break_max = NULL)
 ```
 
-When age groups with variable lengths are needed, function `format_age_custom` can be used. The age groups are defined via the `breaks` argument
+Function `format_age_custom` is used to create age groups with varying lengths,
 ```{r}
 x <- c("35-38", "50-54", "77")
 format_age_custom(x, breaks = c(15, 40, 80))
@@ -644,12 +604,12 @@ x <- c("35-38", "50-54", "77")
 format_age_lifetab(x)
 ```
 
-The other specialsed `format_age` function is `format_age_biths`, which creates age groups for birth rates or counts,
+Function `format_age_biths` is designed for tabulations of births,
 ```{r}
 x <- c("22", "30-33", "18", "40-44")
 format_age_births(x)
 ```
-Function `format_age_biths` can recode values that fall outside the expected range,
+and can be used to recode ages that fall outside the expected range,
 ```{r}
 x <- c("10", "30-33")
 format_age_births(x, recode_up = TRUE)
@@ -657,94 +617,145 @@ format_age_births(x, recode_up = TRUE)
 
 ### Periods
 
-The `format_period` functions, in contrast to the `format_age` functions do not have `break_min` and `break_max` arguments. Instead, the range of the labels is set by the data (like what happens with the `format_age` functions when `break_min` and `break_max` are set to `NULL`.)
+In contrast to the `format_age` functions, the `format_period` functions do not have `break_min` and `break_max` arguments. Instead, the range of the labels is set by the data. (Another way of putting this is that, in the `format_period` functions, `break_min` and `break_max` are always set to `NULL`.)
 
-The ambiguities of single-year period labels mean that functions `format_period_multi` and `format_period_custom` need extra information to parse these labels and align them to other labels. By default, `format_period_multi` and `format_period_custom` treats single-year periods as beginning in January. Under the default settings, the label `"2050"` refers to the period between 1 January 2050 and 31 December 2050, the label `"2050-2055"` refers the period between 1 January 2050 and 31 December 2054, and the first period falls within the second.
+```{r}
+x <- c(2018, 2015, 2021)
+format_period_year(x)
+```
+
+Multi-year periods where the periods all have the same length can be created using function `format_period_multi`
+```{r}
+df <- data.frame(x = x)
+df %>%
+  mutate(period = format_period_multi(x))
+```
+
+The widths of the periods is controlled by the `width` argument,
+```{r}
+df %>%
+  mutate(period = format_period_multi(x,
+                                      width = 10))
+```
+
+By default, `format_period_multi` creates periods that line up with the year 2000,
+```{r}
+df <- data.frame(x = c("2002", "1996", "2027-2028"))
+df %>% 
+  mutate(width5 = format_period_multi(x),
+         width7 = format_period_multi(x, width = 7))
+```
+
+Periods that line up with 2001 rather than 2000 can be obtained via the `origin` argument,
+```{r}
+df %>% 
+  mutate(period = format_period_multi(x, origin = 2021))
+```
+The absolute value of `origin` does not in fact matter. All that matters is the remainder when `origin` is divided by `width`.
+
+```{r}
+df %>% 
+  mutate(origin2001 = format_period_multi(x, origin = 2001),
+         origin2006 = format_period_multi(x, origin = 2006))
+```
+
+By default, `format_period_multi` and `format_period_custom` treat single-year periods as beginning on 1 January. For instance, by default, `format_period_multi` interprets the labels `"2050"` and `"2050-2055"` as follows.
+
+Table: Interpretation of labels under the default settings for `format_period_multi`
+| Label         | Interpretation                     |
+|:--------------|:-----------------------------------|
+| `"2050"`      | 1 January 2050 to 31 December 2050 |
+| `"2050-2055"` | 1 January 2050 to 31 December 2054 |
+
+Given these interpretations `"2050"` falls within `"2050-2055"`.
 ```{r}
 x <- c("2050", "2050-2055")
 format_period_multi(x)
 ```
-However, if we set `month_start` to `"July"' and `label_year_start` to `FALSE`, then `"2050"` refers to the period between 1 July 2049 and 30 June 2050,  `"2050-2055"` refers to the period between 1 July 2050 and 31 June 2055, and the first period falls outside the second.
+
+By setting `month_start` to `July`, however, we can shift the start date for all periods to 1 July. The labels are then interpreted as follows.
+
+Table: Interpretation of labels by `format_period_multi` when `month_start` is `"July"`
+| Label         | Interpretation              |
+|:--------------|:----------------------------|
+| `"2050"`      | 1 July 2050 to 30 June 2051 |
+| `"2050-2055"` | 1 July 2050 to 30 June 2055 |
+
+With these settings, `"2050"` still falls within `"2050-2055"`.
+```{r}
+x <- c("2050", "2050-2055")
+format_period_multi(x,
+                    month_start = "July")
+```
+
+Function `format_period_multi` also has `label_year_start` argument. The default value for `label_year_start` is `TRUE`.  If we set `label_year_start` to `FALSE`, while also setting `month_start` to `July`, then the labels are  intepreted as follows.
+
+Table: Interpretation of labels by `format_period_multi` when `month_start` is `"July"` and `label_year_start` is `FALSE`.
+| Label         | Interpretation              |
+|:--------------|:----------------------------|
+| `"2050"`      | 1 July 2049 to 30 June 2050 |
+| `"2050-2055"` | 1 July 2050 to 30 June 2055 |
+
+With these settings, `"2050"` no longer falls within `"2050-2055"`.
 ```{r}
 x <- c("2050", "2050-2055")
 format_period_multi(x,
                     month_start = "July",
-		    label_year_start = FALSE)
+                    label_year_start = FALSE)
 ```
 
-Multi-year periods that start on, say, 2021 rather than 2020, can be obtained by changing the `origin` argument from its default value of 2000. The absolute value of `origin` does not in fact matter - only the remainder when it is divided by `width`.
-
-```{r}
-x <- c("2020", "2021", "2027-2028")
-format_period_multi(x)
-format_period_multi(x, origin = 2021)
-```
-
+The behavior of labels such as "2050" or "2050-2055" can be confusing. Unfortunately, these difficulties are an inevitable consequence of the way that demographers, and users of statistics more generally, have chosen to construct period labels. The standard labels omit information, such as start dates, that would make the labels precise.
 
 ### Cohorts
 
-The `format_cohort` functions work exactly like the equivalent `format_period` functions, except that the `format_cohort` functions allow for the possibility of an interval that is open on the left.
+The `format_cohort` functions work exactly like the equivalent `format_period` functions, except that the `format_cohort` functions permit intervals to be open on the left.
 ```{r}
 x <- c("2003", "1998", "2015", "1984", "2002")
 format_cohort_year(x)
 format_cohort_year(x, break_min = 1990)
 ```
-A birth cohort with no lower limit is equivalent to an age group with no upper limit. On 31 December 2019, for instance, the cohort `"<1920" is equivalent to the age group 100+. 
+A birth cohort with no lower limit is equivalent to an age group with no upper limit. At the end of 2019, for instance, the cohort `"<1920" is equivalent to the age group 100+. 
 
 
 ### Lexis triangles
 
-The `format_triangle` functions produce Lexis triangles that have consistent lengths. To aggregate triangles, the `format_triangle` functions need information on age, and, in the case of `format_triangle_multi` and `format_triangle_births`, detailed information on periods.
+The `format_triangle` functions produce Lexis triangles to accompany the age groups and periods produced by the corresponding `format_age` and `format_period` functions. There is, however, an extra complication when reformatting Lexis triangles. Lexis triangle labels "Lower" and "Upper" can only be interpreted in combination with the relevant age groups and periods. The `format_triangle` functions therefore need to ask about the original age groups and periods that defined the original Lexis triangles.
+
+Consider, for instance, converting the following age groups, periods, and triangles so that they all use age-time steps of 5 years.
 ```{r}
-x <- c("Lower", "Upper", "Lower")
-age <- c("22", "56", "103")
-format_triangle_year(x = x, age = age)
+df <- data.frame(age = c("22", "50-54", "103"),
+                 period = c("2024", "2025-2030", "2021"),
+                 triangle = c("Upper", "Upper", "Lower"))
+df
+```
+We convert `age` and `period`,
+```{r}
+df <- df %>%
+  mutate(age5 = format_age_multi(age),
+         period5 = format_period_multi(period))
+df
+```
+To convert the triangles, we need to provide the original (not the new) age groups and periods,
+```{r}
+df <- df %>%
+  mutate(triangle5 = format_triangle_multi(triangle,
+                                           age = age,
+                                           period = period))
+df
 ```
 
-### Flipping year labels
+## The `dtabs` functions
 
+### `dtabs`  for ordinary tabulation
 
-## The `as_data_range` functions for converting to labels that use explicit dates
+The default data structure in R is the data frame, including on variants on data frames such as tibbles and data tables. However, data frames are not necessarily the most natural way to represent demographic data. Cross-classified counts or rates - such as birth counts classified by age and region, or death rates classified by age, ethnicity, and time - are sometimes better represented as multidimensional arrays. The **dem** packages use arrays, rather than data frames, as their default data structure.
 
-The ambiguities of period and cohort labels do not normally cause any problems when working with a single dataset. When working with multiple datasets, however, aligning periods correctly can be confusing and error-prone.
+The `xtabs` function in base R is a standard way of constructing arrays out of data frames, with a convenient formula-based interface. `xtabs` is, however, aimed specifically at tabulating counts, which means it is not well suited to constructing arrays of rates. It also has a tendency to suppress missing values.
 
-The functions
-
-|                    |
-|--------------------|
-| `as_date_range_year` |
-| `as_date_range_multi` |
-| `as_date_range_custom` |
-| `as_date_range_quarter` |
-| `as_date_range_month` |
-
-convert from standared period and cohort labels to nonstandard but unambiguous ones that use explicit dates.
-
-By default, `month_start` is set to `"Jan"` and `label_year_start` is set to `TRUE`
-```{r}
-x <- c("2022", "2028")
-as_date_range_year(x)
-```
-Different settings give different interpretations of the same labels,
-```{r}
-x <- c("2022", "2028")
-as_date_range_year(x, 
-                   month_start = "Mar",
-                   label_year_start = FALSE)
-```
-
-
-
-## `dtabs` functions
-
-### The `dtabs` function for ordinary tabulation
-
-xtabs for tabulation, but nice formula-based way of turning general data frame into array.
-
-Once all the variables have been put into the required formats, we can tabulate the data. The most powerful tabulation function in base **R** is `xtabs`.  **demprep** contains a modified version of `xtabs` called `dtabs`. `dtabs` is designed to be simpler and safer than `xtabs`, particularly for constructing demographic arrays. The differences between `xtabs` and `dtabs` are 
+The `dtabs` function in **demprep** is a modified version of `xtabs` designed specifically for constructing multidimensional arrays of counts or rates out of data in a data frame. The differences between `xtabs` and `dtabs` are:
 
 |                                        | `xtabs`         | `dtabs`         |
-|----------------------------------------+-----------------+-----------------|
+|----------------------------------------|:---------------:|:----------------:|
 | Position of `data` argument            | first           | second          |
 | Suppress `NA` in classifying variables | yes             | no              |
 | Suppress `NA` in response variable     | by default, yes | by default, no  |
@@ -752,16 +763,10 @@ Once all the variables have been put into the required formats, we can tabulate 
 | `subset` argument                      | yes             | no              |
 | Drop unused levels                     | sometimes       | never           |
 
-Using a pipe (`%>%` or `|>`) is slightly easier when the `data` argument comes first than when it comes second. In `xtabs` the `data` argument comes second,
+With `dtabs` the data argument comes first, which is convenient when using a pipe,
 ```{r}
 df <- data.frame(y = c(1, 2, 1),
                  x = c("a", "b", "b"))
-df %>%
-  xtabs(y ~ x, .) # need '.' as placeholder for data
-```
-
-In `dtabs`, the `data` argument comes first,
-```{r}
 df %>%
   dtabs(y ~ x)
 ```
@@ -773,35 +778,29 @@ df <- data.frame(y = c(1, 2, 1),
 df %>%
   xtabs(y ~ x, .)
 ```
-
-`dtabs`, in contrast, treats the `NA` as an extra level,
+while `dtabs` treats it as an extra level
 ```{r}
-df <- data.frame(y = c(1, 2, 1),
-                 x = c("a", "b", NA))
 df %>%
   dtabs(y ~ x)
 ```
 
-Similarly, when an `NA` appears in the response variable, `xtabs` silently suppresses it
+When an `NA` appears in the response variable, `xtabs` silently suppresses it,
 ```{r}
 df <- data.frame(y = c(1, 2, NA),
                  x = c("a", "b", "a"))
 df %>%
   xtabs(y ~ x, .)
 ```
-
-`dtabs`, in contrast, defaults to keeping the `NA`,
+while `dtabs` defauls to keeping it,
 ```{r}
-df <- data.frame(y = c(1, 2, NA),
-                 x = c("a", "b", "a"))
 df %>%
   dtabs(y ~ x)
 ```
 (though the `NA` can be dropped by setting `na_rm` to `TRUE`.)
 
-The reason for forcing users to explicitly deal with `NA`s is that treatment of `NA`s is an important methodological that deserves the user's attention.  "Complete case analyses", where `NA`s are simply dropped from the data, can be seriously misleading (see, for instance, Little's and Rubin's book *Statistical analysis with missing data*.)
+`xtabs` encourages users to simply drop records with NAs, an approach that statisticians refer to as "complete case analyses", and that can be seriously misleading. (For discussion see, for instance, Little and Rubin, *Statistical analysis with missing data*.)
 
-Another important difference between `xtabs` and `dtabs` is the way that the two functions handle combinations of cross-classifying variables that do not appear in the data. `xtabs` always gives missing combinations a value of 0. For instance, when a dataset has no one who is aged 5-9 years and also male, then it assigns a 0 to this combination,
+`xtabs` always gives combinations of variables that are do not appear in the data a value of 0.
 ```{r}
 df <- data.frame(y = c(1, 2, 3),
                  age = c("0-4", "5-9", "0-4"),
@@ -809,7 +808,7 @@ df <- data.frame(y = c(1, 2, 3),
 df %>%
   xtabs(y ~ age + sex, .)
 ```
-This is the correct behaviour when using `xtabs` for iss original purpose, which to tabulate counts. But it is not when we want if we are using `xtabs` to convert a data frame of non-count values into an array. In the following example, `0` is *not* a sensible value for the missing combination.
+This is fine for counts, but not for more general values. In the following example, `0` is *not* a sensible value for the missing combination.
 ```{r}
 df <- data.frame(y = c(33.3, -4.1, 22.9),
                  age = c("0-4", "5-9", "0-4"),
@@ -829,12 +828,88 @@ df %>%
 
 If no value for `fill` is supplied, then `xtabs` will try to infer the correct value. If there is no response variable, or if the response variable consists entirely of positive integers, then `dtabs` assumes that the data consists of counts, and sets `fill` to `0`. If the response variable has one or more zeros or negative numbers, then `dtabs` assumes the response variable is not counts, and sets `fill` to `NA`. If neither of these conditions are met, then `dtabs` throws an error.
 
-A final difference between `xtabs` and `dtabs` is that `xtabs` allows the user to take subsets of the data, or drop unused levels from factors, as part of the tabulation while `dtabs` does not. Limiting the options in `dtabs` makes the function easier to understand. It also forces the users to write seperate calls to funtions such as `subset` or `droplevels`, which makes the code easier to understand.
+A final difference between `xtabs` and `dtabs` is that `xtabs` allows the user to take subsets of the data, or drop unused levels from factors, as part of the tabulation while `dtabs` does not. Limiting the options in `dtabs` makes the function easier to understand. It also forces the users to write separate calls to functions such as `subset` or `droplevels`, which makes the code easier to understand.
 
 
-### The `dtabs_survey` function for the tabulation of survey data on binary outcomes
+### `dtabs_survey` for survey data
 
-**demprep** has a specialised version of `dtabs`, called `dtabs_survey` for tabulating survey data on binary (yes-no) outcomes. `dtabs_survey` calculates "effective" numbers of trials and successes that allow data from a complex survey to be analysed as if it came from a simple random survey. Doing so sacrifices some accuracy in return for a large increase in convenience.
+`dtabs_survey` is a specialised version of `dtabs` for the situation when
+
+1. the data come from a survey with a complex design, and have survey weights, and
+1. the outcome of interest is binary (yes-no).
+
+
+`dtabs_survey` calculates the "effective" numbers of trials and successes for the outcome. These effective numbers can be analysed as if they come from a simple random sample. The resulting analysis should give results close to those from a more complicated analysis that fully accounted for the complex survey design.
+
+
+## Other functions
+
+### Imputing dates
+
+Sometimes dates information is incomplete, as when a data sources gives years and months of birth, but not days. One way of dealing with incomplete data is to impute the missing information, which is what functions `impute_date` and `impute_dob` do.
+
+The imputation is random, so, for reproducibility, we set the random seed. 
+```{r}
+set.seed(0)
+```
+
+To impute dates when we know the year and month, we use
+```{r}
+impute_date(year = c(2000, 2005, 2003),
+            month = c("Feb", "Nov", "Apr"))
+```
+
+To impute dates of birth when we know ages at later events, we use
+```{r}
+impute_dob(date = c("2021-03-23", "2021-02-13", "2020-04-25"),
+           age_years = c(3, 1, 0))
+```
+
+### Rotating age, period, cohort, Lexis triangle
+
+
+
+
+### Labels based on date ranges
+
+One way of dealing with the ambiguities of standard period and cohort labels is to switch to non-standard labels that are less ambiguous. The functions
+
+|                    |
+|--------------------|
+| `as_date_range_year` |
+| `as_date_range_multi` |
+| `as_date_range_custom` |
+| `as_date_range_quarter` |
+| `as_date_range_month` |
+
+all convert standard labels into ones that use explicit dates.
+
+By default, `month_start` is set to `"Jan"` and `label_year_start` is set to `TRUE`
+```{r}
+x <- c("2022", "2028")
+as_date_range_year(x)
+```
+
+But these changed, to produce alternative translations of the same inputs.
+```{r}
+x <- c("2022", "2028")
+as_date_range_year(x, 
+                   month_start = "Mar",
+                   label_year_start = FALSE)
+```
+
+Converting to date-range formats is useful when working with multiple data sources, where it can be difficult to keep track of different labeling conventions.
+
+
+### Flipping year labels
+
+We sometimes need to convert single-year period or cohort labels from a calendar-year-at-start format to a calendar-year-at-end format, or vice versa. Because the labeling conventions are confusing, it is easy to get the conversion wrong. To avoid errors, it is safest to use function `flip_year_label` 
+```{r}
+x <- c("2001", "2006", "2013")
+flip_year_label(x, 
+                current_uses_start = FALSE,
+                month_start = "Apr")
+```
 
 
 
