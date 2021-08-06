@@ -11,3 +11,4 @@
 ^\.gitignore$
 ^NEWS\.md$
 ^data-raw$
+^\.github$

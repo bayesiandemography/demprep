@@ -1,19 +1,17 @@
----
-output: github_document
----
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 
 # demprep
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.com/bayesiandemography/demprep.svg?branch=master)](https://travis-ci.com/bayesiandemography/demprep)
-[![Lifecycle status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+
+[![Lifecycle
+status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![R-CMD-check](https://github.com/bayesiandemography/demprep/workflows/R-CMD-check/badge.svg)](https://github.com/bayesiandemography/demprep/actions)
 <!-- badges: end -->
 
-**demprep** contains general-purpose functions for preparing demographic data for further analysis.
-
+**demprep** contains general-purpose functions for preparing demographic
+data for further analysis.
 
 ## Installation
 
@@ -25,11 +23,8 @@ devtools::install_github("bayesiandemography/demprep")
 
 ## Usage
 
-```r
+``` r
 library(demprep)
 date_to_age_year(date = "2019-03-07",
                  dob = "2001-02-18")
 ```
-
-
-

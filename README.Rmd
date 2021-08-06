@@ -15,8 +15,8 @@ knitr::opts_chunk$set(
 # demprep
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.com/bayesiandemography/demprep.svg?branch=master)](https://travis-ci.com/bayesiandemography/demprep)
 [![Lifecycle status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![R-CMD-check](https://github.com/bayesiandemography/demprep/workflows/R-CMD-check/badge.svg)](https://github.com/bayesiandemography/demprep/actions)
 <!-- badges: end -->
 
 **demprep** contains general-purpose functions for preparing demographic data for further analysis.
