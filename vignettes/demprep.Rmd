@@ -903,12 +903,11 @@ Converting to date-range formats is useful when working with multiple data sourc
 
 ### Flipping year labels
 
-We sometimes need to convert single-year period or cohort labels from a calendar-year-at-start format to a calendar-year-at-end format, or vice versa. Because the labeling conventions are confusing, it is easy to get the conversion wrong. To avoid errors, it is safest to use function `flip_year_label` 
+We sometimes need to convert single-year period or cohort labels from a calendar-year-at-start format to a calendar-year-at-end format, or vice versa. Because the labeling conventions are confusing, it is easy to get the conversion wrong. To avoid errors, it is safest to use functions `flip_to_start` and `flip_to_end`.
 ```{r}
 x <- c("2001", "2006", "2013")
-flip_year_label(x, 
-                current_uses_start = FALSE,
-                month_start = "Apr")
+flip_to_end(x, 
+	    month_start = "Apr")
 ```
 
 
