@@ -16,8 +16,7 @@ via function \code{\link[base]{as.Date}}.}
 A character vector with the same length as \code{date}.
 }
 \description{
-Allocate dates to periods. The
-periods have widths of one quarter.
+Assign dates to one-quarter (three-month) periods
 Quarters are defined as follows:
 \tabular{lll}{
   \strong{Quarter} \tab \strong{Start} \tab \strong{End} \cr

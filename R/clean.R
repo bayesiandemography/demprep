@@ -1,7 +1,7 @@
 
-#' Tidy age group labels
+#' Clean up age group labels
 #'
-#' Try to parse age group
+#' Parse age group
 #' labels and convert them
 #' to the format used by the dem packages.
 #'
@@ -19,24 +19,22 @@
 #' \code{clean_age} also checks for two special
 #' cases: (i) when the labels consist entirely of numbers
 #' \code{0}, \code{5}, \code{10}, \dots,
-#' \code{A}, and (ii) when the labels consist entirely
+#' and (ii) when the labels consist entirely
 #' of the numbers \code{0}, \code{1}, \code{5},
-#' \code{10}, \dots, \code{A}. In case
+#' \code{10}, \dots. In case
 #' (i) the labels are converted to the age groups
 #' \code{"0-4"}, \code{"5-9"}, \code{"10-14"},
-#' \dots, \code{"A+"}. In case (ii)
+#' \dots. In case (ii)
 #' the labels are converted to the life table age groups
 #' \code{"0"}, \code{"1-4"}, \code{"5-9"},
-#' \dots, \code{"A+"}. In both cases, \code{A}
+#' \dots. In both cases, the maximum age must be
 #' must be at least 50.
 #'
 #' Function \code{clean_age_df} returns a data frame
 #' showing how each unique element in \code{x} is
 #' interpreted by function \code{clean_age} and whether
 #' the element can be interpreted as a valid
-#' age group label. \code{clean_age_df} can be
-#' used to check whether \code{clean_age} is
-#' giving the desired results.
+#' age group label.
 #'
 #' \code{clean_age} does not remove month or quarter
 #' labels, as this could result in ambiguity when
@@ -53,9 +51,13 @@
 #' \code{clean_age_df} returns a data frame with columns
 #' \code{"input"}, \code{"output"}, and \code{"is_valid"}.
 #'
+#' @seealso
+#' \code{\link{is_valid_age}}, \code{\link{clean_cohort}},
+#' \code{\link{clean_period}}
+#'
 #' @examples
-#' x <- c("100 and over", ## open on right
-#'        "<10",          ## open on left
+#' x <- c("100 and over",
+#'        "<10",         
 #'        "infants",
 #'        "10 to 19 years",
 #'        "infants",
@@ -111,9 +113,9 @@ clean_age_df <- function(x, language = "English") {
 }
 
 
-#' Tidy cohort labels
+#' Clean up cohort labels
 #'
-#' Try to parse cohort
+#' Parse cohort
 #' labels and convert them
 #' to the format used by the dem packages.
 #'
@@ -132,9 +134,7 @@ clean_age_df <- function(x, language = "English") {
 #' showing how each unique element in \code{x} is
 #' interpreted by function \code{clean_cohort} and whether
 #' the element can be interpreted as a valid
-#' cohort label. \code{clean_cohort_df} can be
-#' used to check whether \code{clean_cohort} is
-#' giving the desired results.
+#' cohort label.
 #'
 #' @inheritParams clean_age
 #'
@@ -145,9 +145,13 @@ clean_age_df <- function(x, language = "English") {
 #' \code{clean_cohort_df} returns a data frame with columns
 #' \code{"input"}, \code{"output"}, and \code{"is_valid"}.
 #'
+#' @seealso
+#' \code{\link{is_valid_cohort}}, \code{\link{clean_age}},
+#' \code{\link{clean_period}}
+#'
 #' @examples
-#' x <- c("before 2000",  ## open on left
-#'        "after 2000",   ## open on right
+#' x <- c("before 2000", 
+#'        "after 2000",  
 #'        "Millenials",
 #'        "2020 Jan",
 #'        "Q3 2020",
@@ -210,9 +214,7 @@ clean_cohort_df <- function(x, language = "English") {
 #' showing how each unique element in \code{x} is
 #' interpreted by function \code{clean_period} and whether
 #' the element can be interpreted as a valid
-#' period label. \code{clean_period_df} can be
-#' used to check whether \code{clean_period} is
-#' giving the desired results.
+#' period label.
 #'
 #' @inheritParams clean_age
 #'
@@ -223,9 +225,13 @@ clean_cohort_df <- function(x, language = "English") {
 #' \code{clean_period_df} returns a data frame with columns
 #' \code{"input"}, \code{"output"}, and \code{"is_valid"}.
 #'
+#' @seealso
+#' \code{\link{is_valid_period}}, \code{\link{clean_age}},
+#' \code{\link{clean_cohort}}
+#'
 #' @examples
-#' x <- c("before 2000", ## open on left
-#'        "after 2000",  ## open on right
+#' x <- c("before 2000",
+#'        "after 2000", 
 #'        "2020 Jan",
 #'        "Q3 2020",
 #'        "January 2020",

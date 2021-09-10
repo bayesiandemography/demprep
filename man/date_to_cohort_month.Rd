@@ -16,8 +16,7 @@ via function \code{\link[base]{as.Date}}.}
 A character vector with the same length as \code{date}.
 }
 \description{
-Identify cohorts, based on dates of births or other events.
-The cohorts have widths of one month.
+Assign dates to one-month cohorts.
 }
 \examples{
 date_to_cohort_month(date = c("2024-03-27",

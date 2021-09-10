@@ -2,7 +2,7 @@
 ## HAS_TESTS (via date_to_cohort_period_year)
 #' Convert dates to one-year periods
 #'
-#' Allocate dates to one-year periods. The one-year periods are,
+#' Assign dates to one-year periods. The one-year periods are,
 #' by default, calendar years.
 #' 
 #' Periods start on the first day of \code{month_start},
@@ -31,40 +31,6 @@
 #' the start year. To use the end year, set
 #' \code{label_year_start} to \code{FALSE}.
 #'
-#' Here, for different settings of
-#' \code{month_start} and \code{label_year_start},
-#' is how \code{date_to_period_year}
-#' constructs a label for an event occurring
-#' on 15 June 2020:
-#'
-#' \tabular{cccc}{
-#'   \code{month_start} \tab \code{label_year_start} \tab Period \tab Label \cr
-#'   \code{"Jan"} \tab \code{TRUE}  \tab 1 Jan 2020 - 31 Dec 2020 \tab \code{"2020"} \cr
-#'   \code{"Jan"} \tab \code{FALSE} \tab 1 Jan 2020 - 31 Dec 2020 \tab \code{"2020"} \cr
-#'   \code{"Feb"} \tab \code{TRUE}  \tab 1 Feb 2020 - 31 Jan 2021 \tab \code{"2020"} \cr
-#'   \code{"Feb"} \tab \code{FALSE} \tab 1 Feb 2020 - 31 Jan 2021 \tab \code{"2021"} \cr
-#'   \code{"Mar"} \tab \code{TRUE}  \tab 1 Mar 2020 - 28 Feb 2021 \tab \code{"2020"} \cr
-#'   \code{"Mar"} \tab \code{FALSE} \tab 1 Mar 2020 - 28 Feb 2021 \tab \code{"2021"} \cr
-#'   \code{"Apr"} \tab \code{TRUE}  \tab 1 Apr 2020 - 31 Mar 2021 \tab \code{"2020"} \cr
-#'   \code{"Apr"} \tab \code{FALSE} \tab 1 Apr 2020 - 31 Mar 2021 \tab \code{"2021"} \cr
-#'   \code{"May"} \tab \code{TRUE}  \tab 1 May 2020 - 30 Apr 2021 \tab \code{"2020"} \cr
-#'   \code{"May"} \tab \code{FALSE} \tab 1 May 2020 - 30 Apr 2021 \tab \code{"2021"} \cr
-#'   \code{"Jun"} \tab \code{TRUE}  \tab 1 Jun 2020 - 31 May 2021 \tab \code{"2020"} \cr
-#'   \code{"Jun"} \tab \code{FALSE} \tab 1 Jun 2020 - 31 May 2021 \tab \code{"2021"} \cr
-#'   \code{"Jul"} \tab \code{TRUE}  \tab 1 Jul 2019 - 30 Jun 2020 \tab \code{"2019"} \cr
-#'   \code{"Jul"} \tab \code{FALSE} \tab 1 Jul 2019 - 30 Jun 2020 \tab \code{"2020"} \cr
-#'   \code{"Aug"} \tab \code{TRUE}  \tab 1 Aug 2019 - 31 Jul 2020 \tab \code{"2019"} \cr
-#'   \code{"Aug"} \tab \code{FALSE} \tab 1 Aug 2019 - 31 Jul 2020 \tab \code{"2020"} \cr
-#'   \code{"Sep"} \tab \code{TRUE}  \tab 1 Sep 2019 - 31 Aug 2020 \tab \code{"2019"} \cr
-#'   \code{"Sep"} \tab \code{FALSE} \tab 1 Sep 2019 - 31 Aug 2020 \tab \code{"2020"} \cr
-#'   \code{"Oct"} \tab \code{TRUE}  \tab 1 Oct 2019 - 30 Sep 2020 \tab \code{"2019"} \cr
-#'   \code{"Oct"} \tab \code{FALSE} \tab 1 Oct 2019 - 30 Sep 2020 \tab \code{"2020"} \cr
-#'   \code{"Nov"} \tab \code{TRUE}  \tab 1 Nov 2019 - 31 Oct 2020 \tab \code{"2019"} \cr
-#'   \code{"Nov"} \tab \code{FALSE} \tab 1 Nov 2019 - 31 Oct 2020 \tab \code{"2020"} \cr
-#'   \code{"Dec"} \tab \code{TRUE}  \tab 1 Dec 2019 - 30 Nov 2020 \tab \code{"2019"} \cr
-#'   \code{"Dec"} \tab \code{FALSE} \tab 1 Dec 2019 - 30 Nov 2020 \tab \code{"2020"}
-#' }
-#' 
 #' @param date Dates of events or measurements.
 #' A vector of class \code{\link[base]{Date}},
 #' or a vector than can be coerced to class \code{Date}
@@ -118,8 +84,7 @@ date_to_period_year <- function(date,
 ## HAS_TESTS (via date_to_cohort_period_quarter)
 #' Convert dates to quarter (three-month) periods
 #'
-#' Allocate dates to periods. The
-#' periods have widths of one quarter.
+#' Assign dates to one-quarter (three-month) periods
 #' Quarters are defined as follows:
 #' \tabular{lll}{
 #'   \strong{Quarter} \tab \strong{Start} \tab \strong{End} \cr
@@ -161,8 +126,7 @@ date_to_period_quarter <- function(date) {
 ## HAS_TESTS (via date_to_cohort_period_month)
 #' Convert dates to one-month periods
 #'
-#' Allocate dates to periods with month-long
-#' periods.
+#' Assign dates to one-month periods.
 #'
 #' @inheritParams date_to_period_year
 #'

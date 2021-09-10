@@ -41,13 +41,11 @@ Function \code{clean_period_df} returns a data frame
 showing how each unique element in \code{x} is
 interpreted by function \code{clean_period} and whether
 the element can be interpreted as a valid
-period label. \code{clean_period_df} can be
-used to check whether \code{clean_period} is
-giving the desired results.
+period label.
 }
 \examples{
-x <- c("before 2000", ## open on left
-       "after 2000",  ## open on right
+x <- c("before 2000",
+       "after 2000", 
        "2020 Jan",
        "Q3 2020",
        "January 2020",
@@ -57,4 +55,8 @@ x <- c("before 2000", ## open on left
 x
 clean_period(x)
 clean_period_df(x)
+}
+\seealso{
+\code{\link{is_valid_period}}, \code{\link{clean_age}},
+\code{\link{clean_cohort}}
 }

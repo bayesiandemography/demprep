@@ -1,5 +1,5 @@
 
-
+## HAS_TESTS
 flip_to_internal <- function(x,
                              to_end,
                              month_start) {
@@ -7,13 +7,9 @@ flip_to_internal <- function(x,
                                                  name = "month_start")
     do_nothing <- identical(month_start, "Jan") || identical(length(x), 0L)
     if (do_nothing) {
-        if (is.factor(x))
-            ans <- x
-        else
-            ans <- factor(x,
-                          levels = unique(x),
-                          exclude = NULL)
-        return(ans)
+        if (!is.factor(x))
+            x <- as.character(x)
+        return(x)
     }
     labels_x <- if (is.factor(x)) levels(x) else unique(x)
     parsed <- parse_integers(x = labels_x,
@@ -35,9 +31,13 @@ flip_to_internal <- function(x,
         labels_ans <- low - 1L
         labels_ans[is_open_first] <- paste0("<", up[is_open_first] - 1L)
     }
-    ans <- factor(x,
-                  levels = labels_x,
-                  labels = labels_ans,
-                  exclude = NULL)
+    labels_ans <- as.character(labels_ans)
+    if (is.factor(x))
+        ans <- factor(x,
+                      levels = labels_x,
+                      labels = labels_ans,
+                      exclude = NULL)
+    else
+        ans <- labels_ans[match(x, labels_x)]
     ans
 }

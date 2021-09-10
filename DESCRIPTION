@@ -7,11 +7,9 @@ Authors@R:
            role = c("aut", "cre"),
            email = "john@bayesiandemography.com",
            comment = c(ORCID = "0000-0002-8010-9748"))
-Description: Prepare demographic data for further analysis.
-    Most of the functions are concerned with creating
-    standardised age groups, periods, and cohorts,
-    but there are also two functions for cross-tabulation,
-    plus functions for imputing dates.
+Description: Prepare demographic data for further analysis,
+    focusing particularly on labels for age groups,
+    periods, and cohorts.
 Depends: R (>= 3.5.0)
 License: MIT + file LICENSE
 Encoding: UTF-8

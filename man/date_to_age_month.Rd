@@ -23,19 +23,10 @@ an integer vector with the same length as
 is longer.
 }
 \description{
-Given the dates when events occurred,
-and the dates of birth of the people experiencing the events,
-allocate the events to age groups. These
-age groups all have widths of one month.
+Given dates and dates of birth,
+create one-month age groups.
 }
 \details{
-A person belongs to age group \code{"x"} if that
-person was exactly \code{x} months
-old at their most recent birthday.
-For instance, a person belongs to age
-group \code{"60m"} if that person had their
-5th birthday (= 60 months) two days ago.
-
 \code{date} and \code{dob} must have the same length,
 unless one of them has length 1, in which case the
 length-1 argument is recycled.

@@ -17,9 +17,9 @@
   data/.style = {rectangle,
                  draw,
                  align = center,
-                 text width = 5cm,
+                 text width = 5.5cm,
                  font = \small,
-                 minimum height = 1.5cm,
+                 minimum height = 1.1cm,
                  inner sep = 0.05cm},
   function/.style = {rectangle,
                      font = \small\sffamily,
@@ -32,9 +32,9 @@
 \centering
 \begin{tikzpicture}
 
-\node[data](data-dates)[]{Individual-level data in data frame with dates of events};
+\node[data](data-dates)[]{Dates of events};
 
-\node[data](data-ag)[right = of data-dates]{Individual-level or aggregate data in data frame with age-time labels};
+\node[data](data-ag)[right = of data-dates]{Raw age, period, cohort labels};
 
 \node[function](date-to)[below = of data-dates]{date\_to}
   edge[-](data-dates);
@@ -42,20 +42,14 @@
 \node[function](clean)[below = of data-ag]{clean}
   edge[-](data-ag);
 
-\node[data](data-clean)[below = of date-to, xshift = 3.2cm]{Individual-level or aggregate data in data frame with valid age-time labels}
+\node[data](data-clean)[below = of date-to, xshift = 3.3cm]{Standard age, period, cohort labels}
   edge[<-](date-to) edge[<-](clean);
 
 \node[function](format)[below = of data-clean]{format}
   edge[-](data-clean);
   
-\node[data](data-format)[below = of format]{Individual-level or aggregate data in data frame with standardised, complete age-time labels}
+\node[data](data-format)[below = of format]{Standard, complete age, period, cohort labels}
   edge[<-](format);
-  
-\node[function](dtabs)[below = of data-format]{dtabs}
-  edge[-](data-format);
-  
-\node[data](data-tab)[below = of dtabs]{Aggregate data in array with standardised, complete age-time labels}
-  edge[<-](dtabs);
 
 \end{tikzpicture}
 

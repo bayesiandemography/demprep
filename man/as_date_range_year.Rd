@@ -2,8 +2,8 @@
 % Please edit documentation in R/as_date_range.R
 \name{as_date_range_year}
 \alias{as_date_range_year}
-\title{Convert standard labels for one-year periods
-or cohorts to labels specifying precise dates}
+\title{Convert non-ambiguous labels for one-year periods
+or cohorts}
 \usage{
 as_date_range_year(x, month_start = "Jan", label_year_start = TRUE)
 }
@@ -11,7 +11,8 @@ as_date_range_year(x, month_start = "Jan", label_year_start = TRUE)
 \item{x}{A vector of period or cohort labels.}
 
 \item{month_start}{An element of \code{\link[base]{month.name}},
-or \code{\link[base]{month.abb}}. Each period starts on
+or \code{\link[base]{month.abb}}. Each
+period  or cohort starts on
 the first day of this month.}
 
 \item{label_year_start}{Whether to label a period
@@ -31,22 +32,9 @@ or \code{"(-Inf, 2005-06-30]"}.
 }
 \details{
 The vector of period or cohort labels \code{x} is typically
-created by functions
-\code{\link{format_period_year}},
+created using functions
+\code{\link{format_period_year}}
 or \code{\link{format_cohort_year}}.
-
-The date-range format can be helpful
-when bringing together data sources that
-use different conventions for labelling
-periods and cohorts.
-
-Arguments \code{month_start} specifies the
-date on which period or cohort starts, and
-\code{label_year_start} specifies whether
-labels are based on the calendar year at the
-start or end of each period or cohort.
-See the \code{\link{date_to_period_year}}
-or \code{\link{date_to_cohort_year}} for details.
 }
 \examples{
 x <- c("<2010", "2010", "2011")

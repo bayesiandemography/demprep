@@ -640,7 +640,7 @@ format_age_births <- function(x,
                 up[is_lt_min] <- pmax(up[is_lt_min], low[is_lt_min] + 1L)
             }
             else {
-                stop(gettextf("'%s' has interval [\"%s\"] that starts below '%s' [%d] and '%s' is FALSE",
+                stop(gettextf("'%s' has interval [\"%s\"] that starts below '%s' [%d] and '%s' is %s",
                               "x",
                               labels_x[[i_lt_min]],
                               "break_min",

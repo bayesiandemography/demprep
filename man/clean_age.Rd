@@ -3,7 +3,7 @@
 \name{clean_age}
 \alias{clean_age}
 \alias{clean_age_df}
-\title{Tidy age group labels}
+\title{Clean up age group labels}
 \usage{
 clean_age(x, language = "English")
 
@@ -23,7 +23,7 @@ parsed are translated to dem formats.
 \code{"input"}, \code{"output"}, and \code{"is_valid"}.
 }
 \description{
-Try to parse age group
+Parse age group
 labels and convert them
 to the format used by the dem packages.
 }
@@ -42,32 +42,30 @@ ADD OVER TIME.
 \code{clean_age} also checks for two special
 cases: (i) when the labels consist entirely of numbers
 \code{0}, \code{5}, \code{10}, \dots,
-\code{A}, and (ii) when the labels consist entirely
+and (ii) when the labels consist entirely
 of the numbers \code{0}, \code{1}, \code{5},
-\code{10}, \dots, \code{A}. In case
+\code{10}, \dots. In case
 (i) the labels are converted to the age groups
 \code{"0-4"}, \code{"5-9"}, \code{"10-14"},
-\dots, \code{"A+"}. In case (ii)
+\dots. In case (ii)
 the labels are converted to the life table age groups
 \code{"0"}, \code{"1-4"}, \code{"5-9"},
-\dots, \code{"A+"}. In both cases, \code{A}
+\dots. In both cases, the maximum age must be
 must be at least 50.
 
 Function \code{clean_age_df} returns a data frame
 showing how each unique element in \code{x} is
 interpreted by function \code{clean_age} and whether
 the element can be interpreted as a valid
-age group label. \code{clean_age_df} can be
-used to check whether \code{clean_age} is
-giving the desired results.
+age group label.
 
 \code{clean_age} does not remove month or quarter
 labels, as this could result in ambiguity when
 different age groups use different units.
 }
 \examples{
-x <- c("100 and over", ## open on right
-       "<10",          ## open on left
+x <- c("100 and over",
+       "<10",         
        "infants",
        "10 to 19 years",
        "infants",
@@ -91,4 +89,8 @@ x <- sample(c(0, 1, seq(5, 80, 5)))
 x
 clean_age(x)
 clean_age_df(x)
+}
+\seealso{
+\code{\link{is_valid_age}}, \code{\link{clean_cohort}},
+\code{\link{clean_period}}
 }

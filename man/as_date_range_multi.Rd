@@ -2,8 +2,8 @@
 % Please edit documentation in R/as_date_range.R
 \name{as_date_range_multi}
 \alias{as_date_range_multi}
-\title{Convert standard labels for multi-year periods
-or cohorts to labels specifying precise dates}
+\title{Convert non-ambiguous labels for multi-year periods
+or cohorts}
 \usage{
 as_date_range_multi(x, month_start = "Jan")
 }
@@ -11,7 +11,8 @@ as_date_range_multi(x, month_start = "Jan")
 \item{x}{A vector of period or cohort labels.}
 
 \item{month_start}{An element of \code{\link[base]{month.name}},
-or \code{\link[base]{month.abb}}. Each period starts on
+or \code{\link[base]{month.abb}}. Each
+period  or cohort starts on
 the first day of this month.}
 }
 \value{
@@ -30,22 +31,9 @@ such as \code{"(-Inf, 2020-06-30]"},
 \details{
 The vector of period or cohort labels
 \code{x} is typically
-created by functions
-\code{\link{format_period_multi}},
+created using functions
+\code{\link{format_period_multi}}
 or \code{\link{format_cohort_multi}}.
-
-The date-range format can be helpful
-when bringing together data sources that
-use different conventions for labelling
-periods and cohorts.
-
-Arguments \code{month_start} specifies the
-date on which periods or cohorts start.
-For instance, when \code{month_start} is
-\code{"Jan"}, the default, each period or
-cohort starts on 1 January. When 
-\code{month_start} is \code{"Mar"},
-each cohort starts on 1 March.
 }
 \examples{
 x <- c("<2010", "2010-2015", "2015-2020")

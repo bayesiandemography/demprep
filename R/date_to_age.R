@@ -2,19 +2,8 @@
 ## HAS_TESTS
 #' Convert dates to one-year age groups
 #'
-#' Given the dates when events occurred,
-#' and the dates of birth of the people experiencing the events,
-#' allocate the events to age groups.
-#' All the resulting age groups have widths
-#' of one year.
-#'
-#' A person belongs to age group \code{"x"} if that
-#' person was exactly \code{x} years
-#' old at their most recent birthday. For instance, a person
-#' belongs to age group {"5"} if that person had their
-#' 5th birthday two days ago, and a person belongs to age
-#' group \code{"0"} if that person had their 0th birthday
-#' (ie was born) three months ago.
+#' Use dates of events and dates of birth
+#' to create one-year age groups.
 #'
 #' \code{date} and \code{dob} must have the same length,
 #' unless one of them has length 1, in which case the
@@ -74,16 +63,8 @@ date_to_age_year <- function(date, dob) {
 ## HAS_TESTS
 #' Convert dates to quarter (three-month) age groups
 #'
-#' Given the dates when events occurred,
-#' and the dates of birth of the people experiencing the events,
-#' allocate the events to age groups. The resulting
-#' age groups all have widths of one quarter (ie three months).
-#'
-#' A person belongs to age group \code{"x"} if that
-#' person was exactly \code{x} quarters
-#' old at their most recent birthday. For instance, a person
-#' belongs to age group \code{"20q"} if that person had
-#' their 5th birthday (= 20 quarters) two days ago.
+#' Use dates of events and dates of birth to
+## create one-quarter (three-month) age groups. 
 #'
 #' \code{date} and \code{dob} must have the same length,
 #' unless one of them has length 1, in which case the
@@ -136,17 +117,8 @@ date_to_age_quarter <- function(date, dob) {
 ## HAS_TESTS
 #' Convert dates to one-month age groups
 #'
-#' Given the dates when events occurred,
-#' and the dates of birth of the people experiencing the events,
-#' allocate the events to age groups. These
-#' age groups all have widths of one month.
-#'
-#' A person belongs to age group \code{"x"} if that
-#' person was exactly \code{x} months
-#' old at their most recent birthday.
-#' For instance, a person belongs to age
-#' group \code{"60m"} if that person had their
-#' 5th birthday (= 60 months) two days ago.
+#' Use dates of events and dates of birth to
+#' create one-month age groups.
 #'
 #' \code{date} and \code{dob} must have the same length,
 #' unless one of them has length 1, in which case the

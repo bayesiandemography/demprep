@@ -16,8 +16,7 @@ via function \code{\link[base]{as.Date}}.}
 A character vector with the same length as \code{date}.
 }
 \description{
-Identify cohorts, based on the dates of events such as birth.
-The cohorts have widths of one quarter.
+Assign dates to one-quarter (three-month) cohorts.
 Quarters are defined as follows:
 \tabular{lll}{
   \strong{Quarter} \tab \strong{Start} \tab \strong{End} \cr

@@ -16,8 +16,7 @@ via function \code{\link[base]{as.Date}}.}
 A factor with the same length as \code{date}.
 }
 \description{
-Allocate dates to periods with month-long
-periods.
+Assign dates to one-month periods.
 }
 \examples{
 date_to_period_month(date = c("2024-03-27",

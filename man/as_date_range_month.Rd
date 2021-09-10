@@ -2,8 +2,8 @@
 % Please edit documentation in R/as_date_range.R
 \name{as_date_range_month}
 \alias{as_date_range_month}
-\title{Convert standard labels fopr one-month periods
-or cohorts to labels specifying precise dates}
+\title{Convert non-ambiguous labels fopr one-month periods
+or cohorts}
 \usage{
 as_date_range_month(x)
 }
@@ -26,8 +26,8 @@ such as \code{"(-Inf, 2020-03-31]"},
 \details{
 The vector of period or cohort labels
 \code{x} is typically
-created by functions
-\code{\link{format_period_quarter}},
+created using functions
+\code{\link{format_period_quarter}}
 or \code{\link{format_cohort_quarter}}.
 }
 \examples{

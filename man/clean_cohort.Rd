@@ -3,7 +3,7 @@
 \name{clean_cohort}
 \alias{clean_cohort}
 \alias{clean_cohort_df}
-\title{Tidy cohort labels}
+\title{Clean up cohort labels}
 \usage{
 clean_cohort(x, language = "English")
 
@@ -23,7 +23,7 @@ parsed are translated to dem formats.
 \code{"input"}, \code{"output"}, and \code{"is_valid"}.
 }
 \description{
-Try to parse cohort
+Parse cohort
 labels and convert them
 to the format used by the dem packages.
 }
@@ -43,13 +43,11 @@ Function \code{clean_cohort_df} returns a data frame
 showing how each unique element in \code{x} is
 interpreted by function \code{clean_cohort} and whether
 the element can be interpreted as a valid
-cohort label. \code{clean_cohort_df} can be
-used to check whether \code{clean_cohort} is
-giving the desired results.
+cohort label.
 }
 \examples{
-x <- c("before 2000",  ## open on left
-       "after 2000",   ## open on right
+x <- c("before 2000", 
+       "after 2000",  
        "Millenials",
        "2020 Jan",
        "Q3 2020",
@@ -60,4 +58,8 @@ x <- c("before 2000",  ## open on left
 x
 clean_cohort(x)
 clean_cohort_df(x)
+}
+\seealso{
+\code{\link{is_valid_cohort}}, \code{\link{clean_age}},
+\code{\link{clean_period}}
 }

@@ -38,7 +38,8 @@
 #' or \code{\link[base]{month.abb}}. Each period/cohort
 #' starts on the first day of this month.
 #'
-#' @return A factor with the same length as \code{x}.
+#' @return An If \code{x} is a factor, then a factor.
+#' Otherwise a character vector. 
 #'
 #' @seealso \code{\link{date_to_period_year}},
 #' \code{\link{date_to_cohort_year}},
@@ -52,7 +53,7 @@
 #'
 #' ## currently using calendar year at end of period
 #' flip_to_end(x = c("2001", "2005"),
-#'              month_start = "Jul")
+#'             month_start = "Jul")
 #'
 #' ## periods start in January, so changing labelling
 #' ## rule has no effect

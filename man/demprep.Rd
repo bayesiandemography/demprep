@@ -89,23 +89,11 @@ Functions \code{\link{as_date_range_year}},
 a format that uses exact dates.
 }
 
-\section{Tabulation}{
+\section{Example workflows}{
 
 
-Once the cross-classifying variables are all in the required format,
-the data can be cross-tabulated into a multi-way
-\code{\link[base]{array}}. This is done using function
-\code{\link{dtabs}}, except in the case of individual-level
-survey data with survey weights, where \code{\link{dtabs_survey}}
-is used instead.
-}
-
-\section{Typical workflows}{
-
-
-\strong{Using individual-level survey data with
- dates and survey weights
- to make tabulation with 5-year age groups and 1-year periods}
+\strong{Create 5-year age groups and 1-year periods from individual-level
+data with precise dates}
 
 \itemize{
   \item \code{\link{date_to_age_year}} and
@@ -114,21 +102,19 @@ is used instead.
   \item \code{\link{format_age_multi}} and
    \code{\link{format_period_year}}
   to create age and period labels
-  \item \code{\link{dtabs_survey}} to tabulate
 }
 
-\strong{Using aggregate data with labels to make
- tabulation with 5-year age groups, 
- periods, and Lexis triangles}
+\strong{Create 5-year age groups, periods, and cohorts
+from aggreglate-level data with existing age, period, and
+cohort lables.}
 
 \itemize{
   \item \code{\link{clean_age}} and \code{\link{clean_period}}
   to tidy original labels
   \item  \code{\link{format_age_multi}}, 
    \code{\link{format_period_multi}}, and
-   \code{\link{format_triangle_multi}}
-  to form 5-year age groups, periods, and Lexis triangles
-  \item \code{\link{dtabs}} to tabulate
-}
+   \code{\link{format_cohort_multi}}
+  to form 5-year age groups, periods, and cohorts
+#' }
 }
 

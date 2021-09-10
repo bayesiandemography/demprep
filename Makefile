@@ -3,7 +3,8 @@
 all: data/icebirths.rda \
      data/nzdeaths.rda \
      README.md \
-     documentation
+     documentation \
+     vignettes/demprep.html
 
 
 # icebirths (births in Iceland by year and by age of father)
@@ -42,5 +43,6 @@ vignettes/workflow.pdf: vignettes/workflow.tex
 vignettes/workflow.png: vignettes/workflow.pdf
 	convert -strip -density 400  -background white -alpha off $< $@
 
-vignettes/demprep.html: vignettes/demprep.Rmd
+vignettes/demprep.html: vignettes/demprep.Rmd \
+        vignettes/workflow.png
 	R -e 'rmarkdown::render("$<")'

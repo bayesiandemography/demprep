@@ -2,8 +2,8 @@
 % Please edit documentation in R/as_date_range.R
 \name{as_date_range_quarter}
 \alias{as_date_range_quarter}
-\title{Convert standard labels for one-quarter periods
-or cohorts to labels specifying precise dates}
+\title{Convert non-ambiguous labels for one-quarter periods
+or cohorts}
 \usage{
 as_date_range_quarter(x)
 }
@@ -27,8 +27,8 @@ such as \code{"(-Inf, 2020-03-31]"},
 \details{
 The vector of period or cohort labels
 \code{x} is typically
-created by functions
-\code{\link{format_period_quarter}},
+created using functions
+\code{\link{format_period_quarter}}
 or \code{\link{format_cohort_quarter}}.
 }
 \examples{

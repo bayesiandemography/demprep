@@ -1,7 +1,7 @@
 
 ## HAS_TESTS
-#' Convert standard labels for one-year periods
-#' or cohorts to labels specifying precise dates
+#' Convert non-ambiguous labels for one-year periods
+#' or cohorts
 #'
 #' Convert standard labels for one-year periods
 #' such as "2020", "2001", or "<2005" to
@@ -11,26 +11,14 @@
 #' or \code{"(-Inf, 2005-06-30]"}.
 #'
 #' The vector of period or cohort labels \code{x} is typically
-#' created by functions
-#' \code{\link{format_period_year}},
+#' created using functions
+#' \code{\link{format_period_year}}
 #' or \code{\link{format_cohort_year}}.
 #'
-#' The date-range format can be helpful
-#' when bringing together data sources that
-#' use different conventions for labelling
-#' periods and cohorts.
-#'
-#' Arguments \code{month_start} specifies the
-#' date on which period or cohort starts, and
-#' \code{label_year_start} specifies whether
-#' labels are based on the calendar year at the
-#' start or end of each period or cohort.
-#' See the \code{\link{date_to_period_year}}
-#' or \code{\link{date_to_cohort_year}} for details.
-#' 
 #' @param x A vector of period or cohort labels.
 #' @param month_start An element of \code{\link[base]{month.name}},
-#' or \code{\link[base]{month.abb}}. Each period starts on
+#' or \code{\link[base]{month.abb}}. Each
+#' period  or cohort starts on
 #' the first day of this month.
 #' @param label_year_start Whether to label a period
 #' by the calendar year at the beginning of the period
@@ -125,8 +113,8 @@ as_date_range_year <- function(x,
 }
 
 
-#' Convert standard labels for multi-year periods
-#' or cohorts to labels specifying precise dates
+#' Convert non-ambiguous labels for multi-year periods
+#' or cohorts
 #'
 #' Convert standard labels for multi-year periods
 #' of equal width
@@ -139,23 +127,10 @@ as_date_range_year <- function(x,
 #'
 #' The vector of period or cohort labels
 #' \code{x} is typically
-#' created by functions
-#' \code{\link{format_period_multi}},
+#' created using functions
+#' \code{\link{format_period_multi}}
 #' or \code{\link{format_cohort_multi}}.
 #'
-#' The date-range format can be helpful
-#' when bringing together data sources that
-#' use different conventions for labelling
-#' periods and cohorts.
-#'
-#' Arguments \code{month_start} specifies the
-#' date on which periods or cohorts start.
-#' For instance, when \code{month_start} is
-#' \code{"Jan"}, the default, each period or
-#' cohort starts on 1 January. When 
-#' \code{month_start} is \code{"Mar"},
-#' each cohort starts on 1 March.
-#' 
 #' @inheritParams as_date_range_year
 #'
 #' @return A factor the same length as \code{x}.
@@ -257,8 +232,8 @@ as_date_range_multi <- function(x,
 }
     
 
-#' Convert standard labels for customised periods
-#' or cohorts to labels specifying precise dates
+#' Convert non-ambiguous labels for customised periods
+#' or cohorts
 #'
 #' Convert standard labels for periods
 #' or cohorts with varying widths
@@ -272,23 +247,10 @@ as_date_range_multi <- function(x,
 #'
 #' The vector of period or cohort labels
 #' \code{x} is typically
-#' created by functions
-#' \code{\link{format_period_custom}},
+#' created using functions
+#' \code{\link{format_period_custom}}
 #' or \code{\link{format_cohort_custom}}.
 #'
-#' The date-range format can be helpful
-#' when bringing together data sources that
-#' use different conventions for labelling
-#' periods and cohorts.
-#'
-#' Arguments \code{month_start} specifies the
-#' date on which periods or cohorts start.
-#' For instance, when \code{month_start} is
-#' \code{"Jan"}, the default, each period or
-#' cohort starts on 1 January. When 
-#' \code{month_start} is \code{"Mar"},
-#' each cohort starts on 1 March.
-#' 
 #' @inheritParams as_date_range_year
 #'
 #' @return A factor the same length as \code{x}.
@@ -368,8 +330,8 @@ as_date_range_custom <- function(x,
 }
 
 
-#' Convert standard labels for one-quarter periods
-#' or cohorts to labels specifying precise dates
+#' Convert non-ambiguous labels for one-quarter periods
+#' or cohorts
 #'
 #' Convert standard labels for one-quarter
 #' (three-month) periods
@@ -383,8 +345,8 @@ as_date_range_custom <- function(x,
 #'
 #' The vector of period or cohort labels
 #' \code{x} is typically
-#' created by functions
-#' \code{\link{format_period_quarter}},
+#' created using functions
+#' \code{\link{format_period_quarter}}
 #' or \code{\link{format_cohort_quarter}}.
 #'
 #' @inheritParams as_date_range_year
@@ -406,8 +368,8 @@ as_date_range_quarter <- function(x) {
 }
 
 
-#' Convert standard labels fopr one-month periods
-#' or cohorts to labels specifying precise dates
+#' Convert non-ambiguous labels fopr one-month periods
+#' or cohorts
 #'
 #' Convert standard labels for one-month
 #' periods or cohorts, such as
@@ -420,8 +382,8 @@ as_date_range_quarter <- function(x) {
 #'
 #' The vector of period or cohort labels
 #' \code{x} is typically
-#' created by functions
-#' \code{\link{format_period_quarter}},
+#' created using functions
+#' \code{\link{format_period_quarter}}
 #' or \code{\link{format_cohort_quarter}}.
 #'
 #' @inheritParams as_date_range_year
