@@ -2,10 +2,10 @@
 #' demprep: Prepare demographic data
 #'
 #' Prepare demographic data for subsequent analysis,
-#' focussing particularly on the specification of
-#' age, period, and cohort
+#' focusing particularly on the specification of
+#' age groups, periods, and cohorts.
 #'
-#' @section Calculating ages, cohorts, and periods from dates:
+#' @section Calculate ages, periods, and cohorts from dates:
 #'
 #' The following functions calculate ages, cohorts, and periods from dates.
 #' \tabular{lll}{
@@ -15,35 +15,22 @@
 #'   \code{\link{date_to_age_month}} \tab \code{\link{date_to_period_month}} \tab \code{\link{date_to_cohort_month}} \cr
 #' }
 #'
-#' In addition, functions \code{\link{date_to_triangle_year}},
-#' \code{\link{date_to_triangle_quarter}}, and 
-#' \code{\link{date_to_triangle_month}} can be used to assign
-#' events to "Lexis triangles". (For a definition of Lexis triangles, 
-#' see the vignette for this package.)
+#' demprep also has functions for calculating Lexis triangles from dates. See \code{vignette("demprep")} for a definition of Lexis triangles.
 #'
-#' @section Imputing dates:
+#' @section Cleaning existing labels:
 #'
-#' Functions \code{\link{impute_date}} and \code{\link{impute_dob}} can be used to
-#' impute dates when details such as day of birth are missing.
+#' \code{\link{clean_age}}, \code{\link{clean_period}},
+#' and \code{\link{clean_cohort}} convert
+#' existing age, period, and cohort labels to a standard design.
 #'
-#' @section Tidying existing labels:
-#'
-#' Functions \code{\link{clean_age}}, \code{\link{clean_period}},
-#' and \code{\link{clean_cohort}} labels can be used to reformat
-#' existing age, period, and cohort labels to match the 
-#' conventions used in the \strong{dem} packages.
-#' 
-#' Functions \code{\link{clean_age_df}}, \code{\link{clean_period_df}}
+#' \code{\link{clean_age_df}}, \code{\link{clean_period_df}}
 #' \code{\link{clean_cohort_df}},  \code{\link{is_valid_age}}, 
 #' \code{\link{is_valid_period}}, and \code{\link{is_valid_cohort}}
-#' can be used to make the reformatting of labels more robust.
+#' can be used to control and check the cleaning-up process.
 #'
-#' @section Generating a complete, consistent set of labels:
+#' @section Making labels complete and consistent:
 #' 
-#' Calling the following functions on exising labels (including
-#' labels created by the \code{date_to} and \code{clean} functions
-#' in \strong{demprep}) results in labels that are consistent
-#' and complete.
+#' Labels can be consolidated, and gaps filled in, using the format functions:
 #'
 #' \tabular{lll}{
 #'   \strong{age} \tab \strong{period} \tab \strong{cohort} \cr
@@ -56,31 +43,26 @@
 #'   \code{\link{format_age_births}} \tab  \tab
 #' }
 #'
-#' Functions ending in \code{year}, \code{quarter},
-#' and \code{month} create single-year, single-quarter, and single-month
-#' intervals. Functions ending in \code{multi} and \code{custom} 
-#' create multiple-year intervals. Functions \code{format_age_lifetab} and 
-#' \code{format_age_births} create age groups for life tables and
-#' tabulations of births.
 #'
+#' @section Other tasks:
 #'
-#' @section Creating labels that use explicit dates:
+#' \code{\link{impute_date}} and \code{\link{impute_dob}}
+#' randomly generate in missing dates.
 #'
-#' Standard demographic conventions for labelling 
-#' periods and cohorts, which are implemented by the \code{format_period}
-#' and \code{format_cohort} functions, can be ambiguous. 
-#' Functions \code{\link{as_date_range_year}}, 
+#' \code{\link{as_date_range_year}}, 
 #' \code{\link{as_date_range_multi}}, 
 #' \code{\link{as_date_range_custom}}, 
 #' \code{\link{as_date_range_quarter}}, and
-#'  \code{\link{as_date_range_month}} convert labels into
-#' a format that uses exact dates.
-#' 
+#'  \code{\link{as_date_range_month}} create non-standard
+#' but unambiguous period and cohort labels.
 #'
+#' \code{\link{flip_to_start}} and \code{\link{flip_to_end}}
+#' help with reformatting one-year period and cohort labels. 
+#' 
+#' 
 #' @section Example workflows:
 #'
-#' \strong{Create 5-year age groups and 1-year periods from individual-level
-#' data with precise dates}
+#' Create 5-year age groups and 1-year periods from data with dates
 #' 
 #' \itemize{
 #'   \item \code{\link{date_to_age_year}} and
@@ -91,9 +73,9 @@
 #'   to create age and period labels
 #' }
 #'
-#' \strong{Create 5-year age groups, periods, and cohorts
-#' from aggreglate-level data with existing age, period, and
-#' cohort lables.}
+#' Create 5-year age groups, periods, and cohorts
+#' from data with existing age, period, and
+#' cohort labels.
 #'
 #' \itemize{
 #'   \item \code{\link{clean_age}} and \code{\link{clean_period}}
@@ -102,7 +84,7 @@
 #'    \code{\link{format_period_multi}}, and
 #'    \code{\link{format_cohort_multi}}
 #'   to form 5-year age groups, periods, and cohorts
-#' #' }
+#' }
 #'
 #' @docType package
 #' @name demprep

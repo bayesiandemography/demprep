@@ -2,8 +2,7 @@
 % Please edit documentation in R/format_period.R
 \name{format_period_multi}
 \alias{format_period_multi}
-\title{Put period labels into the format required
-for multi-year periods}
+\title{Create consistent, complete multi-year periods}
 \usage{
 format_period_multi(
   x,
@@ -22,11 +21,11 @@ to be created. Defaults to 5.}
 \item{origin}{An integer. Defaults to 2000.}
 
 \item{month_start}{An element of \code{\link[base]{month.name}},
-or \code{\link[base]{month.abb}}. Cohorts start on
+or \code{\link[base]{month.abb}}. Periods start on
 the first day of this month.}
 
-\item{label_year_start}{Logical. Whether to label a cohort
-by the calendar year at the beginning of the cohort
+\item{label_year_start}{Logical. Whether to label a period
+by the calendar year at the beginning of the period
 or the calendar year at the end. Defaults to \code{TRUE}.}
 }
 \value{
@@ -38,12 +37,7 @@ Given a vector of period labels, create a
 \code{\link[base]{factor}}  containing
 levels for the earliest and latest periods
 in \code{x}, and for all periods in between.
-For instance, if the earliest period in \code{x}
-is \code{"1990-1995"}, and the latest is \code{"2005-2010"},
-then \code{format_period_multi} creates a factor
-with levels \code{"1990-1995"}, \code{"1995-2000"},
-\code{"2000-2005"},and \code{"2005-2010"}.
-All periods in the return value have the same width,
+All periods have the same width,
 which is controlled by the \code{width} argument.
 }
 \details{
@@ -54,27 +48,16 @@ labels such as \code{"2000"} or \code{"2025"}.
 \code{x} cannot contain open intervals
 such as \code{"<2020"}.
 
-As discussed in \code{\link{date_to_period_year}}, the
-meaning of single-year labels for periods depends on the
-the starting month, and whether periods are
-labelled according to the calendar year
-at the start of the period, or the calendar year
-at the end. The multi-year labels produced
-by \code{format_period_multi} are less ambiguous,
-in that they always show a pair of years: the calendar
-year at the start of the period and the calendar year at
-the-end-of-the-period-plus-one-day. For instance, if a period
-starts on 1 January 2000 and ends on 31 December 2000,
-then the end of the period plus one day is 1 January 2001,
-and the label is \code{"2000-2001"}.
-
-If \code{x} contains single-year labels, then \code{format_period_multi}
-may need help to interpret these correctly. \code{format_period_multi}
-assumes that periods start on January and that
-single-year periods are labelled according to the calendar year
-at the start of the period. Alternative settings can be
-specified via the \code{month_start} and \code{label_start_year}
-arguments.
+As discussed in \code{\link{date_to_period_year}},
+single-year labels such as \code{"2000"} are ambiguous.
+Correctly aligning single-year and multi-year periods
+requires knowing which month the single-year periods start on,
+which is controlled by the \code{month_start}
+argument, and whether single-year periods
+are labelled according 
+to the calendar year at the start or end of the period,
+which is controlled by the \code{label_year_start}
+argument.
 
 The location of the periods can be shifted
 by using different values for \code{origin}.
@@ -111,11 +94,13 @@ format_period_multi(x = c("2000-2001", "2005", NA, "1996-1998"),
 }
 \seealso{
 Other functions for reformating
-period labels are 
-\code{\link{format_period_year}},
-\code{\link{format_period_custom}},
-\code{\link{format_period_quarter}},
-and \code{\link{format_period_month}}.
+period labels are
+\itemize{
+  \item \code{\link{format_period_year}}
+  \item \code{\link{format_period_custom}}
+  \item \code{\link{format_period_quarter}}
+  \item \code{\link{format_period_month}}
+}
 
 \code{\link{date_to_period_year}} creates
  periods from dates.

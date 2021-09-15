@@ -2,8 +2,7 @@
 % Please edit documentation in R/format_age.R
 \name{format_age_births}
 \alias{format_age_births}
-\title{Put age groups labels into format
-required for tabulating births}
+\title{Create consistent, complete age groups for tabulating births}
 \usage{
 format_age_births(
   x,
@@ -41,15 +40,16 @@ age group.}
 A factor with the same length as \code{x}.
 }
 \description{
-Given a vector of age group labels, create a factor that contains
-levels for all ages between \code{break_min} and \code{break_max}.
+Given a vector of age group labels, create a \code{\link[base]{factor}} that contains
+levels for all ages between the minimum and maximum ages
+for reproduction.
 }
 \details{
-\code{break_min} and \code{break_max} specify
-the range of ages over which reproduction
-is assumed to occur. If, for instance,
+The minimum and maximum ages for reproduction are specified
+via arguments \code{break_min} and \code{break_max}.
+If, for instance,
 \code{break_min} is \code{15} and \code{break_max}
-is \code{50}, all births are assumed to
+is \code{50}, then all births are assumed to
 occur to women aged 15 to 49 (inclusive).
 
 If \code{break_min} or \code{break_max} is set to \code{NULL},
@@ -60,12 +60,9 @@ in \code{x}.
 Datasets sometimes contain a few births to parents
 younger than the assumed minimum age of reproduction,
 or births to parents older than the assumed maximum age
-of reproduction. Demographers often recode such births,
-so that ones to unexpectedly young parents are
-treated as occurring just above the minimum age
-for reproduction, and ones to unexpectedly old parents
-are treated as occurring just below the maximum
-age for reproduction. This recoding can be justified
+of reproduction. Demographers often recode ages outside
+the expected range so that they fall just within the
+expected range. This recoding can be justified
 on the grounds that some of the original ages may have
 been misreported, but it also alleviates any problems
 with tabulations having small counts at extreme ages.
@@ -104,12 +101,14 @@ format_age_births(x = c("22", "13-14", "55", "10-19"),
 }
 \seealso{
 Other functions for creating age groups are
-\code{\link{format_age_year}},
-\code{\link{format_age_multi}},
-\code{\link{format_age_lifetab}},
-\code{\link{format_age_custom}},
-\code{\link{format_age_quarter}},
-and \code{\link{format_age_month}}.
+\itemize{
+  \item \code{\link{format_age_year}}
+  \item \code{\link{format_age_multi}}
+  \item \code{\link{format_age_lifetab}}
+  \item \code{\link{format_age_custom}}
+  \item \code{\link{format_age_quarter}}
+  \item \code{\link{format_age_month}}
+}
 
 \code{\link{date_to_age_year}} calculates
 ages from dates.

@@ -1,28 +1,25 @@
 
 ## HAS_TESTS
-#' Put cohort labels into the format required
-#' for single-year cohorts
+#' Create consistent, complete single-year cohorts
 #'
 #' Given a vector of cohort labels, create a
-#' \code{\link[base]{factor}} where the levels
-#' contain a set of cohorts with no gaps between
-#' the oldest and youngest cohorts.
-#' If \code{open_first} is \code{TRUE}, then the oldest
-#' cohort has no lower limit. (This is equivalent
-#' to an open age group with no upper limit.)
+#' \code{\link[base]{factor}} with a complete
+#' set of cohorts. The labels
+#' may include an "open" cohort with no
+#' lower limit. Apart from the open cohort,
+#' all cohorts have a width of one year.
 #' 
-#' The elements of \code{x} must be single-year
-#' labels, such as \code{"2001"}, or
-#' labels for cohorts
-#' that are open on the left, such as \code{"<2000"}.
-#' \code{x} must not contain
-#' multi-year intervals such
+#' \code{x} must consist of labels for single-year
+#' cohorts, such as \code{"2001"}, or
+#' open cohorts, such as \code{"<2000"}.
+#' \code{x} must not contain labels for
+#' multi-year cohorts such
 #' as \code{"2000-2005"}
 #'
 #' \code{open_first} defaults to \code{TRUE}
 #' if a value for \code{break_min} is supplied,
-#' or if any elements of \code{x} are open
-#' on the left, and to \code{FALSE} otherwise.
+#' or if any elements of \code{x} are open,
+#' and to \code{FALSE} otherwise.
 #'
 #' If \code{x} has \code{NA}s, then the
 #' levels of the factor created by \code{format_cohort_year}
@@ -39,17 +36,19 @@
 #' \code{x}.
 #'
 #' @seealso Other functions for reformatting
-#' cohort labels are 
-#' \code{\link{format_cohort_multi}},
-#' \code{\link{format_cohort_custom}},
-#' \code{\link{format_cohort_quarter}},
-#' and \code{\link{format_cohort_month}}.
+#' cohort labels are
+#' \itemize{
+#'   \item \code{\link{format_cohort_multi}}
+#'   \item \code{\link{format_cohort_custom}}
+#'   \item \code{\link{format_cohort_quarter}}
+#'   \item \code{\link{format_cohort_month}}
+#' }
 #'
 #' \code{\link{date_to_cohort_year}} creates
 #' single-year cohorts from dates.
 #'
 #' @examples
-#' ## note that the 'levels' contain all values from
+#' ## the 'levels' contain all values from
 #' ## '2000' to '2005', even when these do not
 #' ## appear in the data
 #' format_cohort_year(x = c(2000, 2005, NA, 2004))
@@ -94,26 +93,16 @@ format_cohort_year <- function(x,
 
 
 ## HAS_TESTS
-#' Put cohort labels into the format required
-#' for multi-year cohorts
+#' Create consistent, complete multi-year cohorts
 #'
 #' Given a vector of cohort labels, create a
 #' \code{\link[base]{factor}}  containing
 #' levels for the earliest and latest cohorts
 #' in \code{x}, and for all cohorts in between.
-#' For instance, if the earliest cohort in \code{x}
-#' is \code{"1990-1995"}, and the latest is \code{"2005-2010"},
-#' then \code{format_cohort_multi} creates a factor
-#' with levels \code{"1990-1995"}, \code{"1995-2000"},
-#' \code{"2000-2005"}, and \code{"2005-2010"}.
 #' All cohorts, with the possible exception of
 #' a first "open" cohort, have the same width,
 #' which is controlled by the \code{width} argument.
 #'
-#' If \code{open_first} is \code{TRUE}, then the earliest
-#' cohort has no lower limit. (This is equivalent
-#' to an open age group with no upper limit.)
-#' 
 #' The elements of \code{x} can be
 #' single-year labels such as \code{"2020"},
 #' multi-year labels such as \code{"1950-1960"},
@@ -124,33 +113,27 @@ format_cohort_year <- function(x,
 #' single-year labels such as \code{"2000"} are ambiguous.
 #' Correctly aligning single-year and multi-year cohorts
 #' requires knowing which month the single-year cohorts start on,
-#' and whether single-year cohorts are labelled according
-#' to the calendar year at the start of the cohort or the end.
-#' \code{format_cohort_multi} assumes that
-#' cohorts start in January, and that single-year cohorts
-#' are labelled by calendar year at the start. These
-#' settings can be changed using \code{month_start}
-#' and \code{label_year_start}.
-#'
-#' The multi-year labels produced
-#' by \code{format_cohort_multi} are less ambiguous,
-#' in that they always show a pair of years: the calendar
-#' year at the start of the cohort and the calendar year at
-#' the-end-of-the-cohort-plus-one-day. For instance, if a cohort
-#' starts on 1 January 2000 and ends on 31 December 2000,
-#' then the end of the cohort plus one day is 1 January 2001,
-#' and the label is \code{"2000-2001"}.
+#' which is controlled by the \code{month_start}
+#' argument, and whether single-year cohorts
+#' are labelled according 
+#' to the calendar year at the start or end of the cohort,
+#' which is controlled by the \code{label_year_start}
+#' argument.
 #'
 #' \code{open_first} defaults to \code{TRUE}
 #' if a value for \code{break_min} is supplied,
 #' or if any intervals in \code{x} are open,
 #' and to \code{FALSE} otherwise.
 #' 
+#' The location of the cohorts can be shifted
+#' by using different values for \code{origin}.
+#'
 #' If \code{x} contains \code{NA}, then the
 #' levels of the factor created by \code{format_cohort_multi}
 #' also contain \code{NA}.
 #'
-#' There is a combination of settings that make an open
+#' There is a (slightly obscure)
+#' combination of settings that make an open
 #' interval such as \code{"<2010"} ambiguous.
 #' The settings are
 #' \enumerate{
@@ -171,8 +154,8 @@ format_cohort_year <- function(x,
 #' When \code{label_open_multi} is \code{TRUE},
 #' open intervals
 #' interpreted as a type of multi-year label,
-#' and when \code{label_open_multi} is \code{FALSE} they
-#' open intervals' are interpreted as
+#' and when \code{label_open_multi} is \code{FALSE},
+#' they are interpreted as
 #' a type of single-year label. 
 #'
 #' @inheritParams format_cohort_year
@@ -193,11 +176,13 @@ format_cohort_year <- function(x,
 #' \code{x}.
 #'
 #' @seealso Other functions for reformating
-#' cohort labels are 
-#' \code{\link{format_cohort_year}},
-#' \code{\link{format_cohort_custom}},
-#' \code{\link{format_cohort_quarter}},
-#' and \code{\link{format_cohort_month}}.
+#' cohort labels are
+#' \itemize{
+#'   \code{\link{format_cohort_year}}
+#'   \code{\link{format_cohort_custom}}
+#'   \code{\link{format_cohort_quarter}}
+#'   \code{\link{format_cohort_month}}
+#' }
 #'
 #' \code{\link{date_to_cohort_year}} calculates
 #' cohorts from dates.
@@ -414,8 +399,7 @@ format_cohort_multi <- function(x,
 
 
 ## HAS_TESTS
-#' Put cohort labels into the format required
-#' for customised cohorts
+#' Create consistent, complete customised cohorts
 #'
 #' Given a vector of cohort labels, create a
 #' \code{\link[base]{factor}}
@@ -423,13 +407,8 @@ format_cohort_multi <- function(x,
 #' defined by \code{breaks}. \code{format_cohort_custom}
 #' is the most flexible
 #' of the \code{format_cohort} functions
-#' in that the cohorts can have any combination of widths,
-#' though the widths must be defined in whole numbers of years.
+#' in that the cohorts can have any combination of widths.
 #' 
-#' If \code{open_first} is \code{TRUE}, then the earliest
-#' cohort has no lower limit. (This is equivalent
-#' to an open age group with no upper limit.)
-#'
 #' The elements of \code{x} must be
 #' multi-year labels such as \code{"1950-1960"} and
 #' \code{"2020-2025"}, or labels for intervals
@@ -490,12 +469,14 @@ format_cohort_multi <- function(x,
 #' \code{x}.
 #'
 #' @seealso Other functions for reformating
-#' cohort labels are 
-#' \code{\link{format_cohort_year}},
-#' \code{\link{format_cohort_multi}},
-#' \code{\link{format_cohort_quarter}},
-#' and \code{\link{format_cohort_month}}.
-#'
+#' cohort labels are
+#' \itemize{
+#'   \item \code{\link{format_cohort_year}}
+#'   \item \code{\link{format_cohort_multi}}
+#'   \item \code{\link{format_cohort_quarter}}
+#'   \item \code{\link{format_cohort_month}}
+#' }
+#' 
 #' \code{\link{date_to_cohort_year}} calculates
 #' cohorts from dates.
 #'
@@ -659,22 +640,14 @@ format_cohort_custom <- function(x,
 
 
 ## HAS_TESTS
-#' Put cohort labels into the format required
-#' for quarter (three-month) cohorts
+#' Create consistent, complete quarter (three-month) cohorts
 #'
 #' Given a vector of cohort labels, create a
 #' \code{\link[base]{factor}} where the levels
 #' contain a complete set of cohorts. 
 #' If \code{open_first} is \code{TRUE}, then the earliest
-#' cohort has no lower limit. (This is equivalent
-#' to an open age group with no upper limit.)
-#'
-#' The elements of \code{x} must be quarter
-#' labels, such as \code{"2001 Q2"} or \code{"2055 Q1"}, including
-#' labels for cohorts that are open on the left,
-#' such as \code{"<2000 Q3"}
-#' or \code{<"1960 Q4"}.
-#'
+#' cohort has no lower limit.
+#' 
 #' \code{open_first} defaults to \code{TRUE}
 #' if a value for \code{break_min} is supplied,
 #' or if any intervals in \code{x} is open,
@@ -699,12 +672,14 @@ format_cohort_custom <- function(x,
 #' \code{x}.
 #'
 #' @seealso Other functions for reformating
-#' cohort labels are 
-#' \code{\link{format_cohort_year}},
-#' \code{\link{format_cohort_multi}},
-#' \code{\link{format_cohort_custom}},
-#' and \code{\link{format_cohort_month}}.
-#'
+#' cohort labels are
+#' \itemize{
+#'   \item \code{\link{format_cohort_year}}
+#'   \item \code{\link{format_cohort_multi}}
+#'   \item \code{\link{format_cohort_custom}}
+#'   \item \code{\link{format_cohort_month}}
+#' }
+#' 
 #' \code{\link{date_to_cohort_year}} calculates
 #' cohorts from dates.
 #'
@@ -739,15 +714,11 @@ format_cohort_quarter <- function(x,
 
 
 ## HAS_TESTS
-#' Put cohort labels into the format required
-#' for one-month cohorts
+#' Create consistent, complete one-month cohorts
 #'
 #' Given a vector of cohort labels, create a
 #' \code{\link[base]{factor}} where the levels
 #' contain a complete set of cohorts.
-#' If \code{open_first} is \code{TRUE}, then the earliest
-#' cohort has no lower limit. (This is equivalent
-#' to an open age group with no upper limit.)
 #'
 #' The elements of \code{x} must be month
 #' labels, such as \code{"2001 Jan"} or \code{"2055 Sep"}, including
@@ -770,11 +741,13 @@ format_cohort_quarter <- function(x,
 #' \code{x}.
 #'
 #' @seealso Other functions for reformating
-#' cohort labels are 
-#' \code{\link{format_cohort_year}},
-#' \code{\link{format_cohort_multi}},
-#' \code{\link{format_cohort_custom}},
-#' and \code{\link{format_cohort_quarter}}.
+#' cohort labels are
+#' \itemize{
+#'  \item \code{\link{format_cohort_year}}
+#'  \item \code{\link{format_cohort_multi}}
+#'  \item \code{\link{format_cohort_custom}}
+#'  \item \code{\link{format_cohort_quarter}}
+#' }
 #'
 #' \code{\link{date_to_cohort_month}} creates
 #' month cohorts from dates.

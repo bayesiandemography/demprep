@@ -386,6 +386,8 @@ demprep:::plot_date_to_triangle_year(date = deaths$date_death,
                                      dob = deaths$date_birth)
 ```
 
+Assigning events to Lexis triangles with real data, where we know dates but not precise times, and where months have different lengths, involves some tricky edge cases. The `date_to_triangle` functions resolve these edge cases by looking at the date that a person enters a new age group during the period in question. If the date when the person enters the new age group is greater than the date when the event occurs, then the event is allocated to an upper Lexis triangle. If the date when the person enters the new age group is equal to or less than the date when the event occurs, then the event is allocated to a lower Lexis triangle.
+
 
 ## The `clean` functions
 
@@ -397,7 +399,7 @@ If the input data for an analysis come from published sources, then it probably 
 | `clean_age_df` | `clean_period_df` | `clean_cohort_df` | 
 | `is_valid_age` | `is_vald_period`  | `is_valid_cohort` |
 
-Functions `clean_age`, `clean_period`, and `clean_cohort` try to parse vectors of labels and, where necessary, convert them to **dem**. If `clean_age`, `clean_period`, and `clean_cohort` encounter a label they cannot parse, they leave the label untouched.
+Functions `clean_age`, `clean_period`, and `clean_cohort` try to parse vectors of labels and, where necessary, convert them to **dem** formats. If `clean_age`, `clean_period`, and `clean_cohort` encounter a label they cannot parse, they leave the label untouched.
 
 
 ```{r}
@@ -447,7 +449,6 @@ stopifnot(all(is_valid_period(x)))
 ```
 may be helpful for catching problems.
 
-REWRITTEN TO HERE
 
 ## The `format` functions
 
@@ -493,6 +494,9 @@ which omits the value `"5-9"`. The function `format_age_multi` creates a factor 
 ```{r}
 format_age_multi(x)
 ```
+
+If argument `x` has an `NA`, then the levels of the factor created by a `format` factor will also have `NA`. This behavior is different from the default behavior for function `factor`, which is to silently drop `NA`s. The philosophy of the `format` functions is that it is better to explicitly deal with `NA`s.
+
 
 ### Age groups
 

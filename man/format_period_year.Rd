@@ -2,8 +2,7 @@
 % Please edit documentation in R/format_period.R
 \name{format_period_year}
 \alias{format_period_year}
-\title{Put period labels into the format required
-for single-year periods}
+\title{Create consistent, complete single-year periods}
 \usage{
 format_period_year(x)
 }
@@ -19,11 +18,6 @@ Given a vector of period labels, create a
 \code{\link[base]{factor}} that contains
 levels for the earliest and latest periods in \code{x},
 and for all periods in between.
-For instance, if the earliest period in \code{x}
-is \code{"1990"}, and the latest is \code{"2010"},
-then \code{format_period_year} creates a factor
-with levels \code{"1990"}, \code{"1991"}, \dots,
-\code{"2010"}.
 }
 \details{
 The elements of \code{x} must  be single-year
@@ -31,22 +25,12 @@ labels such as \code{"2001"} or \code{"2055"}.
 \code{x} cannot contain multi-year intervals such
 as \code{"2000-2005"} or \code{"<2020"}.
 
-As discussed in \code{\link{date_to_period_year}}, the
-meaning of single-year labels for periods depends on the
-the starting month, and whether periods are
-labelled according to the calendar year
-at the start of each period, or the calendar year
-at the end (where these differ.) \code{format_period_year} leaves
-labels untouched, so whatever convention
-was used to create \code{x} also applies to the output
-from \code{format_period_year}.
-
 If \code{x} contains \code{NA}, then the
 levels of the factor created by \code{format_period_year}
 also contain \code{NA}.
 }
 \examples{
-## note that the 'levels' contain all values from
+## the 'levels' contain all values from
 ## '2000' to '2010', even when these do not
 ## appear in the data
 format_period_year(x = c("2000", "2010"))
@@ -55,11 +39,13 @@ format_period_year(x = c("2000", "2005", NA, "2004"))
 }
 \seealso{
 Other functions for reformating
-period labels are 
-\code{\link{format_period_multi}},
-\code{\link{format_period_custom}},
-\code{\link{format_period_quarter}},
-and \code{\link{format_period_month}}.
+period labels are
+\itemize{
+  \item \code{\link{format_period_multi}}
+  \item \code{\link{format_period_custom}}
+  \item \code{\link{format_period_quarter}}
+  \item \code{\link{format_period_month}}
+}
 
 \code{\link{date_to_period_year}} creates
 single-year periods from dates.

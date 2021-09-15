@@ -2,8 +2,7 @@
 % Please edit documentation in R/format_cohort.R
 \name{format_cohort_custom}
 \alias{format_cohort_custom}
-\title{Put cohort labels into the format required
-for customised cohorts}
+\title{Create consistent, complete customised cohorts}
 \usage{
 format_cohort_custom(
   x,
@@ -45,14 +44,9 @@ that contains levels for all cohorts
 defined by \code{breaks}. \code{format_cohort_custom}
 is the most flexible
 of the \code{format_cohort} functions
-in that the cohorts can have any combination of widths,
-though the widths must be defined in whole numbers of years.
+in that the cohorts can have any combination of widths.
 }
 \details{
-If \code{open_first} is \code{TRUE}, then the earliest
-cohort has no lower limit. (This is equivalent
-to an open age group with no upper limit.)
-
 The elements of \code{x} must be
 multi-year labels such as \code{"1950-1960"} and
 \code{"2020-2025"}, or labels for intervals
@@ -125,11 +119,13 @@ format_cohort_custom(x = c("2025", "2030-2035", "<2021"),
 }
 \seealso{
 Other functions for reformating
-cohort labels are 
-\code{\link{format_cohort_year}},
-\code{\link{format_cohort_multi}},
-\code{\link{format_cohort_quarter}},
-and \code{\link{format_cohort_month}}.
+cohort labels are
+\itemize{
+  \item \code{\link{format_cohort_year}}
+  \item \code{\link{format_cohort_multi}}
+  \item \code{\link{format_cohort_quarter}}
+  \item \code{\link{format_cohort_month}}
+}
 
 \code{\link{date_to_cohort_year}} calculates
 cohorts from dates.

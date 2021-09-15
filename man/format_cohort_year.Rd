@@ -2,8 +2,7 @@
 % Please edit documentation in R/format_cohort.R
 \name{format_cohort_year}
 \alias{format_cohort_year}
-\title{Put cohort labels into the format required
-for single-year cohorts}
+\title{Create consistent, complete single-year cohorts}
 \usage{
 format_cohort_year(x, break_min = NULL, open_first = NULL)
 }
@@ -23,33 +22,31 @@ A factor with the same length as
 }
 \description{
 Given a vector of cohort labels, create a
-\code{\link[base]{factor}} where the levels
-contain a set of cohorts with no gaps between
-the oldest and youngest cohorts.
-If \code{open_first} is \code{TRUE}, then the oldest
-cohort has no lower limit. (This is equivalent
-to an open age group with no upper limit.)
+\code{\link[base]{factor}} with a complete
+set of cohorts. The labels
+may include an "open" cohort with no
+lower limit. Apart from the open cohort,
+all cohorts have a width of one year.
 }
 \details{
-The elements of \code{x} must be single-year
-labels, such as \code{"2001"}, or
-labels for cohorts
-that are open on the left, such as \code{"<2000"}.
-\code{x} must not contain
-multi-year intervals such
+\code{x} must consist of labels for single-year
+cohorts, such as \code{"2001"}, or
+open cohorts, such as \code{"<2000"}.
+\code{x} must not contain labels for
+multi-year cohorts such
 as \code{"2000-2005"}
 
 \code{open_first} defaults to \code{TRUE}
 if a value for \code{break_min} is supplied,
-or if any elements of \code{x} are open
-on the left, and to \code{FALSE} otherwise.
+or if any elements of \code{x} are open,
+and to \code{FALSE} otherwise.
 
 If \code{x} has \code{NA}s, then the
 levels of the factor created by \code{format_cohort_year}
 also contain \code{NA}.
 }
 \examples{
-## note that the 'levels' contain all values from
+## the 'levels' contain all values from
 ## '2000' to '2005', even when these do not
 ## appear in the data
 format_cohort_year(x = c(2000, 2005, NA, 2004))
@@ -82,11 +79,13 @@ format_cohort_year(x = c("2000", "2005", "<2002",
 }
 \seealso{
 Other functions for reformatting
-cohort labels are 
-\code{\link{format_cohort_multi}},
-\code{\link{format_cohort_custom}},
-\code{\link{format_cohort_quarter}},
-and \code{\link{format_cohort_month}}.
+cohort labels are
+\itemize{
+  \item \code{\link{format_cohort_multi}}
+  \item \code{\link{format_cohort_custom}}
+  \item \code{\link{format_cohort_quarter}}
+  \item \code{\link{format_cohort_month}}
+}
 
 \code{\link{date_to_cohort_year}} creates
 single-year cohorts from dates.

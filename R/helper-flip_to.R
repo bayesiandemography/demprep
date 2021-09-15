@@ -5,10 +5,10 @@ flip_to_internal <- function(x,
                              month_start) {
     month_start <- demcheck::err_tdy_month_start(x = month_start,
                                                  name = "month_start")
-    do_nothing <- identical(month_start, "Jan") || identical(length(x), 0L)
+    do_nothing <- (identical(month_start, "Jan")
+        || identical(length(x), 0L)
+        || all(is.na(x)))
     if (do_nothing) {
-        if (!is.factor(x))
-            x <- as.character(x)
         return(x)
     }
     labels_x <- if (is.factor(x)) levels(x) else unique(x)
@@ -31,13 +31,19 @@ flip_to_internal <- function(x,
         labels_ans <- low - 1L
         labels_ans[is_open_first] <- paste0("<", up[is_open_first] - 1L)
     }
-    labels_ans <- as.character(labels_ans)
     if (is.factor(x))
         ans <- factor(x,
                       levels = labels_x,
                       labels = labels_ans,
                       exclude = NULL)
-    else
+    else {
+        if (is.numeric(x)) {
+            if (is.integer(x))
+                labels_ans <- as.integer(labels_ans)
+            else
+                labels_ans <- as.numeric(labels_ans)
+        }
         ans <- labels_ans[match(x, labels_x)]
+    }
     ans
 }

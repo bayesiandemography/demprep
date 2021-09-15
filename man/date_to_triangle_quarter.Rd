@@ -2,7 +2,7 @@
 % Please edit documentation in R/date_to_triangle.R
 \name{date_to_triangle_quarter}
 \alias{date_to_triangle_quarter}
-\title{Convert dates to quarter-length Lexis triangles}
+\title{Convert dates to one-quarter (three-month) Lexis triangles}
 \usage{
 date_to_triangle_quarter(date, dob)
 }
@@ -21,34 +21,12 @@ or a vector that can be coerced to class
 A character vector with the same length as \code{date}.
 }
 \description{
-Based on an age-time plan where age groups and periods both have
-widths of one quarter (ie three months),
-use dates of events and dates of birth
-to allocate events to Lexis triangles.
+Use dates of events and dates of birth to create
+one-quarter (three-month) Lexis triangles.
 }
 \details{
-The allocation of an event to a Lexis triangle depends
-on the timing of the event and on the timing of changes
-in age group. A person moves up into a new age group
-once during each period. An event is allocated
-to an upper Lexis triangle if the event occurs
-before the move to the new age group.
-An event is allocated to a lower Lexis triangle
-if the event occurs with or after the move to the
-new age group.
-
-Consider, for instance, events occurring to a person
-who was born on 3 March. \code{date_to_triangle_quarter}
-allocates events to Lexis triangles as follows:
-\tabular{ll}{
-  \emph{Date of event} \tab \emph{Lexis triangle} \cr
-  3 March to 31 March \tab \code{"Lower"} \cr
-  1 April to 2 June \tab \code{"Upper"} \cr
-  3 June to 31 September \tab \code{"Lower"} \cr
-  1 October to 2 December \tab \code{"Upper"} \cr
-  3 December to 31 December \tab \code{"Lower"} \cr
-  etc \tab etc
-}
+See \code{vignette("demprep")} for the definition
+of Lexis triangles.
 
 \code{date} and \code{dob} must have the same length,
 unless one of them has length 1, in which case the

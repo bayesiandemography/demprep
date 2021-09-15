@@ -1,31 +1,15 @@
 ## HAS_TESTS
-#' Put period labels into the format required
-#' for single-year periods
+#' Create consistent, complete single-year periods
 #'
 #' Given a vector of period labels, create a
 #' \code{\link[base]{factor}} that contains
 #' levels for the earliest and latest periods in \code{x},
 #' and for all periods in between.
-#' For instance, if the earliest period in \code{x}
-#' is \code{"1990"}, and the latest is \code{"2010"},
-#' then \code{format_period_year} creates a factor
-#' with levels \code{"1990"}, \code{"1991"}, \dots,
-#' \code{"2010"}.
-#'
+#' 
 #' The elements of \code{x} must  be single-year
 #' labels such as \code{"2001"} or \code{"2055"}.
 #' \code{x} cannot contain multi-year intervals such
 #' as \code{"2000-2005"} or \code{"<2020"}.
-#'
-#' As discussed in \code{\link{date_to_period_year}}, the
-#' meaning of single-year labels for periods depends on the
-#' the starting month, and whether periods are
-#' labelled according to the calendar year
-#' at the start of each period, or the calendar year
-#' at the end (where these differ.) \code{format_period_year} leaves
-#' labels untouched, so whatever convention
-#' was used to create \code{x} also applies to the output
-#' from \code{format_period_year}.
 #'
 #' If \code{x} contains \code{NA}, then the
 #' levels of the factor created by \code{format_period_year}
@@ -37,17 +21,19 @@
 #' \code{x}.
 #'
 #' @seealso Other functions for reformating
-#' period labels are 
-#' \code{\link{format_period_multi}},
-#' \code{\link{format_period_custom}},
-#' \code{\link{format_period_quarter}},
-#' and \code{\link{format_period_month}}.
+#' period labels are
+#' \itemize{
+#'   \item \code{\link{format_period_multi}}
+#'   \item \code{\link{format_period_custom}}
+#'   \item \code{\link{format_period_quarter}}
+#'   \item \code{\link{format_period_month}}
+#' }
 #'
 #' \code{\link{date_to_period_year}} creates
 #' single-year periods from dates.
 #'
 #' @examples
-#' ## note that the 'levels' contain all values from
+#' ## the 'levels' contain all values from
 #' ## '2000' to '2010', even when these do not
 #' ## appear in the data
 #' format_period_year(x = c("2000", "2010"))
@@ -62,19 +48,13 @@ format_period_year <- function(x) {
 
 
 ## HAS_TESTS
-#' Put period labels into the format required
-#' for multi-year periods
+#' Create consistent, complete multi-year periods
 #'
 #' Given a vector of period labels, create a
 #' \code{\link[base]{factor}}  containing
 #' levels for the earliest and latest periods
 #' in \code{x}, and for all periods in between.
-#' For instance, if the earliest period in \code{x}
-#' is \code{"1990-1995"}, and the latest is \code{"2005-2010"},
-#' then \code{format_period_multi} creates a factor
-#' with levels \code{"1990-1995"}, \code{"1995-2000"},
-#' \code{"2000-2005"},and \code{"2005-2010"}.
-#' All periods in the return value have the same width,
+#' All periods have the same width,
 #' which is controlled by the \code{width} argument.
 #'
 #' The elements of \code{x} are typically multi-year
@@ -84,27 +64,16 @@ format_period_year <- function(x) {
 #' \code{x} cannot contain open intervals
 #' such as \code{"<2020"}.
 #'
-#' As discussed in \code{\link{date_to_period_year}}, the
-#' meaning of single-year labels for periods depends on the
-#' the starting month, and whether periods are
-#' labelled according to the calendar year
-#' at the start of the period, or the calendar year
-#' at the end. The multi-year labels produced
-#' by \code{format_period_multi} are less ambiguous,
-#' in that they always show a pair of years: the calendar
-#' year at the start of the period and the calendar year at
-#' the-end-of-the-period-plus-one-day. For instance, if a period
-#' starts on 1 January 2000 and ends on 31 December 2000,
-#' then the end of the period plus one day is 1 January 2001,
-#' and the label is \code{"2000-2001"}.
-#'
-#' If \code{x} contains single-year labels, then \code{format_period_multi}
-#' may need help to interpret these correctly. \code{format_period_multi}
-#' assumes that periods start on January and that
-#' single-year periods are labelled according to the calendar year
-#' at the start of the period. Alternative settings can be
-#' specified via the \code{month_start} and \code{label_start_year}
-#' arguments.
+#' As discussed in \code{\link{date_to_period_year}},
+#' single-year labels such as \code{"2000"} are ambiguous.
+#' Correctly aligning single-year and multi-year periods
+#' requires knowing which month the single-year periods start on,
+#' which is controlled by the \code{month_start}
+#' argument, and whether single-year periods
+#' are labelled according 
+#' to the calendar year at the start or end of the period,
+#' which is controlled by the \code{label_year_start}
+#' argument.
 #'
 #' The location of the periods can be shifted
 #' by using different values for \code{origin}.
@@ -118,21 +87,23 @@ format_period_year <- function(x) {
 #' to be created. Defaults to 5.
 #' @param origin An integer. Defaults to 2000.
 #' @param month_start An element of \code{\link[base]{month.name}},
-#' or \code{\link[base]{month.abb}}. Cohorts start on
+#' or \code{\link[base]{month.abb}}. Periods start on
 #' the first day of this month.
-#' @param label_year_start Logical. Whether to label a cohort
-#' by the calendar year at the beginning of the cohort
+#' @param label_year_start Logical. Whether to label a period
+#' by the calendar year at the beginning of the period
 #' or the calendar year at the end. Defaults to \code{TRUE}.
 #'
 #' @return A factor with the same length as
 #' \code{x}.
 #'
 #' @seealso Other functions for reformating
-#' period labels are 
-#' \code{\link{format_period_year}},
-#' \code{\link{format_period_custom}},
-#' \code{\link{format_period_quarter}},
-#' and \code{\link{format_period_month}}.
+#' period labels are
+#' \itemize{
+#'   \item \code{\link{format_period_year}}
+#'   \item \code{\link{format_period_custom}}
+#'   \item \code{\link{format_period_quarter}}
+#'   \item \code{\link{format_period_month}}
+#' }
 #'
 #' \code{\link{date_to_period_year}} creates
 #'  periods from dates.
@@ -246,8 +217,7 @@ format_period_multi <- function(x,
 
 
 ## HAS_TESTS
-#' Put period labels into the format required
-#' for customised periods
+#' Create consistent, complete customised periods
 #'
 #' Given a vector of period labels, create a
 #' \code{\link[base]{factor}}
@@ -255,8 +225,7 @@ format_period_multi <- function(x,
 #' defined by \code{breaks}. \code{format_period_custom}
 #' is the most flexible
 #' of the \code{format_period} functions
-#' in that the periods can have any combination of widths,
-#' though the widths must be defined in whole numbers of years.
+#' in that the periods can have any combination of widths.
 #'
 #' The elements of \code{x} can be
 #' single-year labels such as \code{"2000"}
@@ -277,12 +246,14 @@ format_period_multi <- function(x,
 #' \code{x}.
 #'
 #' @seealso Other functions for reformating
-#' period labels are 
-#' \code{\link{format_period_year}},
-#' \code{\link{format_period_multi}},
-#' \code{\link{format_period_quarter}},
-#' and \code{\link{format_period_month}}.
-#'
+#' period labels are
+#' \itemize{
+#'   \item \code{\link{format_period_year}}
+#'   \item \code{\link{format_period_multi}}
+#'   \item \code{\link{format_period_quarter}}
+#'   \item \code{\link{format_period_month}}
+#' }
+#' 
 #' \code{\link{date_to_period_year}} creates
 #' periods from dates.
 #'
@@ -376,18 +347,12 @@ format_period_custom <- function(x,
 
 
 ## HAS_TESTS
-#' Put period labels into the format required
-#' for quarter (three-month) periods
+#' Create consistent, complete quarter (three-month) periods
 #'
 #' Given a vector of period labels, create a
 #' \code{\link[base]{factor}} that contains
 #' levels for the earliest and latest periods in \code{x},
 #' and for all periods in between.
-#' For instance, if the earliest period in \code{x}
-#' is \code{"1990 Q1"}, and the latest is \code{"2010 Q4"},
-#' then \code{format_period_quarter} creates a factor
-#' with levels \code{"1990 Q1"}, \code{"1990 Q2"}, \dots,
-#' \code{"2010 Q3"}, \code{"2010 Q4"}.
 #'
 #' Quarters are defined as follows:
 #' \tabular{lll}{
@@ -413,12 +378,14 @@ format_period_custom <- function(x,
 #' \code{x}.
 #'
 #' @seealso Other functions for reformating
-#' period labels are 
-#' \code{\link{format_period_year}},
-#' \code{\link{format_period_multi}},
-#' \code{\link{format_period_custom}},
-#' and \code{\link{format_period_month}}.
-#'
+#' period labels are
+#' \itemize{
+#'   \item \code{\link{format_period_year}}
+#'   \item \code{\link{format_period_multi}}
+#'   \item \code{\link{format_period_custom}}
+#'   \item \code{\link{format_period_month}}
+#' }
+#' 
 #' \code{\link{date_to_period_quarter}} creates
 #' quarter periods from dates.
 #'
@@ -433,18 +400,12 @@ format_period_quarter <- function(x) {
 
 
 ## HAS_TESTS
-#' Put period labels into the format required
-#' for one-month periods
+#' Create consistent, complete one-month periods
 #'
 #' Given a vector of period labels, create a
 #' \code{\link[base]{factor}} that contains
 #' levels for the earliest and latest periods in \code{x},
 #' and for all periods in between.
-#' For instance, if the earliest period in \code{x}
-#' is \code{"1990 Jan"}, and the latest is \code{"2010 Dec"},
-#' then \code{format_period_month} creates a factor
-#' with levels \code{"1990 Jan"}, \code{"1990 Feb"}, \dots,
-#' \code{"2010 Nov"}, \code{"2010 Dec"}.
 #'
 #' The elements of \code{x} must all be single months,
 #' eg \code{"2001 Feb"} or \code{"2055 Mar"}.
@@ -459,11 +420,13 @@ format_period_quarter <- function(x) {
 #' \code{x}.
 #'
 #' @seealso Other functions for reformating
-#' period labels are 
-#' \code{\link{format_period_year}},
-#' \code{\link{format_period_multi}},
-#' \code{\link{format_period_custom}},
-#' and \code{\link{format_period_quarter}}.
+#' period labels are
+#' \itemize{
+#'   \item \code{\link{format_period_year}}
+#'   \item \code{\link{format_period_multi}}
+#'   \item \code{\link{format_period_custom}}
+#'   \item \code{\link{format_period_quarter}}
+#' }
 #'
 #' \code{\link{date_to_period_month}} creates
 #' month periods from dates.

@@ -2,8 +2,7 @@
 % Please edit documentation in R/format_cohort.R
 \name{format_cohort_quarter}
 \alias{format_cohort_quarter}
-\title{Put cohort labels into the format required
-for quarter (three-month) cohorts}
+\title{Create consistent, complete quarter (three-month) cohorts}
 \usage{
 format_cohort_quarter(x, break_min = NULL, open_first = NULL)
 }
@@ -26,16 +25,9 @@ Given a vector of cohort labels, create a
 \code{\link[base]{factor}} where the levels
 contain a complete set of cohorts. 
 If \code{open_first} is \code{TRUE}, then the earliest
-cohort has no lower limit. (This is equivalent
-to an open age group with no upper limit.)
+cohort has no lower limit.
 }
 \details{
-The elements of \code{x} must be quarter
-labels, such as \code{"2001 Q2"} or \code{"2055 Q1"}, including
-labels for cohorts that are open on the left,
-such as \code{"<2000 Q3"}
-or \code{<"1960 Q4"}.
-
 \code{open_first} defaults to \code{TRUE}
 if a value for \code{break_min} is supplied,
 or if any intervals in \code{x} is open,
@@ -73,11 +65,13 @@ format_cohort_quarter(x = c("2005 Q1", NA, "2004 Q3"),
 }
 \seealso{
 Other functions for reformating
-cohort labels are 
-\code{\link{format_cohort_year}},
-\code{\link{format_cohort_multi}},
-\code{\link{format_cohort_custom}},
-and \code{\link{format_cohort_month}}.
+cohort labels are
+\itemize{
+  \item \code{\link{format_cohort_year}}
+  \item \code{\link{format_cohort_multi}}
+  \item \code{\link{format_cohort_custom}}
+  \item \code{\link{format_cohort_month}}
+}
 
 \code{\link{date_to_cohort_year}} calculates
 cohorts from dates.

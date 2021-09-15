@@ -2,7 +2,7 @@
 % Please edit documentation in R/format_age.R
 \name{format_age_custom}
 \alias{format_age_custom}
-\title{Format age group labels into customized age groups}
+\title{Create consistent, complete customized age groups}
 \usage{
 format_age_custom(x, breaks = NULL, open_last = TRUE)
 }
@@ -18,24 +18,29 @@ has no upper limit. Defaults to \code{TRUE}.}
 A factor with length equal to \code{x}.
 }
 \description{
-Given a vector of age group labels, create a factor
-that contains levels for all age groups
-defined by \code{breaks}, including, possibly,
-an open age group.\code{format_age_custom} is the most flexible
-of the \code{format_age} functions
-in that the age groups can have any combination of widths,
-though the widths must be defined in whole numbers of years.
+Given a vector of age group labels, create a \code{\link[base]{factor}}
+that contains levels for all age groups, as
+defined by the \code{breaks} argument. The labels may include an
+open age group, ie an age group with no upper limit.
 }
 \details{
+\code{format_age_custom} is the most flexible
+of the \code{format_age} functions
+in that the age groups can have any combination of widths.
+
 \code{breaks} is used to specify the points at which
-each age group starts and finishes. If 
-\code{open_last} is \code{TRUE}, and \code{b} is
-the last value for \code{breaks}, then the oldest
-age group is \code{[b, Inf)} years. 
-If \code{open_last} is \code{FALSE}, \code{a} is the
-second-to-last value for \code{breaks}, and \code{b}
-is the last value, then the oldest age
-group is \code{[a, b)} years.
+each age group starts and finishes, and \code{open_last}
+is used to specify whether the final age group
+has an upper limit. If \code{breaks} has
+length \code{n}, then the
+final age group is defined as follows:
+
+\tabular{ll}{
+    \strong{\code{open_last}} \tab \strong{Final age group} \cr
+    \code{TRUE} \tab [\code{breaks[n]}, \code{Inf}) \cr
+     \code{FALSE} \tab [\code{breaks[n-1]}, \code{breaks[n]})
+}
+
 
 If \code{x} contains \code{NA}, then the
 levels of the factor created by \code{format_age_custom}
@@ -52,12 +57,14 @@ format_age_custom(x = c("50-59", "19-40", "31"),
 }
 \seealso{
 Other functions for creating age groups are
-\code{\link{format_age_year}},
-\code{\link{format_age_multi}},
-\code{\link{format_age_lifetab}},
-\code{\link{format_age_births}},
-\code{\link{format_age_quarter}},
-and \code{\link{format_age_month}}.
+\itemize{
+  \item \code{\link{format_age_year}}
+  \item \code{\link{format_age_multi}}
+  \item \code{\link{format_age_lifetab}}
+  \item \code{\link{format_age_births}}
+  \item \code{\link{format_age_quarter}}
+  \item \code{\link{format_age_month}}
+}
 
 \code{\link{date_to_age_year}} calculates
 ages from dates.

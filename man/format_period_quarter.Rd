@@ -2,8 +2,7 @@
 % Please edit documentation in R/format_period.R
 \name{format_period_quarter}
 \alias{format_period_quarter}
-\title{Put period labels into the format required
-for quarter (three-month) periods}
+\title{Create consistent, complete quarter (three-month) periods}
 \usage{
 format_period_quarter(x)
 }
@@ -19,11 +18,6 @@ Given a vector of period labels, create a
 \code{\link[base]{factor}} that contains
 levels for the earliest and latest periods in \code{x},
 and for all periods in between.
-For instance, if the earliest period in \code{x}
-is \code{"1990 Q1"}, and the latest is \code{"2010 Q4"},
-then \code{format_period_quarter} creates a factor
-with levels \code{"1990 Q1"}, \code{"1990 Q2"}, \dots,
-\code{"2010 Q3"}, \code{"2010 Q4"}.
 }
 \details{
 Quarters are defined as follows:
@@ -49,11 +43,13 @@ format_period_quarter(x = c("2000 Q4", "2005 Q1", NA, "2004 Q3"))
 }
 \seealso{
 Other functions for reformating
-period labels are 
-\code{\link{format_period_year}},
-\code{\link{format_period_multi}},
-\code{\link{format_period_custom}},
-and \code{\link{format_period_month}}.
+period labels are
+\itemize{
+  \item \code{\link{format_period_year}}
+  \item \code{\link{format_period_multi}}
+  \item \code{\link{format_period_custom}}
+  \item \code{\link{format_period_month}}
+}
 
 \code{\link{date_to_period_quarter}} creates
 quarter periods from dates.

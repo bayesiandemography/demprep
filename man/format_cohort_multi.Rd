@@ -2,8 +2,7 @@
 % Please edit documentation in R/format_cohort.R
 \name{format_cohort_multi}
 \alias{format_cohort_multi}
-\title{Put cohort labels into the format required
-for multi-year cohorts}
+\title{Create consistent, complete multi-year cohorts}
 \usage{
 format_cohort_multi(
   x,
@@ -52,20 +51,11 @@ Given a vector of cohort labels, create a
 \code{\link[base]{factor}}  containing
 levels for the earliest and latest cohorts
 in \code{x}, and for all cohorts in between.
-For instance, if the earliest cohort in \code{x}
-is \code{"1990-1995"}, and the latest is \code{"2005-2010"},
-then \code{format_cohort_multi} creates a factor
-with levels \code{"1990-1995"}, \code{"1995-2000"},
-\code{"2000-2005"}, and \code{"2005-2010"}.
 All cohorts, with the possible exception of
 a first "open" cohort, have the same width,
 which is controlled by the \code{width} argument.
 }
 \details{
-If \code{open_first} is \code{TRUE}, then the earliest
-cohort has no lower limit. (This is equivalent
-to an open age group with no upper limit.)
-
 The elements of \code{x} can be
 single-year labels such as \code{"2020"},
 multi-year labels such as \code{"1950-1960"},
@@ -76,33 +66,27 @@ As discussed in \code{\link{date_to_cohort_year}},
 single-year labels such as \code{"2000"} are ambiguous.
 Correctly aligning single-year and multi-year cohorts
 requires knowing which month the single-year cohorts start on,
-and whether single-year cohorts are labelled according
-to the calendar year at the start of the cohort or the end.
-\code{format_cohort_multi} assumes that
-cohorts start in January, and that single-year cohorts
-are labelled by calendar year at the start. These
-settings can be changed using \code{month_start}
-and \code{label_year_start}.
-
-The multi-year labels produced
-by \code{format_cohort_multi} are less ambiguous,
-in that they always show a pair of years: the calendar
-year at the start of the cohort and the calendar year at
-the-end-of-the-cohort-plus-one-day. For instance, if a cohort
-starts on 1 January 2000 and ends on 31 December 2000,
-then the end of the cohort plus one day is 1 January 2001,
-and the label is \code{"2000-2001"}.
+which is controlled by the \code{month_start}
+argument, and whether single-year cohorts
+are labelled according 
+to the calendar year at the start or end of the cohort,
+which is controlled by the \code{label_year_start}
+argument.
 
 \code{open_first} defaults to \code{TRUE}
 if a value for \code{break_min} is supplied,
 or if any intervals in \code{x} are open,
 and to \code{FALSE} otherwise.
 
+The location of the cohorts can be shifted
+by using different values for \code{origin}.
+
 If \code{x} contains \code{NA}, then the
 levels of the factor created by \code{format_cohort_multi}
 also contain \code{NA}.
 
-There is a combination of settings that make an open
+There is a (slightly obscure)
+combination of settings that make an open
 interval such as \code{"<2010"} ambiguous.
 The settings are
 \enumerate{
@@ -123,8 +107,8 @@ removes the ambiguity.
 When \code{label_open_multi} is \code{TRUE},
 open intervals
 interpreted as a type of multi-year label,
-and when \code{label_open_multi} is \code{FALSE} they
-open intervals' are interpreted as
+and when \code{label_open_multi} is \code{FALSE},
+they are interpreted as
 a type of single-year label.
 }
 \examples{
@@ -175,11 +159,13 @@ format_cohort_multi(x = c("2025", "2030-2035", "<2021"),
 }
 \seealso{
 Other functions for reformating
-cohort labels are 
-\code{\link{format_cohort_year}},
-\code{\link{format_cohort_custom}},
-\code{\link{format_cohort_quarter}},
-and \code{\link{format_cohort_month}}.
+cohort labels are
+\itemize{
+  \code{\link{format_cohort_year}}
+  \code{\link{format_cohort_custom}}
+  \code{\link{format_cohort_quarter}}
+  \code{\link{format_cohort_month}}
+}
 
 \code{\link{date_to_cohort_year}} calculates
 cohorts from dates.

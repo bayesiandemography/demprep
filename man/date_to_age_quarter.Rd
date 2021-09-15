@@ -23,8 +23,7 @@ an integer vector with the same length as
 is longer.
 }
 \description{
-Given dates and dates of birth, create one-quarter
-(three-month) age groups.
+Use dates of events and dates of birth to
 }
 \details{
 \code{date} and \code{dob} must have the same length,

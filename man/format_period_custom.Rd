@@ -2,8 +2,7 @@
 % Please edit documentation in R/format_period.R
 \name{format_period_custom}
 \alias{format_period_custom}
-\title{Put period labels into the format required
-for customised periods}
+\title{Create consistent, complete customised periods}
 \usage{
 format_period_custom(x, breaks, month_start = "Jan", label_year_start = TRUE)
 }
@@ -13,11 +12,11 @@ format_period_custom(x, breaks, month_start = "Jan", label_year_start = TRUE)
 \item{breaks}{A vector of strictly increasing integer values.}
 
 \item{month_start}{An element of \code{\link[base]{month.name}},
-or \code{\link[base]{month.abb}}. Cohorts start on
+or \code{\link[base]{month.abb}}. Periods start on
 the first day of this month.}
 
-\item{label_year_start}{Logical. Whether to label a cohort
-by the calendar year at the beginning of the cohort
+\item{label_year_start}{Logical. Whether to label a period
+by the calendar year at the beginning of the period
 or the calendar year at the end. Defaults to \code{TRUE}.}
 }
 \value{
@@ -31,8 +30,7 @@ that contains levels for all periods
 defined by \code{breaks}. \code{format_period_custom}
 is the most flexible
 of the \code{format_period} functions
-in that the periods can have any combination of widths,
-though the widths must be defined in whole numbers of years.
+in that the periods can have any combination of widths.
 }
 \details{
 The elements of \code{x} can be
@@ -56,11 +54,13 @@ format_period_custom(x = c("2000-2001", "2004", "2005-2010", "1996-1998"),
 }
 \seealso{
 Other functions for reformating
-period labels are 
-\code{\link{format_period_year}},
-\code{\link{format_period_multi}},
-\code{\link{format_period_quarter}},
-and \code{\link{format_period_month}}.
+period labels are
+\itemize{
+  \item \code{\link{format_period_year}}
+  \item \code{\link{format_period_multi}}
+  \item \code{\link{format_period_quarter}}
+  \item \code{\link{format_period_month}}
+}
 
 \code{\link{date_to_period_year}} creates
 periods from dates.

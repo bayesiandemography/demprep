@@ -2,8 +2,7 @@
 % Please edit documentation in R/format_age.R
 \name{format_age_quarter}
 \alias{format_age_quarter}
-\title{Put age group labels into format required
-for one-quarter age groups}
+\title{Create consistent, complete quarter (three month) age groups}
 \usage{
 format_age_quarter(x, break_min = 0, break_max = 400, open_last = TRUE)
 }
@@ -23,33 +22,22 @@ has no upper limit. Defaults to \code{TRUE}.}
 A factor with the same length as \code{x}.
 }
 \description{
-Given a vector of age group labels, create a factor
+Given a vector of age group labels, create a \code{\link[base]{factor}}
 that contains levels for all ages between \code{break_min}
-and \code{break_max}, and that may contain an open age group
-(ie an age group with no upper limit.)
-If, for instance, \code{break_min} is \code{0},
-\code{break_max} is \code{400}, and \code{open_last} is
-\code{TRUE} (the defaults), then \code{format_age_quarter}
-creates a factor with levels \code{"0"}, \code{"1"},
-\dots, \code{"399"}, \code{"400+"}. Even when an age
+and \code{break_max}. The labels may contain an open age group,
+ie an age group with no upper limit. Apart from the open age
+group, all the age groups have a width of one quarter
+(three months).
+}
+\details{
+Even when an age
 group between \code{break_min} and \code{break_max}
 is not included in \code{x}, \code{factor_quarter}
 still creates a level for it.
-}
-\details{
-A person belongs to age group \code{"x"} if that
-person was exactly \code{x} quarters
-old at their most recent birthday. For instance, a person
-belongs to age group \code{"20"} if that person had
-their 5th birthday (= 20 quarters) two days ago.
 
 If \code{break_min} or \code{break_max} is set to \code{NULL},
 rather than to a specific value, then \code{format_age_year}
 finds the narrowest range that accommodates the data.
-
-All age groups in \code{x} must be single-quarter age groups,
-except those starting at or above \code{break_max},
-where open age groups are allowed.
 
 If \code{x} contains \code{NA}, then the
 levels of the factor created by \code{format_age_quarter}
@@ -77,10 +65,15 @@ format_age_quarter(x = c("10", "22"),
 }
 \seealso{
 Other functions for creating age groups are
-\code{\link{format_age_year}},
-\code{\link{format_age_multi}},
-\code{\link{format_age_lifetab}},
-\code{\link{format_age_births}},
-\code{\link{format_age_custom}},
-and \code{\link{format_age_month}}.
+\itemize{
+  \item \code{\link{format_age_year}}
+  \item \code{\link{format_age_multi}}
+  \item \code{\link{format_age_lifetab}}
+  \item \code{\link{format_age_births}}
+  \item \code{\link{format_age_custom}}
+  \item \code{\link{format_age_month}}
+}
+
+\code{\link{date_to_age_quarter}} calculates
+ages from dates.
 }

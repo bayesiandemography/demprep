@@ -23,7 +23,7 @@ an integer vector with the same length as
 is longer.
 }
 \description{
-Use dates and the dates of birth,
+Use dates of events and dates of birth
 to create one-year age groups.
 }
 \details{

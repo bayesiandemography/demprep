@@ -2,8 +2,7 @@
 % Please edit documentation in R/format_age.R
 \name{format_age_multi}
 \alias{format_age_multi}
-\title{Put age group labels into the format required
-for multi-year age groups}
+\title{Create consistent, complete multi-year age groups}
 \usage{
 format_age_multi(
   x,
@@ -34,24 +33,21 @@ A factor with the same length as
 \code{x}.
 }
 \description{
-Given a vector of age group labels, create a factor
+Given a vector of age group labels, create a \code{\link[base]{factor}}
 that contains levels for all ages between \code{break_min}
-and \code{break_max}, and that may contain an open age group
+and \code{break_max}. The labels may contain an open age group
 (ie an age group with no upper limit.)
 Apart from the open age group, the age groups
 produced by \code{format_age_multi} all
-have the width specified by \code{width}.
-If, for instance, \code{break_min} is \code{0},
-\code{break_max} is \code{100}, \code{width} is \code{5},
-and \code{open_last} is \code{TRUE} (the defaults),
-then \code{format_age_multi} creates
-a factor with levels \code{"0-4"}, \code{"5-9"},
-\dots, \code{"95-99"}, \code{"100+"}. Even when an age
+have the same width, which is specified by \code{width},
+and which defaults to 5.
+}
+\details{
+Even when an age
 group between \code{break_min} and \code{break_max}
 is not included in \code{x}, \code{format_age_multi}
 still creates a level for it.
-}
-\details{
+
 If \code{break_min} or \code{break_max} is set to \code{NULL},
 rather than to a specific value, then \code{format_age_year}
 finds the narrowest range that accommodates the data.
@@ -96,14 +92,15 @@ format_age_multi(x = c("10", "3", "77"),
 }
 \seealso{
 Other functions for reformating
-age group labels are 
-\code{\link{format_age_year}},
-\code{\link{format_age_lifetab}},
-\code{\link{format_age_births}},
-\code{\link{format_age_custom}},
-\code{\link{format_age_quarter}},
-and \code{\link{format_age_month}}.
-
+age group labels are
+\itemize{
+  \item \code{\link{format_age_year}}
+  \item \code{\link{format_age_lifetab}}
+  \item \code{\link{format_age_births}}
+  \item \code{\link{format_age_custom}}
+  \item \code{\link{format_age_quarter}}
+  \item \code{\link{format_age_month}}
+}
 \code{\link{date_to_age_year}} creates
 ages from dates.
 }

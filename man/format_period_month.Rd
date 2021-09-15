@@ -2,8 +2,7 @@
 % Please edit documentation in R/format_period.R
 \name{format_period_month}
 \alias{format_period_month}
-\title{Put period labels into the format required
-for one-month periods}
+\title{Create consistent, complete one-month periods}
 \usage{
 format_period_month(x)
 }
@@ -19,11 +18,6 @@ Given a vector of period labels, create a
 \code{\link[base]{factor}} that contains
 levels for the earliest and latest periods in \code{x},
 and for all periods in between.
-For instance, if the earliest period in \code{x}
-is \code{"1990 Jan"}, and the latest is \code{"2010 Dec"},
-then \code{format_period_month} creates a factor
-with levels \code{"1990 Jan"}, \code{"1990 Feb"}, \dots,
-\code{"2010 Nov"}, \code{"2010 Dec"}.
 }
 \details{
 The elements of \code{x} must all be single months,
@@ -38,11 +32,13 @@ format_period_month(x = c("2000 Sep", "2005 May", NA, "2004 Jan"))
 }
 \seealso{
 Other functions for reformating
-period labels are 
-\code{\link{format_period_year}},
-\code{\link{format_period_multi}},
-\code{\link{format_period_custom}},
-and \code{\link{format_period_quarter}}.
+period labels are
+\itemize{
+  \item \code{\link{format_period_year}}
+  \item \code{\link{format_period_multi}}
+  \item \code{\link{format_period_custom}}
+  \item \code{\link{format_period_quarter}}
+}
 
 \code{\link{date_to_period_month}} creates
 month periods from dates.

@@ -1,20 +1,26 @@
 
 ## HAS_TESTS
-#' Put age group labels into the format required
-#' for single-year age groups
+#' Create consistent, complete single-year age groups
 #'
-#' Given a vector of age group labels, create a factor
+#' Given a vector of age group labels,
+#' create a \code{\link[base]{factor}}
 #' that contains levels for all ages between \code{break_min}
-#' and \code{break_max}, and that may contain an open age group
-#' (ie an age group with no upper limit.)
-#' If, for instance, \code{break_min} is \code{0},
-#' \code{break_max} is \code{100}, and \code{open_last} is
-#' \code{TRUE} (the defaults), then \code{format_age_year}
-#' creates a factor with levels \code{"0"}, \code{"1"},
-#' \dots, \code{"99"}, \code{"100+"}. Even when an age
+#' and \code{break_max}. The labels
+#' may include an "open" age group with no upper limit. 
+#' Apart from the open age
+#' group, all the age groups have a width of one year.
+#'
+#' Even when an age
 #' group between \code{break_min} and \code{break_max}
 #' is not included in \code{x}, \code{format_age_year}
 #' still creates a level for it.
+#'
+#' \code{x} must consist of labels for single-year
+#' age groups, such as \code{"22"}, or
+#' open age groups, such as \code{"100+"}.
+#' \code{x} must not contain labels for
+#' multi-year age groups such
+#' as \code{"20-24"}.
 #' 
 #' If \code{break_min} or \code{break_max} is set to \code{NULL},
 #' rather than to a specific value, then \code{format_age_year}
@@ -39,13 +45,15 @@
 #' \code{x}.
 #'
 #' @seealso Other functions for reformating
-#' age group labels are 
-#' \code{\link{format_age_multi}},
-#' \code{\link{format_age_lifetab}},
-#' \code{\link{format_age_births}},
-#' \code{\link{format_age_custom}},
-#' \code{\link{format_age_quarter}},
-#' and \code{\link{format_age_month}}.
+#' age group labels are
+#' \itemize{
+#'   \item \code{\link{format_age_multi}}
+#'   \item \code{\link{format_age_lifetab}}
+#'   \item \code{\link{format_age_births}}
+#'   \item \code{\link{format_age_custom}}
+#'   \item \code{\link{format_age_quarter}}
+#'   \item \code{\link{format_age_month}}
+#' }
 #'
 #' \code{\link{date_to_age_year}} creates
 #' one-year age groups from dates.
@@ -81,22 +89,18 @@ format_age_year <- function(x,
 
 
 ## HAS_TESTS
-#' Put age group labels into the format required
-#' for multi-year age groups
+#' Create consistent, complete multi-year age groups
 #'
-#' Given a vector of age group labels, create a factor
+#' Given a vector of age group labels, create a \code{\link[base]{factor}}
 #' that contains levels for all ages between \code{break_min}
-#' and \code{break_max}, and that may contain an open age group
+#' and \code{break_max}. The labels may contain an open age group
 #' (ie an age group with no upper limit.)
 #' Apart from the open age group, the age groups
 #' produced by \code{format_age_multi} all
-#' have the width specified by \code{width}.
-#' If, for instance, \code{break_min} is \code{0},
-#' \code{break_max} is \code{100}, \code{width} is \code{5},
-#' and \code{open_last} is \code{TRUE} (the defaults),
-#' then \code{format_age_multi} creates
-#' a factor with levels \code{"0-4"}, \code{"5-9"},
-#' \dots, \code{"95-99"}, \code{"100+"}. Even when an age
+#' have the same width, which is specified by \code{width},
+#' and which defaults to 5.
+#'
+#' Even when an age
 #' group between \code{break_min} and \code{break_max}
 #' is not included in \code{x}, \code{format_age_multi}
 #' still creates a level for it.
@@ -122,14 +126,15 @@ format_age_year <- function(x,
 #' \code{x}.
 #'
 #' @seealso Other functions for reformating
-#' age group labels are 
-#' \code{\link{format_age_year}},
-#' \code{\link{format_age_lifetab}},
-#' \code{\link{format_age_births}},
-#' \code{\link{format_age_custom}},
-#' \code{\link{format_age_quarter}},
-#' and \code{\link{format_age_month}}.
-#'
+#' age group labels are
+#' \itemize{
+#'   \item \code{\link{format_age_year}}
+#'   \item \code{\link{format_age_lifetab}}
+#'   \item \code{\link{format_age_births}}
+#'   \item \code{\link{format_age_custom}}
+#'   \item \code{\link{format_age_quarter}}
+#'   \item \code{\link{format_age_month}}
+#' }
 #' \code{\link{date_to_age_year}} creates
 #' ages from dates.
 #'
@@ -321,14 +326,14 @@ format_age_multi <- function(x,
 
 
 ## ## HAS_TESTS
-#' Put age group labels into the format
-#' required for abridged life table
+#' Create consistent, complete life table age group
 #'
-#' Given a vector of age group labels, create a factor that contains
+#' Given a vector of age group labels, create a \code{\link[base]{factor}} that contains
 #' levels for all ages between \code{0} and \code{break_max},
 #' plus an open age group (ie an age group with no upper limit.)
-#' These age groups are the ones typically used in
-#' "abridged" (ie not single-year) life tables: \code{"0"},
+#' The age groups created by \code{format_age_lifetab}
+#' are the ones typically used in
+#' "abridged" life tables: \code{"0"},
 #' \code{"1-4"}, \code{"5-9"}, \code{"10-14"}, and so on up to the
 #' highest age group, which is always open.
 #'
@@ -338,8 +343,7 @@ format_age_multi <- function(x,
 #' age group is derived from the data.
 #'
 #' All age groups in \code{x} must fall within the intervals
-#' \code{"0"}, \code{"1-4"}, \code{"5-9"}, \dots,
-#' except for age groups above \code{break_max}.
+#' \code{"0"}, \code{"1-4"}, \code{"5-9"}, \dots.
 #'
 #' If \code{x} contains \code{NA}, then the
 #' levels of the factor created by \code{format_age_lifetab}
@@ -350,14 +354,15 @@ format_age_multi <- function(x,
 #' @return A factor with the same length as \code{x}.
 #'
 #' @seealso Other functions for reformating
-#' age group labels are 
-#' \code{\link{format_age_year}},
-#' \code{\link{format_age_multi}},
-#' \code{\link{format_age_births}},
-#' \code{\link{format_age_custom}},
-#' \code{\link{format_age_quarter}},
-#' and \code{\link{format_age_month}}.
-#'
+#' age group labels are
+#' \itemize{
+#'   \item \code{\link{format_age_year}}
+#'   \item \code{\link{format_age_multi}}
+#'   \item \code{\link{format_age_births}}
+#'   \item \code{\link{format_age_custom}}
+#'   \item \code{\link{format_age_quarter}}
+#'   \item \code{\link{format_age_month}}
+#' }
 #' \code{\link{date_to_age_year}} calculates
 #' ages from dates.
 #'
@@ -470,17 +475,17 @@ format_age_lifetab <- function(x, break_max = 100) {
 }
 
 ## HAS_TESTS
-#' Put age groups labels into format
-#' required for tabulating births
+#' Create consistent, complete age groups for tabulating births
 #'
-#' Given a vector of age group labels, create a factor that contains
-#' levels for all ages between \code{break_min} and \code{break_max}.
+#' Given a vector of age group labels, create a \code{\link[base]{factor}} that contains
+#' levels for all ages between the minimum and maximum ages
+#' for reproduction.
 #'
-#' \code{break_min} and \code{break_max} specify
-#' the range of ages over which reproduction
-#' is assumed to occur. If, for instance,
+#' The minimum and maximum ages for reproduction are specified
+#' via arguments \code{break_min} and \code{break_max}.
+#' If, for instance,
 #' \code{break_min} is \code{15} and \code{break_max}
-#' is \code{50}, all births are assumed to
+#' is \code{50}, then all births are assumed to
 #' occur to women aged 15 to 49 (inclusive).
 #'
 #' If \code{break_min} or \code{break_max} is set to \code{NULL},
@@ -491,12 +496,9 @@ format_age_lifetab <- function(x, break_max = 100) {
 #' Datasets sometimes contain a few births to parents
 #' younger than the assumed minimum age of reproduction,
 #' or births to parents older than the assumed maximum age
-#' of reproduction. Demographers often recode such births,
-#' so that ones to unexpectedly young parents are
-#' treated as occurring just above the minimum age
-#' for reproduction, and ones to unexpectedly old parents
-#' are treated as occurring just below the maximum
-#' age for reproduction. This recoding can be justified
+#' of reproduction. Demographers often recode ages outside
+#' the expected range so that they fall just within the
+#' expected range. This recoding can be justified
 #' on the grounds that some of the original ages may have
 #' been misreported, but it also alleviates any problems
 #' with tabulations having small counts at extreme ages.
@@ -529,12 +531,14 @@ format_age_lifetab <- function(x, break_max = 100) {
 #' @return A factor with the same length as \code{x}.
 #'
 #' @seealso Other functions for creating age groups are
-#' \code{\link{format_age_year}},
-#' \code{\link{format_age_multi}},
-#' \code{\link{format_age_lifetab}},
-#' \code{\link{format_age_custom}},
-#' \code{\link{format_age_quarter}},
-#' and \code{\link{format_age_month}}.
+#' \itemize{
+#'   \item \code{\link{format_age_year}}
+#'   \item \code{\link{format_age_multi}}
+#'   \item \code{\link{format_age_lifetab}}
+#'   \item \code{\link{format_age_custom}}
+#'   \item \code{\link{format_age_quarter}}
+#'   \item \code{\link{format_age_month}}
+#' }
 #'
 #' \code{\link{date_to_age_year}} calculates
 #' ages from dates.
@@ -724,25 +728,30 @@ format_age_births <- function(x,
 
 
 ## HAS_TESTS
-#' Format age group labels into customized age groups
+#' Create consistent, complete customized age groups
 #'
-#' Given a vector of age group labels, create a factor
-#' that contains levels for all age groups
-#' defined by \code{breaks}, including, possibly,
-#' an open age group.\code{format_age_custom} is the most flexible
+#' Given a vector of age group labels, create a \code{\link[base]{factor}}
+#' that contains levels for all age groups, as
+#' defined by the \code{breaks} argument. The labels may include an
+#' open age group, ie an age group with no upper limit.
+#'
+#' \code{format_age_custom} is the most flexible
 #' of the \code{format_age} functions
-#' in that the age groups can have any combination of widths,
-#' though the widths must be defined in whole numbers of years.
+#' in that the age groups can have any combination of widths.
 #'
 #' \code{breaks} is used to specify the points at which
-#' each age group starts and finishes. If 
-#' \code{open_last} is \code{TRUE}, and \code{b} is
-#' the last value for \code{breaks}, then the oldest
-#' age group is \code{[b, Inf)} years. 
-#' If \code{open_last} is \code{FALSE}, \code{a} is the
-#' second-to-last value for \code{breaks}, and \code{b}
-#' is the last value, then the oldest age
-#' group is \code{[a, b)} years.
+#' each age group starts and finishes, and \code{open_last}
+#' is used to specify whether the final age group
+#' has an upper limit. If \code{breaks} has
+#' length \code{n}, then the
+#' final age group is defined as follows:
+#'
+#' \tabular{ll}{
+#'     \strong{\code{open_last}} \tab \strong{Final age group} \cr
+#'     \code{TRUE} \tab [\code{breaks[n]}, \code{Inf}) \cr
+#'      \code{FALSE} \tab [\code{breaks[n-1]}, \code{breaks[n]})
+#' }
+#'
 #'
 #' If \code{x} contains \code{NA}, then the
 #' levels of the factor created by \code{format_age_custom}
@@ -754,13 +763,15 @@ format_age_births <- function(x,
 #' @return A factor with length equal to \code{x}.
 #'
 #' @seealso Other functions for creating age groups are
-#' \code{\link{format_age_year}},
-#' \code{\link{format_age_multi}},
-#' \code{\link{format_age_lifetab}},
-#' \code{\link{format_age_births}},
-#' \code{\link{format_age_quarter}},
-#' and \code{\link{format_age_month}}.
-#'
+#' \itemize{
+#'   \item \code{\link{format_age_year}}
+#'   \item \code{\link{format_age_multi}}
+#'   \item \code{\link{format_age_lifetab}}
+#'   \item \code{\link{format_age_births}}
+#'   \item \code{\link{format_age_quarter}}
+#'   \item \code{\link{format_age_month}}
+#' }
+#' 
 #' \code{\link{date_to_age_year}} calculates
 #' ages from dates.
 #'
@@ -862,35 +873,23 @@ format_age_custom <- function(x,
 
 
 ## HAS_TESTS
-#' Put age group labels into format required
-#' for one-quarter age groups
+#' Create consistent, complete quarter (three month) age groups
 #'
-#' Given a vector of age group labels, create a factor
+#' Given a vector of age group labels, create a \code{\link[base]{factor}}
 #' that contains levels for all ages between \code{break_min}
-#' and \code{break_max}, and that may contain an open age group
-#' (ie an age group with no upper limit.)
-#' If, for instance, \code{break_min} is \code{0},
-#' \code{break_max} is \code{400}, and \code{open_last} is
-#' \code{TRUE} (the defaults), then \code{format_age_quarter}
-#' creates a factor with levels \code{"0"}, \code{"1"},
-#' \dots, \code{"399"}, \code{"400+"}. Even when an age
+#' and \code{break_max}. The labels may contain an open age group,
+#' ie an age group with no upper limit. Apart from the open age
+#' group, all the age groups have a width of one quarter
+#' (three months).
+#'
+#' Even when an age
 #' group between \code{break_min} and \code{break_max}
 #' is not included in \code{x}, \code{factor_quarter}
 #' still creates a level for it.
 #'
-#' A person belongs to age group \code{"x"} if that
-#' person was exactly \code{x} quarters
-#' old at their most recent birthday. For instance, a person
-#' belongs to age group \code{"20"} if that person had
-#' their 5th birthday (= 20 quarters) two days ago.
-#' 
 #' If \code{break_min} or \code{break_max} is set to \code{NULL},
 #' rather than to a specific value, then \code{format_age_year}
 #' finds the narrowest range that accommodates the data.
-#'
-#' All age groups in \code{x} must be single-quarter age groups,
-#' except those starting at or above \code{break_max},
-#' where open age groups are allowed.
 #'
 #' If \code{x} contains \code{NA}, then the
 #' levels of the factor created by \code{format_age_quarter}
@@ -903,12 +902,17 @@ format_age_custom <- function(x,
 #' @return A factor with the same length as \code{x}.
 #'
 #' @seealso Other functions for creating age groups are
-#' \code{\link{format_age_year}},
-#' \code{\link{format_age_multi}},
-#' \code{\link{format_age_lifetab}},
-#' \code{\link{format_age_births}},
-#' \code{\link{format_age_custom}},
-#' and \code{\link{format_age_month}}.
+#' \itemize{
+#'   \item \code{\link{format_age_year}}
+#'   \item \code{\link{format_age_multi}}
+#'   \item \code{\link{format_age_lifetab}}
+#'   \item \code{\link{format_age_births}}
+#'   \item \code{\link{format_age_custom}}
+#'   \item \code{\link{format_age_month}}
+#' }
+#'
+#' \code{\link{date_to_age_quarter}} calculates
+#' ages from dates.
 #'
 #' @examples
 #' format_age_quarter(x = c(0, 21, 5))
@@ -941,36 +945,22 @@ format_age_quarter <- function(x,
 }
 
 ## HAS_TESTS
-#' Put age group labels into format required
-#' for one-month age groups
+#' Create consistent, complete one-month age groups
 #'
-#' Given a vector of age group labels, create a factor
+#' Given a vector of age group labels, create a \code{\link[base]{factor}}
 #' that contains levels for all ages between \code{break_min}
-#' and \code{break_max}, and that may contain an open age group
-#' (ie an age group with no upper limit.)
-#' If, for instance, \code{break_min} is \code{0},
-#' \code{break_max} is \code{1200}, and \code{open_last} is
-#' \code{TRUE} (the defaults), then \code{format_age_year}
-#' creates a factor with levels \code{"0"}, \code{"1"},
-#' \dots, \code{"1199"}, \code{"1200+"}. Even when an age
+#' and \code{break_max}. The labels may contain an open age group,
+#' ie an age group with no upper limit. Apart from the
+#' open age group, all the age groups have a width of one month.
+#' 
+#' Even when an age
 #' group between \code{break_min} and \code{break_max}
 #' is not included in \code{x}, \code{factor_month}
 #' still creates a level for it.
 #'
-#' A person belongs to age group \code{"x"} if that
-#' person was exactly \code{x} months
-#' old at their most recent birthday.
-#' For instance, a person belongs to age
-#' group \code{"60"} if that person had their
-#' 5th birthday (= 60 months) two days ago.
-#'
 #' If \code{break_min} or \code{break_max} is set to \code{NULL},
 #' rather than to a specific value, then \code{format_age_year}
 #' finds the narrowest range that accommodates the data.
-#'
-#' All age groups in \code{x} must be single-quarter age groups,
-#' except above \code{break_max}, where open age groups
-#' are allowed.
 #'
 #' If \code{x} contains \code{NA}, then the
 #' levels of the factor created by \code{format_age_month}
@@ -983,12 +973,17 @@ format_age_quarter <- function(x,
 #' @return A factor with the same length as \code{x}.
 #'
 #' @seealso Other functions for creating age groups are
-#' \code{\link{format_age_year}},
-#' \code{\link{format_age_multi}},
-#' \code{\link{format_age_lifetab}},
-#' \code{\link{format_age_births}},
-#' \code{\link{format_age_custom}},
-#' \code{\link{format_age_quarter}}.
+#' \itemize{
+#'   \item \code{\link{format_age_year}}
+#'   \item \code{\link{format_age_multi}}
+#'   \item \code{\link{format_age_lifetab}}
+#'   \item \code{\link{format_age_births}}
+#'   \item \code{\link{format_age_custom}}
+#'   \item \code{\link{format_age_quarter}}
+#' }
+#'
+#' \code{\link{date_to_age_month}} calculates
+#' ages from dates.
 #'
 #' @examples
 #' format_age_month(x = c(22, 0, 300))

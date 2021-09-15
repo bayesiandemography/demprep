@@ -2,8 +2,7 @@
 % Please edit documentation in R/format_cohort.R
 \name{format_cohort_month}
 \alias{format_cohort_month}
-\title{Put cohort labels into the format required
-for one-month cohorts}
+\title{Create consistent, complete one-month cohorts}
 \usage{
 format_cohort_month(x, break_min = NULL, open_first = NULL)
 }
@@ -25,9 +24,6 @@ A factor with the same length as
 Given a vector of cohort labels, create a
 \code{\link[base]{factor}} where the levels
 contain a complete set of cohorts.
-If \code{open_first} is \code{TRUE}, then the earliest
-cohort has no lower limit. (This is equivalent
-to an open age group with no upper limit.)
 }
 \details{
 The elements of \code{x} must be month
@@ -64,11 +60,13 @@ format_cohort_month(x = c("2005 Jan", NA, "2004 May"),
 }
 \seealso{
 Other functions for reformating
-cohort labels are 
-\code{\link{format_cohort_year}},
-\code{\link{format_cohort_multi}},
-\code{\link{format_cohort_custom}},
-and \code{\link{format_cohort_quarter}}.
+cohort labels are
+\itemize{
+ \item \code{\link{format_cohort_year}}
+ \item \code{\link{format_cohort_multi}}
+ \item \code{\link{format_cohort_custom}}
+ \item \code{\link{format_cohort_quarter}}
+}
 
 \code{\link{date_to_cohort_month}} creates
 month cohorts from dates.
